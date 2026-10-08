@@ -56,7 +56,15 @@
         "confirmModeSwitch": false,
         "calculateAllMoves": false,
         "getPokemonName": false,
-        "getSpriteUrl": false
+        "getSpriteUrl": false,
+        "RADICAL_RED_SAVE_DATA": false,
+        "updateDex": false,
+        "removeFromDex": false,
+        "getSpeciesKey": false,
+        "normalizeCalcText": false,
+        "getSetId": false,
+        "readBoxLayout": false,
+        "moveSetsToSection": false
     },
     "extends": "eslint:recommended",
     "rules": {

@@ -304,35 +304,34 @@ function addToDex(poke) {
 	updateDex(customsets);
 }
 
+// Every generation's set list; imported sets are added to all of them.
+function getAllSetdexes() {
+	return [SETDEX_SV, SETDEX_SS, SETDEX_SM, SETDEX_XY, SETDEX_BW, SETDEX_DPP, SETDEX_ADV, SETDEX_GSC, SETDEX_RBY];
+}
+
 function updateDex(customsets) {
 	var normalizedCustomsets = {};
+	var setdexes = getAllSetdexes();
 	for (var pokemon in customsets) {
 		var pokemonName = getSpeciesKey(pokemon);
 		if (!normalizedCustomsets[pokemonName]) normalizedCustomsets[pokemonName] = {};
 		for (var moveset in customsets[pokemon]) {
 			var setName = normalizeCalcText(moveset);
 			normalizedCustomsets[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SV[pokemonName]) SETDEX_SV[pokemonName] = {};
-			SETDEX_SV[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SS[pokemonName]) SETDEX_SS[pokemonName] = {};
-			SETDEX_SS[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SM[pokemonName]) SETDEX_SM[pokemonName] = {};
-			SETDEX_SM[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_XY[pokemonName]) SETDEX_XY[pokemonName] = {};
-			SETDEX_XY[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_BW[pokemonName]) SETDEX_BW[pokemonName] = {};
-			SETDEX_BW[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_DPP[pokemonName]) SETDEX_DPP[pokemonName] = {};
-			SETDEX_DPP[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_ADV[pokemonName]) SETDEX_ADV[pokemonName] = {};
-			SETDEX_ADV[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_GSC[pokemonName]) SETDEX_GSC[pokemonName] = {};
-			SETDEX_GSC[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_RBY[pokemonName]) SETDEX_RBY[pokemonName] = {};
-			SETDEX_RBY[pokemonName][setName] = customsets[pokemon][moveset];
+			for (var i = 0; i < setdexes.length; i++) {
+				if (!setdexes[i][pokemonName]) setdexes[i][pokemonName] = {};
+				setdexes[i][pokemonName][setName] = customsets[pokemon][moveset];
+			}
 		}
 	}
 	writeCustomSets(normalizedCustomsets);
+}
+
+// Removes a set from the in-memory set lists (not from storage).
+function removeFromDex(pokemonName, setName) {
+	getAllSetdexes().forEach(function (setdex) {
+		if (setdex[pokemonName]) delete setdex[pokemonName][setName];
+	});
 }
 
 function addSets(pokes, name) {

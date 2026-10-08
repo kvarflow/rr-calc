@@ -34,6 +34,18 @@ function writeBoxLayout(layout, mode) {
 	localStorage.setItem(getBoxLayoutKey(mode), JSON.stringify(layout));
 }
 
+// Moves the given sets to the end of a section; takes effect on the next render.
+function moveSetsToSection(setIds, sectionKey) {
+	var layout = readBoxLayout();
+	BOX_SECTIONS.forEach(function (section) {
+		layout[section.key] = (layout[section.key] || []).filter(function (id) {
+			return setIds.indexOf(id) === -1;
+		});
+	});
+	layout[sectionKey] = layout[sectionKey].concat(setIds);
+	writeBoxLayout(layout);
+}
+
 function getSetId(pokemonName, setName) {
 	return pokemonName + " (" + setName + ")";
 }
