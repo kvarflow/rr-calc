@@ -53,7 +53,10 @@
         "getPageMode": false,
         "readCustomSets": false,
         "writeCustomSets": false,
-        "confirmModeSwitch": false
+        "confirmModeSwitch": false,
+        "calculateAllMoves": false,
+        "getPokemonName": false,
+        "getSpriteUrl": false
     },
     "extends": "eslint:recommended",
     "rules": {

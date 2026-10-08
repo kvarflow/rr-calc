@@ -613,3 +613,66 @@ table.field {
 .box-dialog-primary {
     font-weight: bold;
 }
+
+/* Matchup color coding (color_coding.js). Each half of the background is set separately
+   so the "you hit them" and "they hit you" results combine without extra classes. */
+.box-pokemon, .header-sprite, .cc-swatch {
+    --cc-left: transparent;
+    --cc-right: transparent;
+    background: linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
+}
+.cc-swatch {
+    border: 1px solid #888; /* replaced by the speed border on speed swatches */
+}
+.cc-speed-faster, .cc-speed-tie, .cc-speed-slower {
+    border: 3px solid;
+    border-radius: 20%;
+}
+.cc-speed-faster { border-color: #7ee1ff; }
+.cc-speed-tie { border-color: #894197; }
+.cc-speed-slower { border-color: #1c1414; }
+.cc-deal-always { --cc-left: #20d408; }
+.cc-deal-might { --cc-left: #daff08; }
+.cc-take-always { --cc-right: #dd0b0b; }
+.cc-take-might { --cc-right: #ff7f16; }
+.cc-wall { --cc-left: #0f0bf3; --cc-right: #0f0bf3; }
+.cc-hard-counter { --cc-left: #1295ec; --cc-right: #1295ec; }
+.header-sprite {
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+.header-sprite img {
+    max-height: 40px;
+    vertical-align: middle;
+}
+#cc-controls {
+    margin-top: 8px;
+    font-size: 0.9em;
+}
+#cc-controls .cc-when-shown, .cc-explanation {
+    display: none;
+}
+#cc-controls.cc-shown .cc-when-shown {
+    display: inline;
+}
+#cc-controls.cc-shown .cc-options {
+    display: block;
+    margin-top: 4px;
+}
+.cc-options label {
+    display: inline-block;
+    margin-right: 8px;
+}
+.cc-explanation ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 2px 0 6px;
+}
+.cc-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
