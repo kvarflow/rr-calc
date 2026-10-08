@@ -64,7 +64,11 @@
         "normalizeCalcText": false,
         "getSetId": false,
         "readBoxLayout": false,
-        "moveSetsToSection": false
+        "moveSetsToSection": false,
+        "splitSetId": false,
+        "removeCustomSet": false,
+        "deleteCustomSets": false,
+        "confirmClearCustomSets": false
     },
     "extends": "eslint:recommended",
     "rules": {

@@ -334,6 +334,52 @@ function removeFromDex(pokemonName, setName) {
 	});
 }
 
+// Splits a set id such as "Garchomp (Custom Set)" into its species and set name.
+function splitSetId(setId) {
+	var open = setId.indexOf(" (");
+	return {pokemonName: setId.substring(0, open), setName: setId.substring(open + 2, setId.lastIndexOf(")"))};
+}
+
+// Removes one set from a custom set object and from the in-memory set lists.
+function removeCustomSet(customsets, pokemonName, setName) {
+	// addToDex mirrors Aegislash-Blade sets onto Aegislash-Shield, so remove both.
+	var names = pokemonName === "Aegislash-Blade" ? [pokemonName, "Aegislash-Shield"] : [pokemonName];
+	names.forEach(function (name) {
+		if (!customsets[name]) return;
+		delete customsets[name][setName];
+		removeFromDex(name, setName);
+		if (!Object.keys(customsets[name]).length) delete customsets[name];
+	});
+}
+
+// Permanently deletes the given sets ("Species (Set Name)" ids) from this mode.
+function deleteCustomSets(setIds) {
+	var customsets = readCustomSets();
+	setIds.forEach(function (setId) {
+		var set = splitSetId(setId);
+		removeCustomSet(customsets, set.pokemonName, set.setName);
+	});
+	writeCustomSets(customsets);
+	if (!hasCustomSets(customsets)) $(allPokemon("#importedSetsOptions")).hide();
+}
+
+// Deletes every custom set in this mode, after asking. Returns whether it did.
+function confirmClearCustomSets() {
+	if (!confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
+		return false;
+	}
+	var customsets = readCustomSets();
+	var allIds = [];
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) allIds.push(pokemonName + " (" + setName + ")");
+	}
+	// Writes an empty set list rather than removing the key, so this mode does not fall
+	// back to the legacy shared sets on the next load.
+	deleteCustomSets(allIds);
+	loadDefaultLists();
+	return true;
+}
+
 function addSets(pokes, name) {
 	var rows = pokes.split("\n");
 	name = normalizeCalcText(name);
@@ -421,16 +467,7 @@ function checkExeptions(poke) {
 
 }
 
-$(allPokemon("#clearSets")).click(function () {
-	if (confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
-		// Store an empty set list rather than removing the key, so this mode does not
-		// fall back to the legacy shared sets on the next load.
-		writeCustomSets({});
-		alert("Custom Sets successfully cleared. Please refresh the page.");
-		$(allPokemon("#importedSetsOptions")).hide();
-		loadDefaultLists();
-	}
-});
+$(allPokemon("#clearSets")).click(confirmClearCustomSets);
 
 $(allPokemon("#importedSets")).click(function () {
 	var pokeID = $(this).parent().parent().prop("id");

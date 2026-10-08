@@ -11,7 +11,10 @@
 var BOX_SECTIONS = [
 	{key: "team", label: "Team"},
 	{key: "box", label: "Box"},
-	{key: "box2", label: "Box 2"}
+	{key: "box2", label: "Box 2"},
+	// Sets waiting to be deleted with "Delete Pokémon in Trash". They are not transferred
+	// to the other mode.
+	{key: "trash", label: "Trash"}
 ];
 // Sets not placed anywhere yet (e.g. freshly imported) go to this section.
 var DEFAULT_BOX_SECTION = "box";
@@ -101,7 +104,7 @@ function getSpriteUrl(pokemonName) {
 }
 
 function getPokemonName(setId) {
-	return setId.substring(0, setId.indexOf(" ("));
+	return splitSetId(setId).pokemonName;
 }
 
 function createBoxSprite(setId) {
@@ -126,6 +129,11 @@ function buildBoxPanel() {
 			.append($('<div class="box-dropzone"></div>').attr("data-section", section.key))
 			.appendTo(panel);
 	});
+	panel.find('.box-dropzone[data-section="trash"]').after(
+		'<div class="box-trash-buttons">' +
+		'<button type="button" id="box-delete-trash">Delete Pok&eacute;mon in Trash</button> ' +
+		'<button type="button" id="box-clear-all">Remove Pok&eacute;mon from all boxes</button>' +
+		'</div>');
 	panel.append('<div class="box-empty-hint">Imported sets appear here. Click a Pok&eacute;mon to load it as Pok&eacute;mon 1, or drag it between sections.</div>');
 	return panel;
 }
@@ -156,6 +164,17 @@ function saveBoxLayoutFromPage() {
 	writeBoxLayout(layout);
 }
 
+function deleteTrashedSets() {
+	var trashed = $('#box-panel .box-dropzone[data-section="trash"] .box-pokemon').map(function () {
+		return $(this).attr("data-set-id");
+	}).get();
+	if (!trashed.length) return;
+	var what = trashed.length === 1 ? trashed[0] : trashed.length + " Pok\u00e9mon";
+	if (confirm("Permanently delete " + what + " from the Trash? This cannot be undone.")) {
+		deleteCustomSets(trashed);
+	}
+}
+
 function loadSetIntoPokemon1(setId) {
 	var setSelector = $("#p1 input.set-selector");
 	setSelector.val(setId).change();
@@ -166,6 +185,8 @@ function bindBoxEvents() {
 	var panel = $("#box-panel");
 	var dragged = null;
 
+	$("#box-delete-trash").click(deleteTrashedSets);
+	$("#box-clear-all").click(confirmClearCustomSets);
 	panel.on("click", ".box-pokemon", function () {
 		loadSetIntoPokemon1($(this).attr("data-set-id"));
 	});
@@ -204,20 +225,26 @@ function bindBoxEvents() {
  * Copies the source mode's box into the target mode. Sets with the same species and
  * name are overwritten by the source copy; nothing is removed from either mode.
  */
+// Every set in a mode's box except those in the Trash.
+function getTransferableSetIds(mode) {
+	var layout = resolveBoxLayout(readCustomSets(mode), readBoxLayout(mode));
+	return [].concat(layout.team, layout.box, layout.box2);
+}
+
 function transferBox(fromMode, toMode) {
 	var source = readCustomSets(fromMode);
 	var target = readCustomSets(toMode);
-	for (var pokemonName in source) {
-		target[pokemonName] = target[pokemonName] || {};
-		for (var setName in source[pokemonName]) {
-			target[pokemonName][setName] = source[pokemonName][setName];
-		}
-	}
+	var transferred = getTransferableSetIds(fromMode);
+	transferred.forEach(function (setId) {
+		var set = splitSetId(setId);
+		target[set.pokemonName] = target[set.pokemonName] || {};
+		target[set.pokemonName][set.setName] = source[set.pokemonName][set.setName];
+	});
 	writeCustomSets(target, toMode);
 
 	var sourceLayout = resolveBoxLayout(source, readBoxLayout(fromMode));
+	sourceLayout.trash = [];
 	var targetLayout = readBoxLayout(toMode);
-	var transferred = getSetIds(source);
 	BOX_SECTIONS.forEach(function (section) {
 		// Transferred sets take the section they had in the source box.
 		var kept = (targetLayout[section.key] || []).filter(function (id) {
@@ -239,7 +266,7 @@ function closeBoxTransferDialog() {
  * box. Neither choice deletes anything: both boxes stay stored per mode.
  */
 function confirmModeSwitch(fromMode, toMode, proceed, cancel) {
-	var fromSets = getSetIds(readCustomSets(fromMode));
+	var fromSets = getTransferableSetIds(fromMode);
 	if (!BOX_TRANSFER_MODES[fromMode] || !BOX_TRANSFER_MODES[toMode] || !fromSets.length) {
 		proceed();
 		return;

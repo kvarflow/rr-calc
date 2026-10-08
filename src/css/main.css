@@ -676,3 +676,13 @@ table.field {
     vertical-align: middle;
     box-sizing: border-box;
 }
+.box-dropzone[data-section="trash"] {
+    border-color: #c0392b;
+}
+.box-trash-buttons {
+    margin-top: 4px;
+}
+.box-trash-buttons button:hover {
+    background: #722323;
+    color: #fff;
+}

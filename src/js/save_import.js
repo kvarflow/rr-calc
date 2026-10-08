@@ -286,18 +286,14 @@ function toCustomSet(mon) {
 /*
  * Replaces the sets from any earlier .sav import in this mode with the save's current
  * contents. Sets imported as text are left alone. The party goes to the Team section;
- * boxed Pokémon go to the Box unless the user already moved that set to Box 2.
+ * boxed Pokémon go to the Box unless the user already moved that set to Box 2 or Trash.
  */
 function importSaveIntoBox(save) {
 	var customsets = readCustomSets();
 	for (var pokemonName in customsets) {
 		for (var setName in customsets[pokemonName]) {
-			if (customsets[pokemonName][setName].fromSave) {
-				delete customsets[pokemonName][setName];
-				removeFromDex(pokemonName, setName);
-			}
+			if (customsets[pokemonName][setName].fromSave) removeCustomSet(customsets, pokemonName, setName);
 		}
-		if (!Object.keys(customsets[pokemonName]).length) delete customsets[pokemonName];
 	}
 
 	var addSaveMons = function (mons) {
@@ -311,10 +307,11 @@ function importSaveIntoBox(save) {
 	};
 	var partyIds = addSaveMons(save.party);
 	var boxIds = addSaveMons(save.boxes);
-	var box2 = readBoxLayout().box2 || [];
+	var layout = readBoxLayout();
+	var userPlaced = (layout.box2 || []).concat(layout.trash || []);
 	moveSetsToSection(partyIds, "team");
 	moveSetsToSection(boxIds.filter(function (id) {
-		return box2.indexOf(id) === -1;
+		return userPlaced.indexOf(id) === -1;
 	}), "box");
 	updateDex(customsets);
 	$(allPokemon("#importedSetsOptions")).css("display", "inline");
