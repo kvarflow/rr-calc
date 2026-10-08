@@ -163,3 +163,7 @@ input.select2-input {
     */
     background: url('../js/vendor/select2/select2.png') no-repeat 100% -22px, var(--background);
 }
+
+.box-dialog {
+    background: var(--fieldset-color);
+}

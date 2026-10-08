@@ -49,7 +49,11 @@
         "loadDefaultLists": false,
         "pokedex": true,
         "createField": false,
-        "createPokemon": false
+        "createPokemon": false,
+        "getPageMode": false,
+        "readCustomSets": false,
+        "writeCustomSets": false,
+        "confirmModeSwitch": false
     },
     "extends": "eslint:recommended",
     "rules": {

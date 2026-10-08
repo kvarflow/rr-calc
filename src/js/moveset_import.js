@@ -1,3 +1,40 @@
+/*
+ * Imported sets ("custom sets") are the contents of the Team/Box panel. They are stored
+ * per calculator mode under `customsets:<mode>` so that Normal and Hardcore keep separate
+ * boxes. Older versions kept a single shared `customsets` key: a mode with nothing stored
+ * yet starts from that legacy key, which is left untouched so every mode can inherit it.
+ */
+var LEGACY_CUSTOM_SETS_KEY = "customsets";
+
+// The mode this page was served as. Read from the HTML attribute rather than the live
+// `checked` property, which changes as soon as the user clicks another mode.
+function getPageMode() {
+	return $("input.mode[checked]").attr("id");
+}
+
+function getCustomSetsKey(mode) {
+	return "customsets:" + (mode || getPageMode());
+}
+
+function readCustomSets(mode) {
+	var stored = localStorage.getItem(getCustomSetsKey(mode));
+	if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
+	try {
+		return stored ? JSON.parse(stored) : {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function writeCustomSets(customsets, mode) {
+	localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	$(document).trigger("customsets:changed");
+}
+
+function hasCustomSets(customsets) {
+	return Object.keys(customsets).length > 0;
+}
+
 function placeBsBtn() {
 	var importBtn = "<button id='import' class='bs-btn bs-btn-default'>Import</button>";
 	$("#import-1_wrapper").append(importBtn);
@@ -253,12 +290,7 @@ function addToDex(poke) {
 	dexObject.nature = poke.nature;
 	dexObject.item = poke.item;
 	dexObject.isCustomSet = poke.isCustomSet;
-	var customsets;
-	if (localStorage.customsets) {
-		customsets = JSON.parse(localStorage.customsets);
-	} else {
-		customsets = {};
-	}
+	var customsets = readCustomSets();
 	if (!customsets[poke.name]) {
 		customsets[poke.name] = {};
 	}
@@ -300,7 +332,7 @@ function updateDex(customsets) {
 			SETDEX_RBY[pokemonName][setName] = customsets[pokemon][moveset];
 		}
 	}
-	localStorage.customsets = JSON.stringify(normalizedCustomsets);
+	writeCustomSets(normalizedCustomsets);
 }
 
 function addSets(pokes, name) {
@@ -391,8 +423,10 @@ function checkExeptions(poke) {
 }
 
 $(allPokemon("#clearSets")).click(function () {
-	if (confirm("Are you sure you want to delete your custom sets? This action cannot be undone.")) {
-		localStorage.removeItem("customsets");
+	if (confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
+		// Store an empty set list rather than removing the key, so this mode does not
+		// fall back to the legacy shared sets on the next load.
+		writeCustomSets({});
 		alert("Custom Sets successfully cleared. Please refresh the page.");
 		$(allPokemon("#importedSetsOptions")).hide();
 		loadDefaultLists();
@@ -410,10 +444,9 @@ $(allPokemon("#importedSets")).click(function () {
 });
 
 $(document).ready(function () {
-	var customSets;
+	var customSets = readCustomSets();
 	placeBsBtn();
-	if (localStorage.customsets) {
-		customSets = JSON.parse(localStorage.customsets);
+	if (hasCustomSets(customSets)) {
 		updateDex(customSets);
 		$(allPokemon("#importedSetsOptions")).css("display", "inline");
 	} else {

@@ -528,3 +528,88 @@ table.field {
 .extraSetMoves {
     width: 100%;
 }
+
+/* Team/Box panel (box_controls.js) */
+#box-panel {
+    float: none; /* stack above Pokémon 1 instead of floating beside it */
+    width: 32em; /* same width as .poke-info */
+    margin-bottom: 10px;
+}
+.box-section-label {
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-top: 4px;
+}
+.box-dropzone {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 44px;
+    padding: 2px;
+    border: 1px dashed #aaa;
+    border-radius: 4px;
+}
+.box-dropzone.box-drag-over {
+    background: rgba(26, 188, 156, 0.2);
+}
+.box-pokemon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 4px;
+}
+.box-pokemon:hover {
+    outline: 2px solid #1abc9c;
+}
+.box-pokemon img {
+    max-width: 48px;
+    max-height: 48px;
+    pointer-events: none; /* keep the wrapper as the drag/drop target */
+}
+.box-pokemon-name {
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.box-empty-hint {
+    font-size: 0.85em;
+    font-style: italic;
+    margin-top: 4px;
+}
+
+/* Mode switch dialog asking whether to transfer the box */
+.box-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+.box-dialog {
+    max-width: 420px;
+    padding: 16px 20px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.box-dialog h3 {
+    margin-top: 0;
+}
+.box-dialog-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.box-dialog-buttons button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.box-dialog-primary {
+    font-weight: bold;
+}

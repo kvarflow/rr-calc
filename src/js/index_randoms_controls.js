@@ -163,9 +163,24 @@ function calculateAllMoves(gen, p1, p1field, p2, p2field) {
 }
 
 $(".mode").change(function () {
+	var fromMode = getPageMode();
+	var toMode = $(this).attr("id");
+	var navigate = function () {
+		navigateToMode(toMode);
+	};
+	// The box (box_controls.js) is not loaded on every page, e.g. Random Battles.
+	if (typeof confirmModeSwitch === "function") {
+		confirmModeSwitch(fromMode, toMode, navigate, function () {
+			$("#" + fromMode).prop("checked", true);
+		});
+	} else {
+		navigate();
+	}
+});
+
+function navigateToMode(mode) {
 	var params = new URLSearchParams(window.location.search);
-	params.set('mode', $(this).attr("id"));
-	var mode = params.get('mode');
+	params.set('mode', mode);
 	if (mode === 'randoms') {
 		window.location.replace('randoms' + linkExtension + '?' + params);
 	} else if (mode === 'one-vs-one') {
@@ -179,7 +194,7 @@ $(".mode").change(function () {
 	} else {
 		window.location.replace('honkalculate' + linkExtension + '?' + params);
 	}
-});
+}
 
 $(".notation").change(function () {
 	performCalculations();
