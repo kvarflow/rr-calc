@@ -558,15 +558,15 @@ table.field {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 34px;
+    min-height: 27px;
     border-radius: 4px;
 }
 .box-dropzone.box-drag-over {
     background: rgba(26, 188, 156, 0.2);
 }
 .pokemon-sprite {
-    width: 44px;
-    height: 34px;
+    width: 34px;
+    height: 27px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -579,10 +579,9 @@ table.field {
     outline: 2px solid #1abc9c;
 }
 .pokemon-sprite img {
-    /* The sprites are 40x30 icons: show them at their own size, kept sharp. */
-    width: 40px;
-    height: 30px;
-    image-rendering: pixelated;
+    /* The sprites are 40x30 icons, shown at 3/4 size. */
+    width: 30px;
+    height: 23px;
     flex-shrink: 0;
     pointer-events: none; /* keep the wrapper as the drag/drop target */
 }
@@ -675,8 +674,7 @@ table.field {
     box-sizing: border-box;
 }
 .header-sprite img {
-    max-height: 40px;
-    image-rendering: pixelated;
+    max-height: 23px;
     vertical-align: middle;
 }
 #cc-controls {
@@ -729,7 +727,7 @@ table.field {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 34px;
+    min-height: 27px;
     margin-bottom: 6px;
 }
 .trainer-pokemon-active {
@@ -748,11 +746,9 @@ table.field {
     overflow: hidden;
 }
 #reset-trainer img {
-    /* Oak is 42x64: fit his height to the button rather than squashing him. */
-    height: 30px;
-    width: auto;
-    image-rendering: pixelated;
-    vertical-align: middle;
+    width: 40px;
+    height: 40px;
+    margin: -3px;
 }
 #trainer-effect {
     font-size: 0.85em;
