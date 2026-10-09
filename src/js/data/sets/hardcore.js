@@ -20,7 +20,7 @@ var SETDEX_SV = {
     "Gentleman Thomas": {"nature":"Careful","ability":"Rivalry","level":26,"moves":["Crunch","Hyper Voice","Incinerate","Overheat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Squirtle": {
-    "*Rival Blue": {"nature":"Adamant","ability":"Torrent","level":16,"item":"Oran Berry","moves":["Aqua Jet","Curse","Power-Up Punch","Rock Tomb"]},
+    "*Rival Blue": {"nature":"Adamant","ability":"Torrent","level":16,"item":"Oran Berry","moves":["Aqua Jet","Curse","Power-Up Punch","Rock Tomb"],"evs":{"hp":252,"at":252,"sd":4}},
     "Rival Blue": {"nature":"Modest","ability":"Torrent","level":5,"moves":["Hydro Pump","Iron Defense","Rain Dance","Skull Bash"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}}
   },
   "Trumbeak": {
@@ -411,7 +411,7 @@ var SETDEX_SV = {
   },
   "Mabosstiff": {
     "Gentleman Arthur": {"nature":"Quiet","ability":"Intimidate","level":26,"moves":["Double-Edge","Jaw Lock","Reversal","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "*Camper Ethan": {"nature":"Adamant","ability":"Intimidate","level":26,"item":"Black Glasses","moves":["Trailblaze","Bite","Fire Fang","Ice Fang"]}
+    "*Camper Ethan": {"nature":"Bashful","ability":"Intimidate","level":26,"item":"Black Glasses","moves":["Trailblaze","Bite","Fire Fang","Ice Fang"]}
   },
   "Salandit": {
     "*Camper Ethan": {"nature":"Timid","ability":"Corrosion","level":26,"item":"Black Sludge","moves":["Incinerate","Protect","Substitute","Toxic"]}
@@ -453,7 +453,7 @@ var SETDEX_SV = {
     "*Lass Ali": {"nature":"Modest","ability":"Refrigerate","level":26,"item":"Chople Berry","moves":["Ancient Power","Mud Shot","Round","Water Pulse"]}
   },
   "Brionne": {
-    "*Lass Ali": {"nature":"Bashful","ability":"Liquid Voice","level":26,"item":"Sitrus Berry","moves":["Round","Draining Kiss","Icy Wind","Aqua Jet"]}
+    "*Lass Ali": {"nature":"Modest","ability":"Liquid Voice","level":26,"item":"Sitrus Berry","moves":["Round","Draining Kiss","Icy Wind","Aqua Jet"]}
   },
   "Vivillon": {
     "Bug Catcher Brent": {"nature":"Naughty","ability":"Compound Eyes","level":29,"moves":["Bug Buzz","Hurricane","Quiver Dance","Safeguard"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
@@ -1036,7 +1036,7 @@ var SETDEX_SV = {
     "*Picnicker Caitlin": {"nature":"Jolly","ability":"Contrary","level":36,"item":"Choice Scarf","moves":["Assist"]}
   },
   "Sneasel-Hisui": {
-    "*Picnicker Caitlin": {"nature":"Bashful","ability":"Inner Focus","level":35,"item":"Eviolite","moves":["Assist"]}
+    "*Picnicker Caitlin": {"nature":"Jolly","ability":"Inner Focus","level":35,"item":"Eviolite","moves":["Assist"]}
   },
   "Liepard": {
     "*Picnicker Caitlin": {"nature":"Adamant","ability":"Prankster","level":35,"item":"Focus Sash","moves":["Assist"]},
@@ -1999,7 +1999,7 @@ var SETDEX_SV = {
     "*PkMn Trainer Sam": {"nature":"Naive","ability":"Electric Surge","level":59,"item":"Focus Sash","moves":["Grass Knot","Play Rough","Thunderbolt","Volt Switch"]}
   },
   "Vaporeon": {
-    "*PkMn Trainer Sam": {"nature":"Timid","ability":"Water Absorb","level":59,"item":"Eevium Z","moves":["Last Resort","Surf","Ice Beam","Hidden Power Psychic"],"ivs":{"at":30,"sa":30}},
+    "*PkMn Trainer Sam": {"nature":"Timid","ability":"Water Absorb","level":59,"item":"Eevium Z","moves":["Last Resort","Surf","Ice Beam","Hidden Power Grass"],"ivs":{"at":30,"sa":30}},
     "*SwimmerF Tisha": {"nature":"Modest","ability":"Hydration","level":100,"item":"Leftovers","moves":["Acid Armor","Ice Beam","Rest","Scald"],"ivs":{"at":0}},
     "Sis And Bro Lia & Luc": {"nature":"Sassy","ability":"Water Absorb","level":64,"moves":["Haze","Hydro Pump","Last Resort","Muddy Water"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },

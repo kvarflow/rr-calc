@@ -1841,8 +1841,8 @@ var TRAINER_ORDER = [
      "Garchomp (*Elite Four Lance)",
      "Melmetal (*Elite Four Lance)",
      "Iron Jugulis (*Elite Four Lance)",
-     "Dragonite (*Elite Four Lance Set 2)",
-     "Dialga-Primal (*Elite Four Lance Set 2)",
+     "Dragonite (*Elite Four Lance Set 1)",
+     "Dialga-Primal (*Elite Four Lance Set 1)",
      "Salamence-Mega (*Elite Four Lance)"
     ]
    }
@@ -1873,7 +1873,7 @@ var TRAINER_ORDER = [
      "Pheromosa (Champion Blue)",
      "Metagross-Mega (Champion Blue)",
      "Miraidon (Champion Blue Set 1)",
-     "Yveltal (Champion Blue Set 1)",
+     "Yveltal (Champion Blue Set 2)",
      "Eternatus (Champion Blue)",
      "Ditto (Champion Blue)"
     ]

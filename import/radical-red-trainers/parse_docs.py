@@ -6,7 +6,7 @@ The documents' "Trainer Order" sheet lists every boss fight in order, each name 
 its team block on another sheet. A block has the trainer in column C and up to six Pokémon
 in columns E, J, O, T, Y and AD: species, level, (2 blank rows), nature, ability, item, four
 moves, then a BASE STATS table whose EVs sit three columns to the right, and the Pokémon's
-in-game Speed stat. Fights with several possible teams repeat the block, each under a note such as
+in-game Speed stat (most Hardcore blocks have no EVs column). Fights with several possible teams repeat the block, each under a note such as
 "(!) IF RIVAL HAS SQUIRTLE" or "(!) RAIN TEAM"; a "BATTLE EFFECT: DOUBLES" line may sit
 above a block too.
 """
@@ -35,14 +35,16 @@ def parse_team(ws, header_row):
         if not is_text(species):
             continue
         stats_row = next((r for r in range(header_row + 8, header_row + 16) if value(ws, r, col) == 'BASE STATS'), None)
-        evs = {}
-        if stats_row:
+        # Most Hardcore blocks have no EVs column: their EVs are not documented (None), not zero.
+        evs = {} if stats_row and value(ws, stats_row, col + 3) == 'EVs' else None
+        if evs is not None:
             for i, stat in enumerate(STATS):
                 ev = value(ws, stats_row + 1 + i, col + 3)
                 if isinstance(ev, (int, float)) and ev:
                     evs[stat] = int(ev)
         moves = [value(ws, header_row + k, col) for k in range(7, 11)]
         team.append({
+            'cell': f"{ws.title}!{ws.cell(row=header_row, column=col).coordinate}",  # the species cell
             'species': species.strip(),
             'level': value(ws, header_row + 1, col),  # a number, or relative text like "Highest Lv -3"
             'nature': value(ws, header_row + 4, col),

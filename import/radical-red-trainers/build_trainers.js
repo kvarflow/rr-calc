@@ -138,7 +138,7 @@ function speedIvsFitting(doc) {
 	if (typeof doc.speed !== 'number' || doc.level === null || !SPECIES[doc.species]) return [];
 	const fits = [];
 	for (let iv = 0; iv <= 31; iv++) {
-		if (speedStat(SPECIES[doc.species].bs.sp, iv, doc.evs.sp || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
+		if (speedStat(SPECIES[doc.species].bs.sp, iv, (doc.evs && doc.evs.sp) || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
 	}
 	return fits;
 }
@@ -163,8 +163,9 @@ function applyDocument(doc, set, species) {
 	if (doc.item) set.item = doc.item;
 	else delete set.item;
 	set.moves = doc.moves.slice();
-	if (Object.keys(doc.evs).length) set.evs = Object.assign({}, doc.evs);
-	else delete set.evs;
+	// EVs the document does not give (no EVs column) are left as they are.
+	if (doc.evs && Object.keys(doc.evs).length) set.evs = Object.assign({}, doc.evs);
+	else if (doc.evs) delete set.evs;
 	const fits = speedIvsFitting(doc);
 	if (fits.length && fits.indexOf(calcSpeedIv(set)) === -1) {
 		set.ivs = Object.assign({}, set.ivs, {sp: fits.indexOf(31) !== -1 ? 31 : fits[fits.length - 1]});
@@ -209,7 +210,7 @@ function compare(doc, set) {
 	const calcMoves = (set.moves || []).filter(m => m && m !== '(No Move)').sort();
 	if (doc.moves.slice().sort().join() !== calcMoves.join()) add('Moves', doc.moves.join(', '), calcMoves.join(', '));
 	const calcEvs = set.evs || {};
-	if (STATS.some(s => (doc.evs[s] || 0) !== (calcEvs[s] || 0))) {
+	if (doc.evs && STATS.some(s => (doc.evs[s] || 0) !== (calcEvs[s] || 0))) {
 		const fmt = evs => STATS.filter(s => evs[s]).map(s => evs[s] + ' ' + s).join(' / ') || 'none';
 		add('EVs', fmt(doc.evs), fmt(calcEvs));
 	}
@@ -231,6 +232,11 @@ function matchDocument(documented, setdex) {
 	const properNouns = {};
 	Object.keys(SPECIES).concat(documented.map(t => t.name.split(' ').pop())).forEach(n => { properNouns[toKey(n)] = true; });
 	const stats = {checked: 0, withDiffs: 0, notFound: 0, applied: 0};
+	// The documented values each set was matched to. Two fights with different values
+	// (Lance's two teams) need two sets, or applying the documents would overwrite one
+	// with the other.
+	const claims = {};
+	const valuesKey = m => JSON.stringify([m.level, m.nature, m.abilities, m.item, m.moves.slice().sort(), m.evs]);
 
 	const trainersOf = m => {
 		const names = [];
@@ -256,7 +262,7 @@ function matchDocument(documented, setdex) {
 			const team = v.team.map(documentedMon);
 			// "Omni-boosted + 252 HP EVs": EVs given by the battle effect rather than the team block.
 			const effectHpEvs = /(\d+) HP EVs/i.exec(v.battleEffect || '');
-			if (effectHpEvs) team.forEach(m => { m.evs.hp = parseInt(effectHpEvs[1], 10); });
+			if (effectHpEvs) team.forEach(m => { m.evs = Object.assign({}, m.evs, {hp: parseInt(effectHpEvs[1], 10)}); });
 			// The trainer: the set name (without " Set N") shared by most of the team's species.
 			const trainers = [mostCommonTrainer(team, t.name)];
 			// Double battles ("Ann & Brooks") store each partner's Pokémon under their own name:
@@ -273,11 +279,14 @@ function matchDocument(documented, setdex) {
 				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
 					if (trainers.indexOf(trainerOf(n)) !== -1 && !used[sp + ' (' + n + ')']) candidates.push({species: sp, name: n});
 				}));
+				const key = valuesKey(m);
 				const score = c => {
 					const s = setdex[c.species][c.name];
+					const claimed = claims[c.species + ' (' + c.name + ')'];
 					const shared = m.moves.filter(mv => (s.moves || []).indexOf(mv) !== -1).length;
 					return shared * 10 + (s.level === m.level ? 5 : 0) + (s.nature === m.nature ? 2 : 0) +
-						((s.item || '') === m.item ? 2 : 0) + (c.species === m.species ? 3 : 0);
+						((s.item || '') === m.item ? 2 : 0) + (c.species === m.species ? 3 : 0) -
+						(claimed && claimed !== key ? 1000 : 0);
 				};
 				// A team can repeat a species (four Shedinja), but the calc keeps one set per
 				// species per trainer, so fall back to reusing that set.
@@ -290,6 +299,7 @@ function matchDocument(documented, setdex) {
 				}
 				const setId = best.species + ' (' + best.name + ')';
 				used[setId] = true;
+				if (!claims[setId]) claims[setId] = key;
 				reuse[m.species] = best;
 				m.species = best.species;
 				const set = setdex[best.species][best.name];

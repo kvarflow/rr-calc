@@ -1476,7 +1476,7 @@ var TRAINER_ORDER = [
      "Meowscarada (*Leader Erika)",
      "Serperior (*Leader Erika)",
      "Hawlucha (*Leader Erika)",
-     "Kartana (Leader Erika)",
+     "Kartana (*Leader Erika)",
      "Magearna (*Leader Erika)",
      "Ampharos-Mega (*Leader Erika)"
     ]
