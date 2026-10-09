@@ -235,8 +235,8 @@ function deleteTrashedSets() {
 
 // Loads a set into Pokémon 1 or 2 (`side` is "#p1" or "#p2").
 function loadSetIntoPokemon(side, setId) {
-	$(side + " input.set-selector").val(setId).change();
 	$(side + " .select2-chosen").text(setId);
+	$(side + " input.set-selector").val(setId).change();
 }
 
 function bindBoxEvents() {

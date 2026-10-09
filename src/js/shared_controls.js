@@ -857,7 +857,8 @@ $(".teraToggle").change(function () {
 $(".forme").change(function () {
 	var altForme = pokedex[$(this).val()],
 		container = $(this).closest(".info-group").siblings(),
-		fullSetName = container.find(".select2-chosen").first().text(),
+		// The selector's value, not its displayed text: that may still show the previous set.
+		fullSetName = $(this).closest(".poke-info").find("input.set-selector").val() || "",
 		pokemonName = fullSetName.substring(0, fullSetName.indexOf(" (")),
 		setName = fullSetName.substring(fullSetName.indexOf("(") + 1, fullSetName.lastIndexOf(")"));
 
@@ -977,7 +978,8 @@ function createPokemon(pokeInfo) {
 		var pokemonMoves = [];
 		for (var i = 0; i < 4; i++) {
 			var moveName = moveNames[i];
-			pokemonMoves.push(new calc.Move(gen, moves[moveName] ? moveName : "(No Move)", {ability: ability, item: item}));
+			// The set's ability and item decide multi-hit counts (Skill Link, Loaded Dice).
+			pokemonMoves.push(new calc.Move(gen, moves[moveName] ? moveName : "(No Move)", {ability: set.ability, item: set.item}));
 		}
 
 		if (isRandoms) {

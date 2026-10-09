@@ -23,10 +23,10 @@ var MATCHUP_CLASSES = [
 function summarizeDamage(results, defender) {
 	var summary = {alwaysOHKO: false, mightOHKO: false, bestMaxPercent: 0};
 	results.forEach(function (result) {
+		// For multi-hit moves the range already adds up every hit.
 		var range = result.range();
-		var hits = result.move.hits || 1;
-		var minPercent = range[0] * hits / defender.stats.hp * 100;
-		var maxPercent = range[1] * hits / defender.stats.hp * 100;
+		var minPercent = range[0] / defender.stats.hp * 100;
+		var maxPercent = range[1] / defender.stats.hp * 100;
 		summary.alwaysOHKO = summary.alwaysOHKO || minPercent >= 100;
 		summary.mightOHKO = summary.mightOHKO || maxPercent >= 100;
 		summary.bestMaxPercent = Math.max(summary.bestMaxPercent, maxPercent);

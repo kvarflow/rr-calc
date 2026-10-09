@@ -258,7 +258,7 @@ function performCalculationsOM() {
 		// so the attacker is p1, defender is p2
 		result.rawDesc.attackerName = p1.name;
 		result.rawDesc.defenderName = p2.name;
-		maxDamage = result.range()[1] * p1.moves[i].hits;
+		maxDamage = result.range()[1]; // already every hit of a multi-hit move
 		if (!zProtectAlerted && maxDamage > 0 && p1.item.indexOf(" Z") === -1 && p1field.defenderSide.isProtected && p1.moves[i].isZ) {
 			alert('Although only possible while hacking, Z-Moves fully damage through protect without a Z-Crystal');
 			zProtectAlerted = true;
@@ -283,7 +283,7 @@ function performCalculationsOM() {
 		// so the attacker is p2, defender is p1
 		result.rawDesc.attackerName = p2.name;
 		result.rawDesc.defenderName = p1.name;
-		maxDamage = result.range()[1] * p2.moves[i].hits;
+		maxDamage = result.range()[1];
 		if (!zProtectAlerted && maxDamage > 0 && p2.item.indexOf(" Z") === -1 && p2field.defenderSide.isProtected && p2.moves[i].isZ) {
 			alert('Although only possible while hacking, Z-Moves fully damage through protect without a Z-Crystal');
 			zProtectAlerted = true;
