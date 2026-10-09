@@ -562,7 +562,7 @@ var SETDEX_SV = {
     "Beauty Grace": {"nature":"Impish","ability":"Competitive","level":58,"moves":["Alluring Voice","Covet","Lovely Kiss","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Cramorant": {
-    "*Bird Keeper Jacob": {"nature":"Timid","ability":"Gulp Missile","level":66,"item":"Focus Sash","moves":["Surf","U-turn","Air Slash","Safeguard"]},
+    "*Bird Keeper Jacob": {"nature":"Timid","ability":"Gulp Missile","level":66,"item":"Focus Sash","moves":["Hurricane","Ice Beam","Roost","Surf"],"evs":{"df":4,"sp":252,"sa":252}},
     "Fisherman Nolan": {"nature":"Modest","ability":"Gulp Missile","level":64,"moves":["Amnesia","Drill Peck","Hydro Pump","Surf"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Bird Keeper Carter": {"nature":"Mild","ability":"Gulp Missile","level":56,"moves":["Amnesia","Drill Peck","Hydro Pump","Surf"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Sailor Trevor": {"nature":"Timid","ability":"Gulp Missile","level":23,"item":"Focus Sash","moves":["Air Slash","Safeguard","Surf","U-turn"]}
@@ -584,7 +584,7 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"nature":"Lonely","ability":"Rivalry","level":47,"moves":["Body Slam","Chip Away","Earth Power","Sludge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
     "*Sailor Trevor": {"nature":"Timid","ability":"Sheer Force","level":23,"moves":["Reflect","Scorching Sands","Sludge","Surf"]},
     "Cool Couple Ray & Tyra": {"nature":"Modest","ability":"Sheer Force","level":85,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Bomb"],"evs":{"hp":252,"sp":6,"sa":252}},
-    "*Bird Keeper Jacob": {"nature":"Timid","ability":"Sheer Force","level":63,"moves":["Thunder","Earth Power","Sludge Wave","Bubble Beam"],"item":"Life Orb","evs":{"hp":252,"sa":252,"sd":4}}
+    "*Bird Keeper Jacob": {"nature":"Timid","ability":"Sheer Force","level":63,"item":"Life Orb","moves":["Bubble Beam","Earth Power","Sludge Wave","Thunder"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Lileep": {
     "Hiker Lenny": {"nature":"Brave","ability":"Suction Cups","level":31,"moves":["Spit Up","Stockpile","Swallow","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
@@ -1600,8 +1600,8 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"nature":"Hardy","ability":"Pressure","level":49,"moves":["Brave Bird","Drill Peck","Iron Defense","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Marowak-Alola": {
-    "Angry Ghost": {"nature":"Jolly","ability":"Bone Zone","level":58,"item":"Thick Club","moves":["Bonemerang","Fire Punch","Shadow Bone","Thunder Punch"],"evs":{"hp":252,"at":252,"df":252,"sp":252,"sa":252,"sd":252}},
-    "Team Rocket Grunt": {"nature":"Jolly","ability":"Bone Zone","level":58,"moves":["Bonemerang","Shadow Bone","Fire Punch","Thunder Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15},"item":"Thick Club","evs":{"hp":252,"at":252,"df":252,"sd":252,"sp":252}}
+    "Angry Ghost": {"nature":"Jolly","ability":"Bone Zone","level":58,"item":"Thick Club","moves":["Bonemerang","Shadow Bone","Fire Punch","Thunder Punch"],"evs":{"hp":252,"at":252,"df":252,"sd":252,"sp":252}},
+    "Team Rocket Grunt": {"nature":"Naive","ability":"Rock Head","level":46,"moves":["Bone Rush","Endeavor","Flare Blitz","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Gliscor": {
     "*Bird Keeper Sebastian": {"nature":"Jolly","ability":"Poison Heal","level":64,"item":"Toxic Orb","moves":["Dual Wingbeat","Earthquake","Stealth Rock","U-turn"],"evs":{"hp":252,"at":4,"sp":252}},
@@ -1830,7 +1830,7 @@ var SETDEX_SV = {
     "*Leader Clair": {"nature":"Naive","ability":"Dragon's Maw","level":100,"item":"Appletunite","moves":["Dragon Energy","Energy Ball","Sucker Punch","U-turn"],"evs":{"at":4,"sp":252,"sa":252}}
   },
   "Farfetch’d": {
-    "*PkMn Trainer Sam": {"nature":"Jolly","ability":"Sharpness","level":57,"item":"Leek Stick","moves":["Brave Bird","Leaf Blade","Night Slash","Sacred Sword"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*PkMn Trainer Sam": {"nature":"Jolly","ability":"Sharpness","level":57,"item":"Leek","moves":["Brave Bird","Sacred Sword","Leaf Blade","Night Slash"],"evs":{"hp":6,"at":252,"sp":252}},
     "Bird Keeper Donald": {"nature":"Hardy","ability":"Frisk","level":58,"moves":["Drill Peck","False Swipe","Sacred Sword","Swords Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Dodrio": {

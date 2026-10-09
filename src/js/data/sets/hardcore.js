@@ -1741,7 +1741,7 @@ var SETDEX_SV = {
   "Marowak-Alola": {
     "*PkMn Trainer Brendan": {"nature":"Adamant","ability":"Bone Zone","level":82,"item":"Thick Club","moves":["Bonemerang","Fire Punch","Shadow Bone","Swords Dance"]},
     "Angry Ghost": {"nature":"Jolly","ability":"Bone Zone","level":58,"item":"Thick Club","moves":["Bonemerang","Fire Punch","Shadow Bone","Thunder Punch"],"evs":{"hp":252}},
-    "Team Rocket Grunt": {"nature":"Jolly","ability":"Bone Zone","level":58,"moves":["Bonemerang","Shadow Bone","Fire Punch","Thunder Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":31,"sa":15,"sd":15},"item":"Thick Club"}
+    "Team Rocket Grunt": {"nature":"Naive","ability":"Rock Head","level":46,"moves":["Bone Rush","Endeavor","Flare Blitz","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Gliscor": {
     "*Rival Blue": {"nature":"Jolly","ability":"Poison Heal","level":82,"item":"Toxic Orb","moves":["Earthquake","Facade","Protect","Swords Dance"]},

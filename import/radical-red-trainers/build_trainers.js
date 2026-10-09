@@ -239,10 +239,12 @@ function matchDocument(documented, setdex) {
 		}));
 		return names;
 	};
-	const mostCommonTrainer = mons => {
+	// Ties (two trainers with sets for the same species) go to the one the fight is named after.
+	const mostCommonTrainer = (mons, fightName) => {
 		const votes = {};
 		mons.forEach(m => trainersOf(m).forEach(n => { votes[n] = (votes[n] || 0) + 1; }));
-		return Object.keys(votes).sort((a, b) => votes[b] - votes[a])[0];
+		const named = n => toKey(fightName).indexOf(toKey(n.split(' ').pop())) !== -1 ? 1 : 0;
+		return Object.keys(votes).sort((a, b) => votes[b] - votes[a] || named(b) - named(a))[0];
 	};
 
 	const order = documented.map(t => ({
@@ -252,13 +254,16 @@ function matchDocument(documented, setdex) {
 		optional: t.optional,
 		variants: t.variants.map((v, vi) => {
 			const team = v.team.map(documentedMon);
+			// "Omni-boosted + 252 HP EVs": EVs given by the battle effect rather than the team block.
+			const effectHpEvs = /(\d+) HP EVs/i.exec(v.battleEffect || '');
+			if (effectHpEvs) team.forEach(m => { m.evs.hp = parseInt(effectHpEvs[1], 10); });
 			// The trainer: the set name (without " Set N") shared by most of the team's species.
-			const trainers = [mostCommonTrainer(team)];
+			const trainers = [mostCommonTrainer(team, t.name)];
 			// Double battles ("Ann & Brooks") store each partner's Pokémon under their own name:
 			// the partner is the trainer shared by the Pokémon the first one does not have.
 			if (/&/.test(t.name)) {
 				const rest = team.filter(m => trainersOf(m).indexOf(trainers[0]) === -1);
-				if (rest.length) trainers.push(mostCommonTrainer(rest));
+				if (rest.length) trainers.push(mostCommonTrainer(rest, t.name));
 			}
 			const used = {};
 			const reuse = {};

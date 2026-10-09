@@ -359,8 +359,8 @@ var TRAINER_ORDER = [
      "Lileep (*Sailor Edmond)",
      "Lumineon (*Sailor Edmond)",
      "Tatsugiri (*Sailor Edmond)",
-     "Cramorant (*Bird Keeper Jacob)",
-     "Nidoqueen (*Bird Keeper Jacob)"
+     "Cramorant (*Sailor Trevor)",
+     "Nidoqueen (*Sailor Trevor)"
     ]
    }
   ]
@@ -617,7 +617,7 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Omni-boosted",
     "sets": [
-     "Marowak-Alola (Team Rocket Grunt)"
+     "Marowak-Alola (Angry Ghost)"
     ]
    }
   ]
@@ -1091,7 +1091,7 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Permanent rain",
     "sets": [
-     "Cramorant-Gorging (*Bird Keeper Jacob)",
+     "Cramorant (*Bird Keeper Jacob)",
      "Decidueye (*Bird Keeper Jacob)",
      "Mantine (*Bird Keeper Jacob)",
      "Nidoqueen (*Bird Keeper Jacob)"

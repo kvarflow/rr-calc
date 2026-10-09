@@ -752,7 +752,7 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Omni-boosted + 252 HP EVs + Stats cannot be reduced + Safeguard",
     "sets": [
-     "Marowak-Alola (Team Rocket Grunt)"
+     "Marowak-Alola (Angry Ghost)"
     ]
    }
   ]
