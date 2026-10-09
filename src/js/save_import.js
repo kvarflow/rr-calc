@@ -33,6 +33,13 @@ var RAW_REGION_FILE_OFFSET = 0x1E000;
 var RAW_REGION_SECTOR_DATA = 0xFF0;
 var RAW_BOXES_REGION_OFFSET = 0xB0C;
 var RAW_BOXES = 3;
+// CFRU's extra event flags (ids from 0x900) are stored in the spare bytes after
+// section 0's data, then continue in the spare bytes after section 4's.
+var EXTRA_FLAG_AREAS = [{section: 0, start: 0xF24, size: 0xCC}, {section: 4, start: 0xD98, size: 0x258}];
+var FIRST_EXTRA_FLAG = 0x900;
+// Flags set when a new game starts with Minimal Grinding on, as documented by RadicalHex.
+// Hardcore mode always turns Minimal Grinding on as well.
+var MINIMAL_GRINDING_FLAGS = [0x1032, 0x1040];
 
 var SAVE_NATURES = ["Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax",
 	"Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash",
@@ -207,8 +214,20 @@ function decodeSaveMon(bytes, offset, isParty) {
 	};
 }
 
+function readExtraFlag(bytes, sections, flagId) {
+	var byteIndex = (flagId - FIRST_EXTRA_FLAG) >> 3;
+	for (var i = 0; i < EXTRA_FLAG_AREAS.length; i++) {
+		var area = EXTRA_FLAG_AREAS[i];
+		if (byteIndex < area.size) {
+			return ((bytes[sections[area.section] + area.start + byteIndex] >> (flagId & 7)) & 1) === 1;
+		}
+		byteIndex -= area.size;
+	}
+	return false;
+}
+
 /*
- * Returns {party: [mon], boxes: [mon]} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], minimalGrinding: bool} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -217,7 +236,13 @@ function parseRadicalRedSave(bytes) {
 	var sections = findSaveSections(bytes, view);
 	if (!sections) return null;
 
-	var result = {party: [], boxes: []};
+	var result = {
+		party: [],
+		boxes: [],
+		minimalGrinding: MINIMAL_GRINDING_FLAGS.some(function (flagId) {
+			return readExtraFlag(bytes, sections, flagId);
+		})
+	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
 	for (var i = 0; i < partyCount; i++) {
@@ -326,7 +351,8 @@ function handleSaveFile(file) {
 			return;
 		}
 		importSaveIntoBox(save);
-		alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pokémon from " + file.name + ".");
+		alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pokémon from " + file.name + "." +
+			"\nMinimal Grinding: " + (save.minimalGrinding ? "on" : "off") + ".");
 	};
 	reader.readAsArrayBuffer(file);
 }
