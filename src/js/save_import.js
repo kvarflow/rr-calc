@@ -33,13 +33,6 @@ var RAW_REGION_FILE_OFFSET = 0x1E000;
 var RAW_REGION_SECTOR_DATA = 0xFF0;
 var RAW_BOXES_REGION_OFFSET = 0xB0C;
 var RAW_BOXES = 3;
-// CFRU's extra event flags (ids from 0x900) are stored in the spare bytes after
-// section 0's data, then continue in the spare bytes after section 4's.
-var EXTRA_FLAG_AREAS = [{section: 0, start: 0xF24, size: 0xCC}, {section: 4, start: 0xD98, size: 0x258}];
-var FIRST_EXTRA_FLAG = 0x900;
-// Flags set when a new game starts with Minimal Grinding on, as documented by RadicalHex.
-// Hardcore mode always turns Minimal Grinding on as well.
-var MINIMAL_GRINDING_FLAGS = [0x1032, 0x1040];
 
 var SAVE_NATURES = ["Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax",
 	"Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash",
@@ -214,20 +207,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 	};
 }
 
-function readExtraFlag(bytes, sections, flagId) {
-	var byteIndex = (flagId - FIRST_EXTRA_FLAG) >> 3;
-	for (var i = 0; i < EXTRA_FLAG_AREAS.length; i++) {
-		var area = EXTRA_FLAG_AREAS[i];
-		if (byteIndex < area.size) {
-			return ((bytes[sections[area.section] + area.start + byteIndex] >> (flagId & 7)) & 1) === 1;
-		}
-		byteIndex -= area.size;
-	}
-	return false;
-}
-
 /*
- * Returns {party: [mon], boxes: [mon], minimalGrinding: bool} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon]} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -236,13 +217,7 @@ function parseRadicalRedSave(bytes) {
 	var sections = findSaveSections(bytes, view);
 	if (!sections) return null;
 
-	var result = {
-		party: [],
-		boxes: [],
-		minimalGrinding: MINIMAL_GRINDING_FLAGS.some(function (flagId) {
-			return readExtraFlag(bytes, sections, flagId);
-		})
-	};
+	var result = {party: [], boxes: []};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
 	for (var i = 0; i < partyCount; i++) {
@@ -342,19 +317,95 @@ function importSaveIntoBox(save) {
 	$(allPokemon("#importedSetsOptions")).css("display", "inline");
 }
 
+var SAVE_MODE_LABELS = {normal: "Normal Mode", hardcore: "Hardcore Mode"};
+// Carries a parsed save to the other mode's page when the user chooses to switch.
+var PENDING_SAVE_IMPORT_KEY = "pendingSaveImport";
+
+// Minimal Grinding keeps every IV at 31, so a save counts as Minimal Grinding when every
+// Pokémon in it has perfect IVs.
+function isMinimalGrindingSave(save) {
+	var mons = save.party.concat(save.boxes);
+	return mons.length > 0 && mons.every(function (mon) {
+		return Object.keys(mon.ivs).every(function (stat) {
+			return mon.ivs[stat] === 31;
+		});
+	});
+}
+
+// Hardcore always turns Minimal Grinding on, so a save without it is a Normal save. A
+// Minimal Grinding save can be Hardcore or Normal, which the save does not tell apart yet.
+function getSaveMode(save) {
+	return isMinimalGrindingSave(save) ? null : "normal";
+}
+
+function importSaveAndReport(save, fileName) {
+	importSaveIntoBox(save);
+	alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
+		(isMinimalGrindingSave(save) ?
+			"\nMinimal Grinding is on (a Hardcore save, or Normal with Minimal Grinding)." :
+			"\nThis is a Normal Mode save (Minimal Grinding is off)."));
+}
+
+function importSaveInMode(save, fileName, mode) {
+	try {
+		sessionStorage.setItem(PENDING_SAVE_IMPORT_KEY, JSON.stringify({save: save, fileName: fileName}));
+	} catch (e) {
+		alert("Could not switch modes with the save loaded. Switch to " + SAVE_MODE_LABELS[mode] + " and import it there.");
+		return;
+	}
+	navigateToMode(mode);
+}
+
+// Imports into this mode, or first asks to switch when the save belongs to another mode.
+function importSave(save, fileName) {
+	var saveMode = getSaveMode(save);
+	if (!saveMode || saveMode === getPageMode()) {
+		importSaveAndReport(save, fileName);
+		return;
+	}
+	var modeLabel = SAVE_MODE_LABELS[saveMode];
+	showChoiceDialog(
+		"This is a " + modeLabel + " save",
+		"Switch to " + modeLabel + " and import there?",
+		[{
+			label: "Switch to " + modeLabel,
+			primary: true,
+			action: function () {
+				importSaveInMode(save, fileName, saveMode);
+			}
+		}, {
+			label: "Import here anyway",
+			action: function () {
+				importSaveAndReport(save, fileName);
+			}
+		}]);
+}
+
 function handleSaveFile(file) {
 	var reader = new FileReader();
 	reader.onload = function () {
 		var save = parseRadicalRedSave(new Uint8Array(reader.result));
 		if (!save) {
-			alert("Could not read " + file.name + ". Please choose a Pokémon Radical Red 4.1 .sav file.");
+			alert("Could not read " + file.name + ". Please choose a Pok\u00e9mon Radical Red 4.1 .sav file.");
 			return;
 		}
-		importSaveIntoBox(save);
-		alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pokémon from " + file.name + "." +
-			"\nMinimal Grinding: " + (save.minimalGrinding ? "on" : "off") + ".");
+		importSave(save, file.name);
 	};
 	reader.readAsArrayBuffer(file);
+}
+
+// Finishes an import started on another mode's page (see importSaveInMode).
+function importPendingSave() {
+	var pending;
+	try {
+		pending = sessionStorage.getItem(PENDING_SAVE_IMPORT_KEY);
+		sessionStorage.removeItem(PENDING_SAVE_IMPORT_KEY);
+	} catch (e) {
+		return;
+	}
+	if (!pending) return;
+	pending = JSON.parse(pending);
+	importSaveAndReport(pending.save, pending.fileName);
 }
 
 $(document).ready(function () {
@@ -369,4 +420,5 @@ $(document).ready(function () {
 		this.value = "";
 	});
 	$("#import-1_wrapper").append(button, fileInput);
+	importPendingSave();
 });

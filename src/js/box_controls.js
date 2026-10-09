@@ -314,9 +314,40 @@ function transferBox(fromMode, toMode) {
 	writeBoxLayout(targetLayout, toMode);
 }
 
-function closeBoxTransferDialog() {
-	$("#box-transfer-dialog").remove();
-	$(document).off("keydown.boxTransfer");
+/*
+ * Shows a modal with a title, a message and a column of choices, plus Cancel (also on
+ * Escape). `choices` is [{label, action, primary}]; the dialog closes before any action
+ * runs. Used instead of confirm() because these questions have more than two answers.
+ */
+function showChoiceDialog(title, message, choices, onCancel) {
+	var dialog = $('<div class="box-dialog-backdrop"><div class="box-dialog" role="dialog" aria-modal="true" aria-labelledby="box-dialog-title"></div></div>');
+	var body = dialog.find(".box-dialog");
+	$('<h3 id="box-dialog-title"></h3>').text(title).appendTo(body);
+	$("<p></p>").text(message).appendTo(body);
+	var buttons = $('<div class="box-dialog-buttons"></div>').appendTo(body);
+	var close = function () {
+		dialog.remove();
+		$(document).off("keydown.boxDialog");
+	};
+	var cancel = function () {
+		close();
+		if (onCancel) onCancel();
+	};
+	choices.concat([{label: "Cancel", action: cancel}]).forEach(function (choice) {
+		$('<button type="button"></button>')
+			.text(choice.label)
+			.toggleClass("box-dialog-primary", !!choice.primary)
+			.click(function () {
+				close();
+				choice.action();
+			})
+			.appendTo(buttons);
+	});
+	$(document).on("keydown.boxDialog", function (ev) {
+		if (ev.key === "Escape") cancel();
+	});
+	$("body").append(dialog);
+	buttons.find("button").first().focus();
 }
 
 /*
@@ -333,43 +364,22 @@ function confirmModeSwitch(fromMode, toMode, proceed, cancel) {
 	var toCount = getSetIds(readCustomSets(toMode)).length;
 	var fromLabel = BOX_TRANSFER_MODES[fromMode];
 	var toLabel = BOX_TRANSFER_MODES[toMode];
-	var dialog = $('<div id="box-transfer-dialog" class="box-dialog-backdrop"><div class="box-dialog" role="dialog" aria-modal="true" aria-labelledby="box-transfer-title"></div></div>');
-	var body = dialog.find(".box-dialog");
-	$('<h3 id="box-transfer-title"></h3>').text("Switching to " + toLabel).appendTo(body);
-	$("<p></p>").text("Do you want to transfer your box (" + fromSets.length + " Pokémon) to " + toLabel +
-		", or keep the two boxes separate? Your " + fromLabel + " box is kept either way, so it will still be here when you switch back.")
-		.appendTo(body);
-	var buttons = $('<div class="box-dialog-buttons"></div>').appendTo(body);
-	$('<button type="button" class="box-dialog-primary"></button>')
-		.text("Transfer box to " + toLabel)
-		.click(function () {
-			transferBox(fromMode, toMode);
-			closeBoxTransferDialog();
-			proceed();
-		})
-		.appendTo(buttons);
-	$('<button type="button"></button>')
-		.text(toCount ? "Use " + toLabel + "'s own box (" + toCount + " Pokémon)" : "Start fresh")
-		.click(function () {
-			closeBoxTransferDialog();
-			proceed();
-		})
-		.appendTo(buttons);
-	$('<button type="button"></button>')
-		.text("Cancel")
-		.click(function () {
-			closeBoxTransferDialog();
-			cancel();
-		})
-		.appendTo(buttons);
-	$(document).on("keydown.boxTransfer", function (ev) {
-		if (ev.key === "Escape") {
-			closeBoxTransferDialog();
-			cancel();
-		}
-	});
-	$("body").append(dialog);
-	buttons.find("button").first().focus();
+	showChoiceDialog(
+		"Switching to " + toLabel,
+		"Do you want to transfer your box (" + fromSets.length + " Pok\u00e9mon) to " + toLabel +
+			", or keep the two boxes separate? Your " + fromLabel + " box is kept either way, so it will still be here when you switch back.",
+		[{
+			label: "Transfer box to " + toLabel,
+			primary: true,
+			action: function () {
+				transferBox(fromMode, toMode);
+				proceed();
+			}
+		}, {
+			label: toCount ? "Use " + toLabel + "'s own box (" + toCount + " Pok\u00e9mon)" : "Start fresh",
+			action: proceed
+		}],
+		cancel);
 }
 
 $(document).ready(function () {

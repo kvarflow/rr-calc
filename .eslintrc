@@ -68,7 +68,9 @@
         "splitSetId": false,
         "removeCustomSet": false,
         "deleteCustomSets": false,
-        "confirmClearCustomSets": false
+        "confirmClearCustomSets": false,
+        "showChoiceDialog": false,
+        "navigateToMode": false
     },
     "extends": "eslint:recommended",
     "rules": {
