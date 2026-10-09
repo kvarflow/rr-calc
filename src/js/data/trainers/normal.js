@@ -1091,7 +1091,7 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Permanent rain",
     "sets": [
-     "Cramorant (*Bird Keeper Jacob)",
+     "Cramorant-Gorging (*Bird Keeper Jacob)",
      "Decidueye (*Bird Keeper Jacob)",
      "Mantine (*Bird Keeper Jacob)",
      "Nidoqueen (*Bird Keeper Jacob)"
@@ -1540,6 +1540,7 @@ var TRAINER_ORDER = [
      "Shiftry (*Burglar Anson)",
      "Okidogi (*Burglar Anson)",
      "Munkidori (*Burglar Anson)",
+     "Scream Tail (*Burglar Anson)",
      "Persian (*Burglar Anson)"
     ]
    }
@@ -1840,8 +1841,8 @@ var TRAINER_ORDER = [
      "Garchomp (*Elite Four Lance)",
      "Melmetal (*Elite Four Lance)",
      "Iron Jugulis (*Elite Four Lance)",
-     "Dragonite (*Elite Four Lance Set 1)",
-     "Dialga-Primal (*Elite Four Lance Set 1)",
+     "Dragonite (*Elite Four Lance Set 2)",
+     "Dialga-Primal (*Elite Four Lance Set 2)",
      "Salamence-Mega (*Elite Four Lance)"
     ]
    }

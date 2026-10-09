@@ -1889,6 +1889,7 @@ var TRAINER_ORDER = [
      "Shiftry (*Burglar Anson)",
      "Okidogi (*Burglar Anson)",
      "Munkidori (*Burglar Anson)",
+     "Scream Tail (*Burglar Anson)",
      "Persian (*Burglar Anson)"
     ]
    }
