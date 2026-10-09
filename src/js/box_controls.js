@@ -103,18 +103,22 @@ function getPokemonName(setId) {
 	return splitSetId(setId).pokemonName;
 }
 
-function createBoxSprite(setId) {
+// A clickable sprite for a set, used by the box and the opposing trainer's team.
+function createPokemonSprite(setId) {
 	var pokemonName = getPokemonName(setId);
-	var sprite = $('<div class="box-pokemon" draggable="true"></div>')
-		.attr({title: setId, "data-set-id": setId});
+	var sprite = $('<div class="pokemon-sprite"></div>').attr({title: setId, "data-set-id": setId});
 	$("<img />")
 		.attr({src: getSpriteUrl(pokemonName), alt: pokemonName})
 		.on("error", function () {
 			// Radical Red-only formes have no Showdown sprite: show the name instead.
-			$(this).replaceWith($('<span class="box-pokemon-name"></span>').text(pokemonName));
+			$(this).replaceWith($('<span class="pokemon-sprite-name"></span>').text(pokemonName));
 		})
 		.appendTo(sprite);
 	return sprite;
+}
+
+function createBoxSprite(setId) {
+	return createPokemonSprite(setId).addClass("box-pokemon").attr("draggable", "true");
 }
 
 // Layout follows syl-rnb-calc: a Team/Box panel (with a search box in its header) and,
@@ -177,7 +181,7 @@ function placeBoxPanel(onTop) {
 // Hides box sprites whose set name does not contain the search text.
 function filterBox() {
 	var term = ($("#box-search").val() || "").trim().toLowerCase();
-	$(".box-pokemon").each(function () {
+	$("#box-panel .box-pokemon, #box-tools .box-pokemon").each(function () {
 		$(this).toggle(!term || $(this).attr("data-set-id").toLowerCase().indexOf(term) !== -1);
 	});
 }
@@ -220,10 +224,10 @@ function deleteTrashedSets() {
 	}
 }
 
-function loadSetIntoPokemon1(setId) {
-	var setSelector = $("#p1 input.set-selector");
-	setSelector.val(setId).change();
-	$("#p1 .select2-chosen").text(setId);
+// Loads a set into Pokémon 1 or 2 (`side` is "#p1" or "#p2").
+function loadSetIntoPokemon(side, setId) {
+	$(side + " input.set-selector").val(setId).change();
+	$(side + " .select2-chosen").text(setId);
 }
 
 function bindBoxEvents() {
@@ -243,7 +247,7 @@ function bindBoxEvents() {
 		placeBoxPanel(this.checked);
 	});
 	panel.on("click", ".box-pokemon", function () {
-		loadSetIntoPokemon1($(this).attr("data-set-id"));
+		loadSetIntoPokemon("#p1", $(this).attr("data-set-id"));
 	});
 	panel.on("dragstart", ".box-pokemon", function (ev) {
 		dragged = $(this);

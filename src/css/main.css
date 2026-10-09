@@ -564,7 +564,7 @@ table.field {
 .box-dropzone.box-drag-over {
     background: rgba(26, 188, 156, 0.2);
 }
-.box-pokemon {
+.pokemon-sprite {
     width: 46px;
     height: 40px;
     display: flex;
@@ -575,17 +575,17 @@ table.field {
     box-sizing: border-box;
     border-radius: 20%;
 }
-.box-pokemon:hover {
+.pokemon-sprite:hover {
     outline: 2px solid #1abc9c;
 }
-.box-pokemon img {
+.pokemon-sprite img {
     /* Showdown's sprites have wide margins, so draw them larger and crop to the slot. */
     width: 64px;
     height: 64px;
     flex-shrink: 0;
     pointer-events: none; /* keep the wrapper as the drag/drop target */
 }
-.box-pokemon-name {
+.pokemon-sprite-name {
     font-size: 9px;
     line-height: 1.1;
     text-align: center;
@@ -706,4 +706,52 @@ table.field {
     height: 14px;
     vertical-align: middle;
     box-sizing: border-box;
+}
+
+/* Opposing trainer panel under Pokémon 2 (trainer_controls.js) */
+#trainer-nav {
+    float: none;
+    clear: both;
+    width: 32em; /* same width as .poke-info */
+}
+.trainer-heading {
+    margin-bottom: 4px;
+}
+#trainer-details {
+    font-size: 0.85em;
+}
+#trainer-variant {
+    margin-bottom: 4px;
+}
+.trainer-team {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 40px;
+    margin-bottom: 6px;
+}
+.trainer-pokemon-active {
+    outline: 2px solid #1abc9c;
+}
+.trainer-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+#reset-trainer {
+    margin-left: auto; /* sits at the right, like syl-rnb-calc's reset button */
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    overflow: hidden;
+}
+#reset-trainer img {
+    width: 40px;
+    height: 40px;
+    margin: -3px;
+}
+#trainer-effect {
+    font-size: 0.85em;
+    font-style: italic;
+    margin-bottom: 4px;
 }

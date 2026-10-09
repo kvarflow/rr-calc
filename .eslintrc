@@ -70,7 +70,10 @@
         "deleteCustomSets": false,
         "confirmClearCustomSets": false,
         "showChoiceDialog": false,
-        "navigateToMode": false
+        "navigateToMode": false,
+        "TRAINER_ORDER": false,
+        "loadSetIntoPokemon": false,
+        "createPokemonSprite": false
     },
     "extends": "eslint:recommended",
     "rules": {
