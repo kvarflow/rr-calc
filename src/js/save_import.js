@@ -398,14 +398,12 @@ function handleSaveFile(file) {
 function importPendingSave() {
 	var pending;
 	try {
-		pending = sessionStorage.getItem(PENDING_SAVE_IMPORT_KEY);
+		pending = JSON.parse(sessionStorage.getItem(PENDING_SAVE_IMPORT_KEY));
 		sessionStorage.removeItem(PENDING_SAVE_IMPORT_KEY);
 	} catch (e) {
-		return;
+		return; // storage unavailable or unreadable: nothing to finish
 	}
-	if (!pending) return;
-	pending = JSON.parse(pending);
-	importSaveAndReport(pending.save, pending.fileName);
+	if (pending) importSaveAndReport(pending.save, pending.fileName);
 }
 
 $(document).ready(function () {

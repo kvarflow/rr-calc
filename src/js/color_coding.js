@@ -104,6 +104,23 @@ function clearColorCoding() {
 	$("#box-panel .box-pokemon, #p1-header-sprite").removeClass(MATCHUP_CLASSES);
 }
 
+/*
+ * Recolors after the inputs change. One change (e.g. picking a set) fires dozens of input
+ * events, and each recolor runs 8 damage calcs per Pokémon, so the events are merged into
+ * one recolor that runs after the calc's own handlers have updated the inputs.
+ */
+var colorRefreshPending = false;
+
+function scheduleColorRefresh() {
+	if (colorRefreshPending) return;
+	colorRefreshPending = true;
+	setTimeout(function () {
+		colorRefreshPending = false;
+		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
+		colorCodeHeader();
+	}, 0);
+}
+
 function updatePokemon1HeaderSprite() {
 	var setId = $("#p1 input.set-selector").val() || "";
 	var pokemonName = setId.indexOf(" (") === -1 ? setId : getPokemonName(setId);
@@ -172,17 +189,8 @@ function bindColorCodingEvents() {
 	$("#cc-speed-border, #cc-ohko-color").change(refreshColorCoding);
 	$("#cc-mon-header").change(colorCodeHeader);
 
-	// Run after the calc's own handlers so the inputs are already up to date.
-	$(document).on("change keyup", ".calc-trigger", function () {
-		setTimeout(function () {
-			if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
-			colorCodeHeader();
-		}, 0);
-	});
-	$("#p1 input.set-selector").change(function () {
-		updatePokemon1HeaderSprite();
-		setTimeout(colorCodeHeader, 0);
-	});
+	$(document).on("change keyup", ".calc-trigger", scheduleColorRefresh);
+	$("#p1 input.set-selector").change(updatePokemon1HeaderSprite);
 	$(document).on("box:rendered", function () {
 		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
 	});

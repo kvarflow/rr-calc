@@ -49,10 +49,6 @@ function moveSetsToSection(setIds, sectionKey) {
 	writeBoxLayout(layout);
 }
 
-function getSetId(pokemonName, setName) {
-	return pokemonName + " (" + setName + ")";
-}
-
 function getSetIds(customsets) {
 	var ids = [];
 	for (var pokemonName in customsets) {
@@ -70,7 +66,7 @@ function getSetIds(customsets) {
 
 /*
  * Assigns every stored set to a section, keeping the saved order and dropping saved
- * entries whose set no longer exists. Returns {team: [ids], box: [ids], box2: [ids]}.
+ * entries whose set no longer exists. Returns {sectionKey: [set ids]} for every section.
  */
 function resolveBoxLayout(customsets, savedLayout) {
 	var remaining = {};
@@ -280,16 +276,16 @@ function bindBoxEvents() {
 	});
 }
 
-/*
- * Copies the source mode's box into the target mode. Sets with the same species and
- * name are overwritten by the source copy; nothing is removed from either mode.
- */
 // Every set in a mode's box except those in the Trash.
 function getTransferableSetIds(mode) {
 	var layout = resolveBoxLayout(readCustomSets(mode), readBoxLayout(mode));
 	return [].concat(layout.team, layout.box, layout.box2);
 }
 
+/*
+ * Copies the source mode's box (minus the Trash) into the target mode. Sets with the same
+ * species and name are overwritten by the source copy; nothing is removed from either mode.
+ */
 function transferBox(fromMode, toMode) {
 	var source = readCustomSets(fromMode);
 	var target = readCustomSets(toMode);
