@@ -15,81 +15,41 @@
  *    rate, needed to turn a boxed Pokémon's EXP into a level.
  *
  * ROM names are truncated to fit the game's text boxes (e.g. "BrightPowder"), so every
- * name is matched to the calc's spelling by id (letters and digits only), then through
- * the aliases below. Names the calc does not know are dropped for moves and items, and
- * kept as-is for abilities.
+ * name is matched to the calc's spelling by rom-names.js. Names the calc does not know
+ * are dropped for moves and items, and kept as-is for abilities.
  */
 
 const fs = require('fs');
 const path = require('path');
-const calc = require('../calc/dist/index.js');
+const {calc, toKey, resolve} = require('./rom-names');
 
 const OUTPUT = path.resolve(__dirname, '../src/js/data/radical_red_save_data.js');
-
-const ITEM_ALIASES = {
-	'Charzardite X': 'Charizardite X',
-	'Charzardite Y': 'Charizardite Y',
-	'Blastoisnite': 'Blastoisinite',
-	'Kangaskanite': 'Kangaskhanite',
-	'Aerodactlite': 'Aerodactylite',
-	'Houndoomnite': 'Houndoominite',
-	'Electr Memory': 'Electric Memory',
-	'Necrozium Z': 'Ultranecrozium Z',
-	'Alorichium Z': 'Aloraichium Z',
-	'Mimikium Z Z': 'Mimikium Z',
-	'Pikshunium Z': 'Pikashunium Z',
-	'Adrenal Orb': 'Adrenaline Orb',
-};
-const ABILITY_ALIASES = {
-	'Neutralize Gas': 'Neutralizing Gas',
-	'Wandering Soul': 'Wandering Spirit',
-	'Electromrphosis': 'Electromorphosis',
-	'Alchemic Power': 'Power of Alchemy',
-};
-// "As One" is two different abilities in the calc, one per Calyrex forme.
-const AS_ONE_BY_SPECIES = {
-	'Calyrex-Ice': 'As One (Glastrier)',
-	'Calyrex-Shadow': 'As One (Spectrier)',
-};
-
-function toKey(name) {
-	return calc.toID(name.normalize('NFD').replace(/[̀-ͯ]/g, ''));
-}
-
-function indexByKey(names) {
-	const index = {};
-	for (const name of names) index[toKey(name)] = name;
-	return index;
-}
 
 function readLines(file) {
 	return fs.readFileSync(file, 'utf8').split('\n').map(line => line.trim());
 }
 
 // Returns [unused id 0, name of id 1, name of id 2, ...] resolved to calc names.
-function resolveTable(romNames, calcIndex, aliases) {
-	return [''].concat(romNames.map(name => calcIndex[toKey(aliases[name] || name)] || ''));
+function resolveTable(kind, romNames) {
+	return [''].concat(romNames.map(name => resolve(kind, name) || ''));
 }
 
 function main(exporterDir, pokeapiDir) {
-	const speciesIndex = indexByKey(Object.keys(calc.SPECIES[9]));
 	const romSpecies = readLines(path.join(exporterDir, 'Species.txt'));
 	// Formes the calc lacks (Unown letters) fall back to their base species.
 	const species = [''].concat(romSpecies.map(name =>
-		speciesIndex[toKey(name)] || speciesIndex[toKey(name.split('-')[0])] || ''));
+		resolve('species', name) || resolve('species', name.split('-')[0]) || ''));
 
-	const moves = resolveTable(readLines(path.join(exporterDir, 'Moves.txt')), indexByKey(Object.keys(calc.MOVES[9])), {});
-	const items = resolveTable(readLines(path.join(exporterDir, 'Items.txt')), indexByKey(calc.ITEMS[9]), ITEM_ALIASES);
+	const moves = resolveTable('move', readLines(path.join(exporterDir, 'Moves.txt')));
+	const items = resolveTable('item', readLines(path.join(exporterDir, 'Items.txt')));
 
-	const abilityIndex = indexByKey(calc.ABILITIES[9]);
 	const abilitiesByKey = {};
 	for (const row of readLines(path.join(exporterDir, 'species_abilities.csv')).slice(1)) {
 		if (!row) continue;
 		const [name, ...slots] = row.split(',').map(cell => cell.trim());
 		abilitiesByKey[toKey(name)] = slots.map(ability => {
 			if (!ability) return '';
-			if (ability === 'As One') return AS_ONE_BY_SPECIES[name] || ability;
-			return abilityIndex[toKey(ABILITY_ALIASES[ability] || ability)] || ability;
+			return resolve('ability', ability, name) || ability;
 		});
 	}
 	// The CSV spells some names differently (e.g. apostrophes), so match by key.

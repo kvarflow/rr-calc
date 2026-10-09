@@ -3,10 +3,15 @@
 /*
  * Builds src/js/data/trainers/<mode>.js, the boss order used by the Previous / Next trainer
  * buttons, and a report of where the calc's trainer sets differ from the boss document.
+ * With --apply it first corrects src/js/data/sets/<mode>.js: the boss documents are the
+ * source of truth, so every documented Pokémon's set takes the document's level (when it
+ * is a number), nature, ability, item, moves and EVs, and a Speed IV that reproduces the
+ * documented Speed stat. Names the calc cannot read anywhere in the file ("Drain Kiss",
+ * "Charzardite X", species "Screamtail") are corrected to the calc's spelling too.
  *
  * Usage (after `node build`, so calc/dist exists):
  *   python3 parse_docs.py "<Default Mode Bosses>.xlsx" normal.json
- *   node build_trainers.js normal normal.json normal-report.md
+ *   node build_trainers.js normal normal.json normal-report.md [--apply]
  * and the same with "hardcore" and the Hardcore Mode Bosses document.
  *
  * The documents only cover bosses and give many levels relative to the player ("Highest
@@ -18,47 +23,37 @@
 
 const fs = require('fs');
 const path = require('path');
-const calc = require('../../calc/dist/index.js');
+const {calc, toKey, resolve, MOVE_NAMES, ITEM_NAMES, ABILITY_NAMES} = require('../rom-names');
 
-const [mode, docPath, reportPath] = process.argv.slice(2);
+const args = process.argv.slice(2);
+const APPLY = args.indexOf('--apply') !== -1;
+const [mode, docPath, reportPath] = args.filter(a => a !== '--apply');
 const ROOT = path.resolve(__dirname, '../..');
+const SETS_FILE = path.join(ROOT, 'src/js/data/sets', mode + '.js');
 const SPECIES = calc.SPECIES[9];
-const MOVE_NAMES = Object.keys(calc.MOVES[9]);
-const ITEM_NAMES = calc.ITEMS[9];
-const ABILITY_NAMES = calc.ABILITIES[9];
+const STATS = ['hp', 'at', 'df', 'sa', 'sd', 'sp'];
 
 function loadSetdex() {
-	const source = fs.readFileSync(path.join(ROOT, 'src/js/data/sets', mode + '.js'), 'utf8');
-	return new Function(source + '; return SETDEX_SV;')();
+	return new Function(fs.readFileSync(SETS_FILE, 'utf8') + '; return SETDEX_SV;')();
 }
 
-const toKey = s => calc.toID(String(s).normalize('NFD').replace(/[̀-ͯ]/g, ''));
+// Writes the sets in the file's existing layout: one line per set.
+function writeSetdex(setdex) {
+	fs.writeFileSync(SETS_FILE, 'var SETDEX_SV = {\n' + Object.keys(setdex).map(species =>
+		'  ' + JSON.stringify(species) + ': {\n' + Object.keys(setdex[species]).map(name =>
+			'    ' + JSON.stringify(name) + ': ' + JSON.stringify(setdex[species][name])).join(',\n') + '\n  }'
+	).join(',\n') + '\n};\n');
+}
+
 const titleCase = s => String(s || '').toLowerCase().replace(/(^|[\s.&(-])(\w)/g, (m, p, c) => p + c.toUpperCase());
-
-// Resolves a document name to the calc's spelling. Words ending in "." are abbreviations
-// ("Disarm. Voice", "Terrain Extend."); otherwise names are compared letters-and-digits only.
-function resolveName(name, names) {
-	if (!name) return '';
-	name = String(name).trim().replace(/^HP (\w+)$/, 'Hidden Power $1');
-	const exact = names.find(n => toKey(n) === toKey(name));
-	if (exact) return exact;
-	const words = name.split(/\s+/);
-	const matches = names.filter(n => {
-		const nameWords = n.split(/\s+/);
-		return nameWords.length === words.length && words.every((w, i) =>
-			w.endsWith('.') ? toKey(nameWords[i]).startsWith(toKey(w)) : toKey(nameWords[i]) === toKey(w));
-	});
-	return matches.length === 1 ? matches[0] : name;
-}
 
 // Document species use short forme names: "Geodude-A" (Alola), "Darmanitan-GZ" (Galar-Zen),
 // "Charizard-MegaX", "Kyogre-P" (Primal). Picks the calc forme those letters fit best.
-const speciesByKey = {};
-Object.keys(SPECIES).forEach(n => { speciesByKey[toKey(n)] = n; });
 function resolveSpecies(name) {
-	if (speciesByKey[toKey(name)]) return speciesByKey[toKey(name)];
+	const exact = resolve('species', name);
+	if (exact) return exact;
 	const dash = name.indexOf('-');
-	const base = dash > 0 && speciesByKey[toKey(name.slice(0, dash))];
+	const base = dash > 0 && resolve('species', name.slice(0, dash));
 	if (!base) return null;
 	const abbr = toKey(name.slice(dash + 1));
 	const fit = forme => {
@@ -76,11 +71,23 @@ function resolveSpecies(name) {
 	return best ? best.name : base; // e.g. "Landorus-I(ncarnate)" is the base forme
 }
 
+// Every forme of a species ("Rotom" -> Rotom, Rotom-Fan, Rotom-Frost, ...). Short document
+// names can be ambiguous ("Rotom-F", "Ursaluna-BM"), so matching looks at all of them.
+function formesOf(species) {
+	const base = (SPECIES[species] && SPECIES[species].baseSpecies) || species;
+	return Object.keys(SPECIES).filter(n => n === base || n.startsWith(base + '-'));
+}
+
 // The trainer a set belongs to, without the " Set 2" suffix the calc adds for repeat fights
 // or the "*" it puts in front of some bosses.
+const trainerOf = setName => setName.replace(/ Set \d+$/, '').replace(/^\*/, '');
+
+// "(!) IF RIVAL HAS SQUIRTLE" -> "Rival Has Squirtle", "(!) RAIN TEAM" -> "Rain Team".
+const variantLabel = (note, index) => note ? titleCase(note.replace(/^(\(!\)\s*)?(if\s+)?/i, '')) : 'Team ' + (index + 1);
+
 // Battle effects are written in capitals ("DOUBLES WITH PARTNER LANCE + PERMANENT RAIN").
 // Shown in sentence case per clause, keeping Pokémon and trainer names capitalised.
-// Trainer names that are also ordinary words in battle effects ("Max HP", "Misty terrain").
+// Trainer names that are also ordinary words in battle effects ("Max HP", "Misty terrain"):
 const NOT_PROPER_NOUNS = ['max', 'misty'];
 const ACRONYMS = {hp: 'HP', evs: 'EVs', ivs: 'IVs', pokemon: 'Pokémon'};
 
@@ -94,29 +101,25 @@ function sentenceCase(text, properNouns) {
 		.replace(/(^|[+.]\s*)([a-z])/g, (m, p, c) => p + c.toUpperCase());
 }
 
-// "(!) IF RIVAL HAS SQUIRTLE" -> "Rival Has Squirtle", "(!) RAIN TEAM" -> "Rain Team".
-const variantLabel = (note, index) => note ? titleCase(note.replace(/^(\(!\)\s*)?(if\s+)?/i, '')) : 'Team ' + (index + 1);
-
-const trainerOf = setName => setName.replace(/ Set \d+$/, '').replace(/^\*/, '');
-
-// Every forme of a species ("Rotom" -> Rotom, Rotom-Fan, Rotom-Frost, ...). Short document
-// names can be ambiguous ("Rotom-F", "Ursaluna-BM"), so matching looks at all of them.
-function formesOf(species) {
-	const base = (SPECIES[species] && SPECIES[species].baseSpecies) || species;
-	return Object.keys(SPECIES).filter(n => n === base || n.startsWith(base + '-'));
-}
-const sameMoves = (a, b) => a.filter(m => b.indexOf(m) !== -1).length;
-
+// Names that cannot be resolved keep the document's spelling (and show in the report).
 function documentedMon(mon) {
+	const species = resolveSpecies(mon.species);
+	// Abilities may list both formes' ("Damp\nSwift Swim (Mega)", "Intimidate (Both)").
+	const abilityLines = String(mon.ability || '').split('\n').filter(a => a.trim()).map(a => {
+		const tag = (a.match(/\((\w+)\)\s*$/) || [])[1];
+		const name = a.replace(/\s*\(.*\)\s*$/, '').trim();
+		return {name: resolve('ability', name, species) || name, tag: tag ? tag.toLowerCase() : null};
+	});
+	const item = String(mon.item || '').trim();
 	return {
-		species: resolveSpecies(mon.species),
+		species,
 		docSpecies: mon.species,
 		level: typeof mon.level === 'number' ? mon.level : null,
-		nature: mon.nature || '',
-		// Mega Pokémon list both abilities ("Damp\nSwift Swim (Mega)"); any listed one is accepted.
-		abilities: String(mon.ability || '').split('\n').map(a => resolveName(a.replace(/\s*\(.*\)\s*$/, ''), ABILITY_NAMES)).filter(Boolean),
-		item: /^(no item|-)?$/i.test(String(mon.item || '').trim()) ? '' : resolveName(mon.item, ITEM_NAMES),
-		moves: mon.moves.map(m => resolveName(m, MOVE_NAMES)).sort(),
+		nature: calc.NATURES[mon.nature] ? mon.nature : '',
+		abilityLines,
+		abilities: abilityLines.map(a => a.name),
+		item: /^(no item|-)?$/i.test(item) ? '' : (resolve('item', item) || item),
+		moves: mon.moves.map(m => resolve('move', m) || m),
 		evs: mon.evs,
 		speed: mon.speed
 	};
@@ -130,6 +133,71 @@ function speedStat(base, iv, ev, level, nature) {
 	return speed;
 }
 
+// The Speed IVs that reproduce the documented Speed stat (the documents give no IVs).
+function speedIvsFitting(doc) {
+	if (typeof doc.speed !== 'number' || doc.level === null || !SPECIES[doc.species]) return [];
+	const fits = [];
+	for (let iv = 0; iv <= 31; iv++) {
+		if (speedStat(SPECIES[doc.species].bs.sp, iv, doc.evs.sp || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
+	}
+	return fits;
+}
+
+const calcSpeedIv = set => set.ivs && set.ivs.sp !== undefined ? set.ivs.sp : 31;
+
+// The document ability that fits the calc's forme: the "(Mega)" line for a Mega or Primal,
+// otherwise the first (or "(Both)") line.
+function documentedAbility(doc, species) {
+	const lines = doc.abilityLines;
+	if (/-(Mega|Primal)/.test(species)) {
+		return (lines.filter(a => a.tag === 'mega' || a.tag === 'both')[0] || lines[lines.length - 1]).name;
+	}
+	return (lines.filter(a => a.tag !== 'mega')[0] || lines[0]).name;
+}
+
+// Overwrites a set with the documented values.
+function applyDocument(doc, set, species) {
+	if (doc.level !== null) set.level = doc.level;
+	if (doc.nature) set.nature = doc.nature;
+	if (doc.abilityLines.length && doc.abilities.indexOf(set.ability) === -1) set.ability = documentedAbility(doc, species);
+	if (doc.item) set.item = doc.item;
+	else delete set.item;
+	set.moves = doc.moves.slice();
+	if (Object.keys(doc.evs).length) set.evs = Object.assign({}, doc.evs);
+	else delete set.evs;
+	const fits = speedIvsFitting(doc);
+	if (fits.length && fits.indexOf(calcSpeedIv(set)) === -1) {
+		set.ivs = Object.assign({}, set.ivs, {sp: fits.indexOf(31) !== -1 ? 31 : fits[fits.length - 1]});
+	}
+}
+
+// Corrects names the calc cannot read anywhere in the sets. Returns how many changed.
+function fixUnreadableNames(setdex) {
+	let fixed = 0;
+	Object.keys(setdex).forEach(species => {
+		const calcSpecies = SPECIES[species] ? species : resolve('species', species);
+		if (calcSpecies && calcSpecies !== species) {
+			setdex[calcSpecies] = Object.assign(setdex[calcSpecies] || {}, setdex[species]);
+			delete setdex[species];
+			fixed++;
+		}
+	});
+	Object.keys(setdex).forEach(species => Object.keys(setdex[species]).forEach(name => {
+		const set = setdex[species][name];
+		const fix = (kind, value) => {
+			const known = kind === 'move' ? MOVE_NAMES : kind === 'item' ? ITEM_NAMES : ABILITY_NAMES;
+			if (!value || known.indexOf(value) !== -1) return value;
+			const resolved = resolve(kind, value, species);
+			if (resolved) fixed++;
+			return resolved || value;
+		};
+		if (set.moves) set.moves = set.moves.map(m => fix('move', m));
+		if (set.item) set.item = fix('item', set.item);
+		if (set.ability) set.ability = fix('ability', set.ability);
+	}));
+	return fixed;
+}
+
 // Differences between a documented Pokémon and the calc set chosen for it.
 function compare(doc, set) {
 	const diffs = [];
@@ -139,22 +207,15 @@ function compare(doc, set) {
 	if (doc.abilities.length && doc.abilities.indexOf(set.ability) === -1) add('Ability', doc.abilities.join(' / '), set.ability);
 	if (doc.item !== (set.item || '')) add('Item', doc.item || '(none)', set.item || '(none)');
 	const calcMoves = (set.moves || []).filter(m => m && m !== '(No Move)').sort();
-	if (doc.moves.join() !== calcMoves.join()) add('Moves', doc.moves.join(', '), calcMoves.join(', '));
+	if (doc.moves.slice().sort().join() !== calcMoves.join()) add('Moves', doc.moves.join(', '), calcMoves.join(', '));
 	const calcEvs = set.evs || {};
-	if (['hp', 'at', 'df', 'sa', 'sd', 'sp'].some(s => (doc.evs[s] || 0) !== (calcEvs[s] || 0))) {
-		const fmt = evs => ['hp', 'at', 'df', 'sa', 'sd', 'sp'].filter(s => evs[s]).map(s => evs[s] + ' ' + s).join(' / ') || 'none';
+	if (STATS.some(s => (doc.evs[s] || 0) !== (calcEvs[s] || 0))) {
+		const fmt = evs => STATS.filter(s => evs[s]).map(s => evs[s] + ' ' + s).join(' / ') || 'none';
 		add('EVs', fmt(doc.evs), fmt(calcEvs));
 	}
-	// The documents give no IVs, but the in-game Speed stat pins down the Speed IV.
-	if (typeof doc.speed === 'number' && doc.level !== null && SPECIES[doc.species]) {
-		const fits = [];
-		for (let iv = 0; iv <= 31; iv++) {
-			if (speedStat(SPECIES[doc.species].bs.sp, iv, doc.evs.sp || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
-		}
-		const calcIv = set.ivs && set.ivs.sp !== undefined ? set.ivs.sp : 31;
-		if (fits.length && fits.indexOf(calcIv) === -1) {
-			add('Speed IV', fits.length > 1 ? fits[0] + '-' + fits[fits.length - 1] : fits[0], calcIv);
-		}
+	const fits = speedIvsFitting(doc);
+	if (fits.length && fits.indexOf(calcSpeedIv(set)) === -1) {
+		add('Speed IV', fits.length > 1 ? fits[0] + '-' + fits[fits.length - 1] : fits[0], calcSpeedIv(set));
 	}
 	const unknown = [].concat(
 		(set.moves || []).filter(m => m && m !== '(No Move)' && MOVE_NAMES.indexOf(m) === -1),
@@ -164,13 +225,25 @@ function compare(doc, set) {
 	return diffs;
 }
 
-function build() {
-	const setdex = loadSetdex();
-	const documented = JSON.parse(fs.readFileSync(docPath, 'utf8'));
+// Matches every documented team to calc sets. Returns the trainer order plus the report rows.
+function matchDocument(documented, setdex) {
 	const report = [];
 	const properNouns = {};
 	Object.keys(SPECIES).concat(documented.map(t => t.name.split(' ').pop())).forEach(n => { properNouns[toKey(n)] = true; });
-	let checked = 0, withDiffs = 0, notFound = 0;
+	const stats = {checked: 0, withDiffs: 0, notFound: 0, applied: 0};
+
+	const trainersOf = m => {
+		const names = [];
+		formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
+			if (names.indexOf(trainerOf(n)) === -1) names.push(trainerOf(n));
+		}));
+		return names;
+	};
+	const mostCommonTrainer = mons => {
+		const votes = {};
+		mons.forEach(m => trainersOf(m).forEach(n => { votes[n] = (votes[n] || 0) + 1; }));
+		return Object.keys(votes).sort((a, b) => votes[b] - votes[a])[0];
+	};
 
 	const order = documented.map(t => ({
 		name: titleCase(t.name),
@@ -180,18 +253,6 @@ function build() {
 		variants: t.variants.map((v, vi) => {
 			const team = v.team.map(documentedMon);
 			// The trainer: the set name (without " Set N") shared by most of the team's species.
-			const trainersOf = m => {
-				const names = [];
-				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
-					if (names.indexOf(trainerOf(n)) === -1) names.push(trainerOf(n));
-				}));
-				return names;
-			};
-			const mostCommonTrainer = mons => {
-				const votes = {};
-				mons.forEach(m => trainersOf(m).forEach(n => { votes[n] = (votes[n] || 0) + 1; }));
-				return Object.keys(votes).sort((a, b) => votes[b] - votes[a])[0];
-			};
 			const trainers = [mostCommonTrainer(team)];
 			// Double battles ("Ann & Brooks") store each partner's Pokémon under their own name:
 			// the partner is the trainer shared by the Pokémon the first one does not have.
@@ -209,15 +270,16 @@ function build() {
 				}));
 				const score = c => {
 					const s = setdex[c.species][c.name];
-					return sameMoves(m.moves, s.moves || []) * 10 + (s.level === m.level ? 5 : 0) +
-						(s.nature === m.nature ? 2 : 0) + ((s.item || '') === m.item ? 2 : 0) + (c.species === m.species ? 3 : 0);
+					const shared = m.moves.filter(mv => (s.moves || []).indexOf(mv) !== -1).length;
+					return shared * 10 + (s.level === m.level ? 5 : 0) + (s.nature === m.nature ? 2 : 0) +
+						((s.item || '') === m.item ? 2 : 0) + (c.species === m.species ? 3 : 0);
 				};
 				// A team can repeat a species (four Shedinja), but the calc keeps one set per
 				// species per trainer, so fall back to reusing that set.
 				const best = candidates.sort((a, b) => score(b) - score(a))[0] || reuse[m.species];
-				checked++;
+				stats.checked++;
 				if (!best) {
-					notFound++;
+					stats.notFound++;
 					report.push({trainer: label, species: m.docSpecies, set: null, diffs: [{field: 'Not in the calc', documented: m.docSpecies, inCalc: ''}]});
 					return null;
 				}
@@ -225,9 +287,14 @@ function build() {
 				used[setId] = true;
 				reuse[m.species] = best;
 				m.species = best.species;
-				const diffs = compare(m, setdex[best.species][best.name]);
+				const set = setdex[best.species][best.name];
+				if (APPLY && compare(m, set).length) {
+					applyDocument(m, set, best.species);
+					stats.applied++;
+				}
+				const diffs = compare(m, set);
 				if (diffs.length) {
-					withDiffs++;
+					stats.withDiffs++;
 					report.push({trainer: label, species: best.species, set: best.name, diffs});
 				}
 				return setId;
@@ -235,16 +302,14 @@ function build() {
 			return {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
 		})
 	}));
+	return {order, report, stats};
+}
 
-	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
-	fs.mkdirSync(path.dirname(outFile), {recursive: true});
-	fs.writeFileSync(outFile,
-		'/* Generated by import/radical-red-trainers/build_trainers.js from the ' + mode + ' boss document; do not edit by hand.\n' +
-		' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). */\n' +
-		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
-
+function writeReport(setdex, report, stats, trainerCount, namesFixed) {
+	const {checked, withDiffs, notFound, applied} = stats;
 	const lines = ['# ' + titleCase(mode) + ' Mode: calc sets vs. the boss document', '',
-		`${order.length} trainers, ${checked} Pokémon checked: ${checked - withDiffs - notFound} match, ` +
+		(APPLY ? `Applied the document to ${applied} sets and corrected ${namesFixed} unreadable names. ` : '') +
+		`${trainerCount} trainers, ${checked} Pokémon checked: ${checked - withDiffs - notFound} match, ` +
 		`${withDiffs} differ, ${notFound} not found in the calc.`, '',
 		'| Trainer | Pokémon (calc set) | Field | Document | Calc |', '|---|---|---|---|---|'];
 	report.forEach(r => r.diffs.forEach(d => lines.push(
@@ -256,7 +321,24 @@ function build() {
 		unknownSpecies.forEach(sp => lines.push(`- ${sp}: ${Object.keys(setdex[sp]).join(', ')}`));
 	}
 	fs.writeFileSync(reportPath, lines.join('\n') + '\n');
-	console.log(`${mode}: ${order.length} trainers, ${checked} Pokémon: ${checked - withDiffs - notFound} match, ${withDiffs} differ, ${notFound} not found`);
+}
+
+function build() {
+	const setdex = loadSetdex();
+	const namesFixed = APPLY ? fixUnreadableNames(setdex) : 0;
+	const documented = JSON.parse(fs.readFileSync(docPath, 'utf8'));
+	const {order, report, stats} = matchDocument(documented, setdex);
+	if (APPLY) writeSetdex(setdex);
+
+	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
+	fs.mkdirSync(path.dirname(outFile), {recursive: true});
+	fs.writeFileSync(outFile,
+		'/* Generated by import/radical-red-trainers/build_trainers.js from the ' + mode + ' boss document; do not edit by hand.\n' +
+		' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). */\n' +
+		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
+	writeReport(setdex, report, stats, order.length, namesFixed);
+	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
+		`${stats.withDiffs} differ, ${stats.notFound} not found` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();
