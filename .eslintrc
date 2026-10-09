@@ -51,6 +51,7 @@
         "createField": false,
         "createPokemon": false,
         "getPageMode": false,
+        "lockedField": false,
         "readCustomSets": false,
         "writeCustomSets": false,
         "confirmModeSwitch": false,

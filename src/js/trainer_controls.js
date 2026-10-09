@@ -39,11 +39,14 @@ function writeSetting(key, value) {
 
 var currentTrainerIndex = 0;
 var currentBattleEffect = "";
+// The Field controls the current fight's battle effect has set and locked.
+var lockedFieldInputs = $();
 
 /*
  * How a boss's battle effect ("Doubles + Permanent rain") maps onto the Field panel. The
  * first matching weather and terrain win; Pokémon 2 is the boss's side, so side-specific
- * effects use the right-hand ("R") toggles. Effects the panel cannot show (Trick Room,
+ * effects use the right-hand ("R") toggles. These hold for the whole fight, so the controls
+ * are locked until you move to another trainer. Effects the panel cannot show (Trick Room,
  * pre-burned Pokémon, special rules) stay as text only.
  */
 var EFFECT_WEATHER = [
@@ -76,19 +79,54 @@ function firstMatch(effects, text) {
 	})[0];
 }
 
-// Sets the Field panel to the boss's battle effect, resetting what a previous boss set.
-function applyBattleEffect(text) {
-	text = text || "";
-	$(/doubles/i.test(text) ? "#doubles-format" : "#singles-format").prop("checked", true).change();
-	var weather = firstMatch(EFFECT_WEATHER, text);
-	$("#" + (weather ? weather.id : "clear")).prop("checked", true).change();
-	// Terrain boxes are mutually exclusive: the change event must come from the one ticked.
-	var terrain = firstMatch(EFFECT_TERRAIN, text);
-	$("input:checkbox[name='terrain']").prop("checked", false);
-	(terrain ? $("#" + terrain.id).prop("checked", true) : $("input:checkbox[name='terrain']").first()).change();
+function lockFieldInputs(inputs) {
+	lockedFieldInputs = lockedFieldInputs.add(inputs.prop("disabled", true));
+}
+
+// Undoes the previous fight's battle effect: unlocks its controls and turns off what it set.
+// Field settings you chose yourself are left alone.
+function releaseBattleEffect() {
+	var locked = lockedFieldInputs.prop("disabled", false);
+	var hadWeather = lockedField.weather;
+	var hadTerrain = lockedField.terrain;
+	lockedFieldInputs = $();
+	lockedField.weather = false;
+	lockedField.terrain = false;
+	$("#battle-effect-lock").hide();
+	if (locked.is("#doubles-format")) $("#singles-format").prop("checked", true).change();
+	if (hadWeather) $("#clear").prop("checked", true).change();
+	if (hadTerrain) $("input:checkbox[name='terrain']").prop("checked", false).first().change();
 	EFFECT_TOGGLES.forEach(function (effect) {
-		$("#" + effect.id).prop("checked", effect.pattern.test(text)).change();
+		if (locked.is("#" + effect.id)) $("#" + effect.id).prop("checked", false).change();
 	});
+	// Your Pokémon's own weather or terrain ability (e.g. Drizzle) applies again.
+	if (hadWeather || hadTerrain) $("#p1 .ability").change();
+}
+
+// Sets the Field panel to the boss's battle effect and locks it for the fight.
+function applyBattleEffect(text, trainerName) {
+	text = text || "";
+	if (/doubles/i.test(text)) lockFieldInputs($("#doubles-format").prop("checked", true).change().add("#singles-format"));
+	var weather = firstMatch(EFFECT_WEATHER, text);
+	if (weather) {
+		$("#" + weather.id).prop("checked", true).change();
+		lockFieldInputs($("input:radio[name='weather']"));
+		lockedField.weather = true;
+	}
+	var terrain = firstMatch(EFFECT_TERRAIN, text);
+	if (terrain) {
+		// Terrain boxes are mutually exclusive: the change event must come from the one ticked.
+		$("input:checkbox[name='terrain']").prop("checked", false);
+		$("#" + terrain.id).prop("checked", true).change();
+		lockFieldInputs($("input:checkbox[name='terrain']"));
+		lockedField.terrain = true;
+	}
+	EFFECT_TOGGLES.forEach(function (effect) {
+		if (effect.pattern.test(text)) lockFieldInputs($("#" + effect.id).prop("checked", true).change());
+	});
+	if (lockedFieldInputs.length) {
+		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text).show();
+	}
 }
 
 function getStarterType() {
@@ -148,6 +186,7 @@ function showTrainer(index) {
 		.val(variant.label)
 		// Rival teams follow the starter setting instead of a per-fight choice.
 		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant));
+	releaseBattleEffect();
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
@@ -156,7 +195,7 @@ function showTrainer(index) {
 	currentBattleEffect = variant.battleEffect || "";
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0]);
 	// After loading, since a Pokémon's ability (e.g. Drizzle) can set the weather itself.
-	applyBattleEffect(variant.battleEffect);
+	applyBattleEffect(variant.battleEffect, trainer.name);
 }
 
 // The Professor Oak button: your run ended, so this mode's box and progress start over.
@@ -231,6 +270,7 @@ function bindTrainerEvents() {
 
 $(document).ready(function () {
 	$("#p2").after(buildTrainerPanel());
+	$(".field-info legend").after('<div id="battle-effect-lock" class="battle-effect-lock"></div>');
 	bindTrainerEvents();
 	showTrainer(parseInt(readSetting(getTrainerIndexKey())) || 0);
 });

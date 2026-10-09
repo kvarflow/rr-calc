@@ -318,7 +318,11 @@ $("input[name='weather']").change(function () {
 
 var lastManualWeather = "";
 var lastAutoWeather = ["", ""];
+// Field conditions a boss's battle effect fixes for the whole fight (set by
+// trainer_controls.js): abilities such as Drizzle or Electric Surge cannot change them.
+var lockedField = {weather: false, terrain: false};
 function autosetWeather(ability, i, item) {
+	if (lockedField.weather) return;
 	var currentWeather = $("input:radio[name='weather']:checked").val();
 	if (lastAutoWeather.indexOf(currentWeather) === -1) {
 		lastManualWeather = currentWeather;
@@ -397,6 +401,7 @@ $("input[name='terrain']").change(function () {
 var lastManualTerrain = "";
 var lastAutoTerrain = ["", ""];
 function autosetTerrain(ability, i) {
+	if (lockedField.terrain) return;
 	var currentTerrain = $("input:checkbox[name='terrain']:checked").val() || "No terrain";
 	if (lastAutoTerrain.indexOf(currentTerrain) === -1) {
 		lastManualTerrain = currentTerrain;
