@@ -558,15 +558,15 @@ table.field {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 27px;
+    min-height: 31px;
     border-radius: 4px;
 }
 .box-dropzone.box-drag-over {
     background: rgba(26, 188, 156, 0.2);
 }
 .pokemon-sprite {
-    width: 34px;
-    height: 27px;
+    width: 40px;
+    height: 31px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -579,9 +579,9 @@ table.field {
     outline: 2px solid #1abc9c;
 }
 .pokemon-sprite img {
-    /* The sprites are 40x30 icons, shown at 3/4 size. */
-    width: 30px;
-    height: 23px;
+    /* The sprites are 40x30 icons, shown at 90% size. */
+    width: 36px;
+    height: 27px;
     flex-shrink: 0;
     pointer-events: none; /* keep the wrapper as the drag/drop target */
 }
@@ -674,7 +674,7 @@ table.field {
     box-sizing: border-box;
 }
 .header-sprite img {
-    max-height: 23px;
+    max-height: 27px;
     vertical-align: middle;
 }
 #cc-controls {
@@ -727,7 +727,7 @@ table.field {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
-    min-height: 27px;
+    min-height: 31px;
     margin-bottom: 6px;
 }
 .trainer-pokemon-active {
