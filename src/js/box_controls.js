@@ -86,17 +86,29 @@ function resolveBoxLayout(customsets, savedLayout) {
 }
 
 // Showdown sprite ids are the base species id plus the forme id, e.g. "charizard-megax".
-function getSpriteId(pokemonName) {
+// Sprites come from the set Run & Bun's calculator uses, named like the calc's species
+// ("Charizard-Mega-X.png", with Flabébé's accents decomposed). Radical Red-only formes
+// (Sevii formes, new Megas) have none, so those fall back to the base species' sprite.
+var SPRITE_BASE_URL = "https://raw.githubusercontent.com/May8th1995/sprites/master/";
+
+function getSpriteUrls(pokemonName) {
 	var species = calc.SPECIES[gen][pokemonName];
-	var baseSpecies = species && species.baseSpecies;
-	if (baseSpecies && pokemonName.indexOf(baseSpecies + "-") === 0) {
-		return calc.toID(baseSpecies) + "-" + calc.toID(pokemonName.slice(baseSpecies.length + 1));
-	}
-	return calc.toID(pokemonName);
+	var names = [pokemonName];
+	if (species && species.baseSpecies && species.baseSpecies !== pokemonName) names.push(species.baseSpecies);
+	return names.map(function (name) {
+		return SPRITE_BASE_URL + encodeURIComponent(name.normalize("NFD")) + ".png";
+	});
 }
 
-function getSpriteUrl(pokemonName) {
-	return "https://play.pokemonshowdown.com/sprites/gen5/" + getSpriteId(pokemonName) + ".png";
+// An <img> for a Pokémon that tries each sprite in turn, then calls onMissing.
+function createSpriteImage(pokemonName, onMissing) {
+	var urls = getSpriteUrls(pokemonName);
+	return $("<img />")
+		.attr({src: urls.shift(), alt: pokemonName})
+		.on("error", function () {
+			if (urls.length) $(this).attr("src", urls.shift());
+			else onMissing.call(this);
+		});
 }
 
 function getPokemonName(setId) {
@@ -107,13 +119,10 @@ function getPokemonName(setId) {
 function createPokemonSprite(setId) {
 	var pokemonName = getPokemonName(setId);
 	var sprite = $('<div class="pokemon-sprite"></div>').attr({title: setId, "data-set-id": setId});
-	$("<img />")
-		.attr({src: getSpriteUrl(pokemonName), alt: pokemonName})
-		.on("error", function () {
-			// Radical Red-only formes have no Showdown sprite: show the name instead.
-			$(this).replaceWith($('<span class="pokemon-sprite-name"></span>').text(pokemonName));
-		})
-		.appendTo(sprite);
+	createSpriteImage(pokemonName, function () {
+		// No sprite at all (Chillet): show the name instead.
+		$(this).replaceWith($('<span class="pokemon-sprite-name"></span>').text(pokemonName));
+	}).appendTo(sprite);
 	return sprite;
 }
 

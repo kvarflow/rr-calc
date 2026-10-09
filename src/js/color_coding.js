@@ -126,7 +126,7 @@ function updatePokemon1HeaderSprite() {
 	var pokemonName = setId.indexOf(" (") === -1 ? setId : getPokemonName(setId);
 	var header = $("#p1-header-sprite").empty();
 	if (!calc.SPECIES[gen][pokemonName]) return;
-	header.append($("<img />").attr({src: getSpriteUrl(pokemonName), alt: pokemonName}).on("error", function () {
+	header.append(createSpriteImage(pokemonName, function () {
 		$(this).remove();
 	}));
 }

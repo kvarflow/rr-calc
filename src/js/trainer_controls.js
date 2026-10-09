@@ -7,7 +7,8 @@
  * The current trainer is remembered per mode.
  */
 
-var OAK_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/oak.png";
+// FireRed / LeafGreen's Professor Oak, from Smogon's sprite archive.
+var OAK_SPRITE_URL = "https://raw.githubusercontent.com/smogon/sprites/master/src/_uncategorized/canonical/trainers/gen3/firered-leafgreen/Oak.png";
 // Other fights with several possible teams (Lorelei's rain or snow team) remember the
 // chosen team by its label.
 var TRAINER_VARIANT_KEY = "trainerVariant";

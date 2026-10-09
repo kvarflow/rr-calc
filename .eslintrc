@@ -56,7 +56,7 @@
         "confirmModeSwitch": false,
         "calculateAllMoves": false,
         "getPokemonName": false,
-        "getSpriteUrl": false,
+        "createSpriteImage": false,
         "RADICAL_RED_SAVE_DATA": false,
         "updateDex": false,
         "removeFromDex": false,
