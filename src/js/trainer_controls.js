@@ -32,6 +32,58 @@ function writeSetting(key, value) {
 }
 
 var currentTrainerIndex = 0;
+var currentBattleEffect = "";
+
+/*
+ * How a boss's battle effect ("Doubles + Permanent rain") maps onto the Field panel. The
+ * first matching weather and terrain win; Pokémon 2 is the boss's side, so side-specific
+ * effects use the right-hand ("R") toggles. Effects the panel cannot show (Trick Room,
+ * pre-burned Pokémon, special rules) stay as text only.
+ */
+var EFFECT_WEATHER = [
+	{pattern: /primordial sea/i, id: "heavy-rain"},
+	{pattern: /desolate land/i, id: "harsh-sunshine"},
+	{pattern: /delta stream|strong winds/i, id: "strong-winds"},
+	{pattern: /permanent rain/i, id: "rain"},
+	{pattern: /permanent sun/i, id: "sun"},
+	{pattern: /permanent sandstorm/i, id: "sand"},
+	{pattern: /permanent snow/i, id: "snow"},
+	{pattern: /permanent hail/i, id: "hail"}
+];
+var EFFECT_TERRAIN = [
+	{pattern: /electric terrain/i, id: "electric"},
+	{pattern: /grassy terrain/i, id: "grassy"},
+	{pattern: /misty terrain/i, id: "misty"},
+	{pattern: /psychic terrain/i, id: "psychic"}
+];
+var EFFECT_TOGGLES = [
+	{pattern: /tailwind/i, id: "tailwindR"},
+	{pattern: /omni-boosted/i, id: "StatBoostR"},
+	{pattern: /magic room/i, id: "magicroom"},
+	{pattern: /wonder room/i, id: "wonderroom"},
+	{pattern: /gravity/i, id: "gravity"}
+];
+
+function firstMatch(effects, text) {
+	return effects.filter(function (effect) {
+		return effect.pattern.test(text);
+	})[0];
+}
+
+// Sets the Field panel to the boss's battle effect, resetting what a previous boss set.
+function applyBattleEffect(text) {
+	text = text || "";
+	$(/doubles/i.test(text) ? "#doubles-format" : "#singles-format").prop("checked", true).change();
+	var weather = firstMatch(EFFECT_WEATHER, text);
+	$("#" + (weather ? weather.id : "clear")).prop("checked", true).change();
+	// Terrain boxes are mutually exclusive: the change event must come from the one ticked.
+	var terrain = firstMatch(EFFECT_TERRAIN, text);
+	$("input:checkbox[name='terrain']").prop("checked", false);
+	(terrain ? $("#" + terrain.id).prop("checked", true) : $("input:checkbox[name='terrain']").first()).change();
+	EFFECT_TOGGLES.forEach(function (effect) {
+		$("#" + effect.id).prop("checked", effect.pattern.test(text)).change();
+	});
+}
 
 function getTrainerVariant(trainer) {
 	var preferred = readSetting(TRAINER_VARIANT_KEY);
@@ -57,6 +109,11 @@ function markActiveTrainerPokemon(setId) {
 function loadTrainerPokemon(setId) {
 	loadSetIntoPokemon("#p2", setId);
 	markActiveTrainerPokemon(setId);
+	// "Swellow is pre-burned": that Pokémon starts the battle burned.
+	var preBurned = currentBattleEffect.match(/(\S+) is pre-burned/i);
+	if (preBurned && getPokemonName(setId).toLowerCase().indexOf(preBurned[1].toLowerCase()) === 0) {
+		$("#p2 .status").val("Burned").change();
+	}
 }
 
 function showTrainer(index) {
@@ -79,7 +136,10 @@ function showTrainer(index) {
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
 	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
 	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
+	currentBattleEffect = variant.battleEffect || "";
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0]);
+	// After loading, since a Pokémon's ability (e.g. Drizzle) can set the weather itself.
+	applyBattleEffect(variant.battleEffect);
 }
 
 function buildTrainerPanel() {

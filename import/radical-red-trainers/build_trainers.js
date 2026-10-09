@@ -149,7 +149,7 @@ function compare(doc, set) {
 	if (typeof doc.speed === 'number' && doc.level !== null && SPECIES[doc.species]) {
 		const fits = [];
 		for (let iv = 0; iv <= 31; iv++) {
-			if (speedStat(SPECIES[doc.species].bs.spe, iv, doc.evs.sp || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
+			if (speedStat(SPECIES[doc.species].bs.sp, iv, doc.evs.sp || 0, doc.level, doc.nature) === doc.speed) fits.push(iv);
 		}
 		const calcIv = set.ivs && set.ivs.sp !== undefined ? set.ivs.sp : 31;
 		if (fits.length && fits.indexOf(calcIv) === -1) {
