@@ -7,9 +7,13 @@
  */
 
 var OAK_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/oak.png";
-// Fights with several possible teams (the rival's depends on your starter) remember the
-// chosen team by its label, so later fights of the same kind use the same choice.
+// Other fights with several possible teams (Lorelei's rain or snow team) remember the
+// chosen team by its label.
 var TRAINER_VARIANT_KEY = "trainerVariant";
+// The rival's team depends on your starter: he picks the one that counters it.
+var STARTER_KEY = "starterType";
+var STARTER_TYPES = ["Fire", "Water", "Grass"];
+var RIVAL_TEAM_FOR_STARTER = {Fire: "Rival Has Squirtle", Water: "Rival Has Bulbasaur", Grass: "Rival Has Charmander"};
 
 function getTrainerIndexKey() {
 	return "trainerIndex:" + getPageMode();
@@ -85,10 +89,20 @@ function applyBattleEffect(text) {
 	});
 }
 
+function getStarterType() {
+	var starter = readSetting(STARTER_KEY);
+	return STARTER_TYPES.indexOf(starter) === -1 ? STARTER_TYPES[0] : starter;
+}
+
+function isRivalStarterVariant(variant) {
+	return /^Rival Has /.test(variant.label);
+}
+
 function getTrainerVariant(trainer) {
-	var preferred = readSetting(TRAINER_VARIANT_KEY);
+	var wanted = trainer.variants.some(isRivalStarterVariant) ?
+		RIVAL_TEAM_FOR_STARTER[getStarterType()] : readSetting(TRAINER_VARIANT_KEY);
 	return trainer.variants.filter(function (variant) {
-		return variant.label === preferred;
+		return variant.label === wanted;
 	})[0] || trainer.variants[0];
 }
 
@@ -130,7 +144,8 @@ function showTrainer(index) {
 			return $("<option></option>").val(v.label).text(v.label);
 		}))
 		.val(variant.label)
-		.toggle(trainer.variants.length > 1);
+		// Rival teams follow the starter setting instead of a per-fight choice.
+		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant));
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
@@ -148,6 +163,7 @@ function buildTrainerPanel() {
 		'<legend align="center">Opposing Trainer</legend>' +
 		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
+		'<label class="trainer-starter">Your starter: <select id="trainer-starter"></select></label> ' +
 		'<select id="trainer-variant" aria-label="Which team this trainer uses"></select>' +
 		'<div id="trainer-team" class="trainer-team"></div>' +
 		'<div class="trainer-buttons">' +
@@ -175,6 +191,15 @@ function bindTrainerEvents() {
 	$("#reset-trainer").click(function () {
 		showTrainer(0);
 	});
+	$("#trainer-starter")
+		.append(STARTER_TYPES.map(function (type) {
+			return $("<option></option>").val(type).text(type);
+		}))
+		.val(getStarterType())
+		.change(function () {
+			writeSetting(STARTER_KEY, $(this).val());
+			showTrainer(currentTrainerIndex);
+		});
 	$("#trainer-variant").change(function () {
 		writeSetting(TRAINER_VARIANT_KEY, $(this).val());
 		showTrainer(currentTrainerIndex);

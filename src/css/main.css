@@ -755,3 +755,7 @@ table.field {
     font-style: italic;
     margin-bottom: 4px;
 }
+.trainer-starter {
+    display: inline-block;
+    margin: 0 8px 4px 0;
+}
