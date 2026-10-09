@@ -14,6 +14,7 @@ const MOVE_ALIASES = {
 	'Disarm Cry': 'Disarming Voice',
 	'Drain Kiss': 'Draining Kiss',
 	'Soupercell Slam': 'Supercell Slam',
+	'Sunsteel Ram': 'Sunsteel Strike',
 	// Spellings in the boss documents.
 	'Pow-Up Punch': 'Power-Up Punch',
 	'Eathquake': 'Earthquake',
@@ -34,6 +35,14 @@ const ITEM_ALIASES = {
 	'Adrenal Orb': 'Adrenaline Orb',
 	'Rusty Sword': 'Rusted Sword',
 	'Rusty Shield': 'Rusted Shield',
+	'Duraludite': 'Duraludonite',
+	'Boost Energy': 'Booster Energy',
+	'Punch Glove': 'Punching Glove',
+	'Safe Goggles': 'Safety Goggles',
+	'Protect Pads': 'Protective Pads',
+	'Eter.Max Orb': 'Eternamax Orb',
+	// The game's Leek is the old Stick item; the calc only boosts crits for "Leek".
+	'Leek Stick': 'Leek',
 };
 const ABILITY_ALIASES = {
 	'Neutralize Gas': 'Neutralizing Gas',
