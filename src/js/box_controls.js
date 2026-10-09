@@ -121,34 +121,83 @@ function createBoxSprite(setId) {
 	return sprite;
 }
 
+// Layout follows syl-rnb-calc: a Team/Box panel (with a search box in its header) and,
+// after Pokémon 1, a second panel holding the Trash and the color coding controls.
+function buildBoxSection(section) {
+	return $('<div class="box-section"></div>')
+		.append($('<div class="box-section-label"></div>').text(section.label))
+		.append($('<div class="box-dropzone"></div>').attr("data-section", section.key));
+}
+
 function buildBoxPanel() {
-	var panel = $('<fieldset id="box-panel"><legend align="center">Team / Box</legend></fieldset>');
+	var panel = $(
+		'<fieldset id="box-panel"><legend class="box-legend">' +
+		'<span>Team/Box</span>' +
+		'<input type="search" id="box-search" placeholder="Search" aria-label="Search the box" />' +
+		'</legend></fieldset>');
 	BOX_SECTIONS.forEach(function (section) {
-		$('<div class="box-section"></div>')
-			.append($('<div class="box-section-label"></div>').text(section.label))
-			.append($('<div class="box-dropzone"></div>').attr("data-section", section.key))
-			.appendTo(panel);
+		if (section.key === "trash") return;
+		panel.append(buildBoxSection(section));
+		if (section.key === "team") panel.append("<hr />");
 	});
-	panel.find('.box-dropzone[data-section="trash"]').after(
-		'<div class="box-trash-buttons">' +
-		'<button type="button" id="box-delete-trash">Delete Pok&eacute;mon in Trash</button> ' +
-		'<button type="button" id="box-clear-all">Remove Pok&eacute;mon from all boxes</button>' +
-		'</div>');
 	panel.append('<div class="box-empty-hint">Imported sets appear here. Click a Pok&eacute;mon to load it as Pok&eacute;mon 1, or drag it between sections.</div>');
 	return panel;
+}
+
+function buildBoxTools() {
+	var trash = BOX_SECTIONS.filter(function (section) {
+		return section.key === "trash";
+	})[0];
+	return $('<fieldset id="box-tools"></fieldset>')
+		.append(buildBoxSection(trash))
+		.append(
+			'<div class="box-tool-buttons">' +
+			'<button type="button" id="box-delete-trash">Delete Pok&eacute;mon in Trash</button>' +
+			'<button type="button" id="box-clear-all">Remove Pok&eacute;mon from all boxes</button>' +
+			'</div>' +
+			'<label class="box-position-option"><input type="checkbox" id="box-on-top" /> Team/Box above Pok&eacute;mon 1</label>' +
+			'<hr />');
+}
+
+// Whether the Team/Box panel sits above Pokémon 1 (the default) or below it.
+var BOX_ON_TOP_KEY = "boxOnTop";
+
+function isBoxOnTop() {
+	try {
+		return localStorage.getItem(BOX_ON_TOP_KEY) !== "false";
+	} catch (e) {
+		return true;
+	}
+}
+
+function placeBoxPanel(onTop) {
+	if (onTop) {
+		$("#p1").before($("#box-panel"));
+	} else {
+		$("#p1").after($("#box-panel"));
+	}
+}
+
+// Hides box sprites whose set name does not contain the search text.
+function filterBox() {
+	var term = ($("#box-search").val() || "").trim().toLowerCase();
+	$(".box-pokemon").each(function () {
+		$(this).toggle(!term || $(this).attr("data-set-id").toLowerCase().indexOf(term) !== -1);
+	});
 }
 
 function renderBox() {
 	var layout = resolveBoxLayout(readCustomSets(), readBoxLayout());
 	var total = 0;
 	BOX_SECTIONS.forEach(function (section) {
-		var zone = $('#box-panel .box-dropzone[data-section="' + section.key + '"]').empty();
+		var zone = $('.box-dropzone[data-section="' + section.key + '"]').empty();
 		layout[section.key].forEach(function (setId) {
 			zone.append(createBoxSprite(setId));
 		});
 		total += layout[section.key].length;
 	});
 	$("#box-panel .box-empty-hint").toggle(total === 0);
+	filterBox();
 	writeBoxLayout(layout);
 	$(document).trigger("box:rendered");
 }
@@ -156,7 +205,7 @@ function renderBox() {
 // Reads the current section and order of every sprite back from the page.
 function saveBoxLayoutFromPage() {
 	var layout = {};
-	$("#box-panel .box-dropzone").each(function () {
+	$(".box-dropzone").each(function () {
 		layout[$(this).attr("data-section")] = $(this).children(".box-pokemon").map(function () {
 			return $(this).attr("data-set-id");
 		}).get();
@@ -165,7 +214,7 @@ function saveBoxLayoutFromPage() {
 }
 
 function deleteTrashedSets() {
-	var trashed = $('#box-panel .box-dropzone[data-section="trash"] .box-pokemon').map(function () {
+	var trashed = $('.box-dropzone[data-section="trash"] .box-pokemon').map(function () {
 		return $(this).attr("data-set-id");
 	}).get();
 	if (!trashed.length) return;
@@ -182,11 +231,21 @@ function loadSetIntoPokemon1(setId) {
 }
 
 function bindBoxEvents() {
-	var panel = $("#box-panel");
+	// Sprites can be dragged between both panels (Team/Box and the Trash).
+	var panel = $("#box-panel, #box-tools");
 	var dragged = null;
 
 	$("#box-delete-trash").click(deleteTrashedSets);
 	$("#box-clear-all").click(confirmClearCustomSets);
+	$("#box-search").on("input", filterBox);
+	$("#box-on-top").prop("checked", isBoxOnTop()).change(function () {
+		try {
+			localStorage.setItem(BOX_ON_TOP_KEY, this.checked);
+		} catch (e) {
+			// Storage unavailable (e.g. private browsing): the choice lasts until reload.
+		}
+		placeBoxPanel(this.checked);
+	});
 	panel.on("click", ".box-pokemon", function () {
 		loadSetIntoPokemon1($(this).attr("data-set-id"));
 	});
@@ -314,7 +373,8 @@ function confirmModeSwitch(fromMode, toMode, proceed, cancel) {
 }
 
 $(document).ready(function () {
-	$("#p1").before(buildBoxPanel());
+	$("#p1").after(buildBoxTools()).before(buildBoxPanel());
+	placeBoxPanel(isBoxOnTop());
 	bindBoxEvents();
 	renderBox();
 	$(document).on("customsets:changed", renderBox);

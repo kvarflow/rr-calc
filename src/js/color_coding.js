@@ -117,6 +117,7 @@ function updatePokemon1HeaderSprite() {
 function buildColorCodingControls() {
 	return $(
 		'<div id="cc-controls">' +
+		'<div class="box-section-label">Color Coding</div>' +
 		'<div class="cc-buttons">' +
 		'<button type="button" id="cc-toggle">Show color coding</button> ' +
 		'<button type="button" id="cc-refresh" class="cc-when-shown">Refresh</button> ' +
@@ -189,7 +190,7 @@ function bindColorCodingEvents() {
 
 $(document).ready(function () {
 	$("#p1 > legend").append(' <span id="p1-header-sprite" class="header-sprite"></span>');
-	$("#box-panel").append(buildColorCodingControls());
+	$("#box-tools").append(buildColorCodingControls());
 	bindColorCodingEvents();
 	updatePokemon1HeaderSprite();
 });
