@@ -2,8 +2,9 @@
  * Opposing trainer navigation, modelled on syl-rnb-calc. Previous / Next Trainer step
  * through this mode's boss fights in game order (TRAINER_ORDER, generated from the boss
  * documents by import/radical-red-trainers), showing each trainer's team under Pokémon 2
- * and loading its first Pokémon there. The Professor Oak button goes back to the first
- * trainer. The current trainer is remembered per mode.
+ * and loading its first Pokémon there. The Professor Oak button starts a new run: after you
+ * confirm your run is over, it wipes this mode's box and goes back to the first trainer.
+ * The current trainer is remembered per mode.
  */
 
 var OAK_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/oak.png";
@@ -157,6 +158,26 @@ function showTrainer(index) {
 	applyBattleEffect(variant.battleEffect);
 }
 
+// The Professor Oak button: your run ended, so this mode's box and progress start over.
+// The other mode's box is not touched.
+function confirmNewRun() {
+	var mode = BOX_TRANSFER_MODES[getPageMode()];
+	var count = getSetIds(readCustomSets()).length;
+	showChoiceDialog(
+		"Start a new run?",
+		"Did your run end? Starting again deletes your " + mode + " Team, Box, Box 2 and Trash" +
+			(count ? " (" + count + " Pok\u00e9mon)" : "") + " and goes back to the first trainer. " +
+			"This cannot be undone.",
+		[{
+			label: "Yes, my run is over: wipe and start again",
+			action: function () {
+				writeBoxLayout({});
+				clearCustomSets();
+				showTrainer(0);
+			}
+		}]);
+}
+
 function buildTrainerPanel() {
 	var panel = $(
 		'<fieldset id="trainer-nav">' +
@@ -169,7 +190,7 @@ function buildTrainerPanel() {
 		'<div class="trainer-buttons">' +
 		'<button type="button" id="previous-trainer">Previous Trainer</button>' +
 		'<button type="button" id="next-trainer">Next Trainer</button>' +
-		'<button type="button" id="reset-trainer" title="Back to the first trainer" aria-label="Back to the first trainer"></button>' +
+		'<button type="button" id="reset-trainer" title="New run: wipe your box and go back to the first trainer" aria-label="Start a new run"></button>' +
 		'</div>' +
 		'</fieldset>');
 	$("<img />")
@@ -188,9 +209,7 @@ function bindTrainerEvents() {
 	$("#next-trainer").click(function () {
 		showTrainer(currentTrainerIndex + 1);
 	});
-	$("#reset-trainer").click(function () {
-		showTrainer(0);
-	});
+	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-starter")
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);

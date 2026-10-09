@@ -339,20 +339,23 @@ function deleteCustomSets(setIds) {
 	if (!hasCustomSets(customsets)) $(allPokemon("#importedSetsOptions")).hide();
 }
 
-// Deletes every custom set in this mode, after asking.
-function confirmClearCustomSets() {
-	if (!confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
-		return;
-	}
+// Deletes every custom set in this mode.
+function clearCustomSets() {
+	// Writes an empty set list rather than removing the key, so this mode does not fall
+	// back to the legacy shared sets on the next load.
 	var customsets = readCustomSets();
 	var allIds = [];
 	for (var pokemonName in customsets) {
 		for (var setName in customsets[pokemonName]) allIds.push(getSetId(pokemonName, setName));
 	}
-	// Writes an empty set list rather than removing the key, so this mode does not fall
-	// back to the legacy shared sets on the next load.
 	deleteCustomSets(allIds);
 	loadDefaultLists();
+}
+
+function confirmClearCustomSets() {
+	if (confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
+		clearCustomSets();
+	}
 }
 
 function addSets(pokes, name) {
