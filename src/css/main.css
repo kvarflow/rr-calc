@@ -792,6 +792,7 @@ table.field {
 #fight-notes {
     width: 27em; /* as wide as the custom set box */
     max-width: 100%;
+    height: 19.2em; /* the Import / Export panel then ends level with the Team/Box panel beside it */
     box-sizing: border-box;
     resize: vertical;
 }
