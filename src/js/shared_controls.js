@@ -318,7 +318,11 @@ $("input[name='weather']").change(function () {
 
 var lastManualWeather = "";
 var lastAutoWeather = ["", ""];
+// Field conditions a boss's battle effect fixes for the whole fight (set by
+// trainer_controls.js): abilities such as Drizzle or Electric Surge cannot change them.
+var lockedField = {weather: false, terrain: false};
 function autosetWeather(ability, i, item) {
+	if (lockedField.weather) return;
 	var currentWeather = $("input:radio[name='weather']:checked").val();
 	if (lastAutoWeather.indexOf(currentWeather) === -1) {
 		lastManualWeather = currentWeather;
@@ -397,6 +401,7 @@ $("input[name='terrain']").change(function () {
 var lastManualTerrain = "";
 var lastAutoTerrain = ["", ""];
 function autosetTerrain(ability, i) {
+	if (lockedField.terrain) return;
 	var currentTerrain = $("input:checkbox[name='terrain']:checked").val() || "No terrain";
 	if (lastAutoTerrain.indexOf(currentTerrain) === -1) {
 		lastManualTerrain = currentTerrain;
@@ -857,7 +862,8 @@ $(".teraToggle").change(function () {
 $(".forme").change(function () {
 	var altForme = pokedex[$(this).val()],
 		container = $(this).closest(".info-group").siblings(),
-		fullSetName = container.find(".select2-chosen").first().text(),
+		// The selector's value, not its displayed text: that may still show the previous set.
+		fullSetName = $(this).closest(".poke-info").find("input.set-selector").val() || "",
 		pokemonName = fullSetName.substring(0, fullSetName.indexOf(" (")),
 		setName = fullSetName.substring(fullSetName.indexOf("(") + 1, fullSetName.lastIndexOf(")"));
 
@@ -977,7 +983,8 @@ function createPokemon(pokeInfo) {
 		var pokemonMoves = [];
 		for (var i = 0; i < 4; i++) {
 			var moveName = moveNames[i];
-			pokemonMoves.push(new calc.Move(gen, moves[moveName] ? moveName : "(No Move)", {ability: ability, item: item}));
+			// The set's ability and item decide multi-hit counts (Skill Link, Loaded Dice).
+			pokemonMoves.push(new calc.Move(gen, moves[moveName] ? moveName : "(No Move)", {ability: set.ability, item: set.item}));
 		}
 
 		if (isRandoms) {

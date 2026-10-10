@@ -528,3 +528,289 @@ table.field {
 .extraSetMoves {
     width: 100%;
 }
+
+/* Team/Box panel and the Trash/color coding panel (box_controls.js), laid out like
+   syl-rnb-calc's: centered section headings, small sprites, a divider under Team. */
+#box-panel, #box-tools {
+    float: none; /* stack with Pokémon 1 instead of floating beside it */
+    clear: both;
+    width: 32em; /* same width as .poke-info */
+    margin-bottom: 10px;
+}
+.box-legend {
+    display: flex;
+    align-items: center;
+    gap: 1em;
+    width: 100%;
+    text-align: left;
+}
+#box-search {
+    flex: 1;
+    min-width: 0;
+    font-weight: normal;
+}
+.box-section-label {
+    font-weight: bold;
+    text-align: center;
+    margin: 4px 0;
+}
+.box-dropzone {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 43px;
+    border-radius: 4px;
+}
+.box-dropzone.box-drag-over {
+    background: rgba(26, 188, 156, 0.2);
+}
+.pokemon-sprite {
+    width: 56px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    cursor: pointer;
+    box-sizing: border-box;
+    border-radius: 20%;
+}
+.pokemon-sprite:hover {
+    outline: 2px solid #1abc9c;
+}
+.pokemon-sprite img {
+    /* The sprites are 40x30 icons, shown at 1.3x. */
+    width: 52px;
+    height: 39px;
+    flex-shrink: 0;
+    pointer-events: none; /* keep the wrapper as the drag/drop target */
+}
+.pokemon-sprite-name {
+    font-size: 9px;
+    line-height: 1.1;
+    text-align: center;
+    overflow-wrap: anywhere;
+}
+.box-empty-hint {
+    font-size: 0.85em;
+    font-style: italic;
+    margin-top: 4px;
+}
+.box-tool-buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+    margin-top: 6px;
+}
+.box-tool-buttons button:hover {
+    background: #722323;
+    color: #fff;
+}
+.box-position-option {
+    display: block;
+    margin-top: 6px;
+}
+
+/* Mode switch dialog asking whether to transfer the box */
+.box-dialog-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+}
+.box-dialog {
+    max-width: 420px;
+    padding: 16px 20px;
+    border-radius: 6px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+.box-dialog h3 {
+    margin-top: 0;
+}
+.box-dialog-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.box-dialog-buttons button {
+    padding: 6px 10px;
+    cursor: pointer;
+}
+.box-dialog-primary {
+    font-weight: bold;
+}
+
+/* Matchup color coding (color_coding.js). Each half of the background is set separately
+   so the "you hit them" and "they hit you" results combine without extra classes. */
+.box-pokemon, .header-sprite, .cc-swatch {
+    --cc-left: transparent;
+    --cc-right: transparent;
+    background: linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
+}
+.cc-swatch {
+    border: 1px solid #888; /* replaced by the speed border on speed swatches */
+}
+.cc-speed-faster, .cc-speed-tie, .cc-speed-slower {
+    border: 3px solid;
+    border-radius: 20%;
+}
+.cc-speed-faster { border-color: #7ee1ff; }
+.cc-speed-tie { border-color: #894197; }
+.cc-speed-slower { border-color: #1c1414; }
+.cc-deal-always { --cc-left: #20d408; }
+.cc-deal-might { --cc-left: #daff08; }
+.cc-take-always { --cc-right: #dd0b0b; }
+.cc-take-might { --cc-right: #ff7f16; }
+.cc-wall { --cc-left: #0f0bf3; --cc-right: #0f0bf3; }
+.cc-hard-counter { --cc-left: #1295ec; --cc-right: #1295ec; }
+.header-sprite {
+    display: inline-block;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+.header-sprite img {
+    max-height: 39px;
+    vertical-align: middle;
+}
+#cc-controls {
+    margin-top: 8px;
+    font-size: 0.9em;
+}
+#cc-controls .cc-when-shown, .cc-explanation {
+    display: none;
+}
+#cc-controls.cc-shown .cc-when-shown {
+    display: inline;
+}
+#cc-controls.cc-shown .cc-options {
+    display: block;
+    margin-top: 4px;
+}
+.cc-options label {
+    display: inline-block;
+    margin-right: 8px;
+}
+.cc-explanation ul {
+    list-style: none;
+    padding-left: 0;
+    margin: 2px 0 6px;
+}
+.cc-swatch {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    vertical-align: middle;
+    box-sizing: border-box;
+}
+
+/* Opposing trainer panel under Pokémon 2 (trainer_controls.js) */
+#trainer-nav, #run-progress {
+    float: none;
+    clear: both;
+    width: 32em; /* same width as .poke-info */
+}
+.trainer-heading {
+    margin-bottom: 4px;
+}
+#trainer-details {
+    font-size: 0.85em;
+}
+#trainer-variant {
+    margin-bottom: 4px;
+}
+.trainer-team {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    min-height: 43px;
+    margin-bottom: 6px;
+}
+.trainer-pokemon-active {
+    outline: 2px solid #1abc9c;
+}
+.trainer-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+#reset-trainer {
+    margin-left: auto; /* sits at the right, like syl-rnb-calc's reset button */
+    width: 34px;
+    height: 34px;
+    padding: 0;
+    overflow: hidden;
+}
+#reset-trainer img {
+    width: 40px;
+    height: 40px;
+    margin: -3px;
+}
+#trainer-effect {
+    font-size: 0.85em;
+    font-style: italic;
+    margin-bottom: 4px;
+}
+.trainer-starter {
+    display: inline-block;
+    margin: 0 8px 4px 0;
+}
+
+/* Field controls a boss's battle effect has locked for the fight. */
+.field-info input:disabled + label {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.field-info input:disabled:checked + label {
+    opacity: 1;
+}
+.battle-effect-lock {
+    display: none;
+    font-size: 0.85em;
+    font-style: italic;
+    text-align: center;
+    margin: 0 4px 5px;
+}
+
+/* Import / Export: the custom set folds away; "Import .sav" stays on the top row. */
+.import-actions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.fight-notes {
+    margin-top: 6px;
+}
+.fight-notes label {
+    display: block;
+    margin-bottom: 2px;
+}
+#fight-notes {
+    width: 27em; /* as wide as the custom set box */
+    max-width: 100%;
+    height: 19.2em; /* the Import / Export panel then ends level with the Team/Box panel beside it */
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* Run progress: KO'd trainer Pokémon and the progress bars under the trainer panel. */
+.trainer-pokemon-ko {
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+.trainer-defeated {
+    font-size: 0.85em;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+.run-progress-row {
+    font-size: 0.85em;
+    margin-bottom: 6px;
+}
+.run-progress-row .hpbar {
+    margin-top: 2px;
+}

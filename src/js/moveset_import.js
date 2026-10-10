@@ -1,3 +1,40 @@
+/*
+ * Imported sets ("custom sets") are the contents of the Team/Box panel. They are stored
+ * per calculator mode under `customsets:<mode>` so that Normal and Hardcore keep separate
+ * boxes. Older versions kept a single shared `customsets` key: a mode with nothing stored
+ * yet starts from that legacy key, which is left untouched so every mode can inherit it.
+ */
+var LEGACY_CUSTOM_SETS_KEY = "customsets";
+
+// The mode this page was served as. Read from the HTML attribute rather than the live
+// `checked` property, which changes as soon as the user clicks another mode.
+function getPageMode() {
+	return $("input.mode[checked]").attr("id");
+}
+
+function getCustomSetsKey(mode) {
+	return "customsets:" + (mode || getPageMode());
+}
+
+function readCustomSets(mode) {
+	var stored = localStorage.getItem(getCustomSetsKey(mode));
+	if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
+	try {
+		return stored ? JSON.parse(stored) : {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function writeCustomSets(customsets, mode) {
+	localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	$(document).trigger("customsets:changed");
+}
+
+function hasCustomSets(customsets) {
+	return Object.keys(customsets).length > 0;
+}
+
 function placeBsBtn() {
 	var importBtn = "<button id='import' class='bs-btn bs-btn-default'>Import</button>";
 	$("#import-1_wrapper").append(importBtn);
@@ -215,92 +252,110 @@ function getMoves(currentPoke, rows, offset) {
 	return currentPoke;
 }
 
-function addToDex(poke) {
-	var dexObject = {};
+// Adds one parsed set to `customsets` (call updateDex afterwards to save and show it).
+function addToDex(poke, customsets) {
 	poke.name = getSpeciesKey(poke.name);
 	poke.nameProp = normalizeCalcText(poke.nameProp);
-	if ($("#randoms").prop("checked")) {
-		if (GEN9RANDOMBATTLE[poke.name] == undefined) GEN9RANDOMBATTLE[poke.name] = {};
-		if (GEN8RANDOMBATTLE[poke.name] == undefined) GEN8RANDOMBATTLE[poke.name] = {};
-		if (GEN7RANDOMBATTLE[poke.name] == undefined) GEN7RANDOMBATTLE[poke.name] = {};
-		if (GEN6RANDOMBATTLE[poke.name] == undefined) GEN6RANDOMBATTLE[poke.name] = {};
-		if (GEN5RANDOMBATTLE[poke.name] == undefined) GEN5RANDOMBATTLE[poke.name] = {};
-		if (GEN4RANDOMBATTLE[poke.name] == undefined) GEN4RANDOMBATTLE[poke.name] = {};
-		if (GEN3RANDOMBATTLE[poke.name] == undefined) GEN3RANDOMBATTLE[poke.name] = {};
-		if (GEN2RANDOMBATTLE[poke.name] == undefined) GEN2RANDOMBATTLE[poke.name] = {};
-		if (GEN1RANDOMBATTLE[poke.name] == undefined) GEN1RANDOMBATTLE[poke.name] = {};
-	} else {
-		if (SETDEX_SV[poke.name] == undefined) SETDEX_SV[poke.name] = {};
-		if (SETDEX_SS[poke.name] == undefined) SETDEX_SS[poke.name] = {};
-		if (SETDEX_SM[poke.name] == undefined) SETDEX_SM[poke.name] = {};
-		if (SETDEX_XY[poke.name] == undefined) SETDEX_XY[poke.name] = {};
-		if (SETDEX_BW[poke.name] == undefined) SETDEX_BW[poke.name] = {};
-		if (SETDEX_DPP[poke.name] == undefined) SETDEX_DPP[poke.name] = {};
-		if (SETDEX_ADV[poke.name] == undefined) SETDEX_ADV[poke.name] = {};
-		if (SETDEX_GSC[poke.name] == undefined) SETDEX_GSC[poke.name] = {};
-		if (SETDEX_RBY[poke.name] == undefined) SETDEX_RBY[poke.name] = {};
-	}
-	if (poke.ability !== undefined) {
-		dexObject.ability = poke.ability;
-	}
-	if (poke.teraType !== undefined) {
-		dexObject.teraType = poke.teraType;
-	}
-	dexObject.level = poke.level;
-	dexObject.evs = poke.evs;
-	dexObject.ivs = poke.ivs;
-	dexObject.moves = poke.moves;
-	dexObject.nature = poke.nature;
-	dexObject.item = poke.item;
-	dexObject.isCustomSet = poke.isCustomSet;
-	var customsets;
-	if (localStorage.customsets) {
-		customsets = JSON.parse(localStorage.customsets);
-	} else {
-		customsets = {};
-	}
-	if (!customsets[poke.name]) {
-		customsets[poke.name] = {};
-	}
+	var dexObject = {
+		level: poke.level,
+		evs: poke.evs,
+		ivs: poke.ivs,
+		moves: poke.moves,
+		nature: poke.nature,
+		item: poke.item,
+		isCustomSet: poke.isCustomSet
+	};
+	if (poke.ability !== undefined) dexObject.ability = poke.ability;
+	if (poke.teraType !== undefined) dexObject.teraType = poke.teraType;
+	customsets[poke.name] = customsets[poke.name] || {};
 	customsets[poke.name][poke.nameProp] = dexObject;
 	if (poke.name === "Aegislash-Blade") {
-		if (!customsets["Aegislash-Shield"]) {
-			customsets["Aegislash-Shield"] = {};
-		}
+		customsets["Aegislash-Shield"] = customsets["Aegislash-Shield"] || {};
 		customsets["Aegislash-Shield"][poke.nameProp] = dexObject;
 	}
-	updateDex(customsets);
+}
+
+// Every generation's set list; imported sets are added to all of them.
+function getAllSetdexes() {
+	return [SETDEX_SV, SETDEX_SS, SETDEX_SM, SETDEX_XY, SETDEX_BW, SETDEX_DPP, SETDEX_ADV, SETDEX_GSC, SETDEX_RBY];
 }
 
 function updateDex(customsets) {
 	var normalizedCustomsets = {};
+	var setdexes = getAllSetdexes();
 	for (var pokemon in customsets) {
 		var pokemonName = getSpeciesKey(pokemon);
 		if (!normalizedCustomsets[pokemonName]) normalizedCustomsets[pokemonName] = {};
 		for (var moveset in customsets[pokemon]) {
 			var setName = normalizeCalcText(moveset);
 			normalizedCustomsets[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SV[pokemonName]) SETDEX_SV[pokemonName] = {};
-			SETDEX_SV[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SS[pokemonName]) SETDEX_SS[pokemonName] = {};
-			SETDEX_SS[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_SM[pokemonName]) SETDEX_SM[pokemonName] = {};
-			SETDEX_SM[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_XY[pokemonName]) SETDEX_XY[pokemonName] = {};
-			SETDEX_XY[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_BW[pokemonName]) SETDEX_BW[pokemonName] = {};
-			SETDEX_BW[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_DPP[pokemonName]) SETDEX_DPP[pokemonName] = {};
-			SETDEX_DPP[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_ADV[pokemonName]) SETDEX_ADV[pokemonName] = {};
-			SETDEX_ADV[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_GSC[pokemonName]) SETDEX_GSC[pokemonName] = {};
-			SETDEX_GSC[pokemonName][setName] = customsets[pokemon][moveset];
-			if (!SETDEX_RBY[pokemonName]) SETDEX_RBY[pokemonName] = {};
-			SETDEX_RBY[pokemonName][setName] = customsets[pokemon][moveset];
+			for (var i = 0; i < setdexes.length; i++) {
+				if (!setdexes[i][pokemonName]) setdexes[i][pokemonName] = {};
+				setdexes[i][pokemonName][setName] = customsets[pokemon][moveset];
+			}
 		}
 	}
-	localStorage.customsets = JSON.stringify(normalizedCustomsets);
+	writeCustomSets(normalizedCustomsets);
+}
+
+// Removes a set from the in-memory set lists (not from storage).
+function removeFromDex(pokemonName, setName) {
+	getAllSetdexes().forEach(function (setdex) {
+		if (setdex[pokemonName]) delete setdex[pokemonName][setName];
+	});
+}
+
+// Set ids, as used by the set selector and the box, are "Species (Set Name)".
+function getSetId(pokemonName, setName) {
+	return pokemonName + " (" + setName + ")";
+}
+
+// Splits a set id such as "Garchomp (Custom Set)" into its species and set name.
+function splitSetId(setId) {
+	var open = setId.indexOf(" (");
+	return {pokemonName: setId.substring(0, open), setName: setId.substring(open + 2, setId.lastIndexOf(")"))};
+}
+
+// Removes one set from a custom set object and from the in-memory set lists.
+function removeCustomSet(customsets, pokemonName, setName) {
+	// addToDex mirrors Aegislash-Blade sets onto Aegislash-Shield, so remove both.
+	var names = pokemonName === "Aegislash-Blade" ? [pokemonName, "Aegislash-Shield"] : [pokemonName];
+	names.forEach(function (name) {
+		if (!customsets[name]) return;
+		delete customsets[name][setName];
+		removeFromDex(name, setName);
+		if (!Object.keys(customsets[name]).length) delete customsets[name];
+	});
+}
+
+// Permanently deletes the given sets ("Species (Set Name)" ids) from this mode.
+function deleteCustomSets(setIds) {
+	var customsets = readCustomSets();
+	setIds.forEach(function (setId) {
+		var set = splitSetId(setId);
+		removeCustomSet(customsets, set.pokemonName, set.setName);
+	});
+	writeCustomSets(customsets);
+	if (!hasCustomSets(customsets)) $(allPokemon("#importedSetsOptions")).hide();
+}
+
+// Deletes every custom set in this mode.
+function clearCustomSets() {
+	// Writes an empty set list rather than removing the key, so this mode does not fall
+	// back to the legacy shared sets on the next load.
+	var customsets = readCustomSets();
+	var allIds = [];
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) allIds.push(getSetId(pokemonName, setName));
+	}
+	deleteCustomSets(allIds);
+	loadDefaultLists();
+}
+
+function confirmClearCustomSets() {
+	if (confirm("Are you sure you want to delete your custom sets for this mode? This empties your Team/Box and cannot be undone.")) {
+		clearCustomSets();
+	}
 }
 
 function addSets(pokes, name) {
@@ -309,13 +364,13 @@ function addSets(pokes, name) {
 	var currentRow;
 	var currentPoke;
 	var addedpokes = 0;
+	var customsets = readCustomSets();
 	for (var i = 0; i < rows.length; i++) {
 		currentRow = rows[i].split(/[()@]/);
 		for (var j = 0; j < currentRow.length; j++) {
 			currentRow[j] = getSpeciesKey(checkExeptions(currentRow[j].trim()));
 			if (calc.SPECIES[9][currentRow[j]] !== undefined) {
-				currentPoke = calc.SPECIES[9][currentRow[j]];
-				currentPoke.name = currentRow[j];
+				currentPoke = {name: currentRow[j]};
 				currentPoke.item = getItem(currentRow, j + 1);
 				if (j === 1 && currentRow[0].trim()) {
 					currentPoke.nameProp = normalizeCalcText(currentRow[0].trim());
@@ -327,12 +382,14 @@ function addSets(pokes, name) {
 				currentPoke.teraType = getTeraType(rows[i + 1].split(":"));
 				currentPoke = getStats(currentPoke, rows, i + 1);
 				currentPoke = getMoves(currentPoke, rows, i);
-				addToDex(currentPoke);
+				addToDex(currentPoke, customsets);
 				addedpokes++;
 			}
 		}
 	}
 	if (addedpokes > 0) {
+		// Saved once for the whole import, which also redraws the box once.
+		updateDex(customsets);
 		alert("Successfully imported " + addedpokes + " set(s)");
 		$(allPokemon("#importedSetsOptions")).css("display", "inline");
 	} else {
@@ -390,14 +447,7 @@ function checkExeptions(poke) {
 
 }
 
-$(allPokemon("#clearSets")).click(function () {
-	if (confirm("Are you sure you want to delete your custom sets? This action cannot be undone.")) {
-		localStorage.removeItem("customsets");
-		alert("Custom Sets successfully cleared. Please refresh the page.");
-		$(allPokemon("#importedSetsOptions")).hide();
-		loadDefaultLists();
-	}
-});
+$(allPokemon("#clearSets")).click(confirmClearCustomSets);
 
 $(allPokemon("#importedSets")).click(function () {
 	var pokeID = $(this).parent().parent().prop("id");
@@ -410,10 +460,9 @@ $(allPokemon("#importedSets")).click(function () {
 });
 
 $(document).ready(function () {
-	var customSets;
+	var customSets = readCustomSets();
 	placeBsBtn();
-	if (localStorage.customsets) {
-		customSets = JSON.parse(localStorage.customsets);
+	if (hasCustomSets(customSets)) {
 		updateDex(customSets);
 		$(allPokemon("#importedSetsOptions")).css("display", "inline");
 	} else {

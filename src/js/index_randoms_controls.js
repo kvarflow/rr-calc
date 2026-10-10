@@ -51,7 +51,7 @@ function performCalculations() {
 	for (var i = 0; i < 4; i++) {
 		// P1
 		result = damageResults[0][i];
-		maxDamage = result.range()[1] * p1.moves[i].hits;
+		maxDamage = result.range()[1]; // already every hit of a multi-hit move
 		if (!zProtectAlerted && maxDamage > 0 && p1.item.indexOf(" Z") === -1 && p1field.defenderSide.isProtected && p1.moves[i].isZ) {
 			alert('Although only possible while hacking, Z-Moves fully damage through protect without a Z-Crystal');
 			zProtectAlerted = true;
@@ -65,7 +65,7 @@ function performCalculations() {
 
 		// P2
 		result = damageResults[1][i];
-		maxDamage = result.range()[1] * p2.moves[i].hits;
+		maxDamage = result.range()[1];
 		if (!zProtectAlerted && maxDamage > 0 && p2.item.indexOf(" Z") === -1 && p2field.defenderSide.isProtected && p2.moves[i].isZ) {
 			alert('Although only possible while hacking, Z-Moves fully damage through protect without a Z-Crystal');
 			zProtectAlerted = true;
@@ -163,70 +163,45 @@ function calculateAllMoves(gen, p1, p1field, p2, p2field) {
 }
 
 $(".mode").change(function () {
-	var params = new URLSearchParams(window.location.search);
-	params.set('mode', $(this).attr("id"));
-	var mode = params.get('mode');
-	if (mode === 'randoms') {
-		window.location.replace('randoms' + linkExtension + '?' + params);
-	} else if (mode === 'one-vs-one') {
-		window.location.replace('index' + linkExtension + '?' + params);
-	} else if (mode === 'normal') {
-		window.location.replace('normal' + linkExtension + '?' + params);
-	} else if (mode === 'hardcore') {
-		window.location.replace('hardcore' + linkExtension + '?' + params);
-	} else if (mode === "oms") {
-		window.location.replace('oms' + linkExtension);
+	var fromMode = getPageMode();
+	var toMode = $(this).attr("id");
+	var navigate = function () {
+		navigateToMode(toMode);
+	};
+	// The box (box_controls.js) is not loaded on every page, e.g. Other Metagames.
+	if (typeof confirmModeSwitch === "function") {
+		confirmModeSwitch(fromMode, toMode, navigate, function () {
+			$("#" + fromMode).prop("checked", true);
+		});
 	} else {
-		window.location.replace('honkalculate' + linkExtension + '?' + params);
+		navigate();
 	}
 });
+
+// The page serving each mode. Other modes (One vs All, All vs One) live on honkalculate.
+var MODE_PAGES = {"one-vs-one": "index", normal: "normal", hardcore: "hardcore"};
+// Modes that have been removed, and the mode old links to them now open.
+var RETIRED_MODES = {randoms: "normal"};
+
+function navigateToMode(mode) {
+	var params = new URLSearchParams(window.location.search);
+	params.set('mode', mode);
+	if (mode === "oms") {
+		window.location.replace('oms' + linkExtension);
+	} else {
+		window.location.replace((MODE_PAGES[mode] || 'honkalculate') + linkExtension + '?' + params);
+	}
+}
 
 $(".notation").change(function () {
 	performCalculations();
 });
 
 $(document).ready(function () {
-	var params = new URLSearchParams(window.location.search);
-	var m = params.get('mode');
-	if (m) {
-		if (m !== 'one-vs-one' && m !== 'randoms' && m !== 'normal' && m !== 'hardcore') {
-			window.location.replace('honkalculate' + linkExtension + '?' + params);
-		} else {
-			if ($('#randoms').prop('checked')) {
-				if (m === 'one-vs-one') {
-					window.location.replace('index' + linkExtension + '?' + params);
-				} else if (m === 'normal') {
-					window.location.replace('normal' + linkExtension + '?' + params);
-				} else if (m === 'hardcore') {
-					window.location.replace('hardcore' + linkExtension + '?' + params);
-				}
-			} else if ($('#normal').prop('checked')) {
-				if (m === 'one-vs-one') {
-					window.location.replace('index' + linkExtension + '?' + params);
-				} else if (m === 'randoms') {
-					window.location.replace('randoms' + linkExtension + '?' + params);
-				} else if (m === 'hardcore') {
-					window.location.replace('hardcore' + linkExtension + '?' + params);
-				}
-			} else if ($('#hardcore').prop('checked')) {
-				if (m === 'one-vs-one') {
-					window.location.replace('index' + linkExtension + '?' + params);
-				} else if (m === 'randoms') {
-					window.location.replace('randoms' + linkExtension + '?' + params);
-				} else if (m === 'normal') {
-					window.location.replace('normal' + linkExtension + '?' + params);
-				}
-			} else {
-				if (m === 'randoms') {
-					window.location.replace('randoms' + linkExtension + '?' + params);
-				} else if (m === 'normal') {
-					window.location.replace('normal' + linkExtension + '?' + params);
-				} else if (m === 'hardcore') {
-					window.location.replace('hardcore' + linkExtension + '?' + params);
-				}
-			}
-		}
-	}
+	// Open the page for the ?mode= in the URL if this page is not already it.
+	var mode = new URLSearchParams(window.location.search).get('mode');
+	mode = RETIRED_MODES[mode] || mode;
+	if (mode && mode !== getPageMode()) navigateToMode(mode);
 	$(".calc-trigger").bind("change keyup", PC_HANDLER);
 	performCalculations();
 });

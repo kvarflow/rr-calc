@@ -243,11 +243,6 @@ $(".mode").change(function () {
 		params.delete('mode');
 		params = '' + params;
 		window.location.replace('index' + linkExtension + (params.length ? '?' + params : ''));
-	} else if ($("#randoms").prop("checked")) {
-		var params = new URLSearchParams(window.location.search);
-		params.delete('mode');
-		params = '' + params;
-		window.location.replace('randoms' + linkExtension + (params.length ? '?' + params : ''));
 	} else if ($("#oms").prop("checked")) {
 		var params = new URLSearchParams(window.location.search);
 		params.delete('mode');
@@ -318,9 +313,7 @@ $(document).ready(function () {
 	var params = new URLSearchParams(window.location.search);
 	window.mode = params.get("mode");
 	if (window.mode) {
-		if (window.mode === "randoms") {
-			window.location.replace("randoms" + linkExtension + "?" + params);
-		} else if (window.mode !== "one-vs-all" && window.mode !== "all-vs-one") {
+		if (window.mode !== "one-vs-all" && window.mode !== "all-vs-one") {
 			window.location.replace("index" + linkExtension + "?" + params);
 		}
 	} else {
