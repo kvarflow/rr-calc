@@ -709,7 +709,7 @@ table.field {
 }
 
 /* Opposing trainer panel under Pokémon 2 (trainer_controls.js) */
-#trainer-nav {
+#trainer-nav, #run-progress {
     float: none;
     clear: both;
     width: 32em; /* same width as .poke-info */
@@ -774,4 +774,42 @@ table.field {
     font-style: italic;
     text-align: center;
     margin: 0 4px 5px;
+}
+
+/* Import / Export: the custom set folds away; "Import .sav" stays on the top row. */
+.import-actions {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+.fight-notes {
+    margin-top: 6px;
+}
+.fight-notes label {
+    display: block;
+    margin-bottom: 2px;
+}
+#fight-notes {
+    width: 27em; /* as wide as the custom set box */
+    max-width: 100%;
+    box-sizing: border-box;
+    resize: vertical;
+}
+
+/* Run progress: KO'd trainer Pokémon and the progress bars under the trainer panel. */
+.trainer-pokemon-ko {
+    opacity: 0.35;
+    filter: grayscale(1);
+}
+.trainer-defeated {
+    font-size: 0.85em;
+    margin-left: 4px;
+    white-space: nowrap;
+}
+.run-progress-row {
+    font-size: 0.85em;
+    margin-bottom: 6px;
+}
+.run-progress-row .hpbar {
+    margin-top: 2px;
 }

@@ -21,22 +21,6 @@ function getTrainerIndexKey() {
 	return "trainerIndex:" + getPageMode();
 }
 
-function readSetting(key) {
-	try {
-		return localStorage.getItem(key);
-	} catch (e) {
-		return null;
-	}
-}
-
-function writeSetting(key, value) {
-	try {
-		localStorage.setItem(key, value);
-	} catch (e) {
-		// Storage unavailable (e.g. private browsing): the choice lasts until reload.
-	}
-}
-
 var currentTrainerIndex = 0;
 var currentBattleEffect = "";
 // The Field controls the current fight's battle effect has set and locked.
@@ -154,15 +138,26 @@ function describeTrainer(trainer, index) {
 	].concat(trainer.optional ? ["Optional"] : []).join(" · ");
 }
 
-function markActiveTrainerPokemon(setId) {
-	$("#trainer-team .pokemon-sprite").each(function () {
-		$(this).toggleClass("trainer-pokemon-active", $(this).attr("data-set-id") === setId);
+// The team slot loaded into Pokémon 2. A team can repeat a set (Creator's five Shedinja),
+// so slots, not set ids, say which Pokémon is meant.
+var activeTrainerSlot = 0;
+
+function markActiveTrainerPokemon(slot) {
+	activeTrainerSlot = slot;
+	$("#trainer-team .pokemon-sprite").each(function (i) {
+		$(this).toggleClass("trainer-pokemon-active", i === slot);
 	});
+	$(document).trigger("trainer:active");
 }
 
-function loadTrainerPokemon(setId) {
+function loadTrainerPokemon(setId, slot) {
 	loadSetIntoPokemon("#p2", setId);
-	markActiveTrainerPokemon(setId);
+	if (slot === undefined) {
+		slot = $("#trainer-team .pokemon-sprite").map(function () {
+			return $(this).attr("data-set-id");
+		}).get().indexOf(setId);
+	}
+	markActiveTrainerPokemon(slot);
 	// "Swellow is pre-burned": that Pokémon starts the battle burned.
 	var preBurned = currentBattleEffect.match(/(\S+) is pre-burned/i);
 	if (preBurned && getPokemonName(setId).toLowerCase().indexOf(preBurned[1].toLowerCase()) === 0) {
@@ -193,9 +188,10 @@ function showTrainer(index) {
 	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
 	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
 	currentBattleEffect = variant.battleEffect || "";
-	if (variant.sets.length) loadTrainerPokemon(variant.sets[0]);
+	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
 	// After loading, since a Pokémon's ability (e.g. Drizzle) can set the weather itself.
 	applyBattleEffect(variant.battleEffect, trainer.name);
+	$(document).trigger("trainer:shown");
 }
 
 // The Professor Oak button: your run ended, so this mode's box and progress start over.
@@ -206,13 +202,14 @@ function confirmNewRun() {
 	showChoiceDialog(
 		"Start a new run?",
 		"Did your run end? Starting again deletes your " + mode + " Team, Box, Box 2 and Trash" +
-			(count ? " (" + count + " Pok\u00e9mon)" : "") + " and goes back to the first trainer. " +
-			"This cannot be undone.",
+			(count ? " (" + count + " Pok\u00e9mon)" : "") + ", clears your KOs and defeated trainers, " +
+			"and goes back to the first trainer. Your Fight Notes are kept. This cannot be undone.",
 		[{
 			label: "Yes, my run is over: wipe and start again",
 			action: function () {
 				writeBoxLayout({});
 				clearCustomSets();
+				clearTrainerProgress();
 				showTrainer(0);
 			}
 		}]);
@@ -264,7 +261,7 @@ function bindTrainerEvents() {
 		showTrainer(currentTrainerIndex);
 	});
 	$("#trainer-team").on("click", ".pokemon-sprite", function () {
-		loadTrainerPokemon($(this).attr("data-set-id"));
+		loadTrainerPokemon($(this).attr("data-set-id"), $(this).index());
 	});
 }
 

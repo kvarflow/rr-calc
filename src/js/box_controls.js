@@ -8,6 +8,24 @@
  * in what order, under `boxlayout:<mode>`.
  */
 
+// Per-browser settings; storage can be unavailable (e.g. private browsing), in which case
+// the choice lasts until the page reloads.
+function readSetting(key) {
+	try {
+		return localStorage.getItem(key);
+	} catch (e) {
+		return null;
+	}
+}
+
+function writeSetting(key, value) {
+	try {
+		localStorage.setItem(key, value);
+	} catch (e) {
+		// Storage unavailable: nothing to keep.
+	}
+}
+
 var BOX_SECTIONS = [
 	{key: "team", label: "Team"},
 	{key: "box", label: "Box"},
