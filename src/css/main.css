@@ -668,14 +668,27 @@ table.field {
 .cc-take-might { --cc-right: #ff7f16; }
 .cc-wall { --cc-left: #0f0bf3; --cc-right: #0f0bf3; }
 .cc-hard-counter { --cc-left: #1295ec; --cc-right: #1295ec; }
-.header-sprite {
-    display: inline-block;
+/* A fixed box with the sprite centred in it, so the legend is sized right before the image
+   loads, and a matching space on the left keeps the panel's title centred. (".poke-info"
+   beats the panel's ".poke-info span" width.) */
+.poke-info .header-sprite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 33px;
+    margin-left: 4px;
     vertical-align: middle;
     box-sizing: border-box;
 }
 .header-sprite img {
-    max-height: 39px;
-    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+}
+legend:has(> .header-sprite)::before {
+    content: "";
+    display: inline-block;
+    width: 48px;
 }
 #cc-controls {
     margin-top: 8px;
@@ -978,4 +991,8 @@ body.hide-box-search #box-search,
 body.hide-range-compare #range-compare,
 body.hide-range-compare .rc-add {
     display: none !important;
+}.boost-note {
+    margin: 4px 0;
+    font-size: 0.85em;
+    font-style: italic;
 }

@@ -36,7 +36,9 @@ var CHANGELOG = [
 		"Export All, click the damage rolls to copy them, Escape clears the box search",
 		"Fold away parts of the Pokémon panels; save base stat and type overrides",
 		"\"Base form\" for a trainer's Mega before it Mega Evolves",
-		"Trainer above Pokémon 2, and these settings"
+		"Trainer above Pokémon 2, and these settings",
+		"A trainer's weather and terrain (Thwackey's Grassy Surge) stay up when it switches out",
+		"A note when Simple or Contrary changes how stat boosts add up"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

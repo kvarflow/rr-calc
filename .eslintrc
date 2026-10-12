@@ -52,6 +52,8 @@
         "createPokemon": false,
         "getPageMode": false,
         "lockedField": false,
+        "lastAutoWeather": false,
+        "lastAutoTerrain": false,
         "readSetting": false,
         "performCalculations": false,
         "writeSetting": false,

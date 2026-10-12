@@ -153,8 +153,33 @@ function markActiveTrainerPokemon(slot) {
 	$(document).trigger("trainer:active");
 }
 
+/*
+ * Weather and terrain a trainer's Pokémon sets up (Thwackey's Grassy Surge) last several turns,
+ * so they stay up when it switches out: loading a teammate keeps them instead of turning them
+ * off. Turn them off yourself when they run out. Primal weather ends with its Pokémon.
+ */
+var CARRIED_WEATHER = ["Sun", "Rain", "Sand", "Hail", "Snow"];
+var fightField = {weather: "", terrain: ""};
+
+function keepFightField() {
+	var weather = lastAutoWeather[1];
+	var terrain = lastAutoTerrain[1];
+	if (CARRIED_WEATHER.indexOf(weather) !== -1) fightField.weather = weather;
+	if (terrain) fightField.terrain = terrain;
+	// Only when loading turned it off: weather your Pokémon set since then stays.
+	if (!lockedField.weather && !weather && fightField.weather && !$("input:radio[name='weather']:checked").val()) {
+		lastAutoWeather[1] = fightField.weather;
+		$("input:radio[name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
+	}
+	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input:checkbox[name='terrain']:checked").length) {
+		lastAutoTerrain[1] = fightField.terrain;
+		$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
+	}
+}
+
 function loadTrainerPokemon(setId, slot) {
 	loadSetIntoPokemon("#p2", setId);
+	keepFightField();
 	if (slot === undefined) {
 		slot = $("#trainer-team .pokemon-sprite").map(function () {
 			return $(this).attr("data-set-id");
@@ -225,6 +250,7 @@ function showTrainer(index) {
 	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
 	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
 	currentBattleEffect = variant.battleEffect || "";
+	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
 	// After loading, since a Pokémon's ability (e.g. Drizzle) can set the weather itself.
 	applyBattleEffect(variant.battleEffect, trainer.name);
@@ -296,6 +322,13 @@ function bindTrainerEvents() {
 	});
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);
+	// Turning the kept weather or terrain off (it ran out) stops it coming back.
+	$("input:radio[name='weather']").change(function () {
+		if (this.checked && this.value !== fightField.weather) fightField.weather = "";
+	});
+	$("input:checkbox[name='terrain']").change(function () {
+		if (!$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
+	});
 	$("#trainer-on-top").prop("checked", readSetting(TRAINER_ON_TOP_KEY) === "true").change(function () {
 		writeSetting(TRAINER_ON_TOP_KEY, this.checked);
 		placeTrainerPanel(this.checked);
