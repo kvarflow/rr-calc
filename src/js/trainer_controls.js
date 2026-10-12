@@ -145,6 +145,8 @@ var activeTrainerSlot = 0;
 
 function markActiveTrainerPokemon(slot) {
 	activeTrainerSlot = slot;
+	showingMegaBase = false;
+	updateMegaFormButton();
 	$("#trainer-team .pokemon-sprite").each(function (i) {
 		$(this).toggleClass("trainer-pokemon-active", i === slot);
 	});
@@ -164,6 +166,40 @@ function loadTrainerPokemon(setId, slot) {
 	if (preBurned && getPokemonName(setId).toLowerCase().indexOf(preBurned[1].toLowerCase()) === 0) {
 		$("#p2 .status").val("Burned").change();
 	}
+}
+
+/*
+ * A trainer's Mega starts the fight in its base form and Mega Evolves when it first attacks.
+ * "Base form" switches Pokémon 2 to that form, with the ability the boss document gives it
+ * before Mega Evolving (Kangaskhan's Inner Focus); "Mega form" switches back.
+ */
+var showingMegaBase = false;
+
+function getActiveTrainerSet() {
+	return getTrainerVariant(TRAINER_ORDER[currentTrainerIndex]).sets[activeTrainerSlot];
+}
+
+function updateMegaFormButton() {
+	var setId = getActiveTrainerSet() || "";
+	$("#trainer-mega-form")
+		.toggle(/-Mega/.test(getPokemonName(setId)))
+		.text(showingMegaBase ? "Mega form" : "Base form")
+		.attr("title", showingMegaBase ? "Back to the Mega Evolved form" : "Before it Mega Evolves: base form and ability");
+}
+
+function toggleMegaForm() {
+	var setId = getActiveTrainerSet();
+	if (showingMegaBase) {
+		loadTrainerPokemon(setId, activeTrainerSlot);
+		return;
+	}
+	var baseName = getPokemonName(setId).split("-Mega")[0];
+	var variant = getTrainerVariant(TRAINER_ORDER[currentTrainerIndex]);
+	var ability = (variant.preMega && variant.preMega[activeTrainerSlot]) || pokedex[baseName].abilities[0];
+	$("#p2 .forme").val(baseName).change();
+	$("#p2 .ability").val(ability).change();
+	showingMegaBase = true;
+	updateMegaFormButton();
 }
 
 function showTrainer(index) {
@@ -228,6 +264,7 @@ function buildTrainerPanel() {
 		'<div class="trainer-buttons">' +
 		'<button type="button" id="previous-trainer">Previous Trainer</button>' +
 		'<button type="button" id="next-trainer">Next Trainer</button>' +
+		'<button type="button" id="trainer-mega-form"></button>' +
 		'<button type="button" id="reset-trainer" title="New run: wipe your box and go back to the first trainer" aria-label="Start a new run"></button>' +
 		'</div>' +
 		'</fieldset>');
@@ -248,6 +285,7 @@ function bindTrainerEvents() {
 		showTrainer(currentTrainerIndex + 1);
 	});
 	$("#reset-trainer").click(confirmNewRun);
+	$("#trainer-mega-form").click(toggleMegaForm);
 	$("#trainer-starter")
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);

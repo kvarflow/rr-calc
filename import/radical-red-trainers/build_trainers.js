@@ -155,6 +155,15 @@ function documentedAbility(doc, species) {
 	return (lines.filter(a => a.tag !== 'mega')[0] || lines[0]).name;
 }
 
+// The documented ability before Mega Evolving: the first line not marked "(Mega)" ("Levitate"
+// of "Levitate / Shadow Tag"); of "Flash Fire or White Smoke", the first.
+function preMegaAbility(doc) {
+	const line = doc.abilityLines.filter(a => a.tag !== 'mega')[0];
+	if (!line) return null;
+	if (ABILITY_NAMES.indexOf(line.name) !== -1) return line.name;
+	return resolve('ability', line.name.split(/\s+or\s+/)[0]);
+}
+
 // Overwrites a set with the documented values.
 function applyDocument(doc, set, species) {
 	if (doc.level !== null) set.level = doc.level;
@@ -274,7 +283,9 @@ function matchDocument(documented, setdex) {
 			const used = {};
 			const reuse = {};
 			const label = titleCase(t.name) + (t.variants.length > 1 ? ' (' + variantLabel(v.note, vi) + ')' : '');
-			const sets = team.map(m => {
+			// The ability a trainer's Mega has before it Mega Evolves, by team slot.
+			const preMega = {};
+			const sets = team.map((m, slot) => {
 				const candidates = [];
 				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
 					if (trainers.indexOf(trainerOf(n)) !== -1 && !used[sp + ' (' + n + ')']) candidates.push({species: sp, name: n});
@@ -298,6 +309,10 @@ function matchDocument(documented, setdex) {
 					return null;
 				}
 				const setId = best.species + ' (' + best.name + ')';
+				if (/-Mega/.test(best.species)) {
+					const ability = preMegaAbility(m);
+					if (ability) preMega[slot] = ability;
+				}
 				used[setId] = true;
 				if (!claims[setId]) claims[setId] = key;
 				reuse[m.species] = best;
@@ -314,7 +329,9 @@ function matchDocument(documented, setdex) {
 				}
 				return setId;
 			}).filter(Boolean);
-			return {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
+			const variant = {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
+			if (Object.keys(preMega).length) variant.preMega = preMega;
+			return variant;
 		})
 	}));
 	return {order, report, stats};

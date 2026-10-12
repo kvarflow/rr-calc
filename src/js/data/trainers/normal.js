@@ -417,7 +417,10 @@ var TRAINER_ORDER = [
      "Bellibolt (Leader Lt. Surge)",
      "Pawmot (Leader Lt. Surge)",
      "Manectric-Mega (Leader Lt. Surge)"
-    ]
+    ],
+    "preMega": {
+     "4": "Intimidate"
+    }
    }
   ]
  },
@@ -455,7 +458,10 @@ var TRAINER_ORDER = [
      "Skeledirge (*Leader Morty)",
      "Gengar-Mega (*Leader Morty Set 1)",
      "Ceruledge (*Leader Morty)"
-    ]
+    ],
+    "preMega": {
+     "4": "Levitate"
+    }
    }
   ]
  },
@@ -474,7 +480,10 @@ var TRAINER_ORDER = [
      "Venusaur-Mega (Leader Erika)",
      "Meganium (Leader Erika)",
      "Electrode-Hisui (Leader Erika)"
-    ]
+    ],
+    "preMega": {
+     "2": "Overgrow"
+    }
    }
   ]
  },
@@ -548,7 +557,10 @@ var TRAINER_ORDER = [
      "Kangaskhan-Mega (Boss Giovanni Set 1)",
      "Orthworm (Boss Giovanni)",
      "Veluza (Boss Giovanni)"
-    ]
+    ],
+    "preMega": {
+     "3": "Inner Focus"
+    }
    }
   ]
  },
@@ -568,7 +580,10 @@ var TRAINER_ORDER = [
      "Ferrothorn (*PkMn Trainer Cole)",
      "Gastrodon (*PkMn Trainer Cole)",
      "Centiskorch-Mega (*PkMn Trainer Cole)"
-    ]
+    ],
+    "preMega": {
+     "5": "Flash Fire"
+    }
    }
   ]
  },
@@ -585,7 +600,10 @@ var TRAINER_ORDER = [
      "Luvdisc (*PkMn Trainer Sam)",
      "Flapple-Mega (*PkMn Trainer Sam)",
      "Farfetch’d (*PkMn Trainer Sam)"
-    ]
+    ],
+    "preMega": {
+     "1": "Hustle"
+    }
    }
   ]
  },
@@ -603,7 +621,10 @@ var TRAINER_ORDER = [
      "Granbull (*PkMn Trainer Shelly)",
      "Appletun-Mega (*PkMn Trainer Shelly)",
      "Cinccino (*PkMn Trainer Shelly)"
-    ]
+    ],
+    "preMega": {
+     "2": "Thick Fat"
+    }
    }
   ]
  },
@@ -637,7 +658,10 @@ var TRAINER_ORDER = [
      "Jumpluff (*Rival Blue)",
      "Darmanitan (*Rival Blue Set 1)",
      "Blastoise-Mega (*Rival Blue Set 1)"
-    ]
+    ],
+    "preMega": {
+     "4": "Torrent"
+    }
    }
   ]
  },
@@ -657,7 +681,11 @@ var TRAINER_ORDER = [
      "Gothitelle (Rocket Admin Archer)",
      "Gholdengo (Rocket Admin Archer)",
      "Houndoom-Mega (Rocket Admin Archer Set 1)"
-    ]
+    ],
+    "preMega": {
+     "2": "Intimidate",
+     "5": "Early Bird"
+    }
    }
   ]
  },
@@ -677,7 +705,10 @@ var TRAINER_ORDER = [
      "Garganacl (Boss Giovanni)",
      "Garchomp (Boss Giovanni)",
      "Torterra (Boss Giovanni)"
-    ]
+    ],
+    "preMega": {
+     "2": "Scrappy"
+    }
    }
   ]
  },
@@ -697,7 +728,10 @@ var TRAINER_ORDER = [
      "Quaquaval (*Leader Chuck)",
      "Lucario (*Leader Chuck)",
      "Gallade-Mega (*Leader Chuck)"
-    ]
+    ],
+    "preMega": {
+     "5": "Steadfast"
+    }
    }
   ]
  },
@@ -717,7 +751,10 @@ var TRAINER_ORDER = [
      "Porygon2 (Leader Sabrina)",
      "Ursaluna (Leader Sabrina)",
      "Gardevoir-Mega (Leader Sabrina)"
-    ]
+    ],
+    "preMega": {
+     "5": "Trace"
+    }
    }
   ]
  },
@@ -737,7 +774,10 @@ var TRAINER_ORDER = [
      "Frosmoth (*Dumbass Kid)",
      "Seaking (*Dumbass Kid)",
      "Swampert-Mega (*Dumbass Kid)"
-    ]
+    ],
+    "preMega": {
+     "5": "Torrent"
+    }
    }
   ]
  },
@@ -807,7 +847,10 @@ var TRAINER_ORDER = [
      "Charizard-Mega-X (*Bird Keeper Sebastian)",
      "Togekiss (*Bird Keeper Sebastian)",
      "Tropius (*Bird Keeper Sebastian)"
-    ]
+    ],
+    "preMega": {
+     "1": "Blaze"
+    }
    }
   ]
  },
@@ -826,7 +869,10 @@ var TRAINER_ORDER = [
      "Espeon (*Picnicker Susie)",
      "Arcanine-Hisui (*Picnicker Susie)",
      "Alcremie-Mega (*Picnicker Susie)"
-    ]
+    ],
+    "preMega": {
+     "4": "Sweet Veil"
+    }
    }
   ]
  },
@@ -845,7 +891,10 @@ var TRAINER_ORDER = [
      "Espeon (*Picnicker Susie)",
      "Arcanine-Hisui (*Picnicker Susie)",
      "Alcremie-Mega (*Picnicker Susie)"
-    ]
+    ],
+    "preMega": {
+     "4": "Sweet Veil"
+    }
    }
   ]
  },
@@ -900,7 +949,10 @@ var TRAINER_ORDER = [
      "Leavanny (*Biker Jared)",
      "Camerupt-Mega (*Biker Jared)",
      "Mamoswine (*Biker Jared)"
-    ]
+    ],
+    "preMega": {
+     "2": "Solid Rock"
+    }
    }
   ]
  },
@@ -956,7 +1008,10 @@ var TRAINER_ORDER = [
      "Cursola (*PkMn Trainer Haley)",
      "Starmie (*PkMn Trainer Haley)",
      "Sandaconda-Mega (*PkMn Trainer Haley)"
-    ]
+    ],
+    "preMega": {
+     "5": "Shed Skin"
+    }
    }
   ]
  },
@@ -1040,7 +1095,10 @@ var TRAINER_ORDER = [
      "Revavroom (*Cue Ball Camron)",
      "Scizor-Mega (*Cue Ball Camron)",
      "Cacturne (*Cue Ball Camron)"
-    ]
+    ],
+    "preMega": {
+     "2": "Swarm"
+    }
    }
   ]
  },
@@ -1059,7 +1117,10 @@ var TRAINER_ORDER = [
      "Beedrill-Mega (*Biker Hideo)",
      "Greninja (*Biker Hideo)",
      "Aron (Biker Hideo)"
-    ]
+    ],
+    "preMega": {
+     "2": "Swarm"
+    }
    }
   ]
  },
@@ -1113,7 +1174,10 @@ var TRAINER_ORDER = [
      "Milotic (*Dragon Tamer Ramiro)",
      "Lapras-Mega (*Dragon Tamer Ramiro)",
      "Goodra-Hisui (*Dragon Tamer Ramiro)"
-    ]
+    ],
+    "preMega": {
+     "2": "Water Absorb"
+    }
    }
   ]
  },
@@ -1131,7 +1195,10 @@ var TRAINER_ORDER = [
      "Kilowattrel (*Ace Trainer Wilton)",
      "Pinsir-Mega (*Ace Trainer Wilton)",
      "Omastar (*Ace Trainer Wilton)"
-    ]
+    ],
+    "preMega": {
+     "2": "Hyper Cutter"
+    }
    }
   ]
  },
@@ -1151,7 +1218,10 @@ var TRAINER_ORDER = [
      "Exploud (*PkMn Trainer Brendan)",
      "Gardevoir (*PkMn Trainer Brendan)",
      "Sceptile-Mega (*PkMn Trainer Brendan)"
-    ]
+    ],
+    "preMega": {
+     "5": "Overgrow"
+    }
    }
   ]
  },
@@ -1171,7 +1241,10 @@ var TRAINER_ORDER = [
      "Tyranitar (*Leader Brock)",
      "Arcanine-Hisui (*Leader Brock)",
      "Aerodactyl-Mega (*Leader Brock)"
-    ]
+    ],
+    "preMega": {
+     "5": "Pressure"
+    }
    }
   ]
  },
@@ -1191,7 +1264,10 @@ var TRAINER_ORDER = [
      "Gyarados-Mega (*Leader Misty)",
      "Ferrothorn (*Leader Misty)",
      "Gorebyss (*Leader Misty)"
-    ]
+    ],
+    "preMega": {
+     "3": "Intimidate"
+    }
    }
   ]
  },
@@ -1211,7 +1287,10 @@ var TRAINER_ORDER = [
      "Pawmot (*Leader Lt. Surge)",
      "Manectric-Mega (*Leader Lt. Surge)",
      "Iron Hands (*Leader Lt. Surge)"
-    ]
+    ],
+    "preMega": {
+     "4": "Intimidate"
+    }
    }
   ]
  },
@@ -1231,7 +1310,10 @@ var TRAINER_ORDER = [
      "Sinistcha (*Leader Erika)",
      "Lilligant-Hisui (*Leader Erika)",
      "Venusaur-Mega (*Leader Erika)"
-    ]
+    ],
+    "preMega": {
+     "5": "Overgrow"
+    }
    }
   ]
  },
@@ -1251,7 +1333,10 @@ var TRAINER_ORDER = [
      "Drapion (Leader Koga)",
      "Iron Valiant (Leader Koga)",
      "Toxtricity-Mega (Leader Koga)"
-    ]
+    ],
+    "preMega": {
+     "5": "Punk Rock"
+    }
    }
   ]
  },
@@ -1271,7 +1356,10 @@ var TRAINER_ORDER = [
      "Simisear (*Dumbass Jojo Fan)",
      "Celebi (*Dumbass Jojo Fan)",
      "Machamp-Mega (*Dumbass Jojo Fan Set 1)"
-    ]
+    ],
+    "preMega": {
+     "5": "Guts"
+    }
    }
   ]
  },
@@ -1291,7 +1379,10 @@ var TRAINER_ORDER = [
      "Baxcalibur (*Leader Pryce)",
      "Arctozolt (*Leader Pryce)",
      "Glalie-Mega (*Leader Pryce)"
-    ]
+    ],
+    "preMega": {
+     "5": "Ice Body"
+    }
    }
   ]
  },
@@ -1311,7 +1402,10 @@ var TRAINER_ORDER = [
      "Relicanth (PkMn Trainer May)",
      "Flygon (PkMn Trainer May)",
      "Blaziken-Mega (PkMn Trainer May)"
-    ]
+    ],
+    "preMega": {
+     "5": "Speed Boost"
+    }
    }
   ]
  },
@@ -1331,7 +1425,10 @@ var TRAINER_ORDER = [
      "Durant (*Leader Jasmine)",
      "Samurott (*Leader Jasmine)",
      "Aggron-Mega (*Leader Jasmine)"
-    ]
+    ],
+    "preMega": {
+     "5": "Rock Head"
+    }
    }
   ]
  },
@@ -1350,7 +1447,10 @@ var TRAINER_ORDER = [
      "Rhyperior (*Ace Trainer Derek)",
      "Centiskorch-Mega (*Ace Trainer Derek)",
      "Sunflora (*Ace Trainer Derek)"
-    ]
+    ],
+    "preMega": {
+     "3": "Flash Fire"
+    }
    }
   ]
  },
@@ -1408,7 +1508,10 @@ var TRAINER_ORDER = [
      "Typhlosion (Leader Blaine)",
      "Ogerpon-Hearthflame (Leader Blaine)",
      "Charizard-Mega-Y (Leader Blaine)"
-    ]
+    ],
+    "preMega": {
+     "5": "Solar Power"
+    }
    }
   ]
  },
@@ -1426,7 +1529,10 @@ var TRAINER_ORDER = [
      "Durant (Rocket Admin Archer)",
      "Mimikyu (Rocket Admin Archer)",
      "Houndoom-Mega (Rocket Admin Archer Set 2)"
-    ]
+    ],
+    "preMega": {
+     "3": "Unnerve"
+    }
    }
   ]
  },
@@ -1444,7 +1550,10 @@ var TRAINER_ORDER = [
      "Rhyperior (Rocket Admin Ariana)",
      "Honchkrow (Rocket Admin Ariana)",
      "Mawile-Mega (Rocket Admin Ariana Set 2)"
-    ]
+    ],
+    "preMega": {
+     "3": "Intimidate"
+    }
    }
   ]
  },
@@ -1464,7 +1573,10 @@ var TRAINER_ORDER = [
      "Tyranitar (Boss Giovanni)",
      "Celesteela (Boss Giovanni)",
      "Mewtwo-Mega-Y (Boss Giovanni)"
-    ]
+    ],
+    "preMega": {
+     "5": "Unnerve"
+    }
    }
   ]
  },
@@ -1484,7 +1596,10 @@ var TRAINER_ORDER = [
      "Aggron-Mega (*PkMn Trainer Ketchup)",
      "Urshifu (*PkMn Trainer Ketchup Set 1)",
      "Urshifu-Rapid-Strike (*PkMn Trainer Ketchup Set 1)"
-    ]
+    ],
+    "preMega": {
+     "3": "Sturdy"
+    }
    }
   ]
  },
@@ -1562,7 +1677,10 @@ var TRAINER_ORDER = [
      "Iron Moth (*Rival Blue)",
      "Sneasler (*Rival Blue)",
      "Blastoise-Mega (*Rival Blue Set 2)"
-    ]
+    ],
+    "preMega": {
+     "5": "Rain Dish"
+    }
    }
   ]
  },
@@ -1582,7 +1700,10 @@ var TRAINER_ORDER = [
      "Zapdos-Galar (PkMn Trainer Brendan)",
      "Huntail (PkMn Trainer Brendan)",
      "Sceptile-Mega (PkMn Trainer Brendan Set 2)"
-    ]
+    ],
+    "preMega": {
+     "5": "Overgrow"
+    }
    }
   ]
  },
@@ -1601,7 +1722,10 @@ var TRAINER_ORDER = [
      "Shedinja (*Ace Trainer Naomi)",
      "Absol-Mega (*Ace Trainer Naomi)",
      "Galvantula (*Ace Trainer Naomi)"
-    ]
+    ],
+    "preMega": {
+     "3": "Super Luck"
+    }
    }
   ]
  },
@@ -1620,7 +1744,10 @@ var TRAINER_ORDER = [
      "Crobat (*Ace Trainer Rolando)",
      "Kingler-Mega (*Ace Trainer Rolando)",
      "Hatterene (*Ace Trainer Rolando)"
-    ]
+    ],
+    "preMega": {
+     "3": "Hyper Cutter"
+    }
    }
   ]
  },
@@ -1639,7 +1766,10 @@ var TRAINER_ORDER = [
      "Cloyster (Ace Trainer George)",
      "Mienshao (Ace Trainer George)",
      "Pinsir-Mega (Ace Trainer George)"
-    ]
+    ],
+    "preMega": {
+     "4": "Mold Breaker"
+    }
    }
   ]
  },
@@ -1658,7 +1788,10 @@ var TRAINER_ORDER = [
      "Vileplume (Ace Trainer Caroline)",
      "Amoonguss (Ace Trainer Caroline)",
      "Lopunny-Mega (Ace Trainer Caroline)"
-    ]
+    ],
+    "preMega": {
+     "4": "Cute Charm"
+    }
    }
   ]
  },
@@ -1677,7 +1810,10 @@ var TRAINER_ORDER = [
      "Walrein (Ace Trainer Colby)",
      "Sharpedo-Mega (Ace Trainer Colby)",
      "Empoleon (Ace Trainer Colby)"
-    ]
+    ],
+    "preMega": {
+     "3": "Speed Boost"
+    }
    }
   ]
  },
@@ -1696,7 +1832,10 @@ var TRAINER_ORDER = [
      "Chansey (Ace Trainer Alexa)",
      "Komala (Ace Trainer Alexa)",
      "Audino-Mega (Ace Trainer Alexa)"
-    ]
+    ],
+    "preMega": {
+     "4": "Regenerator"
+    }
    }
   ]
  },
@@ -1736,7 +1875,10 @@ var TRAINER_ORDER = [
      "Walking Wake (*Elite Four Lorelei)",
      "Kyogre-Primal (*Elite Four Lorelei)",
      "Iron Bundle (*Elite Four Lorelei)"
-    ]
+    ],
+    "preMega": {
+     "2": "Torrent"
+    }
    },
    {
     "label": "Snow Team",
@@ -1748,7 +1890,10 @@ var TRAINER_ORDER = [
      "Calyrex-Ice (*Elite Four Lorelei)",
      "Abomasnow-Mega (*Elite Four Lorelei)",
      "Baxcalibur (*Elite Four Lorelei)"
-    ]
+    ],
+    "preMega": {
+     "4": "Snow Warning"
+    }
    }
   ]
  },
@@ -1768,7 +1913,10 @@ var TRAINER_ORDER = [
      "Iron Hands (*Elite Four Bruno)",
      "Zacian-Crowned (*Elite Four Bruno)",
      "Lucario-Mega (*Elite Four Bruno Set 1)"
-    ]
+    ],
+    "preMega": {
+     "5": "Inner Focus"
+    }
    },
    {
     "label": "Team Two",
@@ -1780,7 +1928,10 @@ var TRAINER_ORDER = [
      "Iron Valiant (*Elite Four Bruno Set 2)",
      "Zacian-Crowned (*Elite Four Bruno)",
      "Lucario-Mega (*Elite Four Bruno Set 2)"
-    ]
+    ],
+    "preMega": {
+     "5": "Inner Focus"
+    }
    }
   ]
  },
@@ -1800,7 +1951,10 @@ var TRAINER_ORDER = [
      "Roaring Moon (*Elite Four Agatha)",
      "Chi-Yu (*Elite Four Agatha)",
      "Gengar-Mega (*Elite Four Agatha Set 1)"
-    ]
+    ],
+    "preMega": {
+     "5": "Levitate"
+    }
    },
    {
     "label": "Team Two",
@@ -1812,7 +1966,10 @@ var TRAINER_ORDER = [
      "Flutter Mane (*Elite Four Agatha)",
      "Chien-Pao (*Elite Four Agatha)",
      "Gengar-Mega (*Elite Four Agatha Set 2)"
-    ]
+    ],
+    "preMega": {
+     "5": "Levitate"
+    }
    }
   ]
  },
@@ -1832,7 +1989,10 @@ var TRAINER_ORDER = [
      "Dragonite (*Elite Four Lance Set 2)",
      "Dialga-Primal (*Elite Four Lance Set 2)",
      "Salamence-Mega (*Elite Four Lance)"
-    ]
+    ],
+    "preMega": {
+     "5": "Intimidate"
+    }
    },
    {
     "label": "Team Two",
@@ -1844,7 +2004,10 @@ var TRAINER_ORDER = [
      "Dragonite (*Elite Four Lance Set 1)",
      "Dialga-Primal (*Elite Four Lance Set 1)",
      "Salamence-Mega (*Elite Four Lance)"
-    ]
+    ],
+    "preMega": {
+     "5": "Intimidate"
+    }
    }
   ]
  },
@@ -1864,7 +2027,10 @@ var TRAINER_ORDER = [
      "Yveltal (Champion Blue Set 1)",
      "Eternatus (Champion Blue)",
      "Ditto (Champion Blue)"
-    ]
+    ],
+    "preMega": {
+     "1": "Tough Claws"
+    }
    },
    {
     "label": "Rival Has Charmander",
@@ -1876,7 +2042,10 @@ var TRAINER_ORDER = [
      "Yveltal (Champion Blue Set 2)",
      "Eternatus (Champion Blue)",
      "Ditto (Champion Blue)"
-    ]
+    ],
+    "preMega": {
+     "1": "Tough Claws"
+    }
    },
    {
     "label": "Rival Has Bulbasaur",
@@ -1888,7 +2057,10 @@ var TRAINER_ORDER = [
      "Yveltal (Champion Blue Set 1)",
      "Eternatus (Champion Blue)",
      "Ditto (Champion Blue)"
-    ]
+    ],
+    "preMega": {
+     "1": "Tough Claws"
+    }
    }
   ]
  }
