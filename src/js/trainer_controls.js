@@ -30,8 +30,8 @@ var lockedFieldInputs = $();
  * How a boss's battle effect ("Doubles + Permanent rain") maps onto the Field panel. The
  * first matching weather and terrain win; Pokémon 2 is the boss's side, so side-specific
  * effects use the right-hand ("R") toggles. These hold for the whole fight, so the controls
- * are locked until you move to another trainer. Effects the panel cannot show (Trick Room,
- * pre-burned Pokémon, special rules) stay as text only.
+ * are locked until you move to another trainer. Effects the panel cannot show (pre-burned
+ * Pokémon, special rules) stay as text only.
  */
 var EFFECT_WEATHER = [
 	{pattern: /primordial sea/i, id: "heavy-rain"},
@@ -54,7 +54,8 @@ var EFFECT_TOGGLES = [
 	{pattern: /omni-boosted/i, id: "StatBoostR"},
 	{pattern: /magic room/i, id: "magicroom"},
 	{pattern: /wonder room/i, id: "wonderroom"},
-	{pattern: /gravity/i, id: "gravity"}
+	{pattern: /gravity/i, id: "gravity"},
+	{pattern: /trick room/i, id: "trickroom"}
 ];
 
 function firstMatch(effects, text) {

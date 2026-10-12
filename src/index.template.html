@@ -762,10 +762,13 @@
                     <input aria-describedby="wonderRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="wonderroom" />
                     <label class="btn btn-xxxwide btn-right" for="wonderroom">Wonder Room</label>
                 </div>
-                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 5.3em; margin: 5px auto;" title="Is gravity in effect?">
+                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 15.6em; margin: 5px auto;">
+                    <span hidden id="trickRoomInstruction">Is Trick Room in effect? Slower Pok&eacute;mon move first.</span>
+                    <input aria-describedby="trickRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="trickroom" />
+                    <label class="btn btn-xxxwide btn-left" for="trickroom" title="Is Trick Room in effect? Slower Pok&eacute;mon move first.">Trick Room</label>
                     <span hidden id="gravityInstruction">Is gravity in effect?</span>
                     <input aria-describedby="gravityInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gravity" />
-                    <label class="btn" for="gravity">Gravity</label>
+                    <label class="btn btn-right" for="gravity" title="Is gravity in effect?">Gravity</label>
                 </div>
                 <hr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9" />
                 <table class="field">
@@ -877,6 +880,17 @@
                             <td><div class="right" title="Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?">
                                 <input aria-describedby="selectHelpingHandInstruction" class="visually-hidden calc-trigger" type="checkbox" id="helpingHandR" />
                                 <label class="btn btn-xxwide" for="helpingHandR">Helping Hand</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.">
+                                <div hidden id="selectFocusEnergyInstruction">Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.</div>
+                                <input aria-describedby="selectFocusEnergyInstruction" class="visually-hidden calc-trigger" type="checkbox" id="focusEnergyL" />
+                                <label class="btn btn-xxwide" for="focusEnergyL">Focus Energy</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.">
+                                <input aria-describedby="selectFocusEnergyInstruction" class="visually-hidden calc-trigger" type="checkbox" id="focusEnergyR" />
+                                <label class="btn btn-xxwide" for="focusEnergyR">Focus Energy</label>
                             </div></td>
                         </tr>
                         <tr class="gen-specific g4 g5 g6 g7 g8 g9">

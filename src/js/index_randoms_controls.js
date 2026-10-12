@@ -43,7 +43,9 @@ function performCalculations() {
 	p2.maxDamages = [];
 	p1info.find(".sp .totalMod").text(p1.stats.spe);
 	p2info.find(".sp .totalMod").text(p2.stats.spe);
-	var fastestSide = p1.stats.spe > p2.stats.spe ? 0 : p1.stats.spe === p2.stats.spe ? "tie" : 1;
+	// Under Trick Room the slower Pokémon moves first.
+	var p1MovesFirst = $("#trickroom").prop("checked") ? p1.stats.spe < p2.stats.spe : p1.stats.spe > p2.stats.spe;
+	var fastestSide = p1.stats.spe === p2.stats.spe ? "tie" : p1MovesFirst ? 0 : 1;
 
 	var result, maxDamage;
 	var bestResult;
