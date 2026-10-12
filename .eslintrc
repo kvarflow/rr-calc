@@ -75,6 +75,8 @@
         "moveSetsToSection": false,
         "splitSetId": false,
         "exportAllSets": false,
+        "damageResults": true,
+        "getCritChance": false,
         "LEGACY_STATS_GSC": false,
         "calcHP": false,
         "calcStats": false,

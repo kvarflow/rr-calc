@@ -862,3 +862,80 @@ table.field {
 #save-override, #reset-override {
     display: none;
 }
+
+/* Range Compare: added moves, the HP-left chart and the results. */
+#range-compare {
+    width: 27.5em;
+    text-align: left;
+}
+.rc-row {
+    margin: 4px 0;
+}
+.rc-number {
+    width: 4em;
+}
+.rc-add {
+    padding: 0 6px;
+    margin-left: 4px;
+    font-size: 0.8em;
+}
+.rc-empty {
+    font-size: 0.85em;
+    font-style: italic;
+}
+.rc-move {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+.rc-move-name {
+    flex: 1;
+}
+.rc-move-controls button {
+    padding: 0 5px;
+}
+.rc-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 110px;
+    margin: 8px 0 22px;
+    position: relative;
+}
+.rc-bar {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+.rc-bar-fill {
+    background: green;
+    min-height: 1px;
+}
+.rc-bar-fainted .rc-bar-fill {
+    background: #ee4928;
+}
+.rc-bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    right: 0;
+    font-size: 0.65em;
+    text-align: center;
+}
+.rc-chart-axis {
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7em;
+}
+.rc-sure { color: #2e9e44; }
+.rc-likely { color: #3a7bd5; }
+.rc-unlikely { color: #c99a00; }
+.rc-never { color: #d33; }
