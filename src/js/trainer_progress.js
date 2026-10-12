@@ -2,8 +2,9 @@
  * Run progress for the trainer panel. "KO'd" marks the Pokémon 2 Pokémon as fainted (its
  * sprite greys out) and moves on to the next one; "Defeated" marks or clears the whole team.
  * A trainer counts as defeated once every Pokémon of the team you face is KO'd. Two bars
- * under the panel follow the current level-cap arc (the trainers sharing this fight's level
- * cap, named after its last required fight) and the whole game. KOs are saved per mode.
+ * under the panel count defeated trainers: in the current level-cap arc (every trainer,
+ * optional ones too, up to the last one with this fight's level cap, named after its last
+ * required fight) and in the whole game. KOs are saved per mode.
  */
 
 function getTrainerKOKey() {
@@ -53,16 +54,62 @@ function isTrainerDefeated(index, kos) {
 	return size > 0 && getKOSlots(index, kos).length >= size;
 }
 
-// The run of consecutive trainers sharing this trainer's level cap.
+// The level cap's number: Hardcore writes some as "16+" or "28/36"; back-to-back fights have none.
+function getCapLevel(index) {
+	return parseInt(TRAINER_ORDER[index].levelCap) || 0;
+}
+
+/*
+ * Which level-cap arc each trainer belongs to, as the cap in force while you play: a required
+ * fight with a higher cap starts a new arc; required fights listed with a lower cap (the
+ * Kanto rematches) and fights with no cap stay in the arc they are fought in; an optional fight
+ * listed with a higher cap belongs to the arc it is fought in, the next one.
+ */
+var trainerArcCaps = null;
+
+function getArcCaps() {
+	if (trainerArcCaps) return trainerArcCaps;
+	trainerArcCaps = [];
+	var running = 0;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		var cap = getCapLevel(index);
+		var previous = index ? trainerArcCaps[index - 1] : running;
+		if (!trainer.optional && cap > running) {
+			running = cap;
+			trainerArcCaps.push(cap);
+		} else if (trainer.optional && cap > running) {
+			trainerArcCaps.push(getNextArcCap(index, running) || cap);
+		} else {
+			trainerArcCaps.push(previous || running);
+		}
+	});
+	return trainerArcCaps;
+}
+
+// The cap of the next required fight that raises the level cap above `running`.
+function getNextArcCap(index, running) {
+	for (var i = index + 1; i < TRAINER_ORDER.length; i++) {
+		if (!TRAINER_ORDER[i].optional && getCapLevel(i) > running) return getCapLevel(i);
+	}
+	return 0;
+}
+
+// The arc around a trainer: its first and last trainer, named after its last required fight
+// at the arc's level cap (e.g. Brock).
 function getArc(index) {
-	var cap = String(TRAINER_ORDER[index].levelCap);
+	var caps = getArcCaps();
 	var first = index;
 	var last = index;
-	while (first > 0 && String(TRAINER_ORDER[first - 1].levelCap) === cap) first--;
-	while (last < TRAINER_ORDER.length - 1 && String(TRAINER_ORDER[last + 1].levelCap) === cap) last++;
-	var boss = last;
-	while (boss > first && TRAINER_ORDER[boss].optional) boss--;
-	return {first: first, last: last, name: TRAINER_ORDER[boss].name};
+	while (first > 0 && caps[first - 1] === caps[index]) first--;
+	while (last < caps.length - 1 && caps[last + 1] === caps[index]) last++;
+	var boss = -1;
+	for (var i = last; i >= first && boss === -1; i--) {
+		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === caps[index]) boss = i;
+	}
+	for (i = last; i >= first && boss === -1; i--) {
+		if (!TRAINER_ORDER[i].optional) boss = i;
+	}
+	return {first: first, last: last, name: TRAINER_ORDER[boss === -1 ? last : boss].name};
 }
 
 function drawProgressBar(bar, done, total) {
@@ -76,17 +123,16 @@ function renderTrainerProgress() {
 	if (!$("#run-progress").length) return;
 	var kos = readTrainerKOs();
 	var arc = getArc(currentTrainerIndex);
-	var arcKOs = 0;
-	var arcTotal = 0;
-	for (var i = arc.first; i <= arc.last; i++) {
-		arcKOs += Math.min(getKOSlots(i, kos).length, getTeamSize(i));
-		arcTotal += getTeamSize(i);
-	}
-	var defeated = TRAINER_ORDER.filter(function (trainer, index) {
-		return isTrainerDefeated(index, kos);
-	}).length;
-	$("#arc-progress-label").text(arc.name + " Arc — " + arcKOs + "/" + arcTotal + " Pokémon KO'd");
-	drawProgressBar($("#arc-progress-bar"), arcKOs, arcTotal);
+	var arcTotal = arc.last - arc.first + 1;
+	var arcDefeated = 0;
+	var defeated = 0;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (!isTrainerDefeated(index, kos)) return;
+		defeated++;
+		if (index >= arc.first && index <= arc.last) arcDefeated++;
+	});
+	$("#arc-progress-label").text(arc.name + " Arc — " + arcDefeated + "/" + arcTotal + " trainers defeated");
+	drawProgressBar($("#arc-progress-bar"), arcDefeated, arcTotal);
 	$("#game-progress-label").text("Game progress — " + defeated + "/" + TRAINER_ORDER.length + " trainers defeated");
 	drawProgressBar($("#game-progress-bar"), defeated, TRAINER_ORDER.length);
 
