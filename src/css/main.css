@@ -814,3 +814,17 @@ table.field {
 .run-progress-row .hpbar {
     margin-top: 2px;
 }
+
+/* Crit chance beside each move's Crit button, and Crit buttons on the result rows. */
+.crit-rate {
+    font-size: 0.75em;
+    margin-left: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.small-crit-btn {
+    width: auto;
+    padding: 1px 6px;
+    margin-left: 6px;
+    font-size: 0.8em;
+}

@@ -101,6 +101,8 @@ function performCalculations() {
 	bestResult.change();
 	$("#resultHeaderL").text(p1.name + "'s Moves (select one to show detailed results)");
 	$("#resultHeaderR").text(p2.name + "'s Moves (select one to show detailed results)");
+	// For add-ons that follow every calculation (crit chances, Range Compare).
+	$(document).trigger("calc:done", [p1, p2]);
 }
 
 $(".result-move").change(function () {
