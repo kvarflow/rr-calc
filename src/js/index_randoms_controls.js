@@ -211,6 +211,18 @@ $(document).ready(function () {
 });
 
 /* Click-to-copy function */
+// Click the damage rolls to copy them, like the main result.
+$("#damageValues").attr("title", "Click to copy the rolls.").click(function () {
+	var rolls = $(this).text();
+	navigator.clipboard.writeText(rolls.slice(rolls.indexOf("("))).then(function () {
+		var note = $("#rollsCopied").length ? $("#rollsCopied") : $('<span id="rollsCopied" class="copied-note">Copied</span>').insertAfter("#damageValues");
+		note.show();
+		setTimeout(function () {
+			note.hide();
+		}, 2000);
+	});
+});
+
 $("#mainResult").click(function () {
 	navigator.clipboard.writeText($("#mainResult").text()).then(function () {
 		document.getElementById('tooltipText').style.visibility = 'visible';

@@ -264,7 +264,9 @@ function bindBoxEvents() {
 
 	$("#box-delete-trash").click(deleteTrashedSets);
 	$("#box-clear-all").click(confirmClearCustomSets);
-	$("#box-search").on("input", filterBox);
+	$("#box-search").on("input", filterBox).on("keydown", function (ev) {
+		if (ev.key === "Escape") $(this).val("").trigger("input"); // Escape clears the search
+	});
 	$("#box-on-top").prop("checked", isBoxOnTop()).change(function () {
 		try {
 			localStorage.setItem(BOX_ON_TOP_KEY, this.checked);

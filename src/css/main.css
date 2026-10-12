@@ -828,3 +828,19 @@ table.field {
     margin-left: 6px;
     font-size: 0.8em;
 }
+
+/* Export All dialog and the "Copied" note for the damage rolls. */
+.export-dialog-text {
+    width: 100%;
+    min-height: 18em;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+#damageValues {
+    cursor: pointer;
+}
+.copied-note {
+    margin-left: 6px;
+    font-weight: bold;
+    display: none;
+}
