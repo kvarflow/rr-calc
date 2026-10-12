@@ -844,3 +844,21 @@ table.field {
     font-weight: bold;
     display: none;
 }
+
+/* Pokémon panels: section toggles under the title, and the base stat override buttons. */
+.panel-toggles {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.panel-toggle {
+    font-size: 0.8em;
+    padding: 1px 6px;
+}
+.override-buttons button {
+    font-size: 0.8em;
+    margin: 2px 2px 4px 0;
+}
+#save-override, #reset-override {
+    display: none;
+}
