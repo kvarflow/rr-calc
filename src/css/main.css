@@ -939,3 +939,43 @@ table.field {
 .rc-likely { color: #3a7bd5; }
 .rc-unlikely { color: #c99a00; }
 .rc-never { color: #d33; }
+
+.trainer-on-top {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85em;
+}
+
+/* Footer settings, and the "What's new" and Credits popups (site_settings.js). */
+.site-settings {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    font-size: 0.9em;
+}
+.site-settings button {
+    padding: 2px 8px;
+    cursor: pointer;
+}
+.info-dialog {
+    max-width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.info-dialog h4 {
+    margin: 10px 0 4px;
+}
+.info-dialog ul {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+.info-dialog li {
+    margin-bottom: 3px;
+}
+body.hide-box-search #box-search,
+body.hide-range-compare #range-compare,
+body.hide-range-compare .rc-add {
+    display: none !important;
+}

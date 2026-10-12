@@ -53,6 +53,7 @@
         "getPageMode": false,
         "lockedField": false,
         "readSetting": false,
+        "performCalculations": false,
         "writeSetting": false,
         "clearTrainerProgress": false,
         "activeTrainerSlot": true,

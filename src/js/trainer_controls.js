@@ -252,6 +252,15 @@ function confirmNewRun() {
 		}]);
 }
 
+// Like "Team/Box above Pokémon 1": the trainer panel (and its progress bars) can sit above Pokémon 2.
+var TRAINER_ON_TOP_KEY = "trainerOnTop";
+
+function placeTrainerPanel(onTop) {
+	var panels = $("#trainer-nav").add("#run-progress");
+	if (onTop) panels.insertBefore("#p2");
+	else panels.insertAfter("#p2");
+}
+
 function buildTrainerPanel() {
 	var panel = $(
 		'<fieldset id="trainer-nav">' +
@@ -267,6 +276,7 @@ function buildTrainerPanel() {
 		'<button type="button" id="trainer-mega-form"></button>' +
 		'<button type="button" id="reset-trainer" title="New run: wipe your box and go back to the first trainer" aria-label="Start a new run"></button>' +
 		'</div>' +
+		'<label class="trainer-on-top"><input type="checkbox" id="trainer-on-top" /> Trainer above Pok\u00e9mon 2</label>' +
 		'</fieldset>');
 	$("<img />")
 		.attr({src: OAK_SPRITE_URL, alt: ""})
@@ -286,6 +296,10 @@ function bindTrainerEvents() {
 	});
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);
+	$("#trainer-on-top").prop("checked", readSetting(TRAINER_ON_TOP_KEY) === "true").change(function () {
+		writeSetting(TRAINER_ON_TOP_KEY, this.checked);
+		placeTrainerPanel(this.checked);
+	});
 	$("#trainer-starter")
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);
@@ -306,6 +320,7 @@ function bindTrainerEvents() {
 
 $(document).ready(function () {
 	$("#p2").after(buildTrainerPanel());
+	placeTrainerPanel(readSetting(TRAINER_ON_TOP_KEY) === "true");
 	$(".field-info legend").after('<div id="battle-effect-lock" class="battle-effect-lock"></div>');
 	bindTrainerEvents();
 	showTrainer(parseInt(readSetting(getTrainerIndexKey())) || 0);
