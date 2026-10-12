@@ -253,8 +253,9 @@ function deleteTrashedSets() {
 
 // Loads a set into Pokémon 1 or 2 (`side` is "#p1" or "#p2").
 function loadSetIntoPokemon(side, setId) {
-	$(side + " .select2-chosen").text(setId);
 	$(side + " input.set-selector").val(setId).change();
+	// The dropdown only redraws its label when you pick from it, so show the new set's name.
+	$(side + " .select2-chosen").first().text(setId);
 }
 
 function bindBoxEvents() {
