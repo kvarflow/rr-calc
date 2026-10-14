@@ -42,6 +42,17 @@ var FIRST_EXTRA_FLAG = 0x900;
 // sets 0x1034 (and always turns Minimal Grinding on too).
 var MINIMAL_GRINDING_FLAG = 0x1032;
 var HARDCORE_FLAG = 0x1034;
+// SaveBlock1 (sections 1-4) as Radical Red stores it: 0xFF0 bytes per section, not FireRed's
+// 0xF80. Its event flags start at 0xEE0 and its variables (from 0x4000) at 0x1000.
+var SAVEBLOCK1_SECTION_SIZE = 0xFF0;
+var SAVEBLOCK1_FLAGS_OFFSET = 0xEE0;
+var SAVEBLOCK1_VARS_OFFSET = 0x1000;
+// The type of starter you chose, from any region (FireRed's VAR_STARTER_MON: 0 Grass,
+// 1 Water, 2 Fire), which the game checks before each rival battle to pick his team. It reads
+// 0 until you have a Pokémon, so FLAG_SYS_POKEMON_GET says whether it has been set.
+var VAR_STARTER_MON = 0x4031;
+var FLAG_SYS_POKEMON_GET = 0x828;
+var STARTER_TYPE_BY_VAR = ["Grass", "Water", "Fire"];
 
 var SAVE_NATURES = ["Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax",
 	"Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash",
@@ -228,8 +239,21 @@ function readExtraFlag(bytes, sections, flagId) {
 	return false;
 }
 
+function readSaveBlock1Byte(bytes, sections, offset) {
+	return bytes[sections[1 + Math.floor(offset / SAVEBLOCK1_SECTION_SIZE)] + offset % SAVEBLOCK1_SECTION_SIZE];
+}
+
+// "Fire", "Water" or "Grass", or null before you have chosen.
+function readStarterType(bytes, sections) {
+	var flagByte = readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (FLAG_SYS_POKEMON_GET >> 3));
+	if (!((flagByte >> (FLAG_SYS_POKEMON_GET & 7)) & 1)) return null;
+	var varOffset = SAVEBLOCK1_VARS_OFFSET + (VAR_STARTER_MON - 0x4000) * 2;
+	var value = readSaveBlock1Byte(bytes, sections, varOffset) | (readSaveBlock1Byte(bytes, sections, varOffset + 1) << 8);
+	return STARTER_TYPE_BY_VAR[value] || null;
+}
+
 /*
- * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -242,7 +266,8 @@ function parseRadicalRedSave(bytes) {
 		party: [],
 		boxes: [],
 		hardcore: readExtraFlag(bytes, sections, HARDCORE_FLAG),
-		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG)
+		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG),
+		starter: readStarterType(bytes, sections)
 	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
@@ -353,8 +378,11 @@ function getSaveMode(save) {
 
 function importSaveAndReport(save, fileName) {
 	importSaveIntoBox(save);
+	// The trainer panel sets your starter (and so the rival's teams) from the save.
+	$(document).trigger("save:imported", [save]);
 	alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
-		"\nThis is a " + SAVE_MODE_LABELS[getSaveMode(save)] + " save, Minimal Grinding " + (save.minimalGrinding ? "on" : "off") + ".");
+		"\nThis is a " + SAVE_MODE_LABELS[getSaveMode(save)] + " save, Minimal Grinding " + (save.minimalGrinding ? "on" : "off") + "." +
+		(save.starter ? "\nYour starter is a " + save.starter + " type, so the rival's teams are set to match." : ""));
 }
 
 function importSaveInMode(save, fileName, mode) {

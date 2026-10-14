@@ -1000,3 +1000,7 @@ body.hide-range-compare .rc-add {
     font-size: 0.85em;
     font-style: italic;
 }
+.trainer-starter-lock {
+    font-size: 0.85em;
+    opacity: 0.8;
+}

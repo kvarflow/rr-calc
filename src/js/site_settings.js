@@ -38,7 +38,9 @@ var CHANGELOG = [
 		"\"Base form\" for a trainer's Mega before it Mega Evolves",
 		"Trainer above Pokémon 2, and these settings",
 		"A trainer's weather and terrain (Thwackey's Grassy Surge) stay up when it switches out",
-		"A note when Simple or Contrary changes how stat boosts add up"
+		"A note when Simple or Contrary changes how stat boosts add up",
+		"Every rival fight has his team for each starter, taken from the game",
+		"Importing a .sav sets your starter and locks it until Professor Oak starts a new run"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

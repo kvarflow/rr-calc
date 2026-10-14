@@ -12,8 +12,12 @@ var OAK_SPRITE_URL = "https://raw.githubusercontent.com/smogon/sprites/master/sr
 // Other fights with several possible teams (Lorelei's rain or snow team) remember the
 // chosen team by its label.
 var TRAINER_VARIANT_KEY = "trainerVariant";
-// The rival's team depends on your starter: he picks the one that counters it.
+// The rival's team depends on your starter's type (whichever region it is from): he picks
+// the Kanto starter that counters it. Kept per
+// mode, like the box: Normal and Hardcore are separate runs. Importing a .sav sets it from
+// the save and locks it until Professor Oak starts a new run.
 var STARTER_KEY = "starterType";
+var STARTER_FROM_SAVE_KEY = "starterFromSave";
 var STARTER_TYPES = ["Fire", "Water", "Grass"];
 var RIVAL_TEAM_FOR_STARTER = {Fire: "Rival Has Squirtle", Water: "Rival Has Bulbasaur", Grass: "Rival Has Charmander"};
 
@@ -114,10 +118,43 @@ function applyBattleEffect(text, trainerName) {
 	}
 }
 
+function getStarterKey() {
+	return STARTER_KEY + ":" + getPageMode();
+}
+
 function getStarterType() {
-	var starter = readSetting(STARTER_KEY);
+	// Before starters were kept per mode there was one setting for both.
+	var starter = readSetting(getStarterKey()) || readSetting(STARTER_KEY);
 	return STARTER_TYPES.indexOf(starter) === -1 ? STARTER_TYPES[0] : starter;
 }
+
+function isStarterFromSave() {
+	return readSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode()) === "true";
+}
+
+function updateStarterSelect() {
+	var locked = isStarterFromSave();
+	$("#trainer-starter")
+		.val(getStarterType())
+		.prop("disabled", locked)
+		.attr("title", locked ?
+			"From your save: you chose a " + getStarterType() + "-type starter. Start a new run with Professor Oak to change it." :
+			"Your starter's type, from any region. The rival picks a starter strong against it.");
+	$("#trainer-starter-lock").toggle(locked);
+}
+
+function setStarter(type, fromSave) {
+	writeSetting(getStarterKey(), type);
+	writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), !!fromSave);
+	// A save imported while the page loads (after switching modes) arrives before the panel exists.
+	if (!$("#trainer-starter").length) return;
+	updateStarterSelect();
+	showTrainer(currentTrainerIndex);
+}
+
+$(document).on("save:imported", function (event, save) {
+	if (save.starter) setStarter(save.starter, true);
+});
 
 function isRivalStarterVariant(variant) {
 	return /^Rival Has /.test(variant.label);
@@ -273,6 +310,9 @@ function confirmNewRun() {
 				writeBoxLayout({});
 				clearCustomSets();
 				clearTrainerProgress();
+				// A new run picks a new starter.
+				writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
+				updateStarterSelect();
 				showTrainer(0);
 			}
 		}]);
@@ -293,7 +333,8 @@ function buildTrainerPanel() {
 		'<legend align="center">Opposing Trainer</legend>' +
 		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
-		'<label class="trainer-starter">Your starter: <select id="trainer-starter"></select></label> ' +
+		'<label class="trainer-starter">Your starter\u2019s type: <select id="trainer-starter"></select>' +
+		'<span id="trainer-starter-lock" class="trainer-starter-lock"> \uD83D\uDD12 from your save</span></label> ' +
 		'<select id="trainer-variant" aria-label="Which team this trainer uses"></select>' +
 		'<div id="trainer-team" class="trainer-team"></div>' +
 		'<div class="trainer-buttons">' +
@@ -337,11 +378,10 @@ function bindTrainerEvents() {
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);
 		}))
-		.val(getStarterType())
 		.change(function () {
-			writeSetting(STARTER_KEY, $(this).val());
-			showTrainer(currentTrainerIndex);
+			setStarter($(this).val(), false);
 		});
+	updateStarterSelect();
 	$("#trainer-variant").change(function () {
 		writeSetting(TRAINER_VARIANT_KEY, $(this).val());
 		showTrainer(currentTrainerIndex);
