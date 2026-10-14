@@ -880,6 +880,9 @@ legend:has(> .header-sprite)::before {
 #range-compare {
     width: 27.5em;
     text-align: left;
+    /* Below Import / Export, not beside it: two floats side by side would make the middle
+       column twice as wide and push Pokémon 2 onto the next row. */
+    clear: left;
 }
 .rc-row {
     margin: 4px 0;
@@ -991,7 +994,8 @@ body.hide-box-search #box-search,
 body.hide-range-compare #range-compare,
 body.hide-range-compare .rc-add {
     display: none !important;
-}.boost-note {
+}
+.boost-note {
     margin: 4px 0;
     font-size: 0.85em;
     font-style: italic;
