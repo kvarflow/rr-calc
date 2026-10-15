@@ -13,7 +13,7 @@
 var SMALL_SCREEN_KEY = "smallScreenLayout"; // "auto", "on" or "off"
 var SMALL_SCREEN_TAB_KEY = "smallScreenTab";
 // Screens up to this many CSS pixels on their shorter side count as small (the Thor's lower
-// screen is about 360-410, depending on its display scaling).
+// screen gives the page 537 x 468 at 2.31x scaling).
 var SMALL_SCREEN_MAX = 640;
 var SMALL_SCREEN_TABS = [
 	{key: "results", label: "Results", parts: ".move-result-group, .main-result-group, #ss-quick"},

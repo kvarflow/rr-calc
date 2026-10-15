@@ -1069,6 +1069,7 @@ html.small-screen .ss-tabs {
     border: 0;
     border-bottom: 3px solid transparent;
     background: none;
+    color: #222;
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
@@ -1136,8 +1137,15 @@ html.small-screen[data-ss-tab="more"] #ss-page-settings {
     gap: 6px;
     margin-bottom: 6px;
 }
+html.small-screen .move-result-group {
+    margin: 6px 0 0;
+}
+html.small-screen .main-result-group {
+    margin: 4px 0 0;
+}
 html.small-screen .main-result-group .big-text {
     font-size: 13px;
+    margin: 0 0 4px;
 }
 html.small-screen .main-result-group .small-text {
     font-size: 11px;

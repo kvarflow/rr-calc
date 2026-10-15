@@ -167,3 +167,16 @@ input.select2-input {
 .box-dialog {
     background: var(--fieldset-color);
 }
+
+/* Small-screen layout tabs (small_screen.js). */
+html.small-screen .ss-tabs {
+    background-color: var(--fieldset-color);
+    border-bottom-color: #555;
+}
+.ss-tab {
+    color: var(--text);
+}
+.ss-tab-active {
+    color: #7fb0ff;
+    border-bottom-color: #7fb0ff;
+}
