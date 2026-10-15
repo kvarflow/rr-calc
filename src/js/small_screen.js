@@ -1,8 +1,8 @@
 /*
  * Small-screen layout, for a handheld's second screen such as the AYN Thor's lower screen
  * (3.92", 1240 x 1080): the panels become tabs (Results, You, Foe, Field, Box, More) with
- * big touch targets, one shown at a time. The Results tab adds strips of your team and the
- * trainer's team, so switching Pokémon mid-fight is one tap.
+ * big touch targets, one shown at a time. The Results tab shows your Pokémon's moves beside the
+ * trainer's, then your team and his as cards (yours color coded), so switching is one tap.
  *
  * It turns on by itself on small screens; the footer's "Layout" setting forces it on or off
  * (saved per device). Without a viewport tag phones and handhelds lay the page out about 980px
@@ -55,21 +55,27 @@ function applySmallScreenLayout() {
 	updateViewportReadout();
 }
 
-// One strip of sprites; tapping one does what tapping the original does.
-function buildQuickStrip(label, originals, activeIndex) {
-	var row = $('<div class="ss-quick-row"></div>').append($('<span class="ss-quick-label"></span>').text(label));
+// One side's team as a card of sprites; tapping one does what tapping the original does.
+// Your team keeps the color coding the box gives it.
+function buildTeamCard(label, originals, activeIndex) {
+	var card = $('<div class="ss-quick-side"></div>').append($('<span class="ss-quick-label"></span>').text(label));
+	var grid = $('<div class="ss-quick-grid"></div>').appendTo(card);
 	originals.each(function (i) {
 		var original = $(this);
+		var colors = (original.attr("class") || "").split(/\s+/).filter(function (name) {
+			return /^cc-/.test(name);
+		});
 		$('<button type="button" class="ss-quick-mon"></button>')
+			.addClass(colors.join(" "))
 			.toggleClass("ss-quick-active", i === activeIndex)
 			.attr("title", original.attr("data-set-id"))
 			.append(original.find("img").first().clone())
 			.click(function () {
 				original.click();
 			})
-			.appendTo(row);
+			.appendTo(grid);
 	});
-	return row;
+	return card;
 }
 
 function renderQuickStrips() {
@@ -77,22 +83,22 @@ function renderQuickStrips() {
 	var quick = $("#ss-quick").empty();
 	var team = $('.box-dropzone[data-section="team"] .box-pokemon');
 	var p1Set = $("#p1 input.set-selector").val();
-	if (team.length) {
-		quick.append(buildQuickStrip("You", team, team.map(function () {
-			return $(this).attr("data-set-id");
-		}).get().indexOf(p1Set)));
-	}
+	var yours = buildTeamCard("Your team", team, team.map(function () {
+		return $(this).attr("data-set-id");
+	}).get().indexOf(p1Set));
+	if (!team.length) yours.append('<p class="ss-quick-empty">Import your .sav under More to see your team here.</p>');
+	quick.append(yours);
 	var foe = $("#trainer-team .pokemon-sprite");
 	if (foe.length) {
-		quick.append(buildQuickStrip($("#trainer-name").text() || "Foe", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1));
+		quick.append(buildTeamCard($("#trainer-name").text() || "Trainer", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1));
 	}
 }
 
 // Shorter results text that fits beside each move.
 function compactResults(p1Name, p2Name) {
 	// Just the names: "(select one to show detailed results)" does not fit.
-	$("#resultHeaderL").text(p1Name);
-	$("#resultHeaderR").text(p2Name);
+	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name));
+	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name));
 	// Just the damage range; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
 		return text.replace(/ \(.*$/, "");
@@ -158,7 +164,7 @@ $(document).ready(function () {
 	$(document).on("calc:done", function (event, p1, p2) {
 		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
-	$(document).on("calc:done trainer:shown trainer:active customsets:changed", renderQuickStrips);
+	$(document).on("calc:done trainer:shown trainer:active customsets:changed colorcoding:changed", renderQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
 	// The page may have calculated before this script was ready (One vs One does).

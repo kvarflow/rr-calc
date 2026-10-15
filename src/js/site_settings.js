@@ -47,7 +47,10 @@ var CHANGELOG = [
 		"Small-screen layout for a handheld's second screen, such as the AYN Thor's lower screen: " +
 			"tabs for Results, You, Foe, Field, Box and More, with both sides' moves on one screen " +
 			"and tap-to-switch strips of your team and the trainer's",
-		"It turns on by itself on small screens; Layout in the footer settings forces it on or off"
+		"It turns on by itself on small screens; Layout in the footer settings forces it on or off",
+		"Pokémon from your .sav keep the save's type, stats, nature, level and ability, locked " +
+			"(\"Edit anyway\" unlocks them); stat stages are now \u2212 / + buttons",
+		"Color coding is on unless you turn it off, and shows on your team in the small layout"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

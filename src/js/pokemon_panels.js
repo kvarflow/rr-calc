@@ -6,6 +6,8 @@
  *    time it is loaded into Pokémon 1. "Reset override" restores the Pokédex values.
  *  - A note under the stats when the ability changes how boosts add up (Simple, Contrary),
  *    since the boost boxes take the stage the Pokémon is really at.
+ *  - Stat stages as − / + buttons (one tap per stage from a move like Swords Dance), in place
+ *    of the -6 to +6 dropdown, which stays (hidden) as what the calculator reads.
  */
 
 var PANEL_SECTIONS = [
@@ -68,6 +70,38 @@ function buildPanelToggles(panel) {
 	panel.children("legend").after(bar);
 	PANEL_SECTIONS.forEach(function (section) {
 		setSectionCollapsed(panel, section, collapsed.indexOf(section.key) !== -1);
+	});
+}
+
+var BOOST_LIMIT = 6;
+
+function updateBoostStepper(select) {
+	var stage = ~~select.val();
+	var stepper = select.next(".boost-stepper");
+	stepper.find(".boost-value")
+		.text(stage > 0 ? "+" + stage : String(stage))
+		.toggleClass("boost-up", stage > 0)
+		.toggleClass("boost-down", stage < 0);
+	stepper.find(".boost-dec").prop("disabled", stage <= -BOOST_LIMIT);
+	stepper.find(".boost-inc").prop("disabled", stage >= BOOST_LIMIT);
+}
+
+function buildBoostSteppers(panel) {
+	panel.find("select.boost").each(function () {
+		var select = $(this).addClass("boost-select");
+		var stat = select.closest("tr").find("th label").text();
+		var stepper = $('<span class="boost-stepper"></span>').append(
+			$('<button type="button" class="boost-dec">\u2212</button>').attr("aria-label", "Lower " + stat),
+			'<span class="boost-value" aria-live="polite"></span>',
+			$('<button type="button" class="boost-inc">+</button>').attr("aria-label", "Raise " + stat));
+		stepper.find("button").click(function () {
+			var stage = ~~select.val() + ($(this).hasClass("boost-inc") ? 1 : -1);
+			select.val(Math.max(-BOOST_LIMIT, Math.min(BOOST_LIMIT, stage))).change();
+		});
+		select.after(stepper).change(function () {
+			updateBoostStepper(select);
+		});
+		updateBoostStepper(select);
 	});
 }
 
@@ -174,6 +208,13 @@ function resetP1Override() {
 $(document).ready(function () {
 	$("#p1, #p2").each(function () {
 		buildPanelToggles($(this));
+		buildBoostSteppers($(this));
+	});
+	// Loading a set resets the stages without a change event, so follow every calculation.
+	$(document).on("calc:done", function () {
+		$("select.boost-select").each(function () {
+			updateBoostStepper($(this));
+		});
 	});
 	$('<div class="override-buttons">' +
 		'<button type="button" id="save-override" title="Keep these base stats and types for this species">Save override</button> ' +

@@ -647,7 +647,7 @@ table.field {
 
 /* Matchup color coding (color_coding.js). Each half of the background is set separately
    so the "you hit them" and "they hit you" results combine without extra classes. */
-.box-pokemon, .header-sprite, .cc-swatch {
+.box-pokemon, .header-sprite, .cc-swatch, .ss-quick-mon {
     --cc-left: transparent;
     --cc-right: transparent;
     background: linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
@@ -1005,18 +1005,93 @@ body.hide-range-compare .rc-add {
     opacity: 0.8;
 }
 
-/* Small-screen layout (small_screen.js): one tab at a time, for a handheld's second screen. */
+/* Stat stages: − / + (pokemon_panels.js); the dropdown stays as what the calculator reads. */
+select.boost-select {
+    display: none;
+}
+/* ".poke-info" beats the panel's ".poke-info span" width, which would stack the buttons. */
+.poke-info .boost-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: auto;
+    white-space: nowrap;
+}
+.boost-stepper button {
+    width: 24px;
+    height: 22px;
+    padding: 0;
+    line-height: 1;
+    font-size: 15px;
+    cursor: pointer;
+}
+.boost-stepper button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.poke-info .boost-value {
+    display: inline-block;
+    width: auto;
+    min-width: 2em;
+    text-align: center;
+    font-weight: bold;
+}
+.boost-up { color: #2e9e44; }
+.boost-down { color: #d33; }
+
+/* Pokémon from your .sav (save_lock.js): what the save sets is locked. */
+.save-lock-note {
+    display: none;
+    margin: 4px 0;
+    font-size: 0.85em;
+}
+.poke-info .save-lock-text {
+    display: inline;
+    width: auto;
+}
+.save-lock-toggle {
+    margin-left: 4px;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+.save-locked .override-buttons {
+    display: none !important;
+}
+.save-locked select:disabled,
+.save-locked input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Small-screen layout (small_screen.js): one tab at a time, for a handheld's second screen.
+   Colors come from variables the dark theme overrides (dark-theme.css); these are the light ones. */
 .ss-tabs, .ss-quick, .ss-viewport {
     display: none;
+}
+html.small-screen {
+    --ss-bg: var(--ss-dark-bg, #eef1f6);
+    --ss-card: var(--ss-dark-card, #ffffff);
+    --ss-text: var(--ss-dark-text, #1d2330);
+    --ss-muted: var(--ss-dark-muted, #667085);
+    --ss-line: var(--ss-dark-line, #dde2ea);
+    --ss-btn: var(--ss-dark-btn, #f3f5f9);
+    --ss-accent: var(--ss-dark-accent, #3a6fd8);
+    --ss-accent-soft: var(--ss-dark-accent-soft, #e3ecfd);
+    --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
+    --ss-cc-veil: var(--ss-dark-cc-veil, rgba(255, 255, 255, 0.45));
+    --ss-slower: var(--ss-dark-slower, #1c1414);
 }
 html.small-screen,
 html.small-screen body {
     min-width: 0;
 }
 html.small-screen body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     font-size: 14px;
+    color: var(--ss-text);
+    background: var(--ss-bg);
 }
-/* The desktop layout's minimum widths (body 100em, results 50em, import boxes 27em). */
+/* The desktop layout's minimum widths (html/body 100em, results 50em, import boxes 27em). */
 html.small-screen .move-result-group,
 html.small-screen .import-team-text,
 html.small-screen .import-name-text {
@@ -1040,64 +1115,91 @@ html.small-screen[data-ss-tab="more"] [data-ss-part~="more"] {
 }
 html.small-screen .wrapper {
     max-width: none;
-    padding: 0 6px;
+    padding: 0 8px 8px;
 }
 html.small-screen .panel,
-html.small-screen .panel > div,
+html.small-screen .panel > div {
+    float: none;
+    display: block;
+    width: auto !important;
+    max-width: none;
+    margin: 0;
+}
+/* Every section is a card. */
 html.small-screen fieldset {
     float: none;
     display: block;
     width: auto !important;
     max-width: none;
-    margin: 0 0 6px;
+    margin: 0 0 8px;
+    padding: 8px 10px 10px;
     box-sizing: border-box;
-}
-html.small-screen .ss-tabs {
-    display: flex;
-    position: sticky;
-    top: 0;
-    z-index: 50;
-    margin: 0 -6px 6px;
-    /* The dark theme's variables when it is on (they work even with an older cached copy of
-       dark-theme.css), the light theme's colours otherwise. */
-    background-color: var(--fieldset-color, #F1F4F9);
-    border-bottom: 1px solid #AAA;
-}
-.ss-tab {
-    flex: 1;
-    min-height: 40px;
-    padding: 0 2px;
     border: 0;
-    border-bottom: 3px solid transparent;
-    background: none;
-    color: var(--text, #222);
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+html.small-screen fieldset > legend {
+    padding: 4px 0 0;
     font-size: 13px;
-    font-weight: bold;
-    cursor: pointer;
+    font-weight: 700;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
 }
-.ss-tab-active {
-    border-bottom-color: #3a7bd5;
-    color: #3a7bd5;
-}
-.ss-fullscreen {
-    flex: 0 0 40px;
-    font-size: 18px;
-}
-.ss-fullscreen[aria-pressed="true"] {
-    color: #3a7bd5;
+html.small-screen .credits {
+    padding: 8px;
 }
 /* Hidden inputs and screen-reader labels sit where they fall in the line; on a narrow screen
    that can be past the right edge, which would widen the page. */
 html.small-screen .visually-hidden {
     left: 0;
 }
-/* Results: your Pokémon on the left, the trainer's on the right, split down the middle; each
-   move is one compact row with its damage alongside. The Crit and Range Compare buttons stay on
-   the You and Foe tabs. */
+
+/* Tab bar: pills, with a full-screen button at the end. */
+html.small-screen .ss-tabs {
+    display: flex;
+    gap: 2px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 0 -8px 8px;
+    padding: 6px 6px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+.ss-tab {
+    flex: 1;
+    min-height: 34px;
+    padding: 0 2px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--ss-text, #222);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.ss-tab-active {
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-accent, #3a6fd8);
+}
+.ss-fullscreen {
+    flex: 0 0 36px;
+    font-size: 17px;
+}
+.ss-fullscreen[aria-pressed="true"] {
+    color: var(--ss-accent, #3a6fd8);
+}
+
+/* Results: two cards, your Pokémon on the left and the trainer's on the right. Each is a
+   two-column grid (move, damage) so every move button is the same width. The Crit and Range
+   Compare buttons stay on the You and Foe tabs. */
 html.small-screen[data-ss-tab="results"] .move-result-group {
     display: flex !important;
+    gap: 8px;
+    margin: 0;
 }
-/* Each side is a two-column grid (move, damage) so every row's button is the same width. */
 html.small-screen .move-result-subgroup {
     float: none;
     flex: 1 1 50%;
@@ -1105,16 +1207,15 @@ html.small-screen .move-result-subgroup {
     width: auto;
     display: grid;
     grid-template-columns: minmax(0, 1fr) auto;
-    column-gap: 4px;
-    row-gap: 3px;
+    column-gap: 6px;
+    row-gap: 4px;
     align-items: center;
     align-content: start;
-    padding: 0 6px 0 0;
+    padding: 8px;
     box-sizing: border-box;
-}
-html.small-screen .move-result-subgroup + .move-result-subgroup {
-    padding: 0 0 0 6px;
-    border-left: 1px solid #AAA;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
 }
 html.small-screen .move-result-subgroup > div {
     display: contents;
@@ -1122,90 +1223,139 @@ html.small-screen .move-result-subgroup > div {
 html.small-screen .move-result-subgroup > .result-move-header {
     display: block;
     grid-column: 1 / -1;
+    margin: 0 0 2px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-html.small-screen .move-result-subgroup .btn-xxxwide {
+.ss-side-label {
+    margin-right: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .move-result-subgroup .btn {
     width: auto;
     min-width: 0;
-    height: 26px;
-    line-height: 24px;
-    padding: 0 4px;
+    height: 28px;
+    line-height: 26px;
+    margin: 0;
+    padding: 0 6px;
     box-sizing: border-box;
-    border-radius: 6px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
     font-size: 13px;
+    font-weight: 500;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn {
+    border-color: var(--ss-accent);
+    background: var(--ss-accent);
+    color: #fff;
+    font-weight: 600;
+}
 html.small-screen .move-result-subgroup span[id^="resultDamage"] {
     text-align: right;
     font-size: 12px;
+    font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
 html.small-screen .move-result-group .small-crit-btn,
 html.small-screen .move-result-group .rc-add {
     display: none !important;
 }
-html.small-screen .result-move-header {
-    font-weight: bold;
-    font-size: 12px;
+/* The detailed result, as a card. */
+html.small-screen .main-result-group {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+html.small-screen .main-result-group .big-text {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+html.small-screen .main-result-group .small-text {
+    font-size: 11px;
+    color: var(--ss-muted);
+    word-break: break-word;
+}
+/* Teams: yours on the left, the trainer's on the right; tap one to load it. */
+html.small-screen[data-ss-tab="results"] .ss-quick {
+    display: flex !important;
+    gap: 8px;
+    margin-top: 8px;
+}
+.ss-quick-side {
+    flex: 1 1 50%;
+    min-width: 0;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: var(--ss-card, #fff);
+    box-shadow: var(--ss-shadow);
+}
+.ss-quick-label {
+    display: block;
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
 }
-/* More: the mode and notation switches without the page title. */
-html.small-screen #ss-page-settings .title-text {
-    display: none;
-}
-html.small-screen[data-ss-tab="more"] #ss-page-settings {
-    display: flex !important;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-bottom: 6px;
-}
-html.small-screen .move-result-group {
-    margin: 6px 0 0;
-}
-html.small-screen .main-result-group {
-    margin: 4px 0 0;
-}
-html.small-screen .main-result-group .big-text {
-    font-size: 13px;
-    margin: 0 0 4px;
-}
-html.small-screen .main-result-group .small-text {
-    font-size: 11px;
-    word-break: break-word;
-}
-html.small-screen .ss-quick {
-    margin-top: 6px;
-}
-.ss-quick-row {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
+.ss-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     gap: 4px;
-    margin: 4px 0;
-}
-.ss-quick-label {
-    flex: 0 0 100%;
-    font-size: 12px;
-    font-weight: bold;
 }
 .ss-quick-mon {
-    width: 52px;
     height: 44px;
     padding: 0;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: none;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 10px;
+    background-color: var(--ss-btn, #f3f5f9);
     cursor: pointer;
+}
+.ss-quick-empty {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ss-muted, #667085);
 }
 .ss-quick-mon img {
     max-width: 100%;
     max-height: 100%;
 }
+/* Color coding on the team cards: the same colors, softened by a veil in the card's color so
+   they sit with the design, and the speed border kept. */
+.ss-quick-mon {
+    background-image: linear-gradient(var(--ss-cc-veil, rgba(255, 255, 255, 0.45)), var(--ss-cc-veil, rgba(255, 255, 255, 0.45))),
+        linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
+}
+.ss-quick-mon.cc-speed-faster,
+.ss-quick-mon.cc-speed-tie,
+.ss-quick-mon.cc-speed-slower {
+    border-width: 3px;
+}
+.ss-quick-mon.cc-speed-faster { border-color: #7ee1ff; }
+.ss-quick-mon.cc-speed-tie { border-color: #894197; }
+.ss-quick-mon.cc-speed-slower { border-color: var(--ss-slower, #1c1414); }
+/* The Pokémon loaded now: a ring outside the color coding's border. */
 .ss-quick-active {
-    border-color: #2ab7a9;
+    box-shadow: 0 0 0 2px var(--ss-card, #fff), 0 0 0 4px var(--ss-accent, #3a6fd8);
 }
 /* Bigger controls for touch. */
 html.small-screen select,
@@ -1218,8 +1368,48 @@ html.small-screen input:not([type]) {
 html.small-screen .poke-info table {
     width: 100%;
 }
+html.small-screen #ss-page-settings .title-text {
+    display: none;
+}
+html.small-screen[data-ss-tab="more"] #ss-page-settings {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 8px;
+}
 html.small-screen .ss-viewport {
     display: inline;
     font-size: 11px;
     opacity: 0.8;
+}
+/* Small screen, a Pokémon from your save: its base/IV/EV boxes are locked, so show only each
+   stat's value and its stage buttons. */
+html.small-screen .save-locked .info-group table thead,
+html.small-screen .save-locked .info-group td:has(> .base),
+html.small-screen .save-locked .info-group td:has(> .ivs),
+html.small-screen .save-locked .info-group td:has(> .evs) {
+    display: none;
+}
+html.small-screen .save-locked .info-group table {
+    width: auto;
+}
+html.small-screen .save-locked .info-group table th {
+    text-align: left;
+    padding-right: 10px;
+}
+html.small-screen .save-locked .info-group table td {
+    padding: 1px 6px;
+}
+html.small-screen .boost-stepper button {
+    width: 30px;
+    height: 28px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+}
+html.small-screen .save-lock-note {
+    padding: 4px 8px;
+    border-radius: 8px;
+    background: var(--ss-accent-soft);
 }

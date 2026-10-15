@@ -32,6 +32,13 @@ detailed result, with tap-to-switch strips of your team and the trainer's), You,
 Box and More. Layout in the footer settings forces it on or off on any device; the footer also
 shows the screen size the page sees.
 
+## Pokémon from your save
+
+A Pokémon imported from a `.sav` keeps the save's type, base stats, IVs, EVs, nature, level and
+ability, locked so they cannot drift from the game ("Edit anyway" unlocks them). Stat stages are
+− / + buttons, and item, status, current HP and moves stay editable. Matchup color coding is on
+unless you turn it off.
+
 ## Planned features
 
 - **AI move choice %**: the chance the opposing trainer picks each move, as syl-rnb-calc
