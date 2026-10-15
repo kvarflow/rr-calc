@@ -1077,6 +1077,7 @@ html.small-screen {
     --ss-btn: var(--ss-dark-btn, #f3f5f9);
     --ss-accent: var(--ss-dark-accent, #3a6fd8);
     --ss-accent-soft: var(--ss-dark-accent-soft, #e3ecfd);
+    --ss-accent-text: var(--ss-dark-accent-text, #2f5fc4);
     --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
     --ss-cc-veil: var(--ss-dark-cc-veil, rgba(255, 255, 255, 0.45));
     --ss-slower: var(--ss-dark-slower, #1c1414);
@@ -1154,6 +1155,11 @@ html.small-screen .credits {
    that can be past the right edge, which would widen the page. */
 html.small-screen .visually-hidden {
     left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
 }
 
 /* Tab bar: pills, with a full-screen button at the end. */
@@ -1182,7 +1188,7 @@ html.small-screen .ss-tabs {
 }
 .ss-tab-active {
     background: var(--ss-accent-soft, #e3ecfd);
-    color: var(--ss-accent, #3a6fd8);
+    color: var(--ss-accent-text, #2f5fc4);
 }
 .ss-fullscreen {
     flex: 0 0 36px;
