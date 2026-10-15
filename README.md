@@ -29,6 +29,8 @@ Damage calculator for all generations of Pokémon battling.
 - **AI move choice %**: the chance the opposing trainer picks each move, as syl-rnb-calc
   shows by porting the game's battle AI. Radical Red's AI would need its own port.
 - The Toxic Spikes and Substitute field toggles, which only matter for the AI's choices.
+- **Small-screen layout**: an option for using the calculator on a handheld's second screen, such
+  as the AYN Thor's lower screen, where the desktop layout is hard to use.
 
 If you are currently looking at [smogon/damage-calc][0] and not
 a fork, this is the official repository for the Pokémon Showdown! damage calculator:

@@ -342,7 +342,9 @@ function matchDocument(documented, setdex) {
  * against a Fire starter ("Rival Has Squirtle"). rival_teams.json holds all three teams of
  * every rival fight, read from the game's trainer data (FireRed's rival trainers come in
  * threes, one per starter); the teams the document leaves out are added from it, each
- * Pokémon matched to the rival's calc set with the same moves, nature and item.
+ * Pokémon matched to the rival's calc set with the same moves, nature and item. Battle
+ * effects come from the file too ("battleEffects", read from the game's Hardcore battle
+ * scripts), since they differ between his teams.
  */
 function addRivalTeams(order, setdex) {
 	const fights = JSON.parse(fs.readFileSync(path.join(__dirname, 'rival_teams.json'), 'utf8'))[mode] || [];
@@ -380,7 +382,9 @@ function addRivalTeams(order, setdex) {
 				used[id] = true;
 				return id;
 			});
-			trainer.variants.push({label, battleEffect: model.battleEffect, sets});
+			// Each team can have its own battle effect (in Hardcore, the last Route 22 fight is
+			// rain, swamp or magma storm depending on his team); none unless the file gives one.
+			trainer.variants.push({label, battleEffect: (fight.battleEffects || {})[label] || null, sets});
 			added++;
 		});
 	});

@@ -81,6 +81,7 @@ function releaseBattleEffect() {
 	lockedFieldInputs = $();
 	lockedField.weather = false;
 	lockedField.terrain = false;
+	battleSpeedMultiplier.p1 = 1;
 	$("#battle-effect-lock").hide();
 	if (locked.is("#doubles-format")) $("#singles-format").prop("checked", true).change();
 	if (hadWeather) $("#clear").prop("checked", true).change();
@@ -113,8 +114,11 @@ function applyBattleEffect(text, trainerName) {
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (effect.pattern.test(text)) lockFieldInputs($("#" + effect.id).prop("checked", true).change());
 	});
-	if (lockedFieldInputs.length) {
-		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text).show();
+	// "Permanent swamp (player's Pokémon speed stat is quartered)" (Brendan on Route 23).
+	if (/swamp/i.test(text)) battleSpeedMultiplier.p1 = 0.25;
+	if (lockedFieldInputs.length || battleSpeedMultiplier.p1 !== 1) {
+		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text +
+			(battleSpeedMultiplier.p1 !== 1 ? ". Pok\u00e9mon 1's Speed is shown quartered." : "")).show();
 	}
 }
 

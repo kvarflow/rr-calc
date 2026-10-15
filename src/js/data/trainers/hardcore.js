@@ -2124,7 +2124,7 @@ var TRAINER_ORDER = [
    },
    {
     "label": "Rival Has Bulbasaur",
-    "battleEffect": "Permanent rain + Rival has serene grace effect",
+    "battleEffect": "Permanent swamp (player's Pokémon speed stat is quartered)",
     "sets": [
      "Iron Hands (*Rival Blue)",
      "Kingambit (*Rival Blue)",
@@ -2136,7 +2136,7 @@ var TRAINER_ORDER = [
    },
    {
     "label": "Rival Has Charmander",
-    "battleEffect": "Permanent rain + Rival has serene grace effect",
+    "battleEffect": "Permanent magma storm (fire types are immune)",
     "sets": [
      "Charizard-Mega-Y (*Rival Blue)",
      "Garchomp (*Rival Blue)",

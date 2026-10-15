@@ -40,7 +40,8 @@ var CHANGELOG = [
 		"A trainer's weather and terrain (Thwackey's Grassy Surge) stay up when it switches out",
 		"A note when Simple or Contrary changes how stat boosts add up",
 		"Every rival fight has his team for each starter, taken from the game",
-		"Importing a .sav sets your starter and locks it until Professor Oak starts a new run"
+		"Importing a .sav sets your starter and locks it until Professor Oak starts a new run",
+		"Swamp battle effects quarter your Pokémon's Speed; each rival team has its own battle effect"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

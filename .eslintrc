@@ -52,6 +52,8 @@
         "createPokemon": false,
         "getPageMode": false,
         "lockedField": false,
+        "battleSpeedMultiplier": false,
+        "getBattleSpeed": false,
         "lastAutoWeather": false,
         "lastAutoTerrain": false,
         "readSetting": false,

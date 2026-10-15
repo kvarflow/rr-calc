@@ -1494,6 +1494,11 @@
       ]
      }
     ]
+   },
+   "battleEffects": {
+    "Rival Has Squirtle": "Permanent rain + Rival has serene grace effect",
+    "Rival Has Bulbasaur": "Permanent swamp (player's Pokémon speed stat is quartered)",
+    "Rival Has Charmander": "Permanent magma storm (fire types are immune)"
    }
   },
   {

@@ -41,11 +41,13 @@ function performCalculations() {
 	var battling = [p1, p2];
 	p1.maxDamages = [];
 	p2.maxDamages = [];
-	p1info.find(".sp .totalMod").text(p1.stats.spe);
-	p2info.find(".sp .totalMod").text(p2.stats.spe);
+	var p1Speed = getBattleSpeed(p1, "p1");
+	var p2Speed = getBattleSpeed(p2, "p2");
+	p1info.find(".sp .totalMod").text(p1Speed);
+	p2info.find(".sp .totalMod").text(p2Speed);
 	// Under Trick Room the slower Pokémon moves first.
-	var p1MovesFirst = $("#trickroom").prop("checked") ? p1.stats.spe < p2.stats.spe : p1.stats.spe > p2.stats.spe;
-	var fastestSide = p1.stats.spe === p2.stats.spe ? "tie" : p1MovesFirst ? 0 : 1;
+	var p1MovesFirst = $("#trickroom").prop("checked") ? p1Speed < p2Speed : p1Speed > p2Speed;
+	var fastestSide = p1Speed === p2Speed ? "tie" : p1MovesFirst ? 0 : 1;
 
 	var result, maxDamage;
 	var bestResult;

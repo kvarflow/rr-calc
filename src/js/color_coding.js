@@ -43,8 +43,8 @@ function getMatchupClasses(pokemon, opponent) {
 	pokemon = results[0][0].attacker;
 	opponent = results[1][0].attacker;
 
-	var ownSpeed = pokemon.stats.spe;
-	var opponentSpeed = opponent.stats.spe;
+	var ownSpeed = getBattleSpeed(pokemon, "p1");
+	var opponentSpeed = getBattleSpeed(opponent, "p2");
 	// "Faster" means it moves first, so Trick Room swaps it.
 	var movesFirst = $("#trickroom").prop("checked") ? ownSpeed < opponentSpeed : ownSpeed > opponentSpeed;
 	var speed = ownSpeed === opponentSpeed ? "cc-speed-tie" : movesFirst ? "cc-speed-faster" : "cc-speed-slower";
