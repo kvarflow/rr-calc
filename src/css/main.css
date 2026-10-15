@@ -1058,8 +1058,9 @@ html.small-screen .ss-tabs {
     top: 0;
     z-index: 50;
     margin: 0 -6px 6px;
-    background: inherit;
-    background-color: #F1F4F9;
+    /* The dark theme's variables when it is on (they work even with an older cached copy of
+       dark-theme.css), the light theme's colours otherwise. */
+    background-color: var(--fieldset-color, #F1F4F9);
     border-bottom: 1px solid #AAA;
 }
 .ss-tab {
@@ -1069,7 +1070,7 @@ html.small-screen .ss-tabs {
     border: 0;
     border-bottom: 3px solid transparent;
     background: none;
-    color: #222;
+    color: var(--text, #222);
     font-size: 13px;
     font-weight: bold;
     cursor: pointer;
@@ -1078,43 +1079,67 @@ html.small-screen .ss-tabs {
     border-bottom-color: #3a7bd5;
     color: #3a7bd5;
 }
+.ss-fullscreen {
+    flex: 0 0 40px;
+    font-size: 18px;
+}
+.ss-fullscreen[aria-pressed="true"] {
+    color: #3a7bd5;
+}
 /* Hidden inputs and screen-reader labels sit where they fall in the line; on a narrow screen
    that can be past the right edge, which would widen the page. */
 html.small-screen .visually-hidden {
     left: 0;
 }
-/* Results: your moves and the foe's side by side, each move a touch target with its damage
-   under it. The Crit and Range Compare buttons stay on the You and Foe tabs. */
+/* Results: your Pokémon on the left, the trainer's on the right, split down the middle; each
+   move is one compact row with its damage alongside. The Crit and Range Compare buttons stay on
+   the You and Foe tabs. */
 html.small-screen[data-ss-tab="results"] .move-result-group {
     display: flex !important;
-    gap: 6px;
 }
+/* Each side is a two-column grid (move, damage) so every row's button is the same width. */
 html.small-screen .move-result-subgroup {
     float: none;
     flex: 1 1 50%;
     min-width: 0;
     width: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 4px;
+    row-gap: 3px;
+    align-items: center;
+    align-content: start;
+    padding: 0 6px 0 0;
+    box-sizing: border-box;
 }
-html.small-screen .move-result-subgroup > div:not(.result-move-header) {
-    margin: 0 0 3px;
+html.small-screen .move-result-subgroup + .move-result-subgroup {
+    padding: 0 0 0 6px;
+    border-left: 1px solid #AAA;
+}
+html.small-screen .move-result-subgroup > div {
+    display: contents;
+}
+html.small-screen .move-result-subgroup > .result-move-header {
+    display: block;
+    grid-column: 1 / -1;
 }
 html.small-screen .move-result-subgroup .btn-xxxwide {
-    display: block;
-    width: 100%;
-    min-height: 30px;
-    line-height: 30px;
+    width: auto;
+    min-width: 0;
+    height: 26px;
+    line-height: 24px;
     padding: 0 4px;
     box-sizing: border-box;
     border-radius: 6px;
+    font-size: 13px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
 }
 html.small-screen .move-result-subgroup span[id^="resultDamage"] {
-    display: block;
-    padding: 1px 2px 0;
-    font-size: 11px;
-    line-height: 1.25;
+    text-align: right;
+    font-size: 12px;
+    white-space: nowrap;
 }
 html.small-screen .move-result-group .small-crit-btn,
 html.small-screen .move-result-group .rc-add {

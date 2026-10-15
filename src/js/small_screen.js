@@ -88,6 +88,27 @@ function renderQuickStrips() {
 	}
 }
 
+// Shorter results text that fits beside each move.
+function compactResults(p1Name, p2Name) {
+	// Just the names: "(select one to show detailed results)" does not fit.
+	$("#resultHeaderL").text(p1Name);
+	$("#resultHeaderR").text(p2Name);
+	// Just the damage range; recoil and recovery are in the detailed result below.
+	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
+		return text.replace(/ \(.*$/, "");
+	});
+}
+
+function toggleFullscreen() {
+	if (document.fullscreenElement) {
+		document.exitFullscreen();
+	} else {
+		document.documentElement.requestFullscreen().catch(function () {
+			// Refused (e.g. not allowed in this browser): nothing to undo.
+		});
+	}
+}
+
 function updateViewportReadout() {
 	$("#ss-viewport").text("Screen " + window.innerWidth + " × " + window.innerHeight +
 		" at ×" + (Math.round(window.devicePixelRatio * 100) / 100));
@@ -107,6 +128,17 @@ $(document).ready(function () {
 			})
 			.appendTo(tabs);
 	});
+	// Full screen hides the browser's address bar, which otherwise takes part of a small screen.
+	if (document.documentElement.requestFullscreen) {
+		$('<button type="button" id="ss-fullscreen" class="ss-tab ss-fullscreen" aria-pressed="false" title="Full screen (hides the address bar)">\u26F6</button>')
+			.click(toggleFullscreen)
+			.appendTo(tabs);
+		$(document).on("fullscreenchange", function () {
+			$("#ss-fullscreen").attr("aria-pressed", !!document.fullscreenElement)
+				.attr("title", document.fullscreenElement ? "Leave full screen" : "Full screen (hides the address bar)");
+			updateViewportReadout();
+		});
+	}
 	$(".wrapper").prepend(tabs);
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
@@ -124,13 +156,13 @@ $(document).ready(function () {
 	$(window).on("resize orientationchange", updateViewportReadout);
 
 	$(document).on("calc:done", function (event, p1, p2) {
-		// Just the names: "(select one to show detailed results)" does not fit.
-		if ($("html").hasClass("small-screen")) {
-			$("#resultHeaderL").text(p1.name);
-			$("#resultHeaderR").text(p2.name);
-		}
+		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
 	$(document).on("calc:done trainer:shown trainer:active customsets:changed", renderQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
+	// The page may have calculated before this script was ready (One vs One does).
+	if ($("html").hasClass("small-screen") && damageResults) {
+		compactResults(damageResults[0][0].attacker.name, damageResults[1][0].attacker.name);
+	}
 });
