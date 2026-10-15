@@ -47,17 +47,18 @@ function placeBsBtn() {
 }
 
 function ExportPokemon(pokeInfo) {
-	var pokemon = createPokemon(pokeInfo);
+	$("textarea.import-team-text").val(formatShowdownSet(createPokemon(pokeInfo), pokeInfo.find(".teraType").val()));
+}
+
+// A Pokémon as Showdown text; with a nickname ("Salt (Arbok)"), importing it gives back the set name.
+function formatShowdownSet(pokemon, teraType, nickname) {
 	var EV_counter = 0;
 	var finalText = "";
-	finalText = pokemon.name + (pokemon.item ? " @ " + pokemon.item : "") + "\n";
+	finalText = (nickname ? nickname + " (" + pokemon.name + ")" : pokemon.name) + (pokemon.item ? " @ " + pokemon.item : "") + "\n";
 	finalText += "Level: " + pokemon.level + "\n";
 	finalText += pokemon.nature && gen > 2 ? pokemon.nature + " Nature" + "\n" : "";
-	if (gen === 9) {
-		var teraType = pokeInfo.find(".teraType").val();
-		if (teraType !== undefined && teraType !== pokemon.types[0]) {
-			finalText += "Tera Type: " + teraType + "\n";
-		}
+	if (gen === 9 && teraType !== undefined && teraType !== pokemon.types[0]) {
+		finalText += "Tera Type: " + teraType + "\n";
 	}
 	finalText += pokemon.ability ? "Ability: " + pokemon.ability + "\n" : "";
 	if (gen > 2) {
@@ -96,8 +97,19 @@ function ExportPokemon(pokeInfo) {
 			finalText += "- " + moveName + "\n";
 		}
 	}
-	finalText = normalizeExportText(finalText.trim());
-	$("textarea.import-team-text").val(finalText);
+	return normalizeExportText(finalText.trim());
+}
+
+// Every Pokémon in this mode's Team, Box and Box 2 (not the Trash), as Showdown text.
+function exportAllSets() {
+	var layout = resolveBoxLayout(readCustomSets(), readBoxLayout());
+	return ["team", "box", "box2"].reduce(function (sets, section) {
+		return sets.concat(layout[section]);
+	}, []).map(function (setId) {
+		var set = splitSetId(setId);
+		var data = setdex[set.pokemonName][set.setName];
+		return formatShowdownSet(createPokemon(setId), data && data.teraType, set.setName);
+	}).join("\n\n");
 }
 
 $("#exportL").click(function () {

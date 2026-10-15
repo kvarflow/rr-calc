@@ -155,6 +155,15 @@ function documentedAbility(doc, species) {
 	return (lines.filter(a => a.tag !== 'mega')[0] || lines[0]).name;
 }
 
+// The documented ability before Mega Evolving: the first line not marked "(Mega)" ("Levitate"
+// of "Levitate / Shadow Tag"); of "Flash Fire or White Smoke", the first.
+function preMegaAbility(doc) {
+	const line = doc.abilityLines.filter(a => a.tag !== 'mega')[0];
+	if (!line) return null;
+	if (ABILITY_NAMES.indexOf(line.name) !== -1) return line.name;
+	return resolve('ability', line.name.split(/\s+or\s+/)[0]);
+}
+
 // Overwrites a set with the documented values.
 function applyDocument(doc, set, species) {
 	if (doc.level !== null) set.level = doc.level;
@@ -274,7 +283,9 @@ function matchDocument(documented, setdex) {
 			const used = {};
 			const reuse = {};
 			const label = titleCase(t.name) + (t.variants.length > 1 ? ' (' + variantLabel(v.note, vi) + ')' : '');
-			const sets = team.map(m => {
+			// The ability a trainer's Mega has before it Mega Evolves, by team slot.
+			const preMega = {};
+			const sets = team.map((m, slot) => {
 				const candidates = [];
 				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
 					if (trainers.indexOf(trainerOf(n)) !== -1 && !used[sp + ' (' + n + ')']) candidates.push({species: sp, name: n});
@@ -298,6 +309,10 @@ function matchDocument(documented, setdex) {
 					return null;
 				}
 				const setId = best.species + ' (' + best.name + ')';
+				if (/-Mega/.test(best.species)) {
+					const ability = preMegaAbility(m);
+					if (ability) preMega[slot] = ability;
+				}
 				used[setId] = true;
 				if (!claims[setId]) claims[setId] = key;
 				reuse[m.species] = best;
@@ -314,10 +329,66 @@ function matchDocument(documented, setdex) {
 				}
 				return setId;
 			}).filter(Boolean);
-			return {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
+			const variant = {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
+			if (Object.keys(preMega).length) variant.preMega = preMega;
+			return variant;
 		})
 	}));
 	return {order, report, stats};
+}
+
+/*
+ * The rival's team follows your starter, but the documents mostly list only the team he has
+ * against a Fire starter ("Rival Has Squirtle"). rival_teams.json holds all three teams of
+ * every rival fight, read from the game's trainer data (FireRed's rival trainers come in
+ * threes, one per starter); the teams the document leaves out are added from it, each
+ * Pokémon matched to the rival's calc set with the same moves, nature and item. Battle
+ * effects come from the file too ("battleEffects", read from the game's Hardcore battle
+ * scripts), since they differ between his teams.
+ */
+function addRivalTeams(order, setdex) {
+	const fights = JSON.parse(fs.readFileSync(path.join(__dirname, 'rival_teams.json'), 'utf8'))[mode] || [];
+	const baseOf = sp => (SPECIES[sp] && SPECIES[sp].baseSpecies) || sp;
+	const speciesKey = team => team.map(baseOf).sort().join();
+	const sameMove = (a, b) => a === b || (/^Hidden Power/.test(a) && /^Hidden Power/.test(b));
+	let added = 0;
+	fights.forEach(fight => {
+		const known = speciesKey(fight.teams['Rival Has Squirtle'].map(m => m.species));
+		const trainer = order.find(t => t.variants.some(v => v.label === 'Rival Has Squirtle' &&
+			speciesKey(v.sets.map(id => id.slice(0, id.lastIndexOf(' (')))) === known));
+		if (!trainer) throw new Error(`No ${mode} rival fight has the team ${known}`);
+		const model = trainer.variants.find(v => v.label === 'Rival Has Squirtle');
+		const names = [];
+		model.sets.forEach(id => {
+			const name = trainerOf(id.slice(id.lastIndexOf(' (') + 2, -1));
+			if (names.indexOf(name) === -1) names.push(name);
+		});
+		Object.keys(fight.teams).forEach(label => {
+			if (trainer.variants.some(v => v.label === label)) return;
+			const used = {};
+			const sets = fight.teams[label].map(m => {
+				const candidates = [];
+				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
+					if (names.indexOf(trainerOf(n)) !== -1 && !used[sp + ' (' + n + ')']) candidates.push({species: sp, name: n});
+				}));
+				const score = c => {
+					const s = setdex[c.species][c.name];
+					return m.moves.filter(mv => (s.moves || []).some(sm => sameMove(sm, mv))).length * 10 +
+						(s.nature === m.nature ? 2 : 0) + ((s.item || '') === m.item ? 2 : 0);
+				};
+				const best = candidates.sort((a, b) => score(b) - score(a))[0];
+				if (!best || score(best) < 20) throw new Error(`${mode} ${label}: no calc set fits ${JSON.stringify(m)}`);
+				const id = best.species + ' (' + best.name + ')';
+				used[id] = true;
+				return id;
+			});
+			// Each team can have its own battle effect (in Hardcore, the last Route 22 fight is
+			// rain, swamp or magma storm depending on his team); none unless the file gives one.
+			trainer.variants.push({label, battleEffect: (fight.battleEffects || {})[label] || null, sets});
+			added++;
+		});
+	});
+	return added;
 }
 
 function writeReport(setdex, report, stats, trainerCount, namesFixed) {
@@ -344,16 +415,18 @@ function build() {
 	const documented = JSON.parse(fs.readFileSync(docPath, 'utf8'));
 	const {order, report, stats} = matchDocument(documented, setdex);
 	if (APPLY) writeSetdex(setdex);
+	const rivalTeams = addRivalTeams(order, setdex);
 
 	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
 	fs.mkdirSync(path.dirname(outFile), {recursive: true});
 	fs.writeFileSync(outFile,
 		'/* Generated by import/radical-red-trainers/build_trainers.js from the ' + mode + ' boss document; do not edit by hand.\n' +
-		' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). */\n' +
+		' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). The rival\'s\n' +
+		' * teams for each starter come from rival_teams.json (the game\'s trainer data). */\n' +
 		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();

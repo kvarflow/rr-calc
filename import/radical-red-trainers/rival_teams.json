@@ -1,0 +1,1718 @@
+{
+ "normal": [
+  {
+   "trainerIds": [
+    332,
+    333,
+    334
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Kirlia",
+      "nature": "Modest",
+      "item": "Sitrus Berry",
+      "moves": [
+       "Psybeam",
+       "Draining Kiss",
+       "Magical Leaf"
+      ]
+     },
+     {
+      "species": "Staravia",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Pluck",
+       "Quick Attack",
+       "U-turn",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Pawniard",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Knock Off",
+       "Sucker Punch",
+       "Cut",
+       "Low Sweep"
+      ]
+     },
+     {
+      "species": "Wartortle",
+      "nature": "Modest",
+      "item": "Eviolite",
+      "moves": [
+       "Water Pulse",
+       "Icy Wind",
+       "Seismic Toss",
+       "Counter"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Kirlia",
+      "nature": "Modest",
+      "item": "Sitrus Berry",
+      "moves": [
+       "Psybeam",
+       "Draining Kiss",
+       "Magical Leaf"
+      ]
+     },
+     {
+      "species": "Staravia",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Pluck",
+       "Quick Attack",
+       "U-turn",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Pawniard",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Knock Off",
+       "Sucker Punch",
+       "Cut",
+       "Low Sweep"
+      ]
+     },
+     {
+      "species": "Ivysaur",
+      "nature": "Modest",
+      "item": "Eviolite",
+      "moves": [
+       "Leech Seed",
+       "Sludge",
+       "Mega Drain",
+       "Protect"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Kirlia",
+      "nature": "Modest",
+      "item": "Sitrus Berry",
+      "moves": [
+       "Psybeam",
+       "Draining Kiss",
+       "Magical Leaf"
+      ]
+     },
+     {
+      "species": "Staravia",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Pluck",
+       "Quick Attack",
+       "U-turn",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Pawniard",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Knock Off",
+       "Sucker Punch",
+       "Cut",
+       "Low Sweep"
+      ]
+     },
+     {
+      "species": "Charmeleon",
+      "nature": "Rash",
+      "item": "Eviolite",
+      "moves": [
+       "Flame Burst",
+       "Thunder Punch",
+       "Ancient Power",
+       "Bite"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    432,
+    433,
+    434
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "U-turn",
+       "Brave Bird",
+       "Quick Attack",
+       "Close Combat"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Jolly",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Jumpluff",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Sleep Powder",
+       "Double-Edge",
+       "Leaf Blade",
+       "Swords Dance"
+      ]
+     },
+     {
+      "species": "Darmanitan",
+      "nature": "Jolly",
+      "item": "Life Orb",
+      "moves": [
+       "Flare Blitz",
+       "Rock Slide",
+       "U-turn",
+       "Earthquake"
+      ]
+     },
+     {
+      "species": "Blastoise",
+      "nature": "Modest",
+      "item": "Blastoisinite",
+      "moves": [
+       "Shell Smash",
+       "Water Pulse",
+       "Dark Pulse",
+       "Aura Sphere"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "U-turn",
+       "Brave Bird",
+       "Quick Attack",
+       "Close Combat"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Jolly",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Azumarill",
+      "nature": "Adamant",
+      "item": "Mystic Water",
+      "moves": [
+       "Liquidation",
+       "Play Rough",
+       "Aqua Jet",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Darmanitan",
+      "nature": "Jolly",
+      "item": "Life Orb",
+      "moves": [
+       "Flare Blitz",
+       "Rock Slide",
+       "U-turn",
+       "Earthquake"
+      ]
+     },
+     {
+      "species": "Venusaur",
+      "nature": "Timid",
+      "item": "Venusaurite",
+      "moves": [
+       "Sleep Powder",
+       "Giga Drain",
+       "Sludge Bomb",
+       "Earth Power"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "U-turn",
+       "Brave Bird",
+       "Quick Attack",
+       "Close Combat"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Jolly",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Jumpluff",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Sleep Powder",
+       "Double-Edge",
+       "Leaf Blade",
+       "Swords Dance"
+      ]
+     },
+     {
+      "species": "Azumarill",
+      "nature": "Adamant",
+      "item": "Mystic Water",
+      "moves": [
+       "Liquidation",
+       "Play Rough",
+       "Aqua Jet",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Charizard",
+      "nature": "Timid",
+      "item": "Charizardite Y",
+      "moves": [
+       "Flamethrower",
+       "Air Slash",
+       "Solar Beam",
+       "Focus Blast"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    435,
+    436,
+    437
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Brave Bird",
+       "U-turn",
+       "Close Combat",
+       "Quick Attack"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Azumarill",
+      "nature": "Adamant",
+      "item": "Mystic Water",
+      "moves": [
+       "Liquidation",
+       "Waterfall",
+       "Play Rough",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Iron Moth",
+      "nature": "Timid",
+      "item": "Booster Energy",
+      "moves": [
+       "Fiery Dance",
+       "Sludge Wave",
+       "Energy Ball",
+       "Dazzling Gleam"
+      ]
+     },
+     {
+      "species": "Sneasler",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Dire Claw",
+       "Close Combat",
+       "U-turn",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Blastoise",
+      "nature": "Timid",
+      "item": "Blastoisinite",
+      "moves": [
+       "Shell Smash",
+       "Dark Pulse",
+       "Hydro Pump",
+       "Ice Beam"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Brave Bird",
+       "U-turn",
+       "Close Combat",
+       "Quick Attack"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Darmanitan",
+      "nature": "Jolly",
+      "item": "Life Orb",
+      "moves": [
+       "Flare Blitz",
+       "Rock Slide",
+       "U-turn",
+       "Earthquake"
+      ]
+     },
+     {
+      "species": "Iron Bundle",
+      "nature": "Timid",
+      "item": "Booster Energy",
+      "moves": [
+       "Hydro Pump",
+       "Freeze-Dry",
+       "Flip Turn",
+       "Ice Beam"
+      ]
+     },
+     {
+      "species": "Sneasler",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Dire Claw",
+       "Close Combat",
+       "U-turn",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Venusaur",
+      "nature": "Timid",
+      "item": "Venusaurite",
+      "moves": [
+       "Chloroblast",
+       "Sludge Bomb",
+       "Earth Power",
+       "Sleep Powder"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Staraptor",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Brave Bird",
+       "U-turn",
+       "Close Combat",
+       "Quick Attack"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Sandy Shocks",
+      "nature": "Timid",
+      "item": "Booster Energy",
+      "moves": [
+       "Thunderbolt",
+       "Earth Power",
+       "Hidden Power",
+       "Volt Switch"
+      ]
+     },
+     {
+      "species": "Azumarill",
+      "nature": "Adamant",
+      "item": "Mystic Water",
+      "moves": [
+       "Liquidation",
+       "Play Rough",
+       "Aqua Jet",
+       "Superpower"
+      ]
+     },
+     {
+      "species": "Sneasler",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Dire Claw",
+       "Close Combat",
+       "U-turn",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Charizard",
+      "nature": "Jolly",
+      "item": "Charizardite X",
+      "moves": [
+       "Dragon Dance",
+       "Flare Blitz",
+       "Earthquake",
+       "Dragon Claw"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    438,
+    439,
+    440
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Pheromosa",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Close Combat",
+       "U-turn",
+       "Triple Axel",
+       "Poison Jab"
+      ]
+     },
+     {
+      "species": "Metagross",
+      "nature": "Jolly",
+      "item": "Metagrossite",
+      "moves": [
+       "Meteor Mash",
+       "Bullet Punch",
+       "Zen Headbutt",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Koraidon",
+      "nature": "Jolly",
+      "item": "Lum Berry",
+      "moves": [
+       "Swords Dance",
+       "Collision Course",
+       "Dragon Claw",
+       "Flare Blitz"
+      ]
+     },
+     {
+      "species": "Yveltal",
+      "nature": "Modest",
+      "item": "Assault Vest",
+      "moves": [
+       "Oblivion Wing",
+       "Dark Hole",
+       "Heat Wave",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Power Herb",
+      "moves": [
+       "Meteor Beam",
+       "Sludge Wave",
+       "Dynamax Cannon",
+       "Flamethrower"
+      ]
+     },
+     {
+      "species": "Ditto",
+      "nature": "Timid",
+      "item": "Choice Scarf",
+      "moves": [
+       "Transform"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Pheromosa",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Close Combat",
+       "U-turn",
+       "Triple Axel",
+       "Poison Jab"
+      ]
+     },
+     {
+      "species": "Metagross",
+      "nature": "Jolly",
+      "item": "Metagrossite",
+      "moves": [
+       "Meteor Mash",
+       "Bullet Punch",
+       "Zen Headbutt",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Miraidon",
+      "nature": "Timid",
+      "item": "Leftovers",
+      "moves": [
+       "Calm Mind",
+       "Electro Drift",
+       "Dragon Pulse",
+       "Hidden Power"
+      ]
+     },
+     {
+      "species": "Yveltal",
+      "nature": "Modest",
+      "item": "Assault Vest",
+      "moves": [
+       "Oblivion Wing",
+       "Dark Hole",
+       "Heat Wave",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Power Herb",
+      "moves": [
+       "Meteor Beam",
+       "Sludge Wave",
+       "Dynamax Cannon",
+       "Flamethrower"
+      ]
+     },
+     {
+      "species": "Ditto",
+      "nature": "Timid",
+      "item": "Choice Scarf",
+      "moves": [
+       "Transform"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Pheromosa",
+      "nature": "Jolly",
+      "item": "Focus Sash",
+      "moves": [
+       "Close Combat",
+       "U-turn",
+       "Triple Axel",
+       "Poison Jab"
+      ]
+     },
+     {
+      "species": "Metagross",
+      "nature": "Jolly",
+      "item": "Metagrossite",
+      "moves": [
+       "Meteor Mash",
+       "Bullet Punch",
+       "Zen Headbutt",
+       "Fire Punch"
+      ]
+     },
+     {
+      "species": "Miraidon",
+      "nature": "Timid",
+      "item": "Leftovers",
+      "moves": [
+       "Calm Mind",
+       "Parabolic Charge",
+       "Dragon Pulse",
+       "Hidden Power"
+      ]
+     },
+     {
+      "species": "Yveltal",
+      "nature": "Modest",
+      "item": "Assault Vest",
+      "moves": [
+       "Oblivion Wing",
+       "Dark Hole",
+       "Heat Wave",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Power Herb",
+      "moves": [
+       "Meteor Beam",
+       "Sludge Wave",
+       "Dynamax Cannon",
+       "Flamethrower"
+      ]
+     },
+     {
+      "species": "Ditto",
+      "nature": "Timid",
+      "item": "Choice Scarf",
+      "moves": [
+       "Transform"
+      ]
+     }
+    ]
+   }
+  }
+ ],
+ "hardcore": [
+  {
+   "trainerIds": [
+    329,
+    330,
+    331
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Snubbull",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Power-Up Punch",
+       "Covet",
+       "Thunder Wave",
+       "Fire Fang"
+      ]
+     },
+     {
+      "species": "Litleo",
+      "nature": "Timid",
+      "item": "Wise Glasses",
+      "moves": [
+       "Incinerate",
+       "Round",
+       "Hidden Power",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Squirtle",
+      "nature": "Adamant",
+      "item": "Oran Berry",
+      "moves": [
+       "Power-Up Punch",
+       "Aqua Jet",
+       "Rock Tomb",
+       "Curse"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Snubbull",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Power-Up Punch",
+       "Covet",
+       "Thunder Wave",
+       "Fire Fang"
+      ]
+     },
+     {
+      "species": "Slowpoke",
+      "nature": "Bold",
+      "item": "Leftovers",
+      "moves": [
+       "Thunder Wave",
+       "Water Pulse",
+       "Psybeam",
+       "Teleport"
+      ]
+     },
+     {
+      "species": "Bulbasaur",
+      "nature": "Timid",
+      "item": "Oran Berry",
+      "moves": [
+       "Sleep Powder",
+       "Mega Drain",
+       "Sludge",
+       "Growth"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Snubbull",
+      "nature": "Adamant",
+      "item": "Muscle Band",
+      "moves": [
+       "Power-Up Punch",
+       "Covet",
+       "Thunder Wave",
+       "Fire Fang"
+      ]
+     },
+     {
+      "species": "Slowpoke",
+      "nature": "Bold",
+      "item": "Leftovers",
+      "moves": [
+       "Thunder Wave",
+       "Water Pulse",
+       "Psybeam",
+       "Teleport"
+      ]
+     },
+     {
+      "species": "Charmander",
+      "nature": "Jolly",
+      "item": "Muscle Band",
+      "moves": [
+       "Power-Up Punch",
+       "Fire Fang",
+       "Thunder Punch",
+       "Slash"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    332,
+    333,
+    334
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Hitmonlee",
+      "nature": "Jolly",
+      "item": "Black Belt",
+      "moves": [
+       "Bullet Punch",
+       "Knock Off",
+       "Fake Out",
+       "Low Sweep"
+      ]
+     },
+     {
+      "species": "Eevee",
+      "nature": "Rash",
+      "item": "Eevium Z",
+      "moves": [
+       "Last Resort",
+       "Round",
+       "Double Kick",
+       "Bite"
+      ]
+     },
+     {
+      "species": "Clefable",
+      "nature": "Timid",
+      "item": "Life Orb",
+      "moves": [
+       "Charge Beam",
+       "Draining Kiss",
+       "Icy Wind",
+       "Mystical Fire"
+      ]
+     },
+     {
+      "species": "Simisear",
+      "nature": "Timid",
+      "item": "Charcoal",
+      "moves": [
+       "Incinerate",
+       "Grass Knot",
+       "Hidden Power",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Arbok",
+      "nature": "Jolly",
+      "item": "Poison Barb",
+      "moves": [
+       "Poison Jab",
+       "Sucker Punch",
+       "Crunch",
+       "Thunder Fang"
+      ]
+     },
+     {
+      "species": "Wartortle",
+      "nature": "Modest",
+      "item": "Eviolite",
+      "moves": [
+       "Shell Smash",
+       "Water Pulse",
+       "Icy Wind",
+       "Hidden Power"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Hitmonchan",
+      "nature": "Jolly",
+      "item": "Black Belt",
+      "moves": [
+       "Drain Punch",
+       "Ice Punch",
+       "Mach Punch",
+       "Sucker Punch"
+      ]
+     },
+     {
+      "species": "Clefable",
+      "nature": "Timid",
+      "item": "Life Orb",
+      "moves": [
+       "Charge Beam",
+       "Draining Kiss",
+       "Icy Wind",
+       "Mystical Fire"
+      ]
+     },
+     {
+      "species": "Simipour",
+      "nature": "Timid",
+      "item": "Mystic Water",
+      "moves": [
+       "Water Pulse",
+       "Icy Wind",
+       "Hidden Power",
+       "Grass Knot"
+      ]
+     },
+     {
+      "species": "Arbok",
+      "nature": "Jolly",
+      "item": "Poison Barb",
+      "moves": [
+       "Poison Jab",
+       "Sucker Punch",
+       "Crunch",
+       "Thunder Fang"
+      ]
+     },
+     {
+      "species": "Eevee",
+      "nature": "Lonely",
+      "item": "Eevium Z",
+      "moves": [
+       "Last Resort",
+       "Round",
+       "Double Kick",
+       "Bite"
+      ]
+     },
+     {
+      "species": "Ivysaur",
+      "nature": "Timid",
+      "item": "Eviolite",
+      "moves": [
+       "Leech Seed",
+       "Protect",
+       "Sludge",
+       "Giga Drain"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Hitmontop",
+      "nature": "Jolly",
+      "item": "Black Belt",
+      "moves": [
+       "Fake Out",
+       "Bullet Punch",
+       "Rock Smash",
+       "Thief"
+      ]
+     },
+     {
+      "species": "Clefable",
+      "nature": "Timid",
+      "item": "Life Orb",
+      "moves": [
+       "Charge Beam",
+       "Draining Kiss",
+       "Icy Wind",
+       "Mystical Fire"
+      ]
+     },
+     {
+      "species": "Simisage",
+      "nature": "Timid",
+      "item": "Miracle Seed",
+      "moves": [
+       "Mega Drain",
+       "Hidden Power",
+       "Power Gem",
+       "Sleep Talk"
+      ]
+     },
+     {
+      "species": "Arbok",
+      "nature": "Jolly",
+      "item": "Poison Barb",
+      "moves": [
+       "Poison Jab",
+       "Sucker Punch",
+       "Crunch",
+       "Thunder Fang"
+      ]
+     },
+     {
+      "species": "Eevee",
+      "nature": "Lonely",
+      "item": "Eevium Z",
+      "moves": [
+       "Last Resort",
+       "Round",
+       "Double Kick",
+       "Bite"
+      ]
+     },
+     {
+      "species": "Charmeleon",
+      "nature": "Jolly",
+      "item": "Eviolite",
+      "moves": [
+       "Dragon Dance",
+       "Fire Punch",
+       "Thunder Punch",
+       "Brick Break"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    432,
+    433,
+    434
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Azelf",
+      "nature": "Naive",
+      "item": "Focus Sash",
+      "moves": [
+       "Stealth Rock",
+       "Explosion",
+       "Flamethrower",
+       "Psychic"
+      ]
+     },
+     {
+      "species": "Celesteela",
+      "nature": "Modest",
+      "item": "Weakness Policy",
+      "moves": [
+       "Autotomize",
+       "Air Slash",
+       "Flamethrower",
+       "Giga Drain"
+      ]
+     },
+     {
+      "species": "Electivire",
+      "nature": "Jolly",
+      "item": "Electirizer",
+      "moves": [
+       "Mach Punch",
+       "Plasma Fists",
+       "Close Combat",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Jumpluff",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Spore",
+       "Double-Edge",
+       "Leaf Blade",
+       "Swords Dance"
+      ]
+     },
+     {
+      "species": "Darmanitan",
+      "nature": "Jolly",
+      "item": "Life Orb",
+      "moves": [
+       "Flare Blitz",
+       "Rock Slide",
+       "U-turn",
+       "Earthquake"
+      ]
+     },
+     {
+      "species": "Blastoise",
+      "nature": "Modest",
+      "item": "Blastoisinite",
+      "moves": [
+       "Shell Smash",
+       "Water Pulse",
+       "Dark Pulse",
+       "Aura Sphere"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Azelf",
+      "nature": "Naive",
+      "item": "Focus Sash",
+      "moves": [
+       "Stealth Rock",
+       "Explosion",
+       "Flamethrower",
+       "Psychic"
+      ]
+     },
+     {
+      "species": "Celesteela",
+      "nature": "Modest",
+      "item": "Weakness Policy",
+      "moves": [
+       "Autotomize",
+       "Air Slash",
+       "Flamethrower",
+       "Giga Drain"
+      ]
+     },
+     {
+      "species": "Electivire",
+      "nature": "Jolly",
+      "item": "Electirizer",
+      "moves": [
+       "Mach Punch",
+       "Plasma Fists",
+       "Close Combat",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Gorebyss",
+      "nature": "Timid",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Surf",
+       "Moonblast",
+       "Psychic"
+      ]
+     },
+     {
+      "species": "Darmanitan",
+      "nature": "Jolly",
+      "item": "Life Orb",
+      "moves": [
+       "Flare Blitz",
+       "Rock Slide",
+       "U-turn",
+       "Earthquake"
+      ]
+     },
+     {
+      "species": "Venusaur",
+      "nature": "Timid",
+      "item": "Venusaurite",
+      "moves": [
+       "Sleep Powder",
+       "Giga Drain",
+       "Sludge Bomb",
+       "Earth Power"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Azelf",
+      "nature": "Naive",
+      "item": "Focus Sash",
+      "moves": [
+       "Stealth Rock",
+       "Explosion",
+       "Flamethrower",
+       "Psychic"
+      ]
+     },
+     {
+      "species": "Jumpluff",
+      "nature": "Jolly",
+      "item": "Sharp Beak",
+      "moves": [
+       "Spore",
+       "Double-Edge",
+       "Leaf Blade",
+       "Swords Dance"
+      ]
+     },
+     {
+      "species": "Celesteela",
+      "nature": "Modest",
+      "item": "Weakness Policy",
+      "moves": [
+       "Autotomize",
+       "Air Slash",
+       "Flamethrower",
+       "Giga Drain"
+      ]
+     },
+     {
+      "species": "Electivire",
+      "nature": "Jolly",
+      "item": "Electirizer",
+      "moves": [
+       "Mach Punch",
+       "Plasma Fists",
+       "Close Combat",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Gorebyss",
+      "nature": "Timid",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Surf",
+       "Moonblast",
+       "Psychic"
+      ]
+     },
+     {
+      "species": "Charizard",
+      "nature": "Jolly",
+      "item": "Charizardite X",
+      "moves": [
+       "Dragon Dance",
+       "Dragon Claw",
+       "Flare Blitz",
+       "Earthquake"
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "trainerIds": [
+    435,
+    436,
+    437
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Zapdos",
+      "nature": "Timid",
+      "item": "Flyinium Z",
+      "moves": [
+       "Hurricane",
+       "Thunder",
+       "Weather Ball",
+       "Roost"
+      ]
+     },
+     {
+      "species": "Ferrothorn",
+      "nature": "Relaxed",
+      "item": "Rocky Helmet",
+      "moves": [
+       "Leech Seed",
+       "Power Whip",
+       "Gyro Ball",
+       "Thunder"
+      ]
+     },
+     {
+      "species": "Celesteela",
+      "nature": "Naive",
+      "item": "Weakness Policy",
+      "moves": [
+       "Autotomize",
+       "Iron Head",
+       "Air Slash",
+       "Giga Drain"
+      ]
+     },
+     {
+      "species": "Basculegion",
+      "nature": "Jolly",
+      "item": "Mystic Water",
+      "moves": [
+       "Wave Crash",
+       "Last Respects",
+       "Flip Turn",
+       "Zen Headbutt"
+      ]
+     },
+     {
+      "species": "Goodra",
+      "nature": "Modest",
+      "item": "Leftovers",
+      "moves": [
+       "Thunder",
+       "Hydro Pump",
+       "Ice Beam",
+       "Rest"
+      ]
+     },
+     {
+      "species": "Blastoise",
+      "nature": "Timid",
+      "item": "Blastoisinite",
+      "moves": [
+       "Shell Smash",
+       "Dark Pulse",
+       "Hydro Pump",
+       "Ice Beam"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Iron Hands",
+      "nature": "Jolly",
+      "item": "Assault Vest",
+      "moves": [
+       "Drain Punch",
+       "Plasma Fists",
+       "Knock Off",
+       "Ice Punch"
+      ]
+     },
+     {
+      "species": "Kingambit",
+      "nature": "Adamant",
+      "item": "Chople Berry",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Knock Off",
+       "Brick Break"
+      ]
+     },
+     {
+      "species": "Primarina",
+      "nature": "Modest",
+      "item": "Leftovers",
+      "moves": [
+       "Calm Mind",
+       "Draining Kiss",
+       "Hyper Voice",
+       "Ice Beam"
+      ]
+     },
+     {
+      "species": "Chandelure",
+      "nature": "Timid",
+      "item": "Life Orb",
+      "moves": [
+       "Flamethrower",
+       "Shadow Ball",
+       "Energy Ball",
+       "Calm Mind"
+      ]
+     },
+     {
+      "species": "Hydreigon",
+      "nature": "Timid",
+      "item": "Darkinium Z",
+      "moves": [
+       "Nasty Plot",
+       "Dark Pulse",
+       "Flash Cannon",
+       "Flamethrower"
+      ]
+     },
+     {
+      "species": "Venusaur",
+      "nature": "Timid",
+      "item": "Venusaurite",
+      "moves": [
+       "Chloroblast",
+       "Sludge Bomb",
+       "Earth Power",
+       "Sleep Powder"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Charizard",
+      "nature": "Timid",
+      "item": "Charizardite Y",
+      "moves": [
+       "Weather Ball",
+       "Solar Beam",
+       "Focus Blast",
+       "Protect"
+      ]
+     },
+     {
+      "species": "Garchomp",
+      "nature": "Jolly",
+      "item": "Yache Berry",
+      "moves": [
+       "Swords Dance",
+       "Scale Shot",
+       "Earthquake",
+       "Stone Edge"
+      ]
+     },
+     {
+      "species": "Sunflora",
+      "nature": "Timid",
+      "item": "Focus Sash",
+      "moves": [
+       "Growth",
+       "Solar Beam",
+       "Fiery Dance",
+       "Hidden Power"
+      ]
+     },
+     {
+      "species": "Zamazenta",
+      "nature": "Jolly",
+      "item": "Rusted Shield",
+      "moves": [
+       "Body Press",
+       "Bulk Up",
+       "Wild Charge",
+       "Behemoth Bash"
+      ]
+     },
+     {
+      "species": "Gliscor",
+      "nature": "Jolly",
+      "item": "Toxic Orb",
+      "moves": [
+       "Swords Dance",
+       "Protect",
+       "Earthquake",
+       "Facade"
+      ]
+     },
+     {
+      "species": "Latias",
+      "nature": "Timid",
+      "item": "Leftovers",
+      "moves": [
+       "Calm Mind",
+       "Roost",
+       "Mist Ball",
+       "Mystical Fire"
+      ]
+     }
+    ]
+   },
+   "battleEffects": {
+    "Rival Has Squirtle": "Permanent rain + Rival has serene grace effect",
+    "Rival Has Bulbasaur": "Permanent swamp (player's Pokémon speed stat is quartered)",
+    "Rival Has Charmander": "Permanent magma storm (fire types are immune)"
+   }
+  },
+  {
+   "trainerIds": [
+    438,
+    439,
+    440
+   ],
+   "teams": {
+    "Rival Has Squirtle": [
+     {
+      "species": "Kyogre",
+      "nature": "Timid",
+      "item": "Blue Orb",
+      "moves": [
+       "Origin Pulse",
+       "Ice Beam",
+       "Thunder",
+       "Liquidation"
+      ]
+     },
+     {
+      "species": "Swampert",
+      "nature": "Adamant",
+      "item": "Swampertite",
+      "moves": [
+       "Waterfall",
+       "Earthquake",
+       "Ice Punch",
+       "Stone Edge"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Eternamax Orb",
+      "moves": [
+       "Draco Barrage",
+       "Sludge Wave",
+       "Thunder",
+       "Recover"
+      ]
+     },
+     {
+      "species": "Necrozma-Dawn-Wings",
+      "nature": "Jolly",
+      "item": "Ultranecrozium Z",
+      "moves": [
+       "Dragon Dance",
+       "Photon Geyser",
+       "Earthquake",
+       "Stone Edge"
+      ]
+     },
+     {
+      "species": "Arceus",
+      "nature": "Jolly",
+      "item": "Normalium Z",
+      "moves": [
+       "Swords Dance",
+       "Extreme Speed",
+       "Shadow Claw",
+       "Recover"
+      ]
+     },
+     {
+      "species": "Walking Wake",
+      "nature": "Timid",
+      "item": "Booster Energy",
+      "moves": [
+       "Hydro Pump",
+       "Draco Barrage",
+       "Flamethrower",
+       "Hurricane"
+      ]
+     }
+    ],
+    "Rival Has Bulbasaur": [
+     {
+      "species": "Kyogre",
+      "nature": "Timid",
+      "item": "Blue Orb",
+      "moves": [
+       "Origin Pulse",
+       "Ice Beam",
+       "Thunder",
+       "Liquidation"
+      ]
+     },
+     {
+      "species": "Swampert",
+      "nature": "Adamant",
+      "item": "Swampertite",
+      "moves": [
+       "Waterfall",
+       "Earthquake",
+       "Ice Punch",
+       "Stone Edge"
+      ]
+     },
+     {
+      "species": "Walking Wake",
+      "nature": "Timid",
+      "item": "Booster Energy",
+      "moves": [
+       "Hydro Pump",
+       "Draco Barrage",
+       "Scald",
+       "Hurricane"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Eternamax Orb",
+      "moves": [
+       "Draco Barrage",
+       "Sludge Wave",
+       "Thunder",
+       "Recover"
+      ]
+     },
+     {
+      "species": "Xerneas",
+      "nature": "Timid",
+      "item": "Power Herb",
+      "moves": [
+       "Geomancy",
+       "Moonblast",
+       "Thunderbolt",
+       "Focus Blast"
+      ]
+     },
+     {
+      "species": "Arceus",
+      "nature": "Jolly",
+      "item": "Steelium Z",
+      "moves": [
+       "Swords Dance",
+       "Iron Head",
+       "Earthquake",
+       "Stone Edge"
+      ]
+     }
+    ],
+    "Rival Has Charmander": [
+     {
+      "species": "Groudon",
+      "nature": "Jolly",
+      "item": "Red Orb",
+      "moves": [
+       "Stealth Rock",
+       "Precipice Blades",
+       "Heat Crash",
+       "Rock Tomb"
+      ]
+     },
+     {
+      "species": "Gouging Fire",
+      "nature": "Jolly",
+      "item": "Leftovers",
+      "moves": [
+       "Dragon Dance",
+       "Flare Blitz",
+       "Draco Barrage",
+       "Morning Sun"
+      ]
+     },
+     {
+      "species": "Koraidon",
+      "nature": "Jolly",
+      "item": "Roseli Berry",
+      "moves": [
+       "Swords Dance",
+       "Flare Blitz",
+       "Collision Course",
+       "Draco Barrage"
+      ]
+     },
+     {
+      "species": "Arceus",
+      "nature": "Timid",
+      "item": "Groundium Z",
+      "moves": [
+       "Calm Mind",
+       "Earth Power",
+       "Ice Beam",
+       "Recover"
+      ]
+     },
+     {
+      "species": "Xerneas",
+      "nature": "Timid",
+      "item": "Power Herb",
+      "moves": [
+       "Geomancy",
+       "Moonblast",
+       "Thunderbolt",
+       "Focus Blast"
+      ]
+     },
+     {
+      "species": "Eternatus",
+      "nature": "Timid",
+      "item": "Eternamax Orb",
+      "moves": [
+       "Draco Barrage",
+       "Sludge Wave",
+       "Flamethrower",
+       "Recover"
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}

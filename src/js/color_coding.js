@@ -3,7 +3,7 @@
  *
  * Each box sprite (and, optionally, the sprite in the Pokémon 1 header) is compared
  * against the current Pokémon 2 by running all four moves both ways on the current field:
- *  - Border: is it faster than, tied with, or slower than Pokémon 2 (Speed stat only).
+ *  - Border: does it move before, tied with, or after Pokémon 2 (Speed stat, and Trick Room).
  *  - Background, left half: can it OHKO Pokémon 2 (green: every roll, yellow: some rolls).
  *  - Background, right half: can Pokémon 2 OHKO it (red: every roll, orange: some rolls).
  *  - Whole background blue instead when it "walls" Pokémon 2: Pokémon 2's best max roll
@@ -43,10 +43,11 @@ function getMatchupClasses(pokemon, opponent) {
 	pokemon = results[0][0].attacker;
 	opponent = results[1][0].attacker;
 
-	var ownSpeed = pokemon.stats.spe;
-	var opponentSpeed = opponent.stats.spe;
-	var speed = ownSpeed > opponentSpeed ? "cc-speed-faster" :
-		ownSpeed === opponentSpeed ? "cc-speed-tie" : "cc-speed-slower";
+	var ownSpeed = getBattleSpeed(pokemon, "p1");
+	var opponentSpeed = getBattleSpeed(opponent, "p2");
+	// "Faster" means it moves first, so Trick Room swaps it.
+	var movesFirst = $("#trickroom").prop("checked") ? ownSpeed < opponentSpeed : ownSpeed > opponentSpeed;
+	var speed = ownSpeed === opponentSpeed ? "cc-speed-tie" : movesFirst ? "cc-speed-faster" : "cc-speed-slower";
 
 	var dealt = summarizeDamage(results[0], opponent);
 	var taken = summarizeDamage(results[1], pokemon);

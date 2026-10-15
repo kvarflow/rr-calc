@@ -668,14 +668,27 @@ table.field {
 .cc-take-might { --cc-right: #ff7f16; }
 .cc-wall { --cc-left: #0f0bf3; --cc-right: #0f0bf3; }
 .cc-hard-counter { --cc-left: #1295ec; --cc-right: #1295ec; }
-.header-sprite {
-    display: inline-block;
+/* A fixed box with the sprite centred in it, so the legend is sized right before the image
+   loads, and a matching space on the left keeps the panel's title centred. (".poke-info"
+   beats the panel's ".poke-info span" width.) */
+.poke-info .header-sprite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 33px;
+    margin-left: 4px;
     vertical-align: middle;
     box-sizing: border-box;
 }
 .header-sprite img {
-    max-height: 39px;
-    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+}
+legend:has(> .header-sprite)::before {
+    content: "";
+    display: inline-block;
+    width: 48px;
 }
 #cc-controls {
     margin-top: 8px;
@@ -813,4 +826,181 @@ table.field {
 }
 .run-progress-row .hpbar {
     margin-top: 2px;
+}
+
+/* Crit chance beside each move's Crit button, and Crit buttons on the result rows. */
+.crit-rate {
+    font-size: 0.75em;
+    margin-left: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.small-crit-btn {
+    width: auto;
+    padding: 1px 6px;
+    margin-left: 6px;
+    font-size: 0.8em;
+}
+
+/* Export All dialog and the "Copied" note for the damage rolls. */
+.export-dialog-text {
+    width: 100%;
+    min-height: 18em;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+#damageValues {
+    cursor: pointer;
+}
+.copied-note {
+    margin-left: 6px;
+    font-weight: bold;
+    display: none;
+}
+
+/* Pokémon panels: section toggles under the title, and the base stat override buttons. */
+.panel-toggles {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.panel-toggle {
+    font-size: 0.8em;
+    padding: 1px 6px;
+}
+.override-buttons button {
+    font-size: 0.8em;
+    margin: 2px 2px 4px 0;
+}
+#save-override, #reset-override {
+    display: none;
+}
+
+/* Range Compare: added moves, the HP-left chart and the results. */
+#range-compare {
+    width: 27.5em;
+    text-align: left;
+    /* Below Import / Export, not beside it: two floats side by side would make the middle
+       column twice as wide and push Pokémon 2 onto the next row. */
+    clear: left;
+}
+.rc-row {
+    margin: 4px 0;
+}
+.rc-number {
+    width: 4em;
+}
+.rc-add {
+    padding: 0 6px;
+    margin-left: 4px;
+    font-size: 0.8em;
+}
+.rc-empty {
+    font-size: 0.85em;
+    font-style: italic;
+}
+.rc-move {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+.rc-move-name {
+    flex: 1;
+}
+.rc-move-controls button {
+    padding: 0 5px;
+}
+.rc-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 110px;
+    margin: 8px 0 22px;
+    position: relative;
+}
+.rc-bar {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+.rc-bar-fill {
+    background: green;
+    min-height: 1px;
+}
+.rc-bar-fainted .rc-bar-fill {
+    background: #ee4928;
+}
+.rc-bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    right: 0;
+    font-size: 0.65em;
+    text-align: center;
+}
+.rc-chart-axis {
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7em;
+}
+.rc-sure { color: #2e9e44; }
+.rc-likely { color: #3a7bd5; }
+.rc-unlikely { color: #c99a00; }
+.rc-never { color: #d33; }
+
+.trainer-on-top {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85em;
+}
+
+/* Footer settings, and the "What's new" and Credits popups (site_settings.js). */
+.site-settings {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    font-size: 0.9em;
+}
+.site-settings button {
+    padding: 2px 8px;
+    cursor: pointer;
+}
+.info-dialog {
+    max-width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.info-dialog h4 {
+    margin: 10px 0 4px;
+}
+.info-dialog ul {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+.info-dialog li {
+    margin-bottom: 3px;
+}
+body.hide-box-search #box-search,
+body.hide-range-compare #range-compare,
+body.hide-range-compare .rc-add {
+    display: none !important;
+}
+.boost-note {
+    margin: 4px 0;
+    font-size: 0.85em;
+    font-style: italic;
+}
+.trainer-starter-lock {
+    font-size: 0.85em;
+    opacity: 0.8;
 }

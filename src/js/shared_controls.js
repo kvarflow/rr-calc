@@ -321,6 +321,12 @@ var lastAutoWeather = ["", ""];
 // Field conditions a boss's battle effect fixes for the whole fight (set by
 // trainer_controls.js): abilities such as Drizzle or Electric Surge cannot change them.
 var lockedField = {weather: false, terrain: false};
+// Speed changes from a boss's battle effect ("Permanent swamp": your Pokémon's Speed is
+// quartered), used wherever the two Pokémon's speeds are compared. Set by trainer_controls.js.
+var battleSpeedMultiplier = {p1: 1, p2: 1};
+function getBattleSpeed(pokemon, side) {
+	return Math.floor(pokemon.stats.spe * battleSpeedMultiplier[side]);
+}
 function autosetWeather(ability, i, item) {
 	if (lockedField.weather) return;
 	var currentWeather = $("input:radio[name='weather']:checked").val();
