@@ -10,7 +10,7 @@
         try {
             var smallScreenSetting = localStorage.getItem("smallScreenLayout");
             if (smallScreenSetting === "on" || (smallScreenSetting !== "off" && Math.min(screen.width, screen.height) <= 640)) {
-                document.write('<meta name="viewport" content="width=device-width, initial-scale=1" />');
+                document.write('<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />');
                 // The small layout's CSS, from the first layout on rather than once the page has loaded.
                 document.documentElement.className += " small-screen";
                 document.documentElement.setAttribute("data-ss-tab", localStorage.getItem("smallScreenTab") || "results");

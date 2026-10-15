@@ -1565,3 +1565,59 @@ html.small-screen #reset-trainer {
     border-radius: 10px;
     background: var(--ss-btn);
 }
+/* Import / Export: its fixed widths would overflow a narrow phone. */
+html.small-screen #import-1_wrapper,
+html.small-screen .import-actions,
+html.small-screen #fight-notes {
+    width: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+/* "Only show imported sets / Clear Imported Sets" take a line on every Pokémon panel; the Box tab
+   manages your Pokémon on a small screen. */
+html.small-screen #importedSetsOptions {
+    display: none !important;
+}
+
+/* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
+   You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
+@media (max-width: 500px) and (orientation: portrait) {
+    html.small-screen .ss-tabs {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+        box-shadow: 0 -1px 3px rgba(16, 24, 40, 0.12);
+    }
+    html.small-screen body {
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    }
+    html.small-screen .wrapper {
+        padding-top: 8px;
+    }
+    html.small-screen .ss-tab {
+        font-size: 12px;
+    }
+    html.small-screen .poke-info > .info-group:has(> table),
+    html.small-screen .poke-info > .info-selectors {
+        grid-column: 1 / -1;
+    }
+    html.small-screen .info-selectors {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+        column-gap: 8px;
+    }
+    html.small-screen .info-selectors > .ability-info {
+        grid-column: 1 / -1;
+    }
+    html.small-screen .move-result-subgroup .btn {
+        padding: 0 4px;
+        font-size: 12px;
+    }
+    html.small-screen .move-result-subgroup span[id^="resultDamage"] {
+        font-size: 11px;
+    }
+}

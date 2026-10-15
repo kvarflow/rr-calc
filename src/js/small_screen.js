@@ -99,9 +99,9 @@ function compactResults(p1Name, p2Name) {
 	// Just the names: "(select one to show detailed results)" does not fit.
 	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name));
 	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name));
-	// Just the damage range; recoil and recovery are in the detailed result below.
+	// Just the damage range, as "21.2–27.2%"; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
-		return text.replace(/ \(.*$/, "");
+		return text.replace(/ \(.*$/, "").replace(" - ", "\u2013");
 	});
 }
 

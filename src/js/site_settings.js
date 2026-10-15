@@ -53,7 +53,8 @@ var CHANGELOG = [
 		"Color coding is on unless you turn it off, and shows on your team in the small layout",
 		"Works offline: once opened online, the calculator keeps working with no connection " +
 			"(the footer settings say when it is ready)",
-		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them"
+		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them",
+		"Phones get the same tabbed layout: held upright, the tabs sit at the bottom within thumb reach"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

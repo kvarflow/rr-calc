@@ -32,8 +32,9 @@ Damage calculator for all generations of Pokémon battling.
 On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Thor's 3.92"
 1240 × 1080 lower screen (537 × 468 in Chrome, at 2.31× scaling), the calculator switches to tabs: Results (both sides' moves and the
 detailed result, with tap-to-switch strips of your team and the trainer's), You, Foe, Field,
-Box and More. Layout in the footer settings forces it on or off on any device; the footer also
-shows the screen size the page sees.
+Box and More. Phones get it too: held upright, the tabs sit at the bottom and the You / Foe
+details go under the stats; held sideways, it is laid out like the Thor. Layout in the footer
+settings forces it on or off on any device; the footer also shows the screen size the page sees.
 
 ## Offline
 
