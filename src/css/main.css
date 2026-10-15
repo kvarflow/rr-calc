@@ -753,15 +753,17 @@ legend:has(> .header-sprite)::before {
 }
 #reset-trainer {
     margin-left: auto; /* sits at the right, like syl-rnb-calc's reset button */
-    width: 34px;
-    height: 34px;
-    padding: 0;
+    width: 36px;
+    height: 46px;
+    padding: 2px;
     overflow: hidden;
 }
+/* The whole sprite at its own proportions (it is 42 x 64), not squeezed into a square. */
 #reset-trainer img {
-    width: 40px;
-    height: 40px;
-    margin: -3px;
+    width: auto;
+    height: 100%;
+    margin: 0;
+    object-fit: contain;
 }
 #trainer-effect {
     font-size: 0.85em;
@@ -1554,7 +1556,7 @@ html.small-screen .trainer-on-top,
 html.small-screen .box-position-option {
     display: none !important;
 }
-/* Professor Oak: the whole sprite at its own proportions (it is 42 x 64), not cropped. */
+/* Professor Oak's button, as a card. */
 html.small-screen #reset-trainer {
     width: 40px;
     height: 48px;
@@ -1562,10 +1564,4 @@ html.small-screen #reset-trainer {
     border: 1px solid var(--ss-line);
     border-radius: 10px;
     background: var(--ss-btn);
-}
-html.small-screen #reset-trainer img {
-    width: auto;
-    height: 100%;
-    margin: 0;
-    object-fit: contain;
 }
