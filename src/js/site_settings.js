@@ -52,7 +52,8 @@ var CHANGELOG = [
 			"(\"Edit anyway\" unlocks them); stat stages are now \u2212 / + buttons",
 		"Color coding is on unless you turn it off, and shows on your team in the small layout",
 		"Works offline: once opened online, the calculator keeps working with no connection " +
-			"(the footer settings say when it is ready)"
+			"(the footer settings say when it is ready)",
+		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -63,6 +64,7 @@ var CREDITS = [
 	"Pokémon sprites from May8th1995/sprites; Professor Oak from smogon/sprites.",
 	".sav names from Rad-Red-4.1-Team-Exporter; growth rates from PokéAPI.",
 	"Trainer data from the Radical Red 4.1 Default and Hardcore Mode boss documents, checked against the game.",
+	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",
 	"Further improved with QOL features by kvarflow."
 ];
 

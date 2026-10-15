@@ -4,8 +4,6 @@
  *  - Type & base stat overrides: after editing Pokémon 1's base stats or types (for runs that
  *    change them), "Save override" keeps them for that species, and they are put back every
  *    time it is loaded into Pokémon 1. "Reset override" restores the Pokédex values.
- *  - A note under the stats when the ability changes how boosts add up (Simple, Contrary),
- *    since the boost boxes take the stage the Pokémon is really at.
  *  - Stat stages as − / + buttons (one tap per stage from a move like Swords Dance), in place
  *    of the -6 to +6 dropdown, which stays (hidden) as what the calculator reads.
  */
@@ -25,10 +23,6 @@ var PANEL_SECTIONS = [
 	}}
 ];
 var OVERRIDES_KEY = "baseStatOverrides";
-var BOOST_NOTES = {
-	Simple: "Simple doubles stat changes: after one Calm Mind or Swords Dance, set +2.",
-	Contrary: "Contrary reverses stat changes: a stat-lowering move raises it instead."
-};
 
 function getCollapsedKey(side) {
 	return "collapsedSections:" + side;
@@ -220,15 +214,6 @@ $(document).ready(function () {
 		'<button type="button" id="save-override" title="Keep these base stats and types for this species">Save override</button> ' +
 		'<button type="button" id="reset-override" title="Go back to the Pokédex base stats and types">Reset override</button>' +
 		'</div>').insertAfter($("#p1 tr.hp").closest("table"));
-	$("#p1, #p2").each(function () {
-		$('<p class="boost-note"></p>').hide().insertAfter($(this).find("tr.hp").closest("table"));
-	});
-	$(document).on("calc:done", function (event, p1, p2) {
-		[["#p1", p1], ["#p2", p2]].forEach(function (side) {
-			var note = BOOST_NOTES[side[1].ability];
-			$(side[0] + " .boost-note").text(note || "").toggle(!!note);
-		});
-	});
 	$("#save-override").click(saveP1Override);
 	$("#reset-override").click(resetP1Override);
 	$("#p1 .base, #p1 .type1, #p1 .type2").on("change keyup", updateOverrideButtons);

@@ -995,9 +995,36 @@ body.hide-range-compare #range-compare,
 body.hide-range-compare .rc-add {
     display: none !important;
 }
-.boost-note {
-    margin: 4px 0;
+.ability-help {
+    width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    padding: 0;
+    border: 1px solid #999;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.ability-help[aria-expanded="true"] {
+    border-color: #3a6fd8;
+    color: #3a6fd8;
+}
+.ability-info {
+    margin: 2px 0 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(58, 111, 216, 0.1);
     font-size: 0.85em;
+    line-height: 1.35;
+}
+.ability-tip {
+    display: block;
+    margin-top: 3px;
     font-style: italic;
 }
 .trainer-starter-lock {
@@ -1500,4 +1527,45 @@ html.small-screen .poke-info > .info-group.top .level {
 .offline-status {
     font-size: 0.85em;
     opacity: 0.8;
+}
+/* The ? beside the ability, on the same line as its dropdown. */
+html.small-screen .info-selectors > div:has(> .ability-help) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 4px;
+}
+html.small-screen .info-selectors > div:has(> .ability-help) > label {
+    grid-column: 1 / -1;
+}
+html.small-screen .ability-help {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    border-color: var(--ss-line);
+    color: var(--ss-text);
+}
+html.small-screen .ability-info {
+    grid-column: 2;
+    background: var(--ss-accent-soft);
+}
+/* The tabs already place each panel, so the "above Pokémon" options do nothing here. */
+html.small-screen .trainer-on-top,
+html.small-screen .box-position-option {
+    display: none !important;
+}
+/* Professor Oak: the whole sprite at its own proportions (it is 42 x 64), not cropped. */
+html.small-screen #reset-trainer {
+    width: 40px;
+    height: 48px;
+    padding: 2px;
+    border: 1px solid var(--ss-line);
+    border-radius: 10px;
+    background: var(--ss-btn);
+}
+html.small-screen #reset-trainer img {
+    width: auto;
+    height: 100%;
+    margin: 0;
+    object-fit: contain;
 }

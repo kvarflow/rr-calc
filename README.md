@@ -23,6 +23,9 @@ Damage calculator for all generations of Pokémon battling.
   the game's trainer data, and a `.sav` import reads the starter you chose so his teams match.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
+- Ability descriptions (`src/js/data/ability_descriptions.js`, for the ? beside each ability) are
+  Radical Red's own text from the game where it has one, otherwise Pokémon Showdown's short
+  descriptions via [@pkmn/dex](https://github.com/pkmn/ps) (MIT).
 
 ## Small-screen layout
 
