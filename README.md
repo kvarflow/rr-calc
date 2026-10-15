@@ -32,6 +32,13 @@ detailed result, with tap-to-switch strips of your team and the trainer's), You,
 Box and More. Layout in the footer settings forces it on or off on any device; the footer also
 shows the screen size the page sees.
 
+## Offline
+
+Once opened online, the calculator works with no connection: a service worker (`src/sw.js`)
+saves every page and the files they load, and `node build` writes that list and a version
+into it, so each new build replaces the saved copy. Pages are fetched online first when there
+is a connection, so updates still arrive. Sprites are saved as they are first seen.
+
 ## Pokémon from your save
 
 A Pokémon imported from a `.sav` keeps the save's type, base stats, IVs, EVs, level and ability,

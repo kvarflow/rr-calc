@@ -146,6 +146,17 @@ $(document).ready(function () {
 		});
 	}
 	$(".wrapper").prepend(tabs);
+	// The You and Foe tabs show each stat's value and stage buttons; this shows the full table.
+	$("#p1, #p2").each(function () {
+		var panel = $(this);
+		$('<button type="button" class="panel-toggle ss-stats-toggle" aria-expanded="false">Base / IVs / EVs</button>')
+			.click(function () {
+				var full = !panel.hasClass("ss-stats-full");
+				panel.toggleClass("ss-stats-full", full);
+				$(this).attr("aria-expanded", full);
+			})
+			.appendTo(panel.children(".panel-toggles"));
+	});
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
 	$('<div id="ss-quick" class="ss-quick" data-ss-part="results"></div>').insertAfter(".main-result-group");

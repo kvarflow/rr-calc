@@ -1388,23 +1388,76 @@ html.small-screen .ss-viewport {
     font-size: 11px;
     opacity: 0.8;
 }
-/* Small screen, a Pokémon from your save: its base/IV/EV boxes are locked, so show only each
-   stat's value and its stage buttons. */
-html.small-screen .save-locked .info-group table thead,
-html.small-screen .save-locked .info-group td:has(> .base),
-html.small-screen .save-locked .info-group td:has(> .ivs),
-html.small-screen .save-locked .info-group td:has(> .evs) {
+/* Small screen, You and Foe tabs: the stats on the left, as each stat's value and its stage
+   buttons (the Base / IVs / EVs button shows the full table), with nature, ability, item and
+   status beside them on the right. */
+/* (#p1 / #p2 so this beats the tabs' "display: block !important".) */
+html.small-screen[data-ss-tab="you"] #p1,
+html.small-screen[data-ss-tab="foe"] #p2 {
+    display: grid !important;
+}
+html.small-screen .poke-info {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 12px;
+    align-items: start;
+}
+html.small-screen .poke-info > * {
+    grid-column: 1 / -1;
+}
+html.small-screen .poke-info > .info-group:has(> table) {
+    grid-column: 1;
+}
+html.small-screen .poke-info > .info-selectors {
+    grid-column: 2;
+}
+html.small-screen .poke-info:not(.ss-stats-full) .info-group table thead,
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .base),
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .ivs),
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .evs) {
+    /* The generation switcher shows the IV and EV cells with an inline style. */
+    display: none !important;
+}
+html.small-screen .poke-info .info-group table {
+    width: auto;
+    border-spacing: 0;
+}
+html.small-screen .poke-info .info-group table th {
+    padding: 2px 8px 2px 0;
+    text-align: left;
+    font-size: 12px;
+    white-space: nowrap;
+}
+html.small-screen .poke-info .info-group table td {
+    padding: 2px 4px;
+}
+/* The full table needs the whole width. */
+html.small-screen .poke-info.ss-stats-full > .info-group:has(> table),
+html.small-screen .poke-info.ss-stats-full > .info-selectors {
+    grid-column: 1 / -1;
+}
+html.small-screen .info-selectors > div {
+    display: flex;
+    flex-direction: column;
+    margin: 0 0 6px;
+}
+html.small-screen .info-selectors label {
+    width: auto;
+    margin: 0 0 1px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .info-selectors select:not([hidden]):not(.hide) {
+    width: 100%;
+    max-width: none;
+}
+.ss-stats-toggle {
     display: none;
 }
-html.small-screen .save-locked .info-group table {
-    width: auto;
-}
-html.small-screen .save-locked .info-group table th {
-    text-align: left;
-    padding-right: 10px;
-}
-html.small-screen .save-locked .info-group table td {
-    padding: 1px 6px;
+html.small-screen .ss-stats-toggle {
+    display: inline-block;
 }
 html.small-screen .boost-stepper button {
     width: 30px;
@@ -1418,4 +1471,33 @@ html.small-screen .save-lock-note {
     padding: 4px 8px;
     border-radius: 8px;
     background: var(--ss-accent-soft);
+}
+/* Type, gender and level on one line. */
+html.small-screen .poke-info > .info-group.top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    margin-bottom: 6px;
+}
+html.small-screen .poke-info > .info-group.top > div:not(.hide) {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+html.small-screen .poke-info > .info-group.top label {
+    width: auto;
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .poke-info > .info-group.top .level {
+    width: 3em;
+}
+.offline-status {
+    font-size: 0.85em;
+    opacity: 0.8;
 }

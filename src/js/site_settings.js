@@ -50,7 +50,9 @@ var CHANGELOG = [
 		"It turns on by itself on small screens; Layout in the footer settings forces it on or off",
 		"Pokémon from your .sav keep the save's type, stats, level and ability, locked " +
 			"(\"Edit anyway\" unlocks them); stat stages are now \u2212 / + buttons",
-		"Color coding is on unless you turn it off, and shows on your team in the small layout"
+		"Color coding is on unless you turn it off, and shows on your team in the small layout",
+		"Works offline: once opened online, the calculator keeps working with no connection " +
+			"(the footer settings say when it is ready)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
