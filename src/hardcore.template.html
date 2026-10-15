@@ -3,6 +3,20 @@
 
 <head>
     <meta charset="UTF-8" />
+    <script>
+        // Small-screen layout (small_screen.js): the viewport tag and the layout's class must be
+        // there before the page is first laid out, so they are set here. Keep the test in step
+        // with isSmallScreenOn().
+        try {
+            var smallScreenSetting = localStorage.getItem("smallScreenLayout");
+            if (smallScreenSetting === "on" || (smallScreenSetting !== "off" && Math.min(screen.width, screen.height) <= 640)) {
+                document.write('<meta name="viewport" content="width=device-width, initial-scale=1" />');
+                // The small layout's CSS, from the first layout on rather than once the page has loaded.
+                document.documentElement.className += " small-screen";
+                document.documentElement.setAttribute("data-ss-tab", localStorage.getItem("smallScreenTab") || "results");
+            }
+        } catch (e) {}
+    </script>
     <title>Pok&eacute;mon Radical Red Damage Calculator</title>
     <link type="text/css" rel="stylesheet" href="./js/vendor/select2/select2.css" />
     <link type="text/css" rel="stylesheet" href="./css/main.css?" />
@@ -1569,6 +1583,7 @@
     <script type="text/javascript" src="./js/trainer_controls.js?"></script>
     <script type="text/javascript" src="./js/trainer_progress.js?"></script>
     <script type="text/javascript" src="./js/site_settings.js?"></script>
+    <script type="text/javascript" src="./js/small_screen.js?"></script>
 </div>
 
 <div class="credits">Original is created by Honko and maintained by Austin and Kris. Edited by Karthik. Further improved with QOL features by kvarflow.

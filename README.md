@@ -24,13 +24,19 @@ Damage calculator for all generations of Pokémon battling.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
 
+## Small-screen layout
+
+On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Thor's 3.92"
+1240 × 1080 lower screen, the calculator switches to tabs: Results (both sides' moves and the
+detailed result, with tap-to-switch strips of your team and the trainer's), You, Foe, Field,
+Box and More. Layout in the footer settings forces it on or off on any device; the footer also
+shows the screen size the page sees.
+
 ## Planned features
 
 - **AI move choice %**: the chance the opposing trainer picks each move, as syl-rnb-calc
   shows by porting the game's battle AI. Radical Red's AI would need its own port.
 - The Toxic Spikes and Substitute field toggles, which only matter for the AI's choices.
-- **Small-screen layout**: an option for using the calculator on a handheld's second screen, such
-  as the AYN Thor's lower screen, where the desktop layout is hard to use.
 
 If you are currently looking at [smogon/damage-calc][0] and not
 a fork, this is the official repository for the Pokémon Showdown! damage calculator:

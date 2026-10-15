@@ -1004,3 +1004,189 @@ body.hide-range-compare .rc-add {
     font-size: 0.85em;
     opacity: 0.8;
 }
+
+/* Small-screen layout (small_screen.js): one tab at a time, for a handheld's second screen. */
+.ss-tabs, .ss-quick, .ss-viewport {
+    display: none;
+}
+html.small-screen,
+html.small-screen body {
+    min-width: 0;
+}
+html.small-screen body {
+    font-size: 14px;
+}
+/* The desktop layout's minimum widths (body 100em, results 50em, import boxes 27em). */
+html.small-screen .move-result-group,
+html.small-screen .import-team-text,
+html.small-screen .import-name-text {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+html.small-screen body > nav,
+html.small-screen .wrapper > hr,
+html.small-screen .credits > ul,
+html.small-screen [data-ss-part] {
+    display: none !important;
+}
+html.small-screen[data-ss-tab="results"] [data-ss-part~="results"],
+html.small-screen[data-ss-tab="you"] [data-ss-part~="you"],
+html.small-screen[data-ss-tab="foe"] [data-ss-part~="foe"],
+html.small-screen[data-ss-tab="field"] [data-ss-part~="field"],
+html.small-screen[data-ss-tab="box"] [data-ss-part~="box"],
+html.small-screen[data-ss-tab="more"] [data-ss-part~="more"] {
+    display: block !important;
+}
+html.small-screen .wrapper {
+    max-width: none;
+    padding: 0 6px;
+}
+html.small-screen .panel,
+html.small-screen .panel > div,
+html.small-screen fieldset {
+    float: none;
+    display: block;
+    width: auto !important;
+    max-width: none;
+    margin: 0 0 6px;
+    box-sizing: border-box;
+}
+html.small-screen .ss-tabs {
+    display: flex;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 0 -6px 6px;
+    background: inherit;
+    background-color: #F1F4F9;
+    border-bottom: 1px solid #AAA;
+}
+.ss-tab {
+    flex: 1;
+    min-height: 40px;
+    padding: 0 2px;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    background: none;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.ss-tab-active {
+    border-bottom-color: #3a7bd5;
+    color: #3a7bd5;
+}
+/* Hidden inputs and screen-reader labels sit where they fall in the line; on a narrow screen
+   that can be past the right edge, which would widen the page. */
+html.small-screen .visually-hidden {
+    left: 0;
+}
+/* Results: your moves and the foe's side by side, each move a touch target with its damage
+   under it. The Crit and Range Compare buttons stay on the You and Foe tabs. */
+html.small-screen[data-ss-tab="results"] .move-result-group {
+    display: flex !important;
+    gap: 6px;
+}
+html.small-screen .move-result-subgroup {
+    float: none;
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
+}
+html.small-screen .move-result-subgroup > div:not(.result-move-header) {
+    margin: 0 0 3px;
+}
+html.small-screen .move-result-subgroup .btn-xxxwide {
+    display: block;
+    width: 100%;
+    min-height: 30px;
+    line-height: 30px;
+    padding: 0 4px;
+    box-sizing: border-box;
+    border-radius: 6px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+html.small-screen .move-result-subgroup span[id^="resultDamage"] {
+    display: block;
+    padding: 1px 2px 0;
+    font-size: 11px;
+    line-height: 1.25;
+}
+html.small-screen .move-result-group .small-crit-btn,
+html.small-screen .move-result-group .rc-add {
+    display: none !important;
+}
+html.small-screen .result-move-header {
+    font-weight: bold;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* More: the mode and notation switches without the page title. */
+html.small-screen #ss-page-settings .title-text {
+    display: none;
+}
+html.small-screen[data-ss-tab="more"] #ss-page-settings {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 6px;
+}
+html.small-screen .main-result-group .big-text {
+    font-size: 13px;
+}
+html.small-screen .main-result-group .small-text {
+    font-size: 11px;
+    word-break: break-word;
+}
+html.small-screen .ss-quick {
+    margin-top: 6px;
+}
+.ss-quick-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px;
+    margin: 4px 0;
+}
+.ss-quick-label {
+    flex: 0 0 100%;
+    font-size: 12px;
+    font-weight: bold;
+}
+.ss-quick-mon {
+    width: 52px;
+    height: 44px;
+    padding: 0;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    background: none;
+    cursor: pointer;
+}
+.ss-quick-mon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+.ss-quick-active {
+    border-color: #2ab7a9;
+}
+/* Bigger controls for touch. */
+html.small-screen select,
+html.small-screen input[type="text"],
+html.small-screen input[type="number"],
+html.small-screen input:not([type]) {
+    min-height: 28px;
+    font-size: 14px;
+}
+html.small-screen .poke-info table {
+    width: 100%;
+}
+html.small-screen .ss-viewport {
+    display: inline;
+    font-size: 11px;
+    opacity: 0.8;
+}

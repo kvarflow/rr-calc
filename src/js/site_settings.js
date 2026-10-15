@@ -42,6 +42,12 @@ var CHANGELOG = [
 		"Every rival fight has his team for each starter, taken from the game",
 		"Importing a .sav sets your starter and locks it until Professor Oak starts a new run",
 		"Swamp battle effects quarter your Pokémon's Speed; each rival team has its own battle effect"
+	]},
+	{version: "1.5", notes: [
+		"Small-screen layout for a handheld's second screen, such as the AYN Thor's lower screen: " +
+			"tabs for Results, You, Foe, Field, Box and More, with both sides' moves on one screen " +
+			"and tap-to-switch strips of your team and the trainer's",
+		"It turns on by itself on small screens; Layout in the footer settings forces it on or off"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
