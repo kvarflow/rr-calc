@@ -34,9 +34,10 @@ shows the screen size the page sees.
 
 ## Pokémon from your save
 
-A Pokémon imported from a `.sav` keeps the save's type, base stats, IVs, EVs, nature, level and
-ability, locked so they cannot drift from the game ("Edit anyway" unlocks them). Stat stages are
-− / + buttons, and item, status, current HP and moves stay editable. Matchup color coding is on
+A Pokémon imported from a `.sav` keeps the save's type, base stats, IVs, EVs, level and ability,
+locked so they cannot drift from the game ("Edit anyway" unlocks them). Stat stages are − / +
+buttons, and nature (it can be changed in the game), item, status, current HP and moves stay
+editable. Matchup color coding is on
 unless you turn it off.
 
 ## Planned features

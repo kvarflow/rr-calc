@@ -1,10 +1,11 @@
 /*
- * Pokémon imported from your .sav: their type, base stats, IVs, EVs, nature, level and ability
- * come from the save, so they are locked. Stat stages (the − / + buttons), item, status, current
- * HP and moves stay editable. "Edit anyway" unlocks them until another set is loaded.
+ * Pokémon imported from your .sav: their type, base stats, IVs, EVs, level and ability come from
+ * the save, so they are locked. Nature stays editable (it can be changed in the game, and trying
+ * another is handy), as do stat stages (the − / + buttons), item, status, current HP and moves.
+ * "Edit anyway" unlocks the rest until another set is loaded.
  */
 
-var SAVE_LOCKED_FIELDS = ".type1, .type2, .level, .nature, .ability, .base, .ivs, .evs";
+var SAVE_LOCKED_FIELDS = ".type1, .type2, .level, .ability, .base, .ivs, .evs";
 
 // The set loaded into a Pokémon panel, or null for a set that is not saved (e.g. a blank one).
 function getLoadedSet(panel) {
