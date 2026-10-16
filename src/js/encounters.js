@@ -1,5 +1,5 @@
 /*
- * Wild encounters tab (AYN Thor only): every location's wild Pokémon by method, for day
+ * Wild encounters tab (small screens: the Thor and phones): every location's wild Pokémon by method, for day
  * (04:00-16:59) and night (17:00-03:59), from data/encounters.js. It opens on the current
  * trainer's location, and marks species already in your box.
  */
@@ -14,11 +14,9 @@ var ENCOUNTER_METHODS = [
 	{key: "superRod", label: "Super Rod"}
 ];
 
-// The Thor's lower screen is nearly square (8:7); phones are about twice as long as they are wide.
-function isThorScreen() {
-	var longSide = Math.max(screen.width, screen.height);
-	var shortSide = Math.min(screen.width, screen.height);
-	return document.documentElement.classList.contains("small-screen") && longSide / shortSide < 1.45;
+// A tab of the small-screen layout, so not on desktop.
+function isWildTabShown() {
+	return document.documentElement.classList.contains("small-screen");
 }
 
 function encounterLabel(location) {
@@ -94,7 +92,7 @@ function findTrainerLocation() {
 }
 
 $(document).ready(function () {
-	if (!isThorScreen()) return;
+	if (!isWildTabShown()) return;
 	var select = $('<select id="encounter-location" aria-label="Location"></select>');
 	ENCOUNTERS.forEach(function (location, i) {
 		select.append($("<option></option>").val(i).text(encounterLabel(location)));

@@ -55,7 +55,7 @@ var CHANGELOG = [
 			"(the footer settings say when it is ready)",
 		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them",
 		"Phones get the same tabbed layout: held upright, the tabs sit at the bottom within thumb reach",
-		"On the AYN Thor's lower screen, a Wild tab lists every location's wild Pokémon by method, " +
+		"On the Thor and phones, a Wild tab lists every location's wild Pokémon by method, " +
 			"day and night, read from the game; it opens where your next trainer is"
 	]}
 ];

@@ -53,7 +53,7 @@ function applySmallScreenLayout() {
 	$("html").toggleClass("small-screen", on);
 	if (on) {
 		var saved = readSetting(SMALL_SCREEN_TAB_KEY);
-		// A tab this screen does not have (Wild is the Thor's) opens Results instead.
+		// A tab this page does not have (Wild is not on desktop) opens Results instead.
 		showSmallScreenTab($('#ss-tabs .ss-tab[data-tab="' + saved + '"]').length ? saved : "results");
 	}
 	updateViewportReadout();
@@ -126,7 +126,7 @@ function updateViewportReadout() {
 
 $(document).ready(function () {
 	var tabs = $('<nav id="ss-tabs" class="ss-tabs" role="tablist" aria-label="Calculator sections"></nav>');
-	// The Thor's lower screen also gets the wild encounters (encounters.js), before More.
+	// The wild encounters (encounters.js), before More.
 	var tabList = SMALL_SCREEN_TABS.slice();
 	if ($("#encounters").length) tabList.splice(tabList.length - 1, 0, {key: "wild", label: "Wild", parts: "#encounters"});
 	tabList.forEach(function (tab) {

@@ -1599,8 +1599,17 @@ html.small-screen #importedSetsOptions {
     html.small-screen .wrapper {
         padding-top: 8px;
     }
+    /* Eight tabs with Wild: they share the width and the full-screen button narrows. */
     html.small-screen .ss-tab {
-        font-size: 12px;
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0;
+        font-size: 11px;
+        letter-spacing: -0.2px;
+    }
+    html.small-screen .ss-fullscreen {
+        flex: 0 0 26px;
+        font-size: 15px;
     }
     html.small-screen .poke-info > .info-group:has(> table),
     html.small-screen .poke-info > .info-selectors {
@@ -1622,9 +1631,10 @@ html.small-screen #importedSetsOptions {
         font-size: 11px;
     }
 }
-/* Wild encounters tab (encounters.js), on the Thor's lower screen. */
+/* Wild encounters tab (encounters.js), in the small-screen layout. */
 .encounters {
     display: none;
+    min-width: 0; /* a fieldset is otherwise as wide as the longest location name */
 }
 .encounter-controls {
     display: flex;

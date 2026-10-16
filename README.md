@@ -36,8 +36,7 @@ Box and More. Phones get it too: held upright, the tabs sit at the bottom and th
 details go under the stats; held sideways, it is laid out like the Thor. Layout in the footer
 settings forces it on or off on any device; the footer also shows the screen size the page sees.
 
-On the AYN Thor's lower screen (a small screen close to square, unlike a phone) there is also a
-**Wild** tab: every location's wild Pokémon by method (grass or cave, surfing, Rock Smash and each
+The small-screen layout (the Thor and phones, not desktop) also has a **Wild** tab: every location's wild Pokémon by method (grass or cave, surfing, Rock Smash and each
 rod), by day (04:00–16:59) and night (17:00–03:59), with levels and chances. It opens on the current
 trainer's location and ticks species already in your box. `src/js/data/encounters.js` was read from
 the game's encounter tables (the night table, the day table and the default one they fall back
