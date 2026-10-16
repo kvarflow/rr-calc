@@ -1110,6 +1110,8 @@ html.small-screen {
     --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
     --ss-cc-veil: var(--ss-dark-cc-veil, rgba(255, 255, 255, 0.45));
     --ss-slower: var(--ss-dark-slower, #1c1414);
+    --ss-dupe: var(--ss-dark-dupe, #1d2330);
+    --ss-dupe-text: var(--ss-dark-dupe-text, #b8bec9);
 }
 html.small-screen,
 html.small-screen body {
@@ -1743,6 +1745,27 @@ html.small-screen #importedSetsOptions {
 }
 .encounter-blocked {
     opacity: 0.4;
+}
+/* Nuzlocke dupes: blacked out, with the sprite as a silhouette. */
+.encounter-dupe {
+    border-radius: 6px;
+    background: var(--ss-dupe, #1d2330);
+    color: var(--ss-dupe-text, #b8bec9);
+}
+.encounter-dupe .encounter-levels {
+    color: inherit;
+}
+.encounter-dupe .encounter-sprite img {
+    filter: brightness(0) invert(0.45);
+}
+.encounter-dupe-tag {
+    padding: 0 4px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
 }
 .encounter-method h4 {
     margin: 4px 0;

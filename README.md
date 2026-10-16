@@ -52,7 +52,10 @@ Grass and caves sit on the left, beside fishing and then surfing on the right. T
 (per mode) allows one encounter per location, counting a location as the game names it (all of
 Mt. Moon's floors are one): a `.sav` import fills in where each of your Pokémon was caught, from the
 met location the save keeps for each one; tapping a Pokémon, or "Missed it", uses up a location by
-hand, and Professor Oak's new run clears them.
+hand, and Professor Oak's new run clears them. With it ticked, the dupes clause blacks out anything
+in the evolution family of a Pokémon you have caught or have in your box (a Furret from Route 2
+blacks out Sentret on later routes), and it cannot be a location's encounter. The families come
+from the game's own evolution table; a species' sizes count as one, its regional forms do not.
 
 ## Offline
 

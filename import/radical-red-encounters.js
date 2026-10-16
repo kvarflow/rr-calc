@@ -27,6 +27,10 @@ const NIGHT_TABLE = 0x1166428;
 const MAPSEC_NAMES = 0x3f1cac;
 const FIRST_MAPSEC = 0x58;
 const MAP_GROUPS = 0x3526a8;
+// CFRU's gEvolutionTable, repointed: 16 entries of {method, param, target species, unused} (u16 each)
+// per species id.
+const EVOLUTIONS = 0x17cd9b0;
+const EVOLUTIONS_PER_SPECIES = 16;
 
 // Each method's slot count and the chance of each slot, as in FireRed.
 const METHODS = [
@@ -219,6 +223,44 @@ function main(romFile, exporterDir, mapGroupsFile) {
 	if (unplaced.length) console.log('not in PROGRESSION (placed last): ' + unplaced.join(', '));
 	const out = locations.map(l => Object.assign({name: l.name}, l.area ? {area: l.area} : {},
 		{day: l.day}, l.night ? {night: l.night} : {}));
+	// Evolution families, for the Nuzlocke dupes clause: species joined by any evolution (Megas too,
+	// which changes nothing), and any ids that share a calc name (Burmy's cloaks).
+	const calcName = id => {
+		const romName = speciesNames[id];
+		return romName ? resolve('species', romName) || resolve('species', romName.split('-')[0]) : null;
+	};
+	const parent = speciesNames.map((name, id) => id);
+	const find = id => (parent[id] === id ? id : (parent[id] = find(parent[id])));
+	const join = (a, b) => { parent[find(a)] = find(b); };
+	const firstIdByName = {};
+	speciesNames.forEach((romName, id) => {
+		const name = calcName(id);
+		if (!name) return;
+		if (firstIdByName[name] === undefined) firstIdByName[name] = id;
+		else join(id, firstIdByName[name]);
+		for (let k = 0; k < EVOLUTIONS_PER_SPECIES; k++) {
+			const at = EVOLUTIONS + (id * EVOLUTIONS_PER_SPECIES + k) * 8;
+			const target = rom.readUInt16LE(at + 4);
+			if (rom.readUInt16LE(at) && target && calcName(target)) join(id, target);
+		}
+	});
+	// Formes of one species are one family (Pumpkaboo's sizes), except regional ones, which are
+	// different Pokémon here (Galarian Meowth).
+	Object.keys(firstIdByName).forEach(name => {
+		const species = calc.SPECIES[9][name];
+		const base = species.baseSpecies;
+		const forme = base ? name.slice(base.length + 1) : '';
+		if (base && firstIdByName[base] !== undefined && !/^(Alola|Galar|Hisui|Paldea|Sevii)/.test(forme)) {
+			join(firstIdByName[name], firstIdByName[base]);
+		}
+	});
+	const families = {};
+	Object.keys(firstIdByName).forEach(name => {
+		const root = find(firstIdByName[name]);
+		(families[root] = families[root] || []).push(name);
+	});
+	const evolutionFamilies = Object.values(families).filter(names => names.length > 1);
+
 	// Every location's name by map section, so a saved Pokémon's met location can be named.
 	const sections = [];
 	for (let i = 0; ; i++) {
@@ -232,9 +274,11 @@ function main(romFile, exporterDir, mapGroupsFile) {
 		' * have. "night" (17:00-03:59) is given only where it differs from "day" (04:00-16:59). */\n' +
 		'var ENCOUNTERS = ' + JSON.stringify(out) + ';\n' +
 		'// Location names by map section id (a Pokémon\'s met location), from id `first`.\n' +
-		'var MAP_SECTIONS = ' + JSON.stringify({first: FIRST_MAPSEC, names: sections}) + ';\n';
+		'var MAP_SECTIONS = ' + JSON.stringify({first: FIRST_MAPSEC, names: sections}) + ';\n' +
+		'// Species that evolve into one another (by calc name), one list per family of two or more.\n' +
+		'var EVOLUTION_FAMILIES = ' + JSON.stringify(evolutionFamilies) + ';\n';
 	fs.writeFileSync(OUTPUT, js);
-	console.log(sections.length + ' map sections; ' + out.length + ' locations, ' + Math.round(js.length / 1024) + ' KB; species the calc does not know: ' +
+	console.log(evolutionFamilies.length + ' evolution families; ' + sections.length + ' map sections; ' + out.length + ' locations, ' + Math.round(js.length / 1024) + ' KB; species the calc does not know: ' +
 		([...unknown].join(', ') || 'none'));
 }
 

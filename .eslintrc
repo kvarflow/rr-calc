@@ -54,6 +54,7 @@
         "lockedField": false,
         "ENCOUNTERS": false,
         "MAP_SECTIONS": false,
+        "EVOLUTION_FAMILIES": false,
         "ABILITY_DESCRIPTIONS": false,
         "battleSpeedMultiplier": false,
         "getBattleSpeed": false,

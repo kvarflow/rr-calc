@@ -174,6 +174,8 @@ input.select2-input {
     --ss-dark-card: #232323;
     --ss-dark-text: #e8e8e8;
     --ss-dark-muted: #9aa0aa;
+    --ss-dark-dupe: #000000;
+    --ss-dark-dupe-text: #8a909a;
     --ss-dark-line: #3a3a3a;
     --ss-dark-btn: #2d2d2d;
     --ss-dark-accent: #5b8def;

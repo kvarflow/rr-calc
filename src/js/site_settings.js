@@ -61,7 +61,8 @@ var CHANGELOG = [
 			"Gourgeist keep their size",
 		"Wild tab: places in the order you reach them, and grass beside fishing, then surfing; " +
 			"tick Nuzlocke for one encounter per location, " +
-			"filled in from where your .sav's Pokémon were caught"
+			"filled in from where your .sav's Pokémon were caught, with dupes (anything in a caught " +
+			"Pokémon's evolution family) blacked out"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

@@ -6,6 +6,8 @@
  * Nuzlocke (ticked per mode): one encounter per location, counting a location as the game names it
  * (all of Mt. Moon's floors are one). A .sav import fills in where each of your Pokémon was caught;
  * tapping a Pokémon, or "Missed it", uses up a location by hand. Professor Oak's new run clears them.
+ * Dupes clause: anything in the evolution family of a Pokémon you have caught (or have in your box) is
+ * blacked out at other locations, and is not your encounter there.
  */
 
 var ENCOUNTER_LOCATION_KEY = "encounterLocation";
@@ -49,6 +51,31 @@ function getOwnedSpecies() {
 		owned[setId.slice(0, setId.indexOf(" (")) || setId] = true;
 	});
 	return owned;
+}
+
+// The family a species belongs to (data/encounters.js), or the species itself.
+var evolutionFamilyOf = {};
+EVOLUTION_FAMILIES.forEach(function (family, i) {
+	family.forEach(function (name) {
+		evolutionFamilyOf[name] = "family " + i;
+	});
+});
+function getEvolutionFamily(name) {
+	return evolutionFamilyOf[name] || name;
+}
+
+// The families of everything you have caught: your Nuzlocke encounters and your box.
+function getCaughtFamilies(owned, encounters) {
+	var caught = {};
+	Object.keys(owned).forEach(function (name) {
+		caught[getEvolutionFamily(name)] = true;
+	});
+	Object.keys(encounters).forEach(function (location) {
+		encounters[location].species.forEach(function (name) {
+			caught[getEvolutionFamily(name)] = true;
+		});
+	});
+	return caught;
 }
 
 function isNuzlockeOn() {
@@ -106,7 +133,9 @@ function renderNuzlockeStatus(location, encounter, encounters) {
 	}).length;
 	var count = $('<span class="encounter-nuzlocke-count"></span>').text(used + " of " + Object.keys(names).length + " locations used");
 	if (!encounter) {
-		status.append(document.createTextNode("No encounter at " + location.name + " yet: tap the first Pokémon you meet. "),
+		var hint = "No encounter at " + location.name + " yet: tap the first Pokémon you meet" +
+			($("#encounters .encounter-dupe").length ? " that is not a dupe. " : ". ");
+		status.append(document.createTextNode(hint),
 			$('<button type="button" class="encounter-nuzlocke-missed">Missed it</button>').click(function () {
 				setNuzlockeEncounter(location.name, {species: [], missed: true});
 			}));
@@ -136,8 +165,8 @@ function renderEncounters() {
 	var nuzlocke = isNuzlockeOn();
 	var encounters = nuzlocke ? readNuzlockeEncounters() : {};
 	var encounter = encounters[location.name];
+	var caught = getCaughtFamilies(owned, encounters);
 	panel.toggleClass("encounter-nuzlocke-on", nuzlocke);
-	if (nuzlocke) renderNuzlockeStatus(location, encounter, encounters);
 	// Used locations are ticked in the list.
 	$("#encounter-location option").text(function (i) {
 		return encounterLabel(ENCOUNTERS[i]) + (encounters[ENCOUNTERS[i].name] ? " ✓" : "");
@@ -149,11 +178,16 @@ function renderEncounters() {
 		var section = $('<section class="encounter-method"></section>').append($("<h4></h4>").text(method.label));
 		rows.forEach(function (row) {
 			var levels = row[1] === row[2] ? "Lv " + row[1] : "Lv " + row[1] + "–" + row[2];
-			var chosen = !!encounter && encounter.species.indexOf(row[0]) !== -1;
+			// Your encounter here, as caught or since evolved (a Furret from Route 2's Sentret).
+			var chosen = !!encounter && encounter.species.some(function (name) {
+				return getEvolutionFamily(name) === getEvolutionFamily(row[0]);
+			});
+			var dupe = nuzlocke && !chosen && !!caught[getEvolutionFamily(row[0])];
 			var element = $('<div class="encounter-row"></div>')
 				.toggleClass("encounter-owned", !!owned[row[0]])
 				.toggleClass("encounter-chosen", chosen)
 				.toggleClass("encounter-blocked", !!encounter && !chosen)
+				.toggleClass("encounter-dupe", dupe)
 				.append(
 					$('<span class="encounter-sprite"></span>').append(createSpriteImage(row[0], function () {
 						$(this).remove();
@@ -161,12 +195,13 @@ function renderEncounters() {
 					$('<span class="encounter-name"></span>').text(row[0])
 						// A cosmetic forme the calc does not have ("Summer" Deerling).
 						.append(row[4] ? $('<span class="encounter-forme"></span>').text(" (" + row[4] + ")") : "")
-						.append(owned[row[0]] ? ' <span class="encounter-check" title="In your box">✓</span>' : ""),
+						.append(owned[row[0]] ? ' <span class="encounter-check" title="In your box">✓</span>' : "")
+						.append(dupe ? ' <span class="encounter-dupe-tag" title="You have caught one of this family">Dupe</span>' : ""),
 					$('<span class="encounter-levels"></span>').text(levels),
 					$('<span class="encounter-rate"></span>').text(row[3] + "%"))
 				.appendTo(section);
-			// Nuzlocke: the first Pokémon you meet here is this location's encounter.
-			if (nuzlocke && !encounter) {
+			// Nuzlocke: the first Pokémon you meet here (that is not a dupe) is this location's encounter.
+			if (nuzlocke && !encounter && !dupe) {
 				element.attr({role: "button", tabindex: 0, title: "Your encounter here"}).on("click keydown", function (ev) {
 					if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 					ev.preventDefault();
@@ -178,6 +213,8 @@ function renderEncounters() {
 	});
 	list.append(columns.land.children().length ? columns.land : "", columns.water.children().length ? columns.water : "");
 	if (!list.children().length) list.append('<p class="encounter-empty">No wild Pokémon here.</p>');
+	// After the rows, so it can tell whether any are dupes.
+	if (nuzlocke) renderNuzlockeStatus(location, encounter, encounters);
 }
 
 function showEncounterLocation(index) {
