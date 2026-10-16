@@ -1,7 +1,7 @@
 /*
  * Wild encounters tab (small screens: the Thor and phones): every location's wild Pokémon by method, for day
  * (04:00-16:59) and night (17:00-03:59), from data/encounters.js. It opens on the current
- * trainer's location, and marks species already in your box.
+ * trainer's location, and ticks species already in your box, or evolved from or into one there.
  *
  * Nuzlocke (ticked per mode): one encounter per location, counting a location as the game names it
  * (all of Mt. Moon's floors are one). A .sav import fills in where each of your Pokémon was caught;
@@ -166,6 +166,12 @@ function renderEncounters() {
 	var encounters = nuzlocke ? readNuzlockeEncounters() : {};
 	var encounter = encounters[location.name];
 	var caught = getCaughtFamilies(owned, encounters);
+	// What of each family is in your box, so a Furret ticks Route 2's Sentret.
+	var ownedByFamily = {};
+	Object.keys(owned).forEach(function (name) {
+		var family = getEvolutionFamily(name);
+		(ownedByFamily[family] = ownedByFamily[family] || []).push(name);
+	});
 	panel.toggleClass("encounter-nuzlocke-on", nuzlocke);
 	// Used locations are ticked in the list.
 	$("#encounter-location option").text(function (i) {
@@ -183,8 +189,9 @@ function renderEncounters() {
 				return getEvolutionFamily(name) === getEvolutionFamily(row[0]);
 			});
 			var dupe = nuzlocke && !chosen && !!caught[getEvolutionFamily(row[0])];
+			var inBox = ownedByFamily[getEvolutionFamily(row[0])];
 			var element = $('<div class="encounter-row"></div>')
-				.toggleClass("encounter-owned", !!owned[row[0]])
+				.toggleClass("encounter-owned", !!inBox)
 				.toggleClass("encounter-chosen", chosen)
 				.toggleClass("encounter-blocked", !!encounter && !chosen)
 				.toggleClass("encounter-dupe", dupe)
@@ -195,7 +202,7 @@ function renderEncounters() {
 					$('<span class="encounter-name"></span>').text(row[0])
 						// A cosmetic forme the calc does not have ("Summer" Deerling).
 						.append(row[4] ? $('<span class="encounter-forme"></span>').text(" (" + row[4] + ")") : "")
-						.append(owned[row[0]] ? ' <span class="encounter-check" title="In your box">✓</span>' : "")
+						.append(inBox ? [" ", $('<span class="encounter-check">✓</span>').attr("title", "In your box: " + inBox.join(", "))] : "")
 						.append(dupe ? ' <span class="encounter-dupe-tag" title="You have caught one of this family">Dupe</span>' : ""),
 					$('<span class="encounter-levels"></span>').text(levels),
 					$('<span class="encounter-rate"></span>').text(row[3] + "%"))
