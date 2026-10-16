@@ -1140,7 +1140,8 @@ html.small-screen[data-ss-tab="you"] [data-ss-part~="you"],
 html.small-screen[data-ss-tab="foe"] [data-ss-part~="foe"],
 html.small-screen[data-ss-tab="field"] [data-ss-part~="field"],
 html.small-screen[data-ss-tab="box"] [data-ss-part~="box"],
-html.small-screen[data-ss-tab="more"] [data-ss-part~="more"] {
+html.small-screen[data-ss-tab="more"] [data-ss-part~="more"],
+html.small-screen[data-ss-tab="wild"] [data-ss-part~="wild"] {
     display: block !important;
 }
 html.small-screen .wrapper {
@@ -1620,4 +1621,89 @@ html.small-screen #importedSetsOptions {
     html.small-screen .move-result-subgroup span[id^="resultDamage"] {
         font-size: 11px;
     }
+}
+/* Wild encounters tab (encounters.js), on the Thor's lower screen. */
+.encounters {
+    display: none;
+}
+.encounter-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.encounter-controls select {
+    flex: 1;
+    min-width: 0;
+}
+.encounter-step,
+.encounter-time {
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 8px;
+    background: var(--ss-btn, #f3f5f9);
+    color: var(--ss-text, #1d2330);
+    cursor: pointer;
+}
+.encounter-time {
+    white-space: nowrap;
+}
+.encounter-time[aria-pressed="true"] {
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-accent-text, #2f5fc4);
+}
+.encounter-time-note {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+}
+.encounter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+}
+.encounter-method h4 {
+    margin: 4px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.encounter-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: 6px;
+    min-height: 30px;
+    border-bottom: 1px solid var(--ss-line, #dde2ea);
+    font-size: 13px;
+}
+.encounter-sprite img {
+    max-width: 34px;
+    max-height: 28px;
+}
+.encounter-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.encounter-levels {
+    font-size: 12px;
+    color: var(--ss-muted, #667085);
+    font-variant-numeric: tabular-nums;
+}
+.encounter-rate {
+    min-width: 3em;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.encounter-owned .encounter-name {
+    color: var(--ss-muted, #667085);
+}
+.encounter-check {
+    color: #2e9e44;
+    font-weight: bold;
 }

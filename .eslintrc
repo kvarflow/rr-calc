@@ -52,6 +52,7 @@
         "createPokemon": false,
         "getPageMode": false,
         "lockedField": false,
+        "ENCOUNTERS": false,
         "ABILITY_DESCRIPTIONS": false,
         "battleSpeedMultiplier": false,
         "getBattleSpeed": false,
