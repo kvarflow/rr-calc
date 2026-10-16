@@ -37,7 +37,7 @@ details go under the stats; held sideways, it is laid out like the Thor. Layout 
 settings forces it on or off on any device; the footer also shows the screen size the page sees.
 
 The small-screen layout (the Thor and phones, not desktop) also has a **Wild** tab: every location's wild Pokémon by method (grass or cave, surfing, Rock Smash and each
-rod), by day (04:00–16:59) and night (17:00–03:59), with levels and chances. It opens on the current
+rod), in the order you reach them (as in the locations sheet, then the post-game and the Sevii Islands), by day (04:00–16:59) and night (17:00–03:59), with levels and chances. It opens on the current
 trainer's location and ticks species already in your box. `src/js/data/encounters.js` is read from
 the game's encounter tables (the night table, the day table and the default one they fall back
 to) by `import/radical-red-encounters.js`; floor and area names come from

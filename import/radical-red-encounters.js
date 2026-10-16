@@ -49,6 +49,42 @@ const AREA_NAMES = {
 	'2,64': 'Far West', // Safari Zone
 };
 
+// The order you reach each place, as in the locations sheet: its Grass & Caves tab, with the
+// places that only have water (Pallet Town, the cities, S.S. Anne, Routes 19-21) where its Fishing &
+// Surfing tab puts them, and the Safari Zone in Fuchsia City. Then the post-game, and the Sevii
+// Islands island by island. Mt. Ember's and Icefall Cave's floors follow the way through.
+const PROGRESSION = [
+	'Pallet Town', 'Route 1', 'Viridian City', 'Route 22', 'Route 21|North', 'Route 2',
+	'Viridian Forest|Main', 'Viridian Forest|Expansion', 'Diglett\'s Cave|North Entrance', 'Pewter City',
+	'Route 3', 'Mt. Moon|1F', 'Mt. Moon|B1F', 'Mt. Moon|B2F', 'Route 4', 'Cerulean City', 'Route 24',
+	'Route 25', 'Route 5', 'Route 6', 'Vermilion City', 'Route 11', 'S.S. Anne', 'Diglett\'s Cave|B1F',
+	'Route 9', 'Route 10', 'Rock Tunnel|1F', 'Rock Tunnel|B1F', 'Route 7', 'Route 8',
+	'Pokémon Tower|3F', 'Pokémon Tower|4F', 'Pokémon Tower|5F', 'Pokémon Tower|6F', 'Pokémon Tower|7F',
+	'Route 16', 'Route 17', 'Route 18', 'Route 12', 'Celadon City', 'Route 13', 'Route 14', 'Route 15',
+	'Fuchsia City', 'Safari Zone|Center', 'Safari Zone|East', 'Safari Zone|North', 'Safari Zone|West',
+	'Safari Zone|Far West', 'Route 23', 'Route 19', 'Route 20', 'Route 21|South',
+	'Seafoam Islands|1F', 'Seafoam Islands|B1F', 'Seafoam Islands|B2F', 'Seafoam Islands|B3F',
+	'Seafoam Islands|B4F', 'Cinnabar Island', 'Pokémon Mansion|1F', 'Pokémon Mansion|2F',
+	'Pokémon Mansion|3F', 'Pokémon Mansion|B1F', 'Power Plant', 'Cerulean Cave|1F', 'Cerulean Cave|2F',
+	'Cerulean Cave|B1F', 'Pokémon Mansion|4F', 'Pokémon Mansion|Secret Area',
+	'Victory Road|1F', 'Victory Road|2F', 'Victory Road|3F',
+	// Post-game
+	'Rock Tunnel|Postgame Area', 'Pokémon Tower|8F', 'Pokémon Tower|9F',
+	// One to Seven Island
+	'One Island', 'Kindle Road', 'Treasure Beach', 'Mt. Ember|Exterior', 'Mt. Ember|Summit Path 1F',
+	'Mt. Ember|Summit Path 2F', 'Mt. Ember|Summit Path 3F', 'Mt. Ember|Ruby Path 1F', 'Mt. Ember|Ruby Path B1F',
+	'Mt. Ember|Ruby Path B1F Stairs', 'Mt. Ember|Ruby Path B2F', 'Mt. Ember|Ruby Path B2F Stairs',
+	'Mt. Ember|Ruby Path B3F', 'Cape Brink', 'Bond Bridge', 'Three Isle Port', 'Berry Forest',
+	'Four Island', 'Icefall Cave|Entrance', 'Icefall Cave|1F', 'Icefall Cave|B1F', 'Icefall Cave|Back',
+	'Five Island', 'Resort Gorgeous', 'Water Labyrinth', 'Five Isle Meadow', 'Memorial Pillar',
+	'Lost Cave|Room 1', 'Lost Cave|Room 2', 'Lost Cave|Room 3', 'Lost Cave|Room 4', 'Lost Cave|Room 5',
+	'Lost Cave|Room 6', 'Lost Cave|Room 7', 'Lost Cave|Room 8', 'Lost Cave|Room 9', 'Lost Cave|Room 10',
+	'Lost Cave|Room 11', 'Lost Cave|Room 12', 'Lost Cave|Room 13', 'Lost Cave|Room 14',
+	'Outcast Island', 'Green Path', 'Water Path', 'Ruin Valley', 'Pattern Bush', 'Altering Cave',
+	'Trainer Tower', 'Canyon Entrance', 'Sevault Canyon', 'Tanoby Ruins', 'Liptoo Chamber',
+	'Weepth Chamber', 'Dilford Chamber', 'Scufib Chamber', 'Rixy Chamber', 'Viapois Chamber',
+];
+
 function main(romFile, exporterDir, mapGroupsFile) {
 	const rom = fs.readFileSync(romFile);
 	const speciesNames = [''].concat(fs.readFileSync(path.join(exporterDir, 'Species.txt'), 'utf8')
@@ -173,7 +209,14 @@ function main(romFile, exporterDir, mapGroupsFile) {
 		});
 	}
 
-	locations.sort((a, b) => a.mapsec - b.mapsec || a.group - b.group || a.num - b.num);
+	// In game order; anything new goes last, in map order, and is reported.
+	const rank = location => {
+		const i = PROGRESSION.indexOf(location.name + (location.area ? '|' + location.area : ''));
+		return i === -1 ? PROGRESSION.length : i;
+	};
+	locations.sort((a, b) => rank(a) - rank(b) || a.mapsec - b.mapsec || a.group - b.group || a.num - b.num);
+	const unplaced = locations.filter(l => rank(l) === PROGRESSION.length).map(l => l.name + (l.area ? '|' + l.area : ''));
+	if (unplaced.length) console.log('not in PROGRESSION (placed last): ' + unplaced.join(', '));
 	const out = locations.map(l => Object.assign({name: l.name}, l.area ? {area: l.area} : {},
 		{day: l.day}, l.night ? {night: l.night} : {}));
 	// Every location's name by map section, so a saved Pokémon's met location can be named.
