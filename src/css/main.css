@@ -1646,7 +1646,8 @@ html.small-screen #importedSetsOptions {
     min-width: 0;
 }
 .encounter-step,
-.encounter-time {
+.encounter-time,
+.encounter-nuzlocke-status button {
     min-height: 32px;
     padding: 0 10px;
     border: 1px solid var(--ss-line, #dde2ea);
@@ -1672,6 +1673,76 @@ html.small-screen #importedSetsOptions {
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: 8px;
     margin-top: 6px;
+}
+/* On foot on the left, on the water on the right; one above the other when narrow. */
+.encounter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+.encounter-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 4px;
+}
+.encounter-options .encounter-time-note {
+    margin: 0;
+}
+.encounter-nuzlocke-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.encounter-nuzlocke-status {
+    display: none;
+    margin: 4px 0 0;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-text, #1d2330);
+    font-size: 12px;
+    line-height: 1.6;
+}
+.encounter-nuzlocke-on .encounter-nuzlocke-status {
+    display: block;
+}
+.encounter-nuzlocke-status button {
+    min-height: 26px;
+    padding: 0 8px;
+    font-size: 12px;
+}
+.encounter-nuzlocke-source,
+.encounter-nuzlocke-count {
+    color: var(--ss-muted, #667085);
+}
+.encounter-nuzlocke-count {
+    white-space: nowrap;
+}
+.encounter-nuzlocke-warning {
+    font-weight: 600;
+}
+.encounter-row[role="button"] {
+    cursor: pointer;
+}
+.encounter-row[role="button"]:hover,
+.encounter-row[role="button"]:focus-visible {
+    background: var(--ss-btn, #f3f5f9);
+}
+.encounter-chosen {
+    border-radius: 6px;
+    background: var(--ss-accent-soft, #e3ecfd);
+}
+.encounter-chosen .encounter-name {
+    font-weight: 700;
+}
+.encounter-blocked {
+    opacity: 0.4;
 }
 .encounter-method h4 {
     margin: 4px 0;

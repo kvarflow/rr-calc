@@ -58,7 +58,9 @@ var CHANGELOG = [
 		"On the Thor and phones, a Wild tab lists every location's wild Pokémon by method, " +
 			"day and night, read from the game; it opens where your next trainer is",
 		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
-			"Gourgeist keep their size"
+			"Gourgeist keep their size",
+		"Wild tab: grass sits beside fishing, then surfing; tick Nuzlocke for one encounter per location, " +
+			"filled in from where your .sav's Pokémon were caught"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

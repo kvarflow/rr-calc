@@ -306,7 +306,7 @@ function confirmNewRun() {
 	showChoiceDialog(
 		"Start a new run?",
 		"Did your run end? Starting again deletes your " + mode + " Team, Box, Box 2 and Trash" +
-			(count ? " (" + count + " Pok\u00e9mon)" : "") + ", clears your KOs and defeated trainers, " +
+			(count ? " (" + count + " Pok\u00e9mon)" : "") + ", clears your KOs, defeated trainers and Nuzlocke encounters, " +
 			"and goes back to the first trainer. Your Fight Notes are kept. This cannot be undone.",
 		[{
 			label: "Yes, my run is over: wipe and start again",
@@ -317,6 +317,7 @@ function confirmNewRun() {
 				// A new run picks a new starter.
 				writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
 				updateStarterSelect();
+				$(document).trigger("run:new");
 				showTrainer(0);
 			}
 		}]);

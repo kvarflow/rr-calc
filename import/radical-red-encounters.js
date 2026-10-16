@@ -176,13 +176,22 @@ function main(romFile, exporterDir, mapGroupsFile) {
 	locations.sort((a, b) => a.mapsec - b.mapsec || a.group - b.group || a.num - b.num);
 	const out = locations.map(l => Object.assign({name: l.name}, l.area ? {area: l.area} : {},
 		{day: l.day}, l.night ? {night: l.night} : {}));
+	// Every location's name by map section, so a saved Pokémon's met location can be named.
+	const sections = [];
+	for (let i = 0; ; i++) {
+		const p = rom.readUInt32LE(MAPSEC_NAMES + 4 * i);
+		if (p < ROM_BASE || p >= ROM_BASE + rom.length) break;
+		sections.push(text(p - ROM_BASE));
+	}
 	const js = '/* Wild encounters for every location, read from the Radical Red ROM by\n' +
 		' * import/radical-red-encounters.js; do not edit by hand. Each method lists\n' +
 		' * [species, min level, max level, chance %], plus a cosmetic forme ("Summer") the calc does not\n' +
 		' * have. "night" (17:00-03:59) is given only where it differs from "day" (04:00-16:59). */\n' +
-		'var ENCOUNTERS = ' + JSON.stringify(out) + ';\n';
+		'var ENCOUNTERS = ' + JSON.stringify(out) + ';\n' +
+		'// Location names by map section id (a Pokémon\'s met location), from id `first`.\n' +
+		'var MAP_SECTIONS = ' + JSON.stringify({first: FIRST_MAPSEC, names: sections}) + ';\n';
 	fs.writeFileSync(OUTPUT, js);
-	console.log(out.length + ' locations, ' + Math.round(js.length / 1024) + ' KB; species the calc does not know: ' +
+	console.log(sections.length + ' map sections; ' + out.length + ' locations, ' + Math.round(js.length / 1024) + ' KB; species the calc does not know: ' +
 		([...unknown].join(', ') || 'none'));
 }
 

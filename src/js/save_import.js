@@ -162,9 +162,10 @@ function readRawBoxes(bytes) {
 }
 
 // Field offsets inside a 100-byte party entry and a compact 58-byte PC entry.
+// metLocation is the map section the Pokémon was caught in (see MAP_SECTIONS in data/encounters.js).
 var MON_LAYOUTS = {
-	party: {species: 0x20, item: 0x22, exp: 0x24, moves: 0x2C, evs: 0x38, ivs: 0x48, level: 0x54},
-	pc: {species: 0x1C, item: 0x1E, exp: 0x20, packedMoves: 0x27, evs: 0x2C, ivs: 0x36}
+	party: {species: 0x20, item: 0x22, exp: 0x24, moves: 0x2C, evs: 0x38, metLocation: 0x45, ivs: 0x48, level: 0x54},
+	pc: {species: 0x1C, item: 0x1E, exp: 0x20, packedMoves: 0x27, evs: 0x2C, metLocation: 0x33, ivs: 0x36}
 };
 
 // Decodes one Pokémon, or returns null for an empty slot, an egg or unknown data.
@@ -223,7 +224,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		ability: ability || "",
 		evs: evs,
 		ivs: ivs,
-		moves: moves
+		moves: moves,
+		metLocation: view.getUint8(layout.metLocation)
 	};
 }
 

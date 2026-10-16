@@ -53,6 +53,7 @@
         "getPageMode": false,
         "lockedField": false,
         "ENCOUNTERS": false,
+        "MAP_SECTIONS": false,
         "ABILITY_DESCRIPTIONS": false,
         "battleSpeedMultiplier": false,
         "getBattleSpeed": false,

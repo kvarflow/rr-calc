@@ -46,7 +46,13 @@ added (Pokémon Tower 8F and 9F, Rock Tunnel's post-game area...) from the commu
 Locations & Raid Dens v4.1 sheet. Checked against that sheet, 235 of its 242 Kanto tables match the
 game exactly; the rest differ in Pumpkaboo's sizes (named here by the game's stats), a few
 Seafoam B4F levels, and Fuchsia City's fishing and surfing, which the game still has at FireRed's
-levels.
+levels (as it does Route 4's, where a save's Old Rod Magikarp was caught at FireRed's Lv 5).
+
+Grass and caves sit on the left, beside fishing and then surfing on the right. Ticking **Nuzlocke**
+(per mode) allows one encounter per location, counting a location as the game names it (all of
+Mt. Moon's floors are one): a `.sav` import fills in where each of your Pokémon was caught, from the
+met location the save keeps for each one; tapping a Pokémon, or "Missed it", uses up a location by
+hand, and Professor Oak's new run clears them.
 
 ## Offline
 
