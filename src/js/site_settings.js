@@ -62,7 +62,9 @@ var CHANGELOG = [
 		"Wild tab: places in the order you reach them, and grass beside fishing, then surfing; " +
 			"tick Nuzlocke for one encounter per location, " +
 			"filled in from where your .sav's Pokémon were caught, with dupes (anything in a caught " +
-			"Pokémon's evolution family) blacked out"
+			"Pokémon's evolution family) blacked out",
+		"Fixed: a trainer's Hidden Power could change type after its first load (Catcher Sammy's " +
+			"Volbeat showed Hidden Power Rock instead of Bug)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
