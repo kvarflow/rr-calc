@@ -38,9 +38,15 @@ settings forces it on or off on any device; the footer also shows the screen siz
 
 The small-screen layout (the Thor and phones, not desktop) also has a **Wild** tab: every location's wild Pokémon by method (grass or cave, surfing, Rock Smash and each
 rod), by day (04:00–16:59) and night (17:00–03:59), with levels and chances. It opens on the current
-trainer's location and ticks species already in your box. `src/js/data/encounters.js` was read from
+trainer's location and ticks species already in your box. `src/js/data/encounters.js` is read from
 the game's encounter tables (the night table, the day table and the default one they fall back
-to); floor and area names come from [pret/pokefirered](https://github.com/pret/pokefirered)'s map names.
+to) by `import/radical-red-encounters.js`; floor and area names come from
+[pret/pokefirered](https://github.com/pret/pokefirered)'s map names, and for the areas Radical Red
+added (Pokémon Tower 8F and 9F, Rock Tunnel's post-game area...) from the community's Pokémon
+Locations & Raid Dens v4.1 sheet. Checked against that sheet, 235 of its 242 Kanto tables match the
+game exactly; the rest differ in Pumpkaboo's sizes (named here by the game's stats), a few
+Seafoam B4F levels, and Fuchsia City's fishing and surfing, which the game still has at FireRed's
+levels.
 
 ## Offline
 

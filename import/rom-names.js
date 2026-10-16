@@ -82,6 +82,25 @@ const INDEXES = {
 const LISTS = {move: MOVE_NAMES, item: ITEM_NAMES, ability: ABILITY_NAMES, species: SPECIES_NAMES};
 const ALIASES = {move: MOVE_ALIASES, item: ITEM_ALIASES, ability: ABILITY_ALIASES, species: {}};
 
+// Species.txt (Rad-Red-4.1-Team-Exporter, line N = id N) names some ids wrongly or without their
+// forme. Checked against the ROM's base stats: id 603 has Reckless (Red-Striped), 736 Rock Head;
+// the Pumpkaboo and Gourgeist sizes go by HP and Speed (the base ids are Small in this game).
+const SPECIES_BY_ID = {
+	603: 'Basculin', 736: 'Basculin-Blue-Striped', 712: 'Gastrodon-East',
+	818: 'Pumpkaboo-Small', 853: 'Pumpkaboo-Super', 854: 'Pumpkaboo-Large', 855: 'Pumpkaboo',
+	819: 'Gourgeist-Small', 856: 'Gourgeist-Super', 857: 'Gourgeist-Large', 858: 'Gourgeist',
+};
+// Cosmetic formes the calc does not have, by id; they battle as the base species.
+const COSMETIC_FORMES_BY_ID = {
+	707: 'Sandy', 708: 'Trash', 711: 'East',
+	738: 'Summer', 739: 'Autumn', 740: 'Winter', 741: 'Summer', 742: 'Autumn', 743: 'Winter',
+};
+
+// The ROM name of species id `id`, given its Species.txt name.
+function romSpeciesName(id, name) {
+	return SPECIES_BY_ID[id] || name;
+}
+
 // The calc's spelling of a move, item, ability or species name, or null if it has none.
 function resolve(kind, name, species) {
 	if (!name) return null;
@@ -101,4 +120,4 @@ function resolve(kind, name, species) {
 	return matches.length === 1 ? matches[0] : null;
 }
 
-module.exports = {calc, toKey, resolve, MOVE_NAMES, ITEM_NAMES, ABILITY_NAMES};
+module.exports = {calc, toKey, resolve, romSpeciesName, COSMETIC_FORMES_BY_ID, MOVE_NAMES, ITEM_NAMES, ABILITY_NAMES};

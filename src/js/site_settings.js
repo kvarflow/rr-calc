@@ -56,7 +56,9 @@ var CHANGELOG = [
 		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them",
 		"Phones get the same tabbed layout: held upright, the tabs sit at the bottom within thumb reach",
 		"On the Thor and phones, a Wild tab lists every location's wild Pokémon by method, " +
-			"day and night, read from the game; it opens where your next trainer is"
+			"day and night, read from the game; it opens where your next trainer is",
+		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
+			"Gourgeist keep their size"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -68,7 +70,8 @@ var CREDITS = [
 	".sav names from Rad-Red-4.1-Team-Exporter; growth rates from PokéAPI.",
 	"Trainer data from the Radical Red 4.1 Default and Hardcore Mode boss documents, checked against the game.",
 	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",
-	"Wild encounters from the game; floor names from pret's pokefirered.",
+	"Wild encounters from the game; floor names from pret's pokefirered, and post-game area names from the " +
+		"Pokémon Locations & Raid Dens v4.1 sheet.",
 	"Further improved with QOL features by kvarflow."
 ];
 

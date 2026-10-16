@@ -1710,6 +1710,10 @@ html.small-screen #importedSetsOptions {
     font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
+.encounter-forme {
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+}
 .encounter-owned .encounter-name {
     color: var(--ss-muted, #667085);
 }

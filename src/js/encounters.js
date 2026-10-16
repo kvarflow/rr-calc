@@ -63,7 +63,10 @@ function renderEncounters() {
 					$('<span class="encounter-sprite"></span>').append(createSpriteImage(row[0], function () {
 						$(this).remove();
 					})),
-					$('<span class="encounter-name"></span>').text(row[0]).append(owned[row[0]] ? ' <span class="encounter-check" title="In your box">✓</span>' : ""),
+					$('<span class="encounter-name"></span>').text(row[0])
+						// A cosmetic forme the calc does not have ("Summer" Deerling).
+						.append(row[4] ? $('<span class="encounter-forme"></span>').text(" (" + row[4] + ")") : "")
+						.append(owned[row[0]] ? ' <span class="encounter-check" title="In your box">✓</span>' : ""),
 					$('<span class="encounter-levels"></span>').text(levels),
 					$('<span class="encounter-rate"></span>').text(row[3] + "%"))
 				.appendTo(section);
