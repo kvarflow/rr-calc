@@ -181,9 +181,10 @@ input.select2-input {
     --ss-dark-danger: #ff7b6b;
     --ss-dark-line: #3a3a3a;
     --ss-dark-btn: #2d2d2d;
-    --ss-dark-accent: #5b8def;
-    --ss-dark-accent-soft: #24324f;
-    --ss-dark-accent-text: #a9c4ff;
+    /* The accent color chosen under More (main.css has each one's dark values). */
+    --ss-dark-accent: var(--ss-a-dark, #5b8def);
+    --ss-dark-accent-soft: var(--ss-a-dark-soft, #24324f);
+    --ss-dark-accent-text: var(--ss-a-dark-text, #a9c4ff);
     --ss-dark-cc-veil: rgba(35, 35, 35, 0.45);
     /* "Slower" is near black in the light theme; on dark cards it needs to show. */
     --ss-dark-slower: #6b6b6b;

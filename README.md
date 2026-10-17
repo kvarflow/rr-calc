@@ -34,13 +34,17 @@ On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Tho
 
 - **Battle**: both sides' moves and the detailed result, then your team and the trainer's as
   cards. Tap one to load it, drag your team into order, mark the trainer's Pokémon KO'd and step
-  to the previous or next trainer (Next stands out once his whole team is KO'd).
-- **You** and **Foe**: each Pokémon on one screen, with a slim HP bar.
+  to the previous or next trainer (Next stands out once his whole team is KO'd). Double-tap a
+  move to make it a crit (it shows CRIT), and again to undo.
+- **You** and **Foe**: each Pokémon on one screen: the stats beside nature, ability, item and
+  status, then a slim HP bar and the moves. Type, forme, gender and level come from the save, so
+  they only show with the whole table (Base / IVs / EVs).
 - **Advanced**: the trainer (his starter-dependent team, Professor Oak's new run) and the run's
   progress bars, then the field in sections: battle, weather, terrain, rooms, each side's
   conditions and Export.
 - **Box**, **Wild** (below) and **More**: import and export, Range Compare, then the settings,
-  with sliding selectors for the mode and the notation.
+  with sliding selectors for the mode and the notation, and the accent color (red unless you
+  pick another).
 
 Phones get it too: held upright, the tabs sit at the bottom and the You / Foe details go under
 the stats; held sideways, it is laid out like the Thor. Layout in More's settings forces it on or

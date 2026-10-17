@@ -1104,9 +1104,9 @@ html.small-screen {
     --ss-muted: var(--ss-dark-muted, #667085);
     --ss-line: var(--ss-dark-line, #dde2ea);
     --ss-btn: var(--ss-dark-btn, #f3f5f9);
-    --ss-accent: var(--ss-dark-accent, #3a6fd8);
-    --ss-accent-soft: var(--ss-dark-accent-soft, #e3ecfd);
-    --ss-accent-text: var(--ss-dark-accent-text, #2f5fc4);
+    --ss-accent: var(--ss-dark-accent, var(--ss-a));
+    --ss-accent-soft: var(--ss-dark-accent-soft, var(--ss-a-soft));
+    --ss-accent-text: var(--ss-dark-accent-text, var(--ss-a-text));
     --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
     --ss-cc-veil: var(--ss-dark-cc-veil, rgba(255, 255, 255, 0.45));
     --ss-slower: var(--ss-dark-slower, #1c1414);
@@ -1115,6 +1115,57 @@ html.small-screen {
     --ss-good: var(--ss-dark-good, #1e7b39);
     --ss-good-soft: var(--ss-dark-good-soft, #e3f6e8);
     --ss-danger: var(--ss-dark-danger, #c0392b);
+}
+/* Accent colors (chosen under More, red unless changed): the light theme's, then the dark
+   theme's, which dark-theme.css picks up. */
+html.small-screen,
+html.small-screen[data-accent="red"] {
+    --ss-a: #d63031;
+    --ss-a-soft: #fde8e8;
+    --ss-a-text: #c0262d;
+    --ss-a-dark: #f06363;
+    --ss-a-dark-soft: #4a2426;
+    --ss-a-dark-text: #ffb3b3;
+}
+html.small-screen[data-accent="blue"] {
+    --ss-a: #3a6fd8;
+    --ss-a-soft: #e3ecfd;
+    --ss-a-text: #2f5fc4;
+    --ss-a-dark: #5b8def;
+    --ss-a-dark-soft: #24324f;
+    --ss-a-dark-text: #a9c4ff;
+}
+html.small-screen[data-accent="green"] {
+    --ss-a: #1f9d55;
+    --ss-a-soft: #e2f5ea;
+    --ss-a-text: #15803d;
+    --ss-a-dark: #3fbf72;
+    --ss-a-dark-soft: #1f3b2a;
+    --ss-a-dark-text: #9be3b7;
+}
+html.small-screen[data-accent="purple"] {
+    --ss-a: #7c4dff;
+    --ss-a-soft: #eee8ff;
+    --ss-a-text: #6a3de8;
+    --ss-a-dark: #9d7bff;
+    --ss-a-dark-soft: #33294f;
+    --ss-a-dark-text: #cdbdff;
+}
+html.small-screen[data-accent="orange"] {
+    --ss-a: #e8740c;
+    --ss-a-soft: #fdeedf;
+    --ss-a-text: #b85a05;
+    --ss-a-dark: #f59a3c;
+    --ss-a-dark-soft: #4a3220;
+    --ss-a-dark-text: #ffcc99;
+}
+html.small-screen[data-accent="pink"] {
+    --ss-a: #d6337a;
+    --ss-a-soft: #fce6f0;
+    --ss-a-text: #b8226a;
+    --ss-a-dark: #ef6aa3;
+    --ss-a-dark-soft: #4a2436;
+    --ss-a-dark-text: #ffb3d3;
 }
 html.small-screen,
 html.small-screen body {
@@ -1302,6 +1353,28 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn {
     background: var(--ss-accent);
     color: #fff;
     font-weight: 600;
+}
+/* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
+html.small-screen .move-result-subgroup label[for^="resultMove"] {
+    position: relative;
+    touch-action: manipulation;
+}
+html.small-screen .move-result-subgroup .btn.ss-crit {
+    border: 2px solid var(--ss-accent);
+}
+html.small-screen .move-result-subgroup .btn.ss-crit::after {
+    content: "CRIT";
+    position: absolute;
+    top: 0;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ss-accent-text);
+}
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn.ss-crit::after {
+    color: #fff;
 }
 html.small-screen .move-result-subgroup span[id^="resultDamage"] {
     text-align: right;
@@ -1577,6 +1650,10 @@ html.small-screen .poke-info > .info-selectors {
     gap: 4px 8px;
     align-content: start;
     grid-column: 2;
+}
+/* Nature, ability, item and status: one to a line. */
+html.small-screen .poke-info > .info-selectors {
+    grid-template-columns: minmax(0, 1fr);
 }
 html.small-screen .poke-info > .info-group.top {
     grid-row: 2;
@@ -2202,6 +2279,22 @@ html.small-screen .credits button {
     background: var(--ss-btn);
     color: var(--ss-text);
     font-size: 13px;
+}
+/* Accent color: a row of swatches; the chosen one ringed. */
+.ss-accent-picker {
+    display: flex;
+    gap: 8px;
+}
+.ss-accent-swatch {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.ss-accent-swatch[aria-checked="true"] {
+    box-shadow: 0 0 0 2px var(--ss-card, #fff), 0 0 0 4px var(--ss-text, #1d2330);
 }
 /* Show box search, Range Compare and crit chances: switches. */
 .ss-setting-switches {

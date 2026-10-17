@@ -269,6 +269,36 @@ function segmentedSelector(group) {
 	return group;
 }
 
+// The small layout's accent colors (main.css has their light and dark values); the page's <head>
+// applies the saved one before the first paint.
+var ACCENT_KEY = "accentColor";
+var ACCENT_COLORS = [
+	{key: "red", label: "Red", swatch: "#d63031"},
+	{key: "blue", label: "Blue", swatch: "#3a6fd8"},
+	{key: "green", label: "Green", swatch: "#1f9d55"},
+	{key: "purple", label: "Purple", swatch: "#7c4dff"},
+	{key: "orange", label: "Orange", swatch: "#e8740c"},
+	{key: "pink", label: "Pink", swatch: "#d6337a"}
+];
+
+function buildAccentPicker() {
+	var current = readSetting(ACCENT_KEY) || "red";
+	var picker = $('<div class="ss-accent-picker" role="radiogroup" aria-label="Accent color"></div>');
+	ACCENT_COLORS.forEach(function (color) {
+		$('<button type="button" class="ss-accent-swatch" role="radio"></button>')
+			.attr({title: color.label, "aria-label": color.label, "aria-checked": color.key === current, "data-accent": color.key})
+			.css("background", color.swatch)
+			.click(function () {
+				writeSetting(ACCENT_KEY, color.key);
+				$("html").attr("data-accent", color.key);
+				picker.children().attr("aria-checked", false);
+				$(this).attr("aria-checked", true);
+			})
+			.appendTo(picker);
+	});
+	return picker;
+}
+
 function buildSettingsCard() {
 	var row = function (title, control) {
 		return $('<div class="ss-setting"></div>').append($('<span class="ss-setting-label"></span>').text(title), control);
@@ -284,6 +314,7 @@ function buildSettingsCard() {
 		row("Damage as", segmentedSelector(page.find(".notationSelection"))),
 		row("Layout", layout),
 		row("Theme", $("#dark-theme-toggle")),
+		row("Accent", buildAccentPicker()),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();
@@ -318,6 +349,30 @@ function compactResults(p1Name, p2Name) {
 	// Just the damage range, as "21.2–27.2%"; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
 		return text.replace(/ \(.*$/, "").replace(" - ", "\u2013");
+	});
+}
+
+// Battle: double-tap a move to make it a crit (again to undo), to see its damage at once. The move
+// shows CRIT while it is one.
+var lastMoveTap = {label: null, time: 0};
+
+function bindDoubleTapCrit() {
+	$(".move-result-group").on("click", "label[for^=resultMove]", function () {
+		var now = Date.now();
+		var label = $(this).attr("for");
+		var doubleTap = lastMoveTap.label === label && now - lastMoveTap.time < 400;
+		lastMoveTap = {label: doubleTap ? null : label, time: now};
+		if (!doubleTap) return;
+		var critTop = $("#critTop" + label.slice("resultMove".length));
+		critTop.prop("checked", !critTop.prop("checked")).change();
+	});
+	$(document).on("change", ".top-crit, .move-crit", markCritMoves);
+	$(document).on("calc:done", markCritMoves);
+}
+
+function markCritMoves() {
+	$(".top-crit").each(function () {
+		$('label[for="resultMove' + this.id.slice("critTop".length) + '"]').toggleClass("ss-crit", this.checked);
 	});
 }
 
@@ -377,7 +432,10 @@ $(document).ready(function () {
 			.appendTo(panel.children(".panel-toggles"));
 		if (isSmallScreenOn()) compactPokemonPanel(panel, toggle);
 	});
-	if (isSmallScreenOn()) compactFieldPanel($(".field-info"));
+	if (isSmallScreenOn()) {
+		compactFieldPanel($(".field-info"));
+		bindDoubleTapCrit();
+	}
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
 	bindTeamDrag($('<div id="ss-quick" class="ss-quick" data-ss-part="results"></div>').insertAfter(".main-result-group"));

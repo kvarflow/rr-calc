@@ -68,7 +68,9 @@ var CHANGELOG = [
 		"You and Foe each fit one screen, with a slimmer HP bar; the trainer, Professor Oak and the " +
 			"progress bars move to Advanced (was Field), now in clear sections",
 		"Wild shows the Pokémon first, with its options under them; More has sliding selectors for " +
-			"the mode and the notation, lower down with the other settings"
+			"the mode and the notation, lower down with the other settings",
+		"Double-tap a move on Battle to make it a crit (and again to undo); the small layout is red " +
+			"now, with other accent colors under More"
 	], fixes: [
 		"A trainer's Hidden Power could change type after its first load (Catcher Sammy's Volbeat " +
 			"showed Hidden Power Rock instead of Bug, a third of its damage to Grass types)",

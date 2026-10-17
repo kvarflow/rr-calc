@@ -14,6 +14,8 @@
                 // The small layout's CSS, from the first layout on rather than once the page has loaded.
                 document.documentElement.className += " small-screen";
                 document.documentElement.setAttribute("data-ss-tab", localStorage.getItem("smallScreenTab") || "results");
+                // The accent color chosen under More (red unless changed), before the first paint.
+                document.documentElement.setAttribute("data-accent", localStorage.getItem("accentColor") || "red");
             }
         } catch (e) {}
     </script>
