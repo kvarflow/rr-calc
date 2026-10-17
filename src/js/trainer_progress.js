@@ -22,6 +22,7 @@ function readTrainerKOs() {
 function writeTrainerKOs(kos) {
 	writeSetting(getTrainerKOKey(), JSON.stringify(kos));
 	renderTrainerProgress();
+	$(document).trigger("trainer:progress");
 }
 
 // Called by the Professor Oak button when a new run starts.
@@ -117,6 +118,7 @@ function drawProgressBar(bar, done, total) {
 	// Drawn like the Pokémon HP bars, always green.
 	bar.css("background", "linear-gradient(to right, green " + percent + "%, white 0%)")
 		.attr({"aria-valuenow": done, "aria-valuemax": total});
+	if (bar[0]) bar[0].style.setProperty("--hp-fill", percent + "%"); // for the small-screen layout
 }
 
 function renderTrainerProgress() {

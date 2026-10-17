@@ -176,6 +176,9 @@ input.select2-input {
     --ss-dark-muted: #9aa0aa;
     --ss-dark-dupe: #000000;
     --ss-dark-dupe-text: #8a909a;
+    --ss-dark-good: #6fd08c;
+    --ss-dark-good-soft: #17361f;
+    --ss-dark-danger: #ff7b6b;
     --ss-dark-line: #3a3a3a;
     --ss-dark-btn: #2d2d2d;
     --ss-dark-accent: #5b8def;

@@ -30,11 +30,21 @@ Damage calculator for all generations of Pokémon battling.
 ## Small-screen layout
 
 On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Thor's 3.92"
-1240 × 1080 lower screen (537 × 468 in Chrome, at 2.31× scaling), the calculator switches to tabs: Results (both sides' moves and the
-detailed result, with tap-to-switch strips of your team and the trainer's), You, Foe, Field,
-Box and More. Phones get it too: held upright, the tabs sit at the bottom and the You / Foe
-details go under the stats; held sideways, it is laid out like the Thor. Layout in the footer
-settings forces it on or off on any device; the footer also shows the screen size the page sees.
+1240 × 1080 lower screen (537 × 468 in Chrome, at 2.31× scaling), the calculator switches to tabs:
+
+- **Battle**: both sides' moves and the detailed result, then your team and the trainer's as
+  cards. Tap one to load it, drag your team into order, mark the trainer's Pokémon KO'd and step
+  to the previous or next trainer (Next stands out once his whole team is KO'd).
+- **You** and **Foe**: each Pokémon on one screen, with a slim HP bar.
+- **Advanced**: the trainer (his starter-dependent team, Professor Oak's new run) and the run's
+  progress bars, then the field in sections: battle, weather, terrain, rooms, each side's
+  conditions and Export.
+- **Box**, **Wild** (below) and **More**: import and export, Range Compare, then the settings,
+  with sliding selectors for the mode and the notation.
+
+Phones get it too: held upright, the tabs sit at the bottom and the You / Foe details go under
+the stats; held sideways, it is laid out like the Thor. Layout in More's settings forces it on or
+off on any device, and the screen size the page sees is shown beside the credits.
 
 The small-screen layout (the Thor and phones, not desktop) also has a **Wild** tab: every location's wild Pokémon by method (grass or cave, surfing, Rock Smash and each
 rod), in the order you reach them (as in the locations sheet, then the post-game and the Sevii Islands), by day (04:00–16:59) and night (17:00–03:59), with levels and chances. It opens on the current
@@ -56,6 +66,14 @@ hand, and Professor Oak's new run clears them. With it ticked, the dupes clause 
 in the evolution family of a Pokémon you have caught or have in your box (a Furret from Route 2
 blacks out Sentret on later routes), and it cannot be a location's encounter. The families come
 from the game's own evolution table; a species' sizes count as one, its regional forms do not.
+
+## Recent bug fixes
+
+- A trainer's Hidden Power could change type after its first load: Catcher Sammy's Volbeat
+  showed Hidden Power Rock instead of Bug. 37 of the 52 Normal Mode and 65 of the 80 Hardcore
+  trainer sets with Hidden Power were affected.
+- A Basculin from a `.sav` came in as the other stripe, with its abilities, and Pumpkaboo and
+  Gourgeist lost their size.
 
 ## Offline
 

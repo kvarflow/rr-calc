@@ -56,15 +56,24 @@ var CHANGELOG = [
 		"A ? beside each Pokémon's ability says what it does, in Radical Red's own words where the game has them",
 		"Phones get the same tabbed layout: held upright, the tabs sit at the bottom within thumb reach",
 		"On the Thor and phones, a Wild tab lists every location's wild Pokémon by method, " +
-			"day and night, read from the game; it opens where your next trainer is",
-		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
-			"Gourgeist keep their size",
+			"day and night, read from the game; it opens where your next trainer is"
+	]},
+	{version: "1.6", notes: [
 		"Wild tab: places in the order you reach them, and grass beside fishing, then surfing; " +
 			"tick Nuzlocke for one encounter per location, " +
 			"filled in from where your .sav's Pokémon were caught, with dupes (anything in a caught " +
 			"Pokémon's evolution family) blacked out",
-		"Fixed: a trainer's Hidden Power could change type after its first load (Catcher Sammy's " +
-			"Volbeat showed Hidden Power Rock instead of Bug)"
+		"Small layout: Results is now Battle, where you can drag your team into order, KO the trainer's " +
+			"Pokémon and go on to the next trainer",
+		"You and Foe each fit one screen, with a slimmer HP bar; the trainer, Professor Oak and the " +
+			"progress bars move to Advanced (was Field), now in clear sections",
+		"Wild shows the Pokémon first, with its options under them; More has sliding selectors for " +
+			"the mode and the notation, lower down with the other settings"
+	], fixes: [
+		"A trainer's Hidden Power could change type after its first load (Catcher Sammy's Volbeat " +
+			"showed Hidden Power Rock instead of Bug, a third of its damage to Grass types)",
+		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
+			"Gourgeist keep their size"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -120,10 +129,14 @@ function getLatestVersion() {
 	return CHANGELOG[CHANGELOG.length - 1].version;
 }
 
+// Newest first; a version's bug fixes under their own heading.
 function showChangelog() {
-	showListDialog("What's new", CHANGELOG.slice().reverse().map(function (entry) {
-		return {heading: "Version " + entry.version, items: entry.notes};
-	}), function () {
+	var sections = [];
+	CHANGELOG.slice().reverse().forEach(function (entry) {
+		sections.push({heading: "Version " + entry.version, items: entry.notes});
+		if (entry.fixes) sections.push({heading: "Version " + entry.version + ": bug fixes", items: entry.fixes});
+	});
+	showListDialog("What's new", sections, function () {
 		writeSetting(LAST_CHANGELOG_KEY, getLatestVersion());
 	});
 }
