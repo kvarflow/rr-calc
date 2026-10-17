@@ -1,5 +1,12 @@
+// One calculation for a burst of changes (loading a set changes a dozen fields at once).
+var pendingCalculation = false;
 var PC_HANDLER = function () {
-	setTimeout(performCalculations, 0);
+	if (pendingCalculation) return;
+	pendingCalculation = true;
+	setTimeout(function () {
+		pendingCalculation = false;
+		performCalculations();
+	}, 0);
 };
 var damageResults;
 
@@ -186,6 +193,7 @@ $(".mode").change(function () {
 
 // The page serving each mode. Other modes (One vs All, All vs One) live on honkalculate.
 var MODE_PAGES = {"one-vs-one": "index", normal: "normal", hardcore: "hardcore"};
+var LAST_MODE_KEY = "lastMode";
 // Modes that have been removed, and the mode old links to them now open.
 var RETIRED_MODES = {randoms: "normal"};
 
@@ -205,10 +213,16 @@ $(".notation").change(function () {
 
 $(document).ready(function () {
 	// Open the page for the ?mode= in the URL if this page is not already it.
-	var mode = new URLSearchParams(window.location.search).get('mode');
+	var params = new URLSearchParams(window.location.search);
+	var mode = params.get('mode');
 	mode = RETIRED_MODES[mode] || mode;
+	// The installed app (manifest.webmanifest) opens on the mode you used last.
+	if (!mode && params.get('app')) mode = readSetting(LAST_MODE_KEY);
 	if (mode && mode !== getPageMode()) navigateToMode(mode);
-	$(".calc-trigger").bind("change keyup", PC_HANDLER);
+	writeSetting(LAST_MODE_KEY, getPageMode());
+	// "input" too: a phone's or handheld's on-screen keyboard sends no keyup, and "change" only
+	// comes once you leave the field.
+	$(".calc-trigger").bind("change keyup input", PC_HANDLER);
 	performCalculations();
 });
 

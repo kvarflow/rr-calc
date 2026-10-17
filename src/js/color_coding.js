@@ -206,7 +206,7 @@ function bindColorCodingEvents() {
 	$("#cc-speed-border, #cc-ohko-color").change(refreshColorCoding);
 	$("#cc-mon-header").change(colorCodeHeader);
 
-	$(document).on("change keyup", ".calc-trigger", scheduleColorRefresh);
+	$(document).on("change keyup input", ".calc-trigger", scheduleColorRefresh);
 	$("#p1 input.set-selector").change(updatePokemon1HeaderSprite);
 	$(document).on("box:rendered", function () {
 		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();

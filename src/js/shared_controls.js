@@ -240,13 +240,14 @@ function drawHealthBar(poke, max, current) {
 	});
 }
 // TODO: these HP inputs should really be input type=number with min=0, step=1, constrained by max=maxHP or 100
-$(".current-hp").keyup(function () {
+// (keyup for keyboards, input for on-screen keyboards, which send no keyup)
+$(".current-hp").on("keyup input", function () {
 	var max = $(this).parent().children(".max-hp").text();
 	validate($(this), 0, max);
 	var current = $(this).val();
 	calcPercentHP($(this).parent(), max, current);
 });
-$(".percent-hp").keyup(function () {
+$(".percent-hp").on("keyup input", function () {
 	var max = $(this).parent().children(".max-hp").text();
 	validate($(this), 0, 100);
 	var percent = $(this).val();

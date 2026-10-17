@@ -1172,6 +1172,7 @@ html.small-screen body {
     min-width: 0;
 }
 html.small-screen body {
+    zoom: var(--ss-zoom, 1); /* Text size, under More */
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
     font-size: 14px;
     color: var(--ss-text);
@@ -2295,6 +2296,44 @@ html.small-screen .credits button {
 }
 .ss-accent-swatch[aria-checked="true"] {
     box-shadow: 0 0 0 2px var(--ss-card, #fff), 0 0 0 4px var(--ss-text, #1d2330);
+}
+/* Text size: a slider and its percentage. */
+.ss-text-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ss-text-size input[type="range"] {
+    width: 150px;
+    accent-color: var(--ss-accent, #d63031);
+}
+.ss-text-size-value {
+    min-width: 3em;
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ss-muted, #667085);
+}
+/* Install as an app. */
+.ss-install {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+html.small-screen #ss-install {
+    height: 32px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ss-accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+.ss-install-hint {
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+    text-align: right;
 }
 /* Show box search, Range Compare and crit chances: switches. */
 .ss-setting-switches {

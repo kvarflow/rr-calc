@@ -51,6 +51,11 @@ function makeServiceWorker(pages) {
 			files.add('./' + path.posix.normalize(path.posix.join(path.posix.dirname(cssPath.slice(2)), url)));
 		});
 	}
+	// The app icons the manifest names (the pages only link the small ones).
+	const manifestPath = path.resolve(rootDir, 'dist', 'manifest.webmanifest');
+	if (fs.existsSync(manifestPath)) {
+		for (const icon of JSON.parse(fs.readFileSync(manifestPath, 'utf8')).icons || []) files.add('./' + icon.src);
+	}
 	const list = Array.from(files);
 	const version = crypto.createHash('md5').update(list.join('\n') + contents).digest('hex').substr(0, 8);
 	const swPath = path.resolve(rootDir, 'dist', 'sw.js');

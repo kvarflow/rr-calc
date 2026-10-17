@@ -299,6 +299,46 @@ function buildAccentPicker() {
 	return picker;
 }
 
+// Text size: the small layout scaled from 85% to 140% (the page's <head> applies it before the
+// first paint).
+var TEXT_SIZE_KEY = "textSize";
+
+function buildTextSizeSlider() {
+	var value = parseInt(readSetting(TEXT_SIZE_KEY)) || 100;
+	var label = $('<span class="ss-text-size-value"></span>').text(value + "%");
+	var slider = $('<input type="range" id="ss-text-size" min="85" max="140" step="5" aria-label="Text size" />')
+		.val(value)
+		.on("input change", function () {
+			var size = parseInt(this.value);
+			label.text(size + "%");
+			document.documentElement.style.setProperty("--ss-zoom", size / 100);
+			writeSetting(TEXT_SIZE_KEY, size);
+		});
+	return $('<span class="ss-text-size"></span>').append(slider, label);
+}
+
+// Install as an app: the browser's own prompt when it offers one, otherwise how to do it by hand.
+var installPrompt = null;
+window.addEventListener("beforeinstallprompt", function (ev) {
+	ev.preventDefault();
+	installPrompt = ev;
+	$("#ss-install").show();
+});
+
+function buildInstallRow() {
+	var installed = window.matchMedia("(display-mode: fullscreen), (display-mode: standalone)").matches;
+	var button = $('<button type="button" id="ss-install">Install</button>').hide().click(function () {
+		if (!installPrompt) return;
+		installPrompt.prompt();
+		installPrompt = null;
+		$(this).hide();
+	});
+	if (installPrompt) button.show();
+	return $('<span class="ss-install"></span>').append(button,
+		$('<span class="ss-install-hint"></span>').text(installed ? "Installed \u2713" :
+			"Or Chrome's \u22EE menu \u2192 Add to Home screen"));
+}
+
 function buildSettingsCard() {
 	var row = function (title, control) {
 		return $('<div class="ss-setting"></div>').append($('<span class="ss-setting-label"></span>').text(title), control);
@@ -315,6 +355,8 @@ function buildSettingsCard() {
 		row("Layout", layout),
 		row("Theme", $("#dark-theme-toggle")),
 		row("Accent", buildAccentPicker()),
+		row("Text size", buildTextSizeSlider()),
+		row("App", buildInstallRow()),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();
@@ -370,10 +412,45 @@ function bindDoubleTapCrit() {
 	$(document).on("calc:done", markCritMoves);
 }
 
+// The calculator keeps a chosen move through recalculations only once it is clicked twice
+// ("locked"); otherwise every change shows the faster side's strongest move again. On the Battle
+// tab one tap keeps it, until a new Pokémon is loaded on that side. (After the calculator's own
+// handler, which would unlock it on a second tap.)
+function bindKeptMove() {
+	$(".result-move").on("click", function () {
+		$(".locked-move").not(this).removeClass("locked-move");
+		$(this).addClass("locked-move");
+	});
+}
+
 function markCritMoves() {
 	$(".top-crit").each(function () {
 		$('label[for="resultMove' + this.id.slice("critTop".length) + '"]').toggleClass("ss-crit", this.checked);
 	});
+}
+
+// Swipe left or right on the page for the next or previous tab: anywhere but sliders, text boxes,
+// open dropdown lists, your team's cards (they drag) and the tab bar. (A swipe opens no dropdown:
+// that takes a tap.)
+function bindTabSwipe() {
+	var start = null;
+	document.addEventListener("touchstart", function (ev) {
+		var skip = ev.touches.length !== 1 || $(ev.target).closest("input[type=range], textarea, .select2-drop, " +
+			".select2-search, .ss-quick-team, .ss-tabs, .box-dialog-backdrop").length;
+		start = skip ? null : {x: ev.touches[0].clientX, y: ev.touches[0].clientY, time: Date.now()};
+	}, {passive: true});
+	document.addEventListener("touchend", function (ev) {
+		if (!start) return;
+		var touch = ev.changedTouches[0];
+		var dx = touch.clientX - start.x;
+		var dy = touch.clientY - start.y;
+		var quick = Date.now() - start.time < 600;
+		start = null;
+		if (!quick || Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * 0.6) return;
+		var tabs = $("#ss-tabs .ss-tab[data-tab]");
+		var next = tabs.index(tabs.filter(".ss-tab-active")) + (dx < 0 ? 1 : -1);
+		if (next >= 0 && next < tabs.length) showSmallScreenTab(tabs.eq(next).attr("data-tab"));
+	}, {passive: true});
 }
 
 function toggleFullscreen() {
@@ -435,6 +512,8 @@ $(document).ready(function () {
 	if (isSmallScreenOn()) {
 		compactFieldPanel($(".field-info"));
 		bindDoubleTapCrit();
+		bindKeptMove();
+		bindTabSwipe();
 	}
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
