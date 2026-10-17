@@ -225,7 +225,9 @@ function decodeSaveMon(bytes, offset, isParty) {
 		evs: evs,
 		ivs: ivs,
 		moves: moves,
-		metLocation: view.getUint8(layout.metLocation)
+		metLocation: view.getUint8(layout.metLocation),
+		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
+		pid: pid
 	};
 }
 
@@ -332,7 +334,8 @@ function toCustomSet(mon) {
 		moves: mon.moves,
 		isCustomSet: true,
 		// Marks sets that the next .sav import replaces.
-		fromSave: true
+		fromSave: true,
+		pid: mon.pid
 	};
 }
 

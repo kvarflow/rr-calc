@@ -76,6 +76,20 @@ var CHANGELOG = [
 			"showed Hidden Power Rock instead of Bug, a third of its damage to Grass types)",
 		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
 			"Gourgeist keep their size"
+	]},
+	{version: "1.7", notes: [
+		"Battle updates the moment you change something on You, Foe, Box or Advanced, and the move you " +
+			"tapped stays shown",
+		"Fainted (on your team's card) and KOs credited to your Pokémon in Pokémon 1; Advanced's " +
+			"This run card shows your top fraggers, the fallen, your personal best and past runs",
+		"Swipe left or right to change tabs; Text size under More",
+		"Install it as an app (More \u2192 Install, or Add to Home screen): full screen, offline, " +
+			"opening on the mode you used last",
+		"The foe's move that hits you hardest is marked on Battle, tagged KO when it can knock you out"
+	], fixes: [
+		"Typing HP on an on-screen keyboard (the Thor's, a phone's) did not update the results until " +
+			"you left the field",
+		"Loading a Pokémon from the Box recalculated many times over"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

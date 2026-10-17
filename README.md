@@ -35,16 +35,33 @@ On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Tho
 - **Battle**: both sides' moves and the detailed result, then your team and the trainer's as
   cards. Tap one to load it, drag your team into order, mark the trainer's Pokémon KO'd and step
   to the previous or next trainer (Next stands out once his whole team is KO'd). Double-tap a
-  move to make it a crit (it shows CRIT), and again to undo.
+  move to make it a crit (it shows CRIT), and again to undo. The foe's move that hits you hardest
+  has a red stripe, tagged KO when it can knock you out from your current HP. **Fainted** on your
+  team's card marks the Pokémon in Pokémon 1 as fallen (to the one it faces), and each KO you mark
+  is credited to it: KO counts show on your cards.
 - **You** and **Foe**: each Pokémon on one screen: the stats beside nature, ability, item and
   status, then a slim HP bar and the moves. Type, forme, gender and level come from the save, so
   they only show with the whole table (Base / IVs / EVs).
-- **Advanced**: the trainer (his starter-dependent team, Professor Oak's new run) and the run's
-  progress bars, then the field in sections: battle, weather, terrain, rooms, each side's
-  conditions and Export.
+- **Advanced**: the trainer (his starter-dependent team, Professor Oak's new run), the run's
+  progress bars and **This run** (top fraggers, the fallen, your personal best and past runs,
+  kept per mode; a run is recorded when Professor Oak ends it, and the best is the one that beat
+  the most trainers, then kept the most Pokémon standing), then the field in sections: battle,
+  weather, terrain, rooms, each side's conditions and Export. A `.sav` Pokémon is known by its
+  personality value, so its KOs and fainting survive re-importing however it was moved.
 - **Box**, **Wild** (below) and **More**: import and export, Range Compare, then the settings,
-  with sliding selectors for the mode and the notation, and the accent color (red unless you
-  pick another).
+  with sliding selectors for the mode and the notation, the accent color (red unless you pick
+  another), the text size and Install.
+
+Swipe left or right to change tabs. Battle recalculates as you type (on-screen keyboards send no
+key presses), once per change.
+
+### Install as an app
+
+`manifest.webmanifest` makes the calculator installable: Chrome on the Thor or a phone offers
+Install (More → App), or use ⋮ → Add to Home screen. It opens full screen, works offline and
+starts on the mode you used last. For an APK, [PWABuilder](https://www.pwabuilder.com/) can
+package the published site as an Android app (a Trusted Web Activity) that keeps updating with
+the site.
 
 Phones get it too: held upright, the tabs sit at the bottom and the You / Foe details go under
 the stats; held sideways, it is laid out like the Thor. Layout in More's settings forces it on or

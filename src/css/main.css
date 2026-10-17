@@ -1355,6 +1355,22 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn {
     color: #fff;
     font-weight: 600;
 }
+/* The foe's move that hits you hardest (small_screen.js markFoeThreat): a stripe, and KO when it
+   can knock you out. */
+html.small-screen .move-result-subgroup .btn.ss-threat {
+    box-shadow: inset 3px 0 0 var(--ss-danger, #c0392b);
+}
+html.small-screen .move-result-subgroup .btn.ss-threat-ko::before {
+    content: "KO";
+    position: absolute;
+    top: 0;
+    left: 6px;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ss-danger, #c0392b);
+}
 /* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
 html.small-screen .move-result-subgroup label[for^="resultMove"] {
     position: relative;
@@ -1543,6 +1559,81 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     color: var(--ss-danger, #c0392b);
     font-size: 20px;
     font-weight: 700;
+}
+/* The run record (run_record.js): KOs each of yours has made, and the fainted greyed out. */
+.ss-quick-mon {
+    position: relative;
+}
+.ss-quick-frags {
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: var(--ss-card, #fff);
+    color: var(--ss-text, #1d2330);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 13px;
+}
+.ss-quick-mon.ss-quick-fainted img,
+.box-pokemon.run-fainted img {
+    filter: grayscale(1);
+    opacity: 0.35;
+}
+.ss-quick-mon.ss-quick-fainted::after {
+    content: "\2020";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ss-muted, #667085);
+    font-size: 22px;
+    font-weight: 700;
+}
+.ss-quick-faint-btn {
+    flex: none;
+    height: 26px;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 999px;
+    background: var(--ss-btn, #f3f5f9);
+    color: var(--ss-muted, #667085);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+/* This run (run_record.js): frags, the fallen, your personal best and past runs. */
+.run-record-now {
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+.run-record-group {
+    padding: 6px 0;
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.run-record-group h4 {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.run-record-group ul {
+    margin: 0;
+    padding-left: 18px;
+}
+.run-record-group p {
+    margin: 0;
+}
+.run-record-empty {
+    color: var(--ss-muted, #667085);
+}
+html.small-screen .run-record {
+    text-align: left;
+    font-size: 13px;
 }
 /* Your team's cards can be dragged into order (a tap still loads one). */
 .ss-quick-team .ss-quick-mon {

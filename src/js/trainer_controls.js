@@ -311,6 +311,7 @@ function confirmNewRun() {
 		[{
 			label: "Yes, my run is over: wipe and start again",
 			action: function () {
+				$(document).trigger("run:end"); // run_record.js keeps how far it got
 				writeBoxLayout({});
 				clearCustomSets();
 				clearTrainerProgress();

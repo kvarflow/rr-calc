@@ -22,7 +22,7 @@ var SMALL_SCREEN_TABS = [
 	{key: "results", label: "Battle", parts: ".move-result-group, .main-result-group, #ss-quick"},
 	{key: "you", label: "You", parts: "#p1"},
 	{key: "foe", label: "Foe", parts: "#p2"},
-	{key: "field", label: "Advanced", short: "Adv.", parts: "#trainer-nav, #run-progress, .field-info"},
+	{key: "field", label: "Advanced", short: "Adv.", parts: "#trainer-nav, #run-progress, #run-record, .field-info"},
 	{key: "box", label: "Box", parts: "#box-panel, #box-tools"},
 	{key: "more", label: "More", parts: ".poke-import, #range-compare, #ss-page-settings, .credits"}
 ];
@@ -367,6 +367,23 @@ function buildSettingsCard() {
 	segmentedSelector(target);
 }
 
+// The run record (run_record.js) on your team: KOs each one has made, the fainted greyed out, and
+// Fainted / Revive for the one in Pokémon 1.
+function markRunOnTeam(card, p1Set) {
+	card.find(".ss-quick-mon").each(function () {
+		var mon = getRunMon($(this).attr("data-set-id"));
+		$(this).toggleClass("ss-quick-fainted", mon.fainted);
+		if (mon.frags) $(this).append($('<span class="ss-quick-frags"></span>').text("\u2694" + mon.frags));
+		if (mon.fainted) $(this).attr("title", $(this).attr("title") + " \u2014 fainted" + (mon.faintedBy ? " to " + mon.faintedBy : ""));
+	});
+	if (!getRunKey(p1Set)) return;
+	var fainted = getRunMon(p1Set).fainted;
+	card.find(".ss-quick-head").append($('<button type="button" class="ss-quick-faint-btn"></button>')
+		.text(fainted ? "Revive" : "Fainted")
+		.attr("title", fainted ? "It did not faint after all" : "Your Pokémon fainted (to the one you face)")
+		.click(toggleYourFaint));
+}
+
 function renderQuickStrips() {
 	if (!$("html").hasClass("small-screen")) return;
 	var quick = $("#ss-quick").empty();
@@ -379,6 +396,7 @@ function renderQuickStrips() {
 	else yours.find(".ss-quick-mon").attr("title", function (i, title) {
 		return title + " (drag to reorder)";
 	});
+	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
 }
@@ -410,6 +428,7 @@ function bindDoubleTapCrit() {
 	});
 	$(document).on("change", ".top-crit, .move-crit", markCritMoves);
 	$(document).on("calc:done", markCritMoves);
+	$(document).on("calc:done", markFoeThreat);
 }
 
 // The calculator keeps a chosen move through recalculations only once it is clicked twice
@@ -421,6 +440,27 @@ function bindKeptMove() {
 		$(".locked-move").not(this).removeClass("locked-move");
 		$(this).addClass("locked-move");
 	});
+}
+
+// Battle: the foe's move that hits you hardest, tagged KO when it can knock you out from the HP you
+// have now. (A first step towards the trainer's likely move; the game's AI also weighs other
+// things.)
+function markFoeThreat() {
+	var labels = $('label[for^="resultMoveR"]').removeClass("ss-threat ss-threat-ko");
+	if (!damageResults) return;
+	var hp = parseInt($("#p1 .current-hp").val()) || 0;
+	var best = -1;
+	var bestDamage = 0;
+	damageResults[1].forEach(function (result, i) {
+		var damage = result.range()[1];
+		if (damage > bestDamage) {
+			bestDamage = damage;
+			best = i;
+		}
+	});
+	if (best === -1) return;
+	labels.eq(best).addClass("ss-threat").toggleClass("ss-threat-ko", hp > 0 && bestDamage >= hp)
+		.attr("title", bestDamage >= hp ? "Hits you hardest, and can KO you" : "Hits you hardest");
 }
 
 function markCritMoves() {
@@ -534,7 +574,7 @@ $(document).ready(function () {
 	$(document).on("calc:done", function (event, p1, p2) {
 		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
-	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered", renderQuickStrips);
+	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered run:changed", renderQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
 	// The page may have calculated before this script was ready (One vs One does).

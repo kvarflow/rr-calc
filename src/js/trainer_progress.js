@@ -152,6 +152,8 @@ function renderTrainerProgress() {
 function toggleActiveKO() {
 	var slots = getKOSlots(currentTrainerIndex).slice();
 	var at = slots.indexOf(activeTrainerSlot);
+	// For the run record (run_record.js): who made the KO.
+	$(document).trigger("trainer:ko", [currentTrainerIndex, activeTrainerSlot, at === -1]);
 	if (at !== -1) {
 		slots.splice(at, 1);
 		setKOSlots(currentTrainerIndex, slots);
