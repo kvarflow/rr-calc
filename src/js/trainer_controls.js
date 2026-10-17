@@ -328,7 +328,7 @@ function confirmNewRun() {
 var TRAINER_ON_TOP_KEY = "trainerOnTop";
 
 function placeTrainerPanel(onTop) {
-	var panels = $("#trainer-nav").add("#run-progress");
+	var panels = $("#trainer-nav").add("#run-progress").add("#run-record");
 	if (onTop) panels.insertBefore("#p2");
 	else panels.insertAfter("#p2");
 }

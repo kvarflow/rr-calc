@@ -722,7 +722,7 @@ legend:has(> .header-sprite)::before {
 }
 
 /* Opposing trainer panel under Pokémon 2 (trainer_controls.js) */
-#trainer-nav, #run-progress {
+#trainer-nav, #run-progress, #run-record {
     float: none;
     clear: both;
     width: 32em; /* same width as .poke-info */
