@@ -259,7 +259,7 @@ $(document).ready(function () {
 	ENCOUNTERS.forEach(function (location, i) {
 		select.append($("<option></option>").val(i).text(encounterLabel(location)));
 	});
-	// The location on top, its Pokémon as the main view, and the options and notes under them.
+	// The location and Day / Night on top, its Pokémon as the main view, the rest under them.
 	var panel = $('<fieldset id="encounters" class="encounters"><legend align="center">Wild encounters</legend></fieldset>').append(
 		$('<div class="encounter-controls"></div>').append(
 			$('<button type="button" class="encounter-step" aria-label="Previous location">◀</button>').click(function () {
@@ -270,19 +270,19 @@ $(document).ready(function () {
 			}),
 			$('<button type="button" class="encounter-step" aria-label="Next location">▶</button>').click(function () {
 				showEncounterLocation(~~select.val() + 1);
-			})),
+			}),
+			$('<button type="button" id="encounter-night" class="encounter-time"></button>')
+				.attr("aria-pressed", isNightNow())
+				.text(isNightNow() ? "☾ Night" : "☀ Day")
+				.click(function () {
+					var night = $(this).attr("aria-pressed") !== "true";
+					$(this).attr("aria-pressed", night).text(night ? "☾ Night" : "☀ Day");
+					renderEncounters();
+				})),
 		'<div class="encounter-list"></div>',
 		$('<div class="encounter-footer"></div>').append(
 			'<p class="encounter-nuzlocke-status" role="status"></p>',
 			$('<div class="encounter-options"></div>').append(
-				$('<button type="button" id="encounter-night" class="encounter-time"></button>')
-					.attr("aria-pressed", isNightNow())
-					.text(isNightNow() ? "☾ Night" : "☀ Day")
-					.click(function () {
-						var night = $(this).attr("aria-pressed") !== "true";
-						$(this).attr("aria-pressed", night).text(night ? "☾ Night" : "☀ Day");
-						renderEncounters();
-					}),
 				$('<label class="encounter-nuzlocke-toggle"></label>').append(
 					$('<input type="checkbox" id="encounter-nuzlocke" />').prop("checked", isNuzlockeOn()).change(function () {
 						writeSetting(NUZLOCKE_KEY + ":" + getPageMode(), this.checked);

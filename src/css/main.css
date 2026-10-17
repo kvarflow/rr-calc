@@ -1561,10 +1561,14 @@ html.small-screen .ss-panel-head .ss-stats-toggle[aria-expanded="true"] {
     background: var(--ss-accent-soft);
     color: var(--ss-accent-text);
 }
-/* Left: the stats. Right: the lock, type, gender and level, then the details. */
+/* Left: the stats. Right: nature, ability, item and status. Type, forme, gender and level come
+   from the save, so they only show with the whole table (Base / IVs / EVs). */
 html.small-screen .poke-info > .info-group:has(> table) {
     grid-column: 1;
-    grid-row: 2 / span 2;
+    grid-row: 2;
+}
+html.small-screen .poke-info:not(.ss-stats-full) > .info-group.top {
+    display: none !important;
 }
 html.small-screen .poke-info > .info-group.top,
 html.small-screen .poke-info > .info-selectors {
@@ -1581,7 +1585,7 @@ html.small-screen .poke-info > .info-group.top {
     padding-top: 4px;
 }
 html.small-screen .poke-info > .info-selectors {
-    grid-row: 3;
+    grid-row: 2;
 }
 /* (The calculator shows and hides forme and gender with inline styles.) */
 html.small-screen .poke-info > .info-group.top > div:not(.hide),
