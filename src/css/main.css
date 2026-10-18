@@ -1355,8 +1355,9 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn {
     color: #fff;
     font-weight: 600;
 }
-/* The foe's move that hits you hardest (small_screen.js markFoeThreat): a stripe, and KO when it
-   can knock you out. */
+/* The foe's likeliest move by the trainer's AI (trainer_ai.js markFoeLikelyMoves), or else the one
+   that hits you hardest (small_screen.js markFoeThreat): a stripe, and KO when it can knock you out.
+   Each move's chance of being picked sits in the corner. */
 html.small-screen .move-result-subgroup .btn.ss-threat {
     box-shadow: inset 3px 0 0 var(--ss-danger, #c0392b);
 }
@@ -1370,6 +1371,23 @@ html.small-screen .move-result-subgroup .btn.ss-threat-ko::before {
     line-height: 11px;
     letter-spacing: 0.04em;
     color: var(--ss-danger, #c0392b);
+}
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""])::after {
+    content: attr(data-ai);
+    position: absolute;
+    top: 0;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 11px;
+    color: var(--ss-muted, #888);
+}
+html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
+    color: var(--ss-danger, #c0392b);
+    font-weight: 800;
+}
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
+    color: #fff;
 }
 /* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
 html.small-screen .move-result-subgroup label[for^="resultMove"] {

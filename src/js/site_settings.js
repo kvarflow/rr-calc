@@ -90,6 +90,12 @@ var CHANGELOG = [
 		"Typing HP on an on-screen keyboard (the Thor's, a phone's) did not update the results until " +
 			"you left the field",
 		"Loading a Pokémon from the Box recalculated many times over"
+	]},
+	{version: "1.8", notes: [
+		"Trainer AI: on Battle, each of the foe's moves shows how often the trainer picks it, from " +
+			"Radical Red's own battle AI (Complete Fire Red Upgrade's), with each trainer's AI level and " +
+			"every move's data read from the game",
+		"The likeliest move gets the red stripe, tagged KO when it can knock you out"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -103,6 +109,7 @@ var CREDITS = [
 	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",
 	"Wild encounters from the game; floor names from pret's pokefirered, and post-game area names from the " +
 		"Pokémon Locations & Raid Dens v4.1 sheet.",
+	"Trainer AI ported from Complete Fire Red Upgrade's battle AI (Skeli789 and contributors), which Radical Red is built on.",
 	"Further improved with QOL features by kvarflow."
 ];
 

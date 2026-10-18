@@ -35,8 +35,9 @@ On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Tho
 - **Battle**: both sides' moves and the detailed result, then your team and the trainer's as
   cards. Tap one to load it, drag your team into order, mark the trainer's Pokémon KO'd and step
   to the previous or next trainer (Next stands out once his whole team is KO'd). Double-tap a
-  move to make it a crit (it shows CRIT), and again to undo. The foe's move that hits you hardest
-  has a red stripe, tagged KO when it can knock you out from your current HP. **Fainted** on your
+  move to make it a crit (it shows CRIT), and again to undo. Each of the foe's moves shows the
+  chance the trainer's AI picks it (see Trainer AI below); the likeliest has a red stripe, tagged
+  KO when it can knock you out from your current HP. **Fainted** on your
   team's card marks the Pokémon in Pokémon 1 as fallen (to the one it faces), and each KO you mark
   is credited to it: KO counts show on your cards.
 - **You** and **Foe**: each Pokémon on one screen: the stats beside nature, ability, item and
@@ -88,6 +89,31 @@ in the evolution family of a Pokémon you have caught or have in your box (a Fur
 blacks out Sentret on later routes), and it cannot be a location's encounter. The families come
 from the game's own evolution table; a species' sizes count as one, its regional forms do not.
 
+## Trainer AI
+
+On Battle (Normal and Hardcore Mode), each of the foe's moves shows how often the trainer's AI
+picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgrade's battle AI
+(`src/Battle_AI`), which Radical Red is built on, for single battles:
+
+- Every move starts at 100. *Negatives* (every trainer) takes points off moves that would fail
+  or waste the turn: Thunder Wave into a Ground type, Recover at full HP, a stat boost at +6.
+  *Positives* (the bosses and the other trainers flagged smart) adds points for a KO that goes
+  first (+9), a slower KO, the strongest move (+2), a status move or set-up when it suits the
+  Pokémon's fighting style (worked out from its four moves, as the game does), and more.
+- The game reads its damage as one number, the calculator's highest roll × 0.93, and predicts
+  your move first (with the smart scoring) to judge speed order, Sucker Punch and the like.
+- The highest score wins, ties at random. The AI's own rolls (a 50% crit, four random numbers it
+  draws each turn, coin flips between equally strong moves, your predicted move when it is a tie)
+  are enumerated exactly, so the percentages are exact for what the calculator knows.
+- Each trainer's AI flags, and every move's effect, accuracy and secondary chance, come from the
+  game (`import/radical-red-trainers/ai_flags.js` writes `src/js/data/trainer_ai.js` from the
+  ROM). Required trainers not found in the ROM's tables use the smart AI, optional ones the basic.
+
+What it cannot know is assumed: no moves used yet this battle (no Protect last turn, no Choice
+lock), the foe's Pokémon has just come in when it is at full HP (Fake Out), the foe can switch
+while it has a Pokémon left, and no Substitutes. Switching and item use are not modelled. Set the
+field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
+
 ## Recent bug fixes
 
 - A trainer's Hidden Power could change type after its first load: Catcher Sammy's Volbeat
@@ -113,9 +139,8 @@ unless you turn it off.
 
 ## Planned features
 
-- **AI move choice %**: the chance the opposing trainer picks each move, as syl-rnb-calc
-  shows by porting the game's battle AI. Radical Red's AI would need its own port.
 - The Toxic Spikes and Substitute field toggles, which only matter for the AI's choices.
+- The AI's switching, and the battle history it remembers (moves used, Protect last turn).
 
 If you are currently looking at [smogon/damage-calc][0] and not
 a fork, this is the official repository for the Pokémon Showdown! damage calculator:

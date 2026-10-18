@@ -428,7 +428,8 @@ function bindDoubleTapCrit() {
 	});
 	$(document).on("change", ".top-crit, .move-crit", markCritMoves);
 	$(document).on("calc:done", markCritMoves);
-	$(document).on("calc:done", markFoeThreat);
+	// Trainer pages have the AI's likely-move estimate (trainer_ai.js); elsewhere the hardest hit.
+	$(document).on("calc:done", typeof markFoeLikelyMoves === "function" ? markFoeLikelyMoves : markFoeThreat);
 }
 
 // The calculator keeps a chosen move through recalculations only once it is clicked twice
@@ -443,8 +444,7 @@ function bindKeptMove() {
 }
 
 // Battle: the foe's move that hits you hardest, tagged KO when it can knock you out from the HP you
-// have now. (A first step towards the trainer's likely move; the game's AI also weighs other
-// things.)
+// have now (on pages without a trainer AI to estimate from).
 function markFoeThreat() {
 	var labels = $('label[for^="resultMoveR"]').removeClass("ss-threat ss-threat-ko");
 	if (!damageResults) return;
