@@ -1,5 +1,12 @@
+// One calculation for a burst of changes (loading a set changes a dozen fields at once).
+var pendingCalculation = false;
 var PC_HANDLER = function () {
-	setTimeout(performCalculations, 0);
+	if (pendingCalculation) return;
+	pendingCalculation = true;
+	setTimeout(function () {
+		pendingCalculation = false;
+		performCalculations();
+	}, 0);
 };
 var damageResults;
 
@@ -41,9 +48,13 @@ function performCalculations() {
 	var battling = [p1, p2];
 	p1.maxDamages = [];
 	p2.maxDamages = [];
-	p1info.find(".sp .totalMod").text(p1.stats.spe);
-	p2info.find(".sp .totalMod").text(p2.stats.spe);
-	var fastestSide = p1.stats.spe > p2.stats.spe ? 0 : p1.stats.spe === p2.stats.spe ? "tie" : 1;
+	var p1Speed = getBattleSpeed(p1, "p1");
+	var p2Speed = getBattleSpeed(p2, "p2");
+	p1info.find(".sp .totalMod").text(p1Speed);
+	p2info.find(".sp .totalMod").text(p2Speed);
+	// Under Trick Room the slower Pokémon moves first.
+	var p1MovesFirst = $("#trickroom").prop("checked") ? p1Speed < p2Speed : p1Speed > p2Speed;
+	var fastestSide = p1Speed === p2Speed ? "tie" : p1MovesFirst ? 0 : 1;
 
 	var result, maxDamage;
 	var bestResult;
@@ -99,6 +110,8 @@ function performCalculations() {
 	bestResult.change();
 	$("#resultHeaderL").text(p1.name + "'s Moves (select one to show detailed results)");
 	$("#resultHeaderR").text(p2.name + "'s Moves (select one to show detailed results)");
+	// For add-ons that follow every calculation (crit chances, Range Compare).
+	$(document).trigger("calc:done", [p1, p2]);
 }
 
 $(".result-move").change(function () {
@@ -180,6 +193,7 @@ $(".mode").change(function () {
 
 // The page serving each mode. Other modes (One vs All, All vs One) live on honkalculate.
 var MODE_PAGES = {"one-vs-one": "index", normal: "normal", hardcore: "hardcore"};
+var LAST_MODE_KEY = "lastMode";
 // Modes that have been removed, and the mode old links to them now open.
 var RETIRED_MODES = {randoms: "normal"};
 
@@ -199,14 +213,32 @@ $(".notation").change(function () {
 
 $(document).ready(function () {
 	// Open the page for the ?mode= in the URL if this page is not already it.
-	var mode = new URLSearchParams(window.location.search).get('mode');
+	var params = new URLSearchParams(window.location.search);
+	var mode = params.get('mode');
 	mode = RETIRED_MODES[mode] || mode;
+	// The installed app (manifest.webmanifest) opens on the mode you used last.
+	if (!mode && params.get('app')) mode = readSetting(LAST_MODE_KEY);
 	if (mode && mode !== getPageMode()) navigateToMode(mode);
-	$(".calc-trigger").bind("change keyup", PC_HANDLER);
+	writeSetting(LAST_MODE_KEY, getPageMode());
+	// "input" too: a phone's or handheld's on-screen keyboard sends no keyup, and "change" only
+	// comes once you leave the field.
+	$(".calc-trigger").bind("change keyup input", PC_HANDLER);
 	performCalculations();
 });
 
 /* Click-to-copy function */
+// Click the damage rolls to copy them, like the main result.
+$("#damageValues").attr("title", "Click to copy the rolls.").click(function () {
+	var rolls = $(this).text();
+	navigator.clipboard.writeText(rolls.slice(rolls.indexOf("("))).then(function () {
+		var note = $("#rollsCopied").length ? $("#rollsCopied") : $('<span id="rollsCopied" class="copied-note">Copied</span>').insertAfter("#damageValues");
+		note.show();
+		setTimeout(function () {
+			note.hide();
+		}, 2000);
+	});
+});
+
 $("#mainResult").click(function () {
 	navigator.clipboard.writeText($("#mainResult").text()).then(function () {
 		document.getElementById('tooltipText').style.visibility = 'visible';

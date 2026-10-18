@@ -3,11 +3,33 @@
 
 <head>
     <meta charset="UTF-8" />
+    <script>
+        // Small-screen layout (small_screen.js): the viewport tag and the layout's class must be
+        // there before the page is first laid out, so they are set here. Keep the test in step
+        // with isSmallScreenOn().
+        try {
+            var smallScreenSetting = localStorage.getItem("smallScreenLayout");
+            if (smallScreenSetting === "on" || (smallScreenSetting !== "off" && Math.min(screen.width, screen.height) <= 640)) {
+                document.write('<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />');
+                // The small layout's CSS, from the first layout on rather than once the page has loaded.
+                document.documentElement.className += " small-screen";
+                document.documentElement.setAttribute("data-ss-tab", localStorage.getItem("smallScreenTab") || "results");
+                // The accent color chosen under More (red unless changed), before the first paint.
+                document.documentElement.setAttribute("data-accent", localStorage.getItem("accentColor") || "red");
+                document.documentElement.style.setProperty("--ss-zoom", (parseInt(localStorage.getItem("textSize")) || 100) / 100);
+            }
+        } catch (e) {}
+    </script>
+    <!-- Install as an app: the Thor and phones can add it to the home screen, full screen and offline. -->
+    <link rel="manifest" href="./manifest.webmanifest?" />
+    <meta name="theme-color" content="#d63031" />
+    <link rel="apple-touch-icon" href="./img/app-icon-192.png?" />
+    <link rel="icon" type="image/png" sizes="512x512" href="./img/app-icon-512.png?" />
     <title>Pok&eacute;mon Radical Red Damage Calculator</title>
     <link type="text/css" rel="stylesheet" href="./js/vendor/select2/select2.css" />
     <link type="text/css" rel="stylesheet" href="./css/main.css?" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css" />
-    <link type="text/css" rel="stylesheet" href="./css/dark-theme.css" id="dark-theme-styles">
+    <link type="text/css" rel="stylesheet" href="./css/dark-theme.css?" id="dark-theme-styles">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-3"></script>
     <script>
@@ -740,10 +762,13 @@
                     <input aria-describedby="wonderRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="wonderroom" />
                     <label class="btn btn-xxxwide btn-right" for="wonderroom">Wonder Room</label>
                 </div>
-                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 5.3em; margin: 5px auto;" title="Is gravity in effect?">
+                <div class="gen-specific g4 g5 g6 g7 g8 g9" style="width: 15.6em; margin: 5px auto;">
+                    <span hidden id="trickRoomInstruction">Is Trick Room in effect? Slower Pok&eacute;mon move first.</span>
+                    <input aria-describedby="trickRoomInstruction" class="visually-hidden calc-trigger" type="checkbox" id="trickroom" />
+                    <label class="btn btn-xxxwide btn-left" for="trickroom" title="Is Trick Room in effect? Slower Pok&eacute;mon move first.">Trick Room</label>
                     <span hidden id="gravityInstruction">Is gravity in effect?</span>
                     <input aria-describedby="gravityInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gravity" />
-                    <label class="btn" for="gravity">Gravity</label>
+                    <label class="btn btn-right" for="gravity" title="Is gravity in effect?">Gravity</label>
                 </div>
                 <hr class="gen-specific g2 g3 g4 g5 g6 g7 g8 g9" />
                 <table class="field">
@@ -855,6 +880,17 @@
                             <td><div class="right" title="Has this Pok&eacute;mon's power been boosted by an ally's Helping Hand?">
                                 <input aria-describedby="selectHelpingHandInstruction" class="visually-hidden calc-trigger" type="checkbox" id="helpingHandR" />
                                 <label class="btn btn-xxwide" for="helpingHandR">Helping Hand</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g3 g4 g5 g6 g7 g8 g9">
+                            <td><div class="left" title="Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.">
+                                <div hidden id="selectFocusEnergyInstruction">Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.</div>
+                                <input aria-describedby="selectFocusEnergyInstruction" class="visually-hidden calc-trigger" type="checkbox" id="focusEnergyL" />
+                                <label class="btn btn-xxwide" for="focusEnergyL">Focus Energy</label>
+                            </div></td>
+                            <td><div class="right" title="Has this Pok&eacute;mon used Focus Energy? Raises its critical hit chance.">
+                                <input aria-describedby="selectFocusEnergyInstruction" class="visually-hidden calc-trigger" type="checkbox" id="focusEnergyR" />
+                                <label class="btn btn-xxwide" for="focusEnergyR">Focus Energy</label>
                             </div></td>
                         </tr>
                         <tr class="gen-specific g4 g5 g6 g7 g8 g9">
@@ -1545,12 +1581,26 @@
     <script type="text/javascript" src="./js/moveset_import.js?"></script>
     <script type="text/javascript" src="./js/box_controls.js?"></script>
     <script type="text/javascript" src="./js/color_coding.js?"></script>
+    <script type="text/javascript" src="./js/crit_tools.js?"></script>
+    <script type="text/javascript" src="./js/pokemon_panels.js?"></script>
+    <script type="text/javascript" src="./js/range_compare.js?"></script>
     <script type="text/javascript" src="./js/data/radical_red_save_data.js?"></script>
     <script type="text/javascript" src="./js/save_import.js?"></script>
     <script type="text/javascript" src="./js/import_panel.js?"></script>
+    <script type="text/javascript" src="./js/save_lock.js?"></script>
+    <script type="text/javascript" src="./js/data/ability_descriptions.js?"></script>
+    <script type="text/javascript" src="./js/ability_info.js?"></script>
     <script type="text/javascript" src="./js/data/trainers/hardcore.js?"></script>
     <script type="text/javascript" src="./js/trainer_controls.js?"></script>
     <script type="text/javascript" src="./js/trainer_progress.js?"></script>
+    <script type="text/javascript" src="./js/run_record.js?"></script>
+    <script type="text/javascript" src="./js/data/trainer_ai.js?"></script>
+    <script type="text/javascript" src="./js/trainer_ai.js?"></script>
+    <script type="text/javascript" src="./js/site_settings.js?"></script>
+    <script type="text/javascript" src="./js/data/encounters.js?"></script>
+    <script type="text/javascript" src="./js/encounters.js?"></script>
+    <script type="text/javascript" src="./js/small_screen.js?"></script>
+    <script type="text/javascript" src="./js/offline.js?"></script>
 </div>
 
 <div class="credits">Original is created by Honko and maintained by Austin and Kris. Edited by Karthik. Further improved with QOL features by kvarflow.

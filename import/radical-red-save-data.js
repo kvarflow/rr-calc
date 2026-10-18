@@ -21,7 +21,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const {calc, toKey, resolve} = require('./rom-names');
+const {calc, toKey, resolve, romSpeciesName} = require('./rom-names');
 
 const OUTPUT = path.resolve(__dirname, '../src/js/data/radical_red_save_data.js');
 
@@ -35,7 +35,7 @@ function resolveTable(kind, romNames) {
 }
 
 function main(exporterDir, pokeapiDir) {
-	const romSpecies = readLines(path.join(exporterDir, 'Species.txt'));
+	const romSpecies = readLines(path.join(exporterDir, 'Species.txt')).map((name, i) => romSpeciesName(i + 1, name));
 	// Formes the calc lacks (Unown letters) fall back to their base species.
 	const species = [''].concat(romSpecies.map(name =>
 		resolve('species', name) || resolve('species', name.split('-')[0]) || ''));

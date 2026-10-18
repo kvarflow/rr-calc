@@ -3,7 +3,7 @@
  *
  * Each box sprite (and, optionally, the sprite in the Pokémon 1 header) is compared
  * against the current Pokémon 2 by running all four moves both ways on the current field:
- *  - Border: is it faster than, tied with, or slower than Pokémon 2 (Speed stat only).
+ *  - Border: does it move before, tied with, or after Pokémon 2 (Speed stat, and Trick Room).
  *  - Background, left half: can it OHKO Pokémon 2 (green: every roll, yellow: some rolls).
  *  - Background, right half: can Pokémon 2 OHKO it (red: every roll, orange: some rolls).
  *  - Whole background blue instead when it "walls" Pokémon 2: Pokémon 2's best max roll
@@ -43,10 +43,11 @@ function getMatchupClasses(pokemon, opponent) {
 	pokemon = results[0][0].attacker;
 	opponent = results[1][0].attacker;
 
-	var ownSpeed = pokemon.stats.spe;
-	var opponentSpeed = opponent.stats.spe;
-	var speed = ownSpeed > opponentSpeed ? "cc-speed-faster" :
-		ownSpeed === opponentSpeed ? "cc-speed-tie" : "cc-speed-slower";
+	var ownSpeed = getBattleSpeed(pokemon, "p1");
+	var opponentSpeed = getBattleSpeed(opponent, "p2");
+	// "Faster" means it moves first, so Trick Room swaps it.
+	var movesFirst = $("#trickroom").prop("checked") ? ownSpeed < opponentSpeed : ownSpeed > opponentSpeed;
+	var speed = ownSpeed === opponentSpeed ? "cc-speed-tie" : movesFirst ? "cc-speed-faster" : "cc-speed-slower";
 
 	var dealt = summarizeDamage(results[0], opponent);
 	var taken = summarizeDamage(results[1], pokemon);
@@ -84,6 +85,7 @@ function colorCodeBox() {
 	$("#box-panel .box-pokemon").each(function () {
 		applyMatchupClasses($(this), createPokemon($(this).attr("data-set-id")), opponent.clone());
 	});
+	$(document).trigger("colorcoding:changed");
 }
 
 function colorCodeHeader() {
@@ -102,6 +104,7 @@ function refreshColorCoding() {
 
 function clearColorCoding() {
 	$("#box-panel .box-pokemon, #p1-header-sprite").removeClass(MATCHUP_CLASSES);
+	$(document).trigger("colorcoding:changed");
 }
 
 /*
@@ -143,7 +146,7 @@ function buildColorCodingControls() {
 		'<div class="cc-when-shown cc-options">' +
 		'<label><input type="checkbox" id="cc-speed-border" checked /> Speed border</label> ' +
 		'<label><input type="checkbox" id="cc-ohko-color" checked /> OHKO color</label> ' +
-		'<label><input type="checkbox" id="cc-auto-refresh" /> Auto-refresh</label> ' +
+		'<label><input type="checkbox" id="cc-auto-refresh" checked /> Auto-refresh</label> ' +
 		'<label><input type="checkbox" id="cc-mon-header" checked /> Color Coding Mon Header</label>' +
 		'</div>' +
 		'<div id="cc-explanation" class="cc-explanation">' +
@@ -170,17 +173,31 @@ function buildColorCodingControls() {
 	);
 }
 
+// Color coding is on (and follows Pokémon 2 as it changes) unless you turn it off; your choice
+// is remembered per browser.
+var COLOR_CODING_KEY = "colorCodingShown";
+var COLOR_AUTO_REFRESH_KEY = "colorCodingAutoRefresh";
+
+function setColorCodingShown(shown) {
+	$("#cc-controls").toggleClass("cc-shown", shown);
+	$("#cc-toggle").text(shown ? "Hide color coding" : "Show color coding");
+	if (shown) {
+		refreshColorCoding();
+	} else {
+		clearColorCoding();
+	}
+	$(document).trigger("colorcoding:changed");
+}
+
 function bindColorCodingEvents() {
 	$("#cc-toggle").click(function () {
 		var shown = !isColorCodingShown();
-		$("#cc-controls").toggleClass("cc-shown", shown);
-		$(this).text(shown ? "Hide color coding" : "Show color coding");
-		if (shown) {
-			refreshColorCoding();
-		} else {
-			clearColorCoding();
-			$("#cc-auto-refresh").prop("checked", false);
-		}
+		writeSetting(COLOR_CODING_KEY, shown);
+		setColorCodingShown(shown);
+	});
+	$("#cc-auto-refresh").prop("checked", readSetting(COLOR_AUTO_REFRESH_KEY) !== "false").change(function () {
+		writeSetting(COLOR_AUTO_REFRESH_KEY, this.checked);
+		if (this.checked) colorCodeBox();
 	});
 	$("#cc-refresh").click(refreshColorCoding);
 	$("#cc-explain").click(function () {
@@ -189,7 +206,7 @@ function bindColorCodingEvents() {
 	$("#cc-speed-border, #cc-ohko-color").change(refreshColorCoding);
 	$("#cc-mon-header").change(colorCodeHeader);
 
-	$(document).on("change keyup", ".calc-trigger", scheduleColorRefresh);
+	$(document).on("change keyup input", ".calc-trigger", scheduleColorRefresh);
 	$("#p1 input.set-selector").change(updatePokemon1HeaderSprite);
 	$(document).on("box:rendered", function () {
 		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
@@ -201,4 +218,5 @@ $(document).ready(function () {
 	$("#box-tools").append(buildColorCodingControls());
 	bindColorCodingEvents();
 	updatePokemon1HeaderSprite();
+	setColorCodingShown(readSetting(COLOR_CODING_KEY) !== "false");
 });

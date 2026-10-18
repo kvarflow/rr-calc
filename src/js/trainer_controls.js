@@ -12,8 +12,12 @@ var OAK_SPRITE_URL = "https://raw.githubusercontent.com/smogon/sprites/master/sr
 // Other fights with several possible teams (Lorelei's rain or snow team) remember the
 // chosen team by its label.
 var TRAINER_VARIANT_KEY = "trainerVariant";
-// The rival's team depends on your starter: he picks the one that counters it.
+// The rival's team depends on your starter's type (whichever region it is from): he picks
+// the Kanto starter that counters it. Kept per
+// mode, like the box: Normal and Hardcore are separate runs. Importing a .sav sets it from
+// the save and locks it until Professor Oak starts a new run.
 var STARTER_KEY = "starterType";
+var STARTER_FROM_SAVE_KEY = "starterFromSave";
 var STARTER_TYPES = ["Fire", "Water", "Grass"];
 var RIVAL_TEAM_FOR_STARTER = {Fire: "Rival Has Squirtle", Water: "Rival Has Bulbasaur", Grass: "Rival Has Charmander"};
 
@@ -30,8 +34,8 @@ var lockedFieldInputs = $();
  * How a boss's battle effect ("Doubles + Permanent rain") maps onto the Field panel. The
  * first matching weather and terrain win; Pokémon 2 is the boss's side, so side-specific
  * effects use the right-hand ("R") toggles. These hold for the whole fight, so the controls
- * are locked until you move to another trainer. Effects the panel cannot show (Trick Room,
- * pre-burned Pokémon, special rules) stay as text only.
+ * are locked until you move to another trainer. Effects the panel cannot show (pre-burned
+ * Pokémon, special rules) stay as text only.
  */
 var EFFECT_WEATHER = [
 	{pattern: /primordial sea/i, id: "heavy-rain"},
@@ -54,7 +58,8 @@ var EFFECT_TOGGLES = [
 	{pattern: /omni-boosted/i, id: "StatBoostR"},
 	{pattern: /magic room/i, id: "magicroom"},
 	{pattern: /wonder room/i, id: "wonderroom"},
-	{pattern: /gravity/i, id: "gravity"}
+	{pattern: /gravity/i, id: "gravity"},
+	{pattern: /trick room/i, id: "trickroom"}
 ];
 
 function firstMatch(effects, text) {
@@ -76,6 +81,7 @@ function releaseBattleEffect() {
 	lockedFieldInputs = $();
 	lockedField.weather = false;
 	lockedField.terrain = false;
+	battleSpeedMultiplier.p1 = 1;
 	$("#battle-effect-lock").hide();
 	if (locked.is("#doubles-format")) $("#singles-format").prop("checked", true).change();
 	if (hadWeather) $("#clear").prop("checked", true).change();
@@ -108,15 +114,51 @@ function applyBattleEffect(text, trainerName) {
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (effect.pattern.test(text)) lockFieldInputs($("#" + effect.id).prop("checked", true).change());
 	});
-	if (lockedFieldInputs.length) {
-		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text).show();
+	// "Permanent swamp (player's Pokémon speed stat is quartered)" (Brendan on Route 23).
+	if (/swamp/i.test(text)) battleSpeedMultiplier.p1 = 0.25;
+	if (lockedFieldInputs.length || battleSpeedMultiplier.p1 !== 1) {
+		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text +
+			(battleSpeedMultiplier.p1 !== 1 ? ". Pok\u00e9mon 1's Speed is shown quartered." : "")).show();
 	}
 }
 
+function getStarterKey() {
+	return STARTER_KEY + ":" + getPageMode();
+}
+
 function getStarterType() {
-	var starter = readSetting(STARTER_KEY);
+	// Before starters were kept per mode there was one setting for both.
+	var starter = readSetting(getStarterKey()) || readSetting(STARTER_KEY);
 	return STARTER_TYPES.indexOf(starter) === -1 ? STARTER_TYPES[0] : starter;
 }
+
+function isStarterFromSave() {
+	return readSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode()) === "true";
+}
+
+function updateStarterSelect() {
+	var locked = isStarterFromSave();
+	$("#trainer-starter")
+		.val(getStarterType())
+		.prop("disabled", locked)
+		.attr("title", locked ?
+			"From your save: you chose a " + getStarterType() + "-type starter. Start a new run with Professor Oak to change it." :
+			"Your starter's type, from any region. The rival picks a starter strong against it.");
+	$("#trainer-starter-lock").toggle(locked);
+}
+
+function setStarter(type, fromSave) {
+	writeSetting(getStarterKey(), type);
+	writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), !!fromSave);
+	// A save imported while the page loads (after switching modes) arrives before the panel exists.
+	if (!$("#trainer-starter").length) return;
+	updateStarterSelect();
+	showTrainer(currentTrainerIndex);
+}
+
+$(document).on("save:imported", function (event, save) {
+	if (save.starter) setStarter(save.starter, true);
+});
 
 function isRivalStarterVariant(variant) {
 	return /^Rival Has /.test(variant.label);
@@ -144,14 +186,41 @@ var activeTrainerSlot = 0;
 
 function markActiveTrainerPokemon(slot) {
 	activeTrainerSlot = slot;
+	showingMegaBase = false;
+	updateMegaFormButton();
 	$("#trainer-team .pokemon-sprite").each(function (i) {
 		$(this).toggleClass("trainer-pokemon-active", i === slot);
 	});
 	$(document).trigger("trainer:active");
 }
 
+/*
+ * Weather and terrain a trainer's Pokémon sets up (Thwackey's Grassy Surge) last several turns,
+ * so they stay up when it switches out: loading a teammate keeps them instead of turning them
+ * off. Turn them off yourself when they run out. Primal weather ends with its Pokémon.
+ */
+var CARRIED_WEATHER = ["Sun", "Rain", "Sand", "Hail", "Snow"];
+var fightField = {weather: "", terrain: ""};
+
+function keepFightField() {
+	var weather = lastAutoWeather[1];
+	var terrain = lastAutoTerrain[1];
+	if (CARRIED_WEATHER.indexOf(weather) !== -1) fightField.weather = weather;
+	if (terrain) fightField.terrain = terrain;
+	// Only when loading turned it off: weather your Pokémon set since then stays.
+	if (!lockedField.weather && !weather && fightField.weather && !$("input:radio[name='weather']:checked").val()) {
+		lastAutoWeather[1] = fightField.weather;
+		$("input:radio[name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
+	}
+	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input:checkbox[name='terrain']:checked").length) {
+		lastAutoTerrain[1] = fightField.terrain;
+		$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
+	}
+}
+
 function loadTrainerPokemon(setId, slot) {
 	loadSetIntoPokemon("#p2", setId);
+	keepFightField();
 	if (slot === undefined) {
 		slot = $("#trainer-team .pokemon-sprite").map(function () {
 			return $(this).attr("data-set-id");
@@ -163,6 +232,40 @@ function loadTrainerPokemon(setId, slot) {
 	if (preBurned && getPokemonName(setId).toLowerCase().indexOf(preBurned[1].toLowerCase()) === 0) {
 		$("#p2 .status").val("Burned").change();
 	}
+}
+
+/*
+ * A trainer's Mega starts the fight in its base form and Mega Evolves when it first attacks.
+ * "Base form" switches Pokémon 2 to that form, with the ability the boss document gives it
+ * before Mega Evolving (Kangaskhan's Inner Focus); "Mega form" switches back.
+ */
+var showingMegaBase = false;
+
+function getActiveTrainerSet() {
+	return getTrainerVariant(TRAINER_ORDER[currentTrainerIndex]).sets[activeTrainerSlot];
+}
+
+function updateMegaFormButton() {
+	var setId = getActiveTrainerSet() || "";
+	$("#trainer-mega-form")
+		.toggle(/-Mega/.test(getPokemonName(setId)))
+		.text(showingMegaBase ? "Mega form" : "Base form")
+		.attr("title", showingMegaBase ? "Back to the Mega Evolved form" : "Before it Mega Evolves: base form and ability");
+}
+
+function toggleMegaForm() {
+	var setId = getActiveTrainerSet();
+	if (showingMegaBase) {
+		loadTrainerPokemon(setId, activeTrainerSlot);
+		return;
+	}
+	var baseName = getPokemonName(setId).split("-Mega")[0];
+	var variant = getTrainerVariant(TRAINER_ORDER[currentTrainerIndex]);
+	var ability = (variant.preMega && variant.preMega[activeTrainerSlot]) || pokedex[baseName].abilities[0];
+	$("#p2 .forme").val(baseName).change();
+	$("#p2 .ability").val(ability).change();
+	showingMegaBase = true;
+	updateMegaFormButton();
 }
 
 function showTrainer(index) {
@@ -188,6 +291,7 @@ function showTrainer(index) {
 	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
 	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
 	currentBattleEffect = variant.battleEffect || "";
+	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
 	// After loading, since a Pokémon's ability (e.g. Drizzle) can set the weather itself.
 	applyBattleEffect(variant.battleEffect, trainer.name);
@@ -202,17 +306,31 @@ function confirmNewRun() {
 	showChoiceDialog(
 		"Start a new run?",
 		"Did your run end? Starting again deletes your " + mode + " Team, Box, Box 2 and Trash" +
-			(count ? " (" + count + " Pok\u00e9mon)" : "") + ", clears your KOs and defeated trainers, " +
+			(count ? " (" + count + " Pok\u00e9mon)" : "") + ", clears your KOs, defeated trainers and Nuzlocke encounters, " +
 			"and goes back to the first trainer. Your Fight Notes are kept. This cannot be undone.",
 		[{
 			label: "Yes, my run is over: wipe and start again",
 			action: function () {
+				$(document).trigger("run:end"); // run_record.js keeps how far it got
 				writeBoxLayout({});
 				clearCustomSets();
 				clearTrainerProgress();
+				// A new run picks a new starter.
+				writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
+				updateStarterSelect();
+				$(document).trigger("run:new");
 				showTrainer(0);
 			}
 		}]);
+}
+
+// Like "Team/Box above Pokémon 1": the trainer panel (and its progress bars) can sit above Pokémon 2.
+var TRAINER_ON_TOP_KEY = "trainerOnTop";
+
+function placeTrainerPanel(onTop) {
+	var panels = $("#trainer-nav").add("#run-progress").add("#run-record");
+	if (onTop) panels.insertBefore("#p2");
+	else panels.insertAfter("#p2");
 }
 
 function buildTrainerPanel() {
@@ -221,14 +339,17 @@ function buildTrainerPanel() {
 		'<legend align="center">Opposing Trainer</legend>' +
 		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
-		'<label class="trainer-starter">Your starter: <select id="trainer-starter"></select></label> ' +
+		'<label class="trainer-starter">Your starter\u2019s type: <select id="trainer-starter"></select>' +
+		'<span id="trainer-starter-lock" class="trainer-starter-lock"> \uD83D\uDD12 from your save</span></label> ' +
 		'<select id="trainer-variant" aria-label="Which team this trainer uses"></select>' +
 		'<div id="trainer-team" class="trainer-team"></div>' +
 		'<div class="trainer-buttons">' +
 		'<button type="button" id="previous-trainer">Previous Trainer</button>' +
 		'<button type="button" id="next-trainer">Next Trainer</button>' +
+		'<button type="button" id="trainer-mega-form"></button>' +
 		'<button type="button" id="reset-trainer" title="New run: wipe your box and go back to the first trainer" aria-label="Start a new run"></button>' +
 		'</div>' +
+		'<label class="trainer-on-top"><input type="checkbox" id="trainer-on-top" /> Trainer above Pok\u00e9mon 2</label>' +
 		'</fieldset>');
 	$("<img />")
 		.attr({src: OAK_SPRITE_URL, alt: ""})
@@ -247,15 +368,26 @@ function bindTrainerEvents() {
 		showTrainer(currentTrainerIndex + 1);
 	});
 	$("#reset-trainer").click(confirmNewRun);
+	$("#trainer-mega-form").click(toggleMegaForm);
+	// Turning the kept weather or terrain off (it ran out) stops it coming back.
+	$("input:radio[name='weather']").change(function () {
+		if (this.checked && this.value !== fightField.weather) fightField.weather = "";
+	});
+	$("input:checkbox[name='terrain']").change(function () {
+		if (!$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
+	});
+	$("#trainer-on-top").prop("checked", readSetting(TRAINER_ON_TOP_KEY) === "true").change(function () {
+		writeSetting(TRAINER_ON_TOP_KEY, this.checked);
+		placeTrainerPanel(this.checked);
+	});
 	$("#trainer-starter")
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);
 		}))
-		.val(getStarterType())
 		.change(function () {
-			writeSetting(STARTER_KEY, $(this).val());
-			showTrainer(currentTrainerIndex);
+			setStarter($(this).val(), false);
 		});
+	updateStarterSelect();
 	$("#trainer-variant").change(function () {
 		writeSetting(TRAINER_VARIANT_KEY, $(this).val());
 		showTrainer(currentTrainerIndex);
@@ -267,6 +399,7 @@ function bindTrainerEvents() {
 
 $(document).ready(function () {
 	$("#p2").after(buildTrainerPanel());
+	placeTrainerPanel(readSetting(TRAINER_ON_TOP_KEY) === "true");
 	$(".field-info legend").after('<div id="battle-effect-lock" class="battle-effect-lock"></div>');
 	bindTrainerEvents();
 	showTrainer(parseInt(readSetting(getTrainerIndexKey())) || 0);

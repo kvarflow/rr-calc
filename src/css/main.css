@@ -647,7 +647,7 @@ table.field {
 
 /* Matchup color coding (color_coding.js). Each half of the background is set separately
    so the "you hit them" and "they hit you" results combine without extra classes. */
-.box-pokemon, .header-sprite, .cc-swatch {
+.box-pokemon, .header-sprite, .cc-swatch, .ss-quick-mon {
     --cc-left: transparent;
     --cc-right: transparent;
     background: linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
@@ -668,14 +668,27 @@ table.field {
 .cc-take-might { --cc-right: #ff7f16; }
 .cc-wall { --cc-left: #0f0bf3; --cc-right: #0f0bf3; }
 .cc-hard-counter { --cc-left: #1295ec; --cc-right: #1295ec; }
-.header-sprite {
-    display: inline-block;
+/* A fixed box with the sprite centred in it, so the legend is sized right before the image
+   loads, and a matching space on the left keeps the panel's title centred. (".poke-info"
+   beats the panel's ".poke-info span" width.) */
+.poke-info .header-sprite {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 33px;
+    margin-left: 4px;
     vertical-align: middle;
     box-sizing: border-box;
 }
 .header-sprite img {
-    max-height: 39px;
-    vertical-align: middle;
+    max-width: 100%;
+    max-height: 100%;
+}
+legend:has(> .header-sprite)::before {
+    content: "";
+    display: inline-block;
+    width: 48px;
 }
 #cc-controls {
     margin-top: 8px;
@@ -709,7 +722,7 @@ table.field {
 }
 
 /* Opposing trainer panel under Pokémon 2 (trainer_controls.js) */
-#trainer-nav, #run-progress {
+#trainer-nav, #run-progress, #run-record {
     float: none;
     clear: both;
     width: 32em; /* same width as .poke-info */
@@ -740,15 +753,17 @@ table.field {
 }
 #reset-trainer {
     margin-left: auto; /* sits at the right, like syl-rnb-calc's reset button */
-    width: 34px;
-    height: 34px;
-    padding: 0;
+    width: 36px;
+    height: 46px;
+    padding: 2px;
     overflow: hidden;
 }
+/* The whole sprite at its own proportions (it is 42 x 64), not squeezed into a square. */
 #reset-trainer img {
-    width: 40px;
-    height: 40px;
-    margin: -3px;
+    width: auto;
+    height: 100%;
+    margin: 0;
+    object-fit: contain;
 }
 #trainer-effect {
     font-size: 0.85em;
@@ -813,4 +828,1912 @@ table.field {
 }
 .run-progress-row .hpbar {
     margin-top: 2px;
+}
+
+/* Crit chance beside each move's Crit button, and Crit buttons on the result rows. */
+.crit-rate {
+    font-size: 0.75em;
+    margin-left: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.small-crit-btn {
+    width: auto;
+    padding: 1px 6px;
+    margin-left: 6px;
+    font-size: 0.8em;
+}
+
+/* Export All dialog and the "Copied" note for the damage rolls. */
+.export-dialog-text {
+    width: 100%;
+    min-height: 18em;
+    box-sizing: border-box;
+    font-family: monospace;
+}
+#damageValues {
+    cursor: pointer;
+}
+.copied-note {
+    margin-left: 6px;
+    font-weight: bold;
+    display: none;
+}
+
+/* Pokémon panels: section toggles under the title, and the base stat override buttons. */
+.panel-toggles {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+.panel-toggle {
+    font-size: 0.8em;
+    padding: 1px 6px;
+}
+.override-buttons button {
+    font-size: 0.8em;
+    margin: 2px 2px 4px 0;
+}
+#save-override, #reset-override {
+    display: none;
+}
+
+/* Range Compare: added moves, the HP-left chart and the results. */
+#range-compare {
+    width: 27.5em;
+    text-align: left;
+    /* Below Import / Export, not beside it: two floats side by side would make the middle
+       column twice as wide and push Pokémon 2 onto the next row. */
+    clear: left;
+}
+.rc-row {
+    margin: 4px 0;
+}
+.rc-number {
+    width: 4em;
+}
+.rc-add {
+    padding: 0 6px;
+    margin-left: 4px;
+    font-size: 0.8em;
+}
+.rc-empty {
+    font-size: 0.85em;
+    font-style: italic;
+}
+.rc-move {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    padding: 2px 0;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.3);
+}
+.rc-move-name {
+    flex: 1;
+}
+.rc-move-controls button {
+    padding: 0 5px;
+}
+.rc-chart {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    height: 110px;
+    margin: 8px 0 22px;
+    position: relative;
+}
+.rc-bar {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    position: relative;
+}
+.rc-bar-fill {
+    background: green;
+    min-height: 1px;
+}
+.rc-bar-fainted .rc-bar-fill {
+    background: #ee4928;
+}
+.rc-bar-label {
+    position: absolute;
+    bottom: -16px;
+    left: 0;
+    right: 0;
+    font-size: 0.65em;
+    text-align: center;
+}
+.rc-chart-axis {
+    position: absolute;
+    bottom: -30px;
+    width: 100%;
+    text-align: center;
+    font-size: 0.7em;
+}
+.rc-sure { color: #2e9e44; }
+.rc-likely { color: #3a7bd5; }
+.rc-unlikely { color: #c99a00; }
+.rc-never { color: #d33; }
+
+.trainer-on-top {
+    display: block;
+    margin-top: 6px;
+    font-size: 0.85em;
+}
+
+/* Footer settings, and the "What's new" and Credits popups (site_settings.js). */
+.site-settings {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 14px;
+    font-size: 0.9em;
+}
+.site-settings button {
+    padding: 2px 8px;
+    cursor: pointer;
+}
+.info-dialog {
+    max-width: 560px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+.info-dialog h4 {
+    margin: 10px 0 4px;
+}
+.info-dialog ul {
+    margin: 0 0 8px;
+    padding-left: 20px;
+}
+.info-dialog li {
+    margin-bottom: 3px;
+}
+body.hide-box-search #box-search,
+body.hide-range-compare #range-compare,
+body.hide-range-compare .rc-add {
+    display: none !important;
+}
+.ability-help {
+    width: 22px;
+    height: 22px;
+    margin-left: 4px;
+    padding: 0;
+    border: 1px solid #999;
+    border-radius: 50%;
+    background: none;
+    color: inherit;
+    font-size: 12px;
+    font-weight: bold;
+    line-height: 1;
+    vertical-align: middle;
+    cursor: pointer;
+}
+.ability-help[aria-expanded="true"] {
+    border-color: #3a6fd8;
+    color: #3a6fd8;
+}
+.ability-info {
+    margin: 2px 0 6px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: rgba(58, 111, 216, 0.1);
+    font-size: 0.85em;
+    line-height: 1.35;
+}
+.ability-tip {
+    display: block;
+    margin-top: 3px;
+    font-style: italic;
+}
+.trainer-starter-lock {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+
+/* Stat stages: − / + (pokemon_panels.js); the dropdown stays as what the calculator reads. */
+select.boost-select {
+    display: none;
+}
+/* ".poke-info" beats the panel's ".poke-info span" width, which would stack the buttons. */
+.poke-info .boost-stepper {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    width: auto;
+    white-space: nowrap;
+}
+.boost-stepper button {
+    width: 24px;
+    height: 22px;
+    padding: 0;
+    line-height: 1;
+    font-size: 15px;
+    cursor: pointer;
+}
+.boost-stepper button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.poke-info .boost-value {
+    display: inline-block;
+    width: auto;
+    min-width: 2em;
+    text-align: center;
+    font-weight: bold;
+}
+.boost-up { color: #2e9e44; }
+.boost-down { color: #d33; }
+
+/* Pokémon from your .sav (save_lock.js): what the save sets is locked. */
+.save-lock-note {
+    display: none;
+    margin: 4px 0;
+    font-size: 0.85em;
+}
+.poke-info .save-lock-text {
+    display: inline;
+    width: auto;
+}
+.save-lock-toggle {
+    margin-left: 4px;
+    font-size: 0.95em;
+    cursor: pointer;
+}
+.save-locked .override-buttons {
+    display: none !important;
+}
+.save-locked select:disabled,
+.save-locked input:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+/* Small-screen layout (small_screen.js): one tab at a time, for a handheld's second screen.
+   Colors come from variables the dark theme overrides (dark-theme.css); these are the light ones. */
+.ss-tabs, .ss-quick, .ss-viewport {
+    display: none;
+}
+html.small-screen {
+    --ss-bg: var(--ss-dark-bg, #eef1f6);
+    --ss-card: var(--ss-dark-card, #ffffff);
+    --ss-text: var(--ss-dark-text, #1d2330);
+    --ss-muted: var(--ss-dark-muted, #667085);
+    --ss-line: var(--ss-dark-line, #dde2ea);
+    --ss-btn: var(--ss-dark-btn, #f3f5f9);
+    --ss-accent: var(--ss-dark-accent, var(--ss-a));
+    --ss-accent-soft: var(--ss-dark-accent-soft, var(--ss-a-soft));
+    --ss-accent-text: var(--ss-dark-accent-text, var(--ss-a-text));
+    --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.08), 0 1px 3px rgba(16, 24, 40, 0.06);
+    --ss-cc-veil: var(--ss-dark-cc-veil, rgba(255, 255, 255, 0.45));
+    --ss-slower: var(--ss-dark-slower, #1c1414);
+    --ss-dupe: var(--ss-dark-dupe, #1d2330);
+    --ss-dupe-text: var(--ss-dark-dupe-text, #b8bec9);
+    --ss-good: var(--ss-dark-good, #1e7b39);
+    --ss-good-soft: var(--ss-dark-good-soft, #e3f6e8);
+    --ss-danger: var(--ss-dark-danger, #c0392b);
+}
+/* Accent colors (chosen under More, red unless changed): the light theme's, then the dark
+   theme's, which dark-theme.css picks up. */
+html.small-screen,
+html.small-screen[data-accent="red"] {
+    --ss-a: #d63031;
+    --ss-a-soft: #fde8e8;
+    --ss-a-text: #c0262d;
+    --ss-a-dark: #f06363;
+    --ss-a-dark-soft: #4a2426;
+    --ss-a-dark-text: #ffb3b3;
+}
+html.small-screen[data-accent="blue"] {
+    --ss-a: #3a6fd8;
+    --ss-a-soft: #e3ecfd;
+    --ss-a-text: #2f5fc4;
+    --ss-a-dark: #5b8def;
+    --ss-a-dark-soft: #24324f;
+    --ss-a-dark-text: #a9c4ff;
+}
+html.small-screen[data-accent="green"] {
+    --ss-a: #1f9d55;
+    --ss-a-soft: #e2f5ea;
+    --ss-a-text: #15803d;
+    --ss-a-dark: #3fbf72;
+    --ss-a-dark-soft: #1f3b2a;
+    --ss-a-dark-text: #9be3b7;
+}
+html.small-screen[data-accent="purple"] {
+    --ss-a: #7c4dff;
+    --ss-a-soft: #eee8ff;
+    --ss-a-text: #6a3de8;
+    --ss-a-dark: #9d7bff;
+    --ss-a-dark-soft: #33294f;
+    --ss-a-dark-text: #cdbdff;
+}
+html.small-screen[data-accent="orange"] {
+    --ss-a: #e8740c;
+    --ss-a-soft: #fdeedf;
+    --ss-a-text: #b85a05;
+    --ss-a-dark: #f59a3c;
+    --ss-a-dark-soft: #4a3220;
+    --ss-a-dark-text: #ffcc99;
+}
+html.small-screen[data-accent="pink"] {
+    --ss-a: #d6337a;
+    --ss-a-soft: #fce6f0;
+    --ss-a-text: #b8226a;
+    --ss-a-dark: #ef6aa3;
+    --ss-a-dark-soft: #4a2436;
+    --ss-a-dark-text: #ffb3d3;
+}
+html.small-screen,
+html.small-screen body {
+    min-width: 0;
+}
+html.small-screen body {
+    zoom: var(--ss-zoom, 1); /* Text size, under More */
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    color: var(--ss-text);
+    background: var(--ss-bg);
+}
+/* The desktop layout's minimum widths (html/body 100em, results 50em, import boxes 27em). */
+html.small-screen .move-result-group,
+html.small-screen .import-team-text,
+html.small-screen .import-name-text {
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
+}
+html.small-screen body > nav,
+html.small-screen .wrapper > hr,
+html.small-screen .credits > ul,
+html.small-screen [data-ss-part] {
+    display: none !important;
+}
+html.small-screen[data-ss-tab="results"] [data-ss-part~="results"],
+html.small-screen[data-ss-tab="you"] [data-ss-part~="you"],
+html.small-screen[data-ss-tab="foe"] [data-ss-part~="foe"],
+html.small-screen[data-ss-tab="field"] [data-ss-part~="field"],
+html.small-screen[data-ss-tab="box"] [data-ss-part~="box"],
+html.small-screen[data-ss-tab="more"] [data-ss-part~="more"],
+html.small-screen[data-ss-tab="wild"] [data-ss-part~="wild"] {
+    display: block !important;
+}
+html.small-screen .wrapper {
+    max-width: none;
+    padding: 0 8px 8px;
+}
+html.small-screen .panel,
+html.small-screen .panel > div {
+    float: none;
+    display: block;
+    width: auto !important;
+    max-width: none;
+    margin: 0;
+}
+/* Every section is a card. */
+html.small-screen fieldset {
+    float: none;
+    display: block;
+    width: auto !important;
+    max-width: none;
+    margin: 0 0 8px;
+    padding: 8px 10px 10px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+html.small-screen fieldset > legend {
+    padding: 4px 0 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .credits {
+    padding: 8px;
+}
+/* Hidden inputs and screen-reader labels sit where they fall in the line; on a narrow screen
+   that can be past the right edge, which would widen the page. */
+html.small-screen .visually-hidden {
+    left: 0;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* Tab bar: pills, with a full-screen button at the end. */
+html.small-screen .ss-tabs {
+    display: flex;
+    gap: 2px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: 0 -8px 8px;
+    padding: 6px 6px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+.ss-tab {
+    flex: 1;
+    min-height: 34px;
+    padding: 0 2px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--ss-text, #222);
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.ss-tab-active {
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-accent-text, #2f5fc4);
+}
+.ss-fullscreen {
+    flex: 0 0 36px;
+    font-size: 17px;
+}
+.ss-fullscreen[aria-pressed="true"] {
+    color: var(--ss-accent, #3a6fd8);
+}
+
+/* Results: two cards, your Pokémon on the left and the trainer's on the right. Each is a
+   two-column grid (move, damage) so every move button is the same width. The Crit and Range
+   Compare buttons stay on the You and Foe tabs. */
+html.small-screen[data-ss-tab="results"] .move-result-group {
+    display: flex !important;
+    gap: 8px;
+    margin: 0;
+}
+html.small-screen .move-result-subgroup {
+    float: none;
+    flex: 1 1 50%;
+    min-width: 0;
+    width: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 6px;
+    row-gap: 4px;
+    align-items: center;
+    align-content: start;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+html.small-screen .move-result-subgroup > div {
+    display: contents;
+}
+html.small-screen .move-result-subgroup > .result-move-header {
+    display: block;
+    grid-column: 1 / -1;
+    margin: 0 0 2px;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ss-side-label {
+    margin-right: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .move-result-subgroup .btn {
+    width: auto;
+    min-width: 0;
+    height: 28px;
+    line-height: 26px;
+    margin: 0;
+    padding: 0 6px;
+    box-sizing: border-box;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn {
+    border-color: var(--ss-accent);
+    background: var(--ss-accent);
+    color: #fff;
+    font-weight: 600;
+}
+/* The foe's likeliest move by the trainer's AI (trainer_ai.js markFoeLikelyMoves), or else the one
+   that hits you hardest (small_screen.js markFoeThreat): a stripe, and KO when it can knock you out.
+   Each move's chance of being picked sits in the corner. */
+html.small-screen .move-result-subgroup .btn.ss-threat {
+    box-shadow: inset 3px 0 0 var(--ss-danger, #c0392b);
+}
+html.small-screen .move-result-subgroup .btn.ss-threat-ko::before {
+    content: "KO";
+    position: absolute;
+    top: 0;
+    left: 6px;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ss-danger, #c0392b);
+}
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""])::after {
+    content: attr(data-ai);
+    position: absolute;
+    top: 0;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 11px;
+    color: var(--ss-muted, #888);
+}
+html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
+    color: var(--ss-danger, #c0392b);
+    font-weight: 800;
+}
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
+    color: #fff;
+}
+/* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
+html.small-screen .move-result-subgroup label[for^="resultMove"] {
+    position: relative;
+    touch-action: manipulation;
+}
+html.small-screen .move-result-subgroup .btn.ss-crit {
+    border: 2px solid var(--ss-accent);
+}
+html.small-screen .move-result-subgroup .btn.ss-crit::after {
+    content: "CRIT";
+    position: absolute;
+    top: 0;
+    right: 4px;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ss-accent-text);
+}
+html.small-screen .move-result-subgroup .visually-hidden:checked + .btn.ss-crit::after {
+    color: #fff;
+}
+html.small-screen .move-result-subgroup span[id^="resultDamage"] {
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+html.small-screen .move-result-group .small-crit-btn,
+html.small-screen .move-result-group .rc-add {
+    display: none !important;
+}
+/* The detailed result, as a card. */
+html.small-screen .main-result-group {
+    margin: 8px 0 0;
+    padding: 8px 10px;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+}
+html.small-screen .main-result-group .big-text {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 600;
+}
+html.small-screen .main-result-group .small-text {
+    font-size: 11px;
+    color: var(--ss-muted);
+    word-break: break-word;
+}
+/* Teams: yours on the left, the trainer's on the right; tap one to load it. */
+html.small-screen[data-ss-tab="results"] .ss-quick {
+    display: flex !important;
+    gap: 8px;
+    margin-top: 8px;
+}
+.ss-quick-side {
+    flex: 1 1 50%;
+    min-width: 0;
+    padding: 8px;
+    box-sizing: border-box;
+    border-radius: 12px;
+    background: var(--ss-card, #fff);
+    box-shadow: var(--ss-shadow);
+}
+.ss-quick-label {
+    display: block;
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ss-quick-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4px;
+}
+.ss-quick-mon {
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 10px;
+    background-color: var(--ss-btn, #f3f5f9);
+    cursor: pointer;
+}
+.ss-quick-empty {
+    margin: 0;
+    font-size: 12px;
+    color: var(--ss-muted, #667085);
+}
+.ss-quick-mon img {
+    max-width: 100%;
+    max-height: 100%;
+}
+/* Color coding on the team cards: the same colors, softened by a veil in the card's color so
+   they sit with the design, and the speed border kept. */
+.ss-quick-mon {
+    background-image: linear-gradient(var(--ss-cc-veil, rgba(255, 255, 255, 0.45)), var(--ss-cc-veil, rgba(255, 255, 255, 0.45))),
+        linear-gradient(to right, var(--cc-left) 50%, var(--cc-right) 50%);
+}
+.ss-quick-mon.cc-speed-faster,
+.ss-quick-mon.cc-speed-tie,
+.ss-quick-mon.cc-speed-slower {
+    border-width: 3px;
+}
+.ss-quick-mon.cc-speed-faster { border-color: #7ee1ff; }
+.ss-quick-mon.cc-speed-tie { border-color: #894197; }
+.ss-quick-mon.cc-speed-slower { border-color: var(--ss-slower, #1c1414); }
+/* The Pokémon loaded now: a ring outside the color coding's border. */
+.ss-quick-active {
+    box-shadow: 0 0 0 2px var(--ss-card, #fff), 0 0 0 4px var(--ss-accent, #3a6fd8);
+}
+/* Each team's heading row: the trainer's has Previous / Next trainer and KO'd. */
+.ss-quick-head {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 26px;
+    margin: 0 0 4px;
+}
+.ss-quick-head .ss-quick-label {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+}
+.ss-quick-step,
+.ss-quick-ko-btn {
+    flex: none;
+    height: 26px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 999px;
+    background: var(--ss-btn, #f3f5f9);
+    color: var(--ss-text, #1d2330);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+.ss-quick-step {
+    width: 26px;
+    padding: 0;
+}
+.ss-quick-step:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+.ss-quick-ko-btn {
+    padding: 0 10px;
+    color: var(--ss-danger, #c0392b);
+}
+/* His whole team is KO'd: Next trainer is the thing to tap. */
+.ss-quick-step.ss-quick-next {
+    border-color: var(--ss-accent, #3a6fd8);
+    background: var(--ss-accent, #3a6fd8);
+    color: #fff;
+}
+.ss-quick-badge {
+    flex: none;
+    padding: 2px 6px;
+    border-radius: 999px;
+    background: var(--ss-good-soft, #e3f6e8);
+    color: var(--ss-good, #1e7b39);
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+/* A KO'd Pokémon: greyed, with a cross. */
+.ss-quick-mon.ss-quick-ko {
+    position: relative;
+}
+.ss-quick-mon.ss-quick-ko img {
+    filter: grayscale(1);
+    opacity: 0.35;
+}
+.ss-quick-mon.ss-quick-ko::after {
+    content: "\2715";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ss-danger, #c0392b);
+    font-size: 20px;
+    font-weight: 700;
+}
+/* The run record (run_record.js): KOs each of yours has made, and the fainted greyed out. */
+.ss-quick-mon {
+    position: relative;
+}
+.ss-quick-frags {
+    position: absolute;
+    right: 2px;
+    bottom: 1px;
+    padding: 0 3px;
+    border-radius: 999px;
+    background: var(--ss-card, #fff);
+    color: var(--ss-text, #1d2330);
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 13px;
+}
+.ss-quick-mon.ss-quick-fainted img,
+.box-pokemon.run-fainted img {
+    filter: grayscale(1);
+    opacity: 0.35;
+}
+.ss-quick-mon.ss-quick-fainted::after {
+    content: "\2020";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ss-muted, #667085);
+    font-size: 22px;
+    font-weight: 700;
+}
+.ss-quick-faint-btn {
+    flex: none;
+    height: 26px;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 999px;
+    background: var(--ss-btn, #f3f5f9);
+    color: var(--ss-muted, #667085);
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+}
+/* This run (run_record.js): frags, the fallen, your personal best and past runs. */
+.run-record-now {
+    margin: 0 0 6px;
+    font-weight: 600;
+}
+.run-record-group {
+    padding: 6px 0;
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.run-record-group h4 {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+.run-record-group ul {
+    margin: 0;
+    padding-left: 18px;
+}
+.run-record-group p {
+    margin: 0;
+}
+.run-record-empty {
+    color: var(--ss-muted, #667085);
+}
+html.small-screen .run-record {
+    text-align: left;
+    font-size: 13px;
+}
+/* Your team's cards can be dragged into order (a tap still loads one). */
+.ss-quick-team .ss-quick-mon {
+    touch-action: none;
+}
+.ss-quick-mon.ss-dragging {
+    position: relative;
+    z-index: 10;
+    opacity: 0.9;
+    box-shadow: 0 6px 16px rgba(16, 24, 40, 0.25);
+    pointer-events: none;
+}
+.ss-quick-mon.ss-drop-target {
+    outline: 2px dashed var(--ss-accent, #3a6fd8);
+    outline-offset: 1px;
+}
+/* Bigger controls for touch. */
+html.small-screen select,
+html.small-screen input[type="text"],
+html.small-screen input[type="number"],
+html.small-screen input:not([type]) {
+    min-height: 28px;
+    font-size: 14px;
+}
+html.small-screen .poke-info table {
+    width: 100%;
+}
+html.small-screen #ss-page-settings .title-text {
+    display: none;
+}
+
+html.small-screen .ss-viewport {
+    display: inline;
+    font-size: 11px;
+    opacity: 0.8;
+}
+/* Small screen, You and Foe tabs, one screen each (small_screen.js compactPokemonPanel): the set's
+   name with the Base / IVs / EVs button on top; the stats (each stat's value and its stage buttons)
+   on the left, beside the save lock, type, gender and level, then nature, ability, item and status
+   two to a row; Current HP as one line with a slim bar; then the moves. */
+/* (#p1 / #p2 so this beats the tabs' "display: block !important".) */
+html.small-screen[data-ss-tab="you"] #p1,
+html.small-screen[data-ss-tab="foe"] #p2 {
+    display: grid !important;
+}
+html.small-screen .poke-info {
+    grid-template-columns: auto minmax(0, 1fr);
+    column-gap: 12px;
+    row-gap: 6px;
+    align-items: start;
+    padding-top: 8px;
+    padding-bottom: 8px;
+}
+html.small-screen .poke-info > * {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+html.small-screen .poke-info > legend,
+html.small-screen .poke-info > .panel-toggles,
+html.small-screen .poke-info > .ss-moved-out {
+    display: none !important;
+}
+.ss-panel-head {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    grid-row: 1;
+}
+.ss-panel-head .select2-container {
+    flex: 1;
+    min-width: 0;
+}
+.ss-panel-head .header-sprite img {
+    display: block;
+    max-height: 28px;
+}
+html.small-screen .ss-panel-head .ss-stats-toggle {
+    flex: none;
+    height: 28px;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 12px;
+}
+html.small-screen .ss-panel-head .ss-stats-toggle[aria-expanded="true"] {
+    border-color: var(--ss-accent);
+    background: var(--ss-accent-soft);
+    color: var(--ss-accent-text);
+}
+/* Left: the stats. Right: nature, ability, item and status. Type, forme, gender and level come
+   from the save, so they only show with the whole table (Base / IVs / EVs). */
+html.small-screen .poke-info > .info-group:has(> table) {
+    grid-column: 1;
+    grid-row: 2;
+}
+html.small-screen .poke-info:not(.ss-stats-full) > .info-group.top {
+    display: none !important;
+}
+html.small-screen .poke-info > .info-group.top,
+html.small-screen .poke-info > .info-selectors {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4px 8px;
+    align-content: start;
+    grid-column: 2;
+}
+/* Nature, ability, item and status: one to a line. */
+html.small-screen .poke-info > .info-selectors {
+    grid-template-columns: minmax(0, 1fr);
+}
+html.small-screen .poke-info > .info-group.top {
+    grid-row: 2;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    row-gap: 10px;
+    padding-top: 4px;
+}
+html.small-screen .poke-info > .info-selectors {
+    grid-row: 2;
+}
+/* (The calculator shows and hides forme and gender with inline styles.) */
+html.small-screen .poke-info > .info-group.top > div:not(.hide),
+html.small-screen .poke-info > .info-group.top > div[style*="block"] {
+    position: relative;
+    display: flex !important;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+    grid-column: span 3;
+}
+html.small-screen .poke-info > .info-group.top > div[style*="none"] {
+    display: none !important;
+}
+/* Forme, gender and level share a row: thirds when there is a forme, halves when not. */
+html.small-screen .poke-info > .info-group.top:has(> div[style*="block"] > .forme) > div {
+    grid-column: span 2;
+}
+html.small-screen .poke-info > .info-group.top > div:has(> .type1) {
+    grid-column: 1 / -1 !important;
+}
+html.small-screen .poke-info > .info-group.top > div > label {
+    position: absolute;
+    z-index: 1;
+    top: -7px;
+    left: 7px;
+    padding: 0 3px;
+    background: var(--ss-card);
+    font-size: 9px;
+    line-height: 12px;
+}
+html.small-screen .poke-info > .info-group.top select {
+    flex: 1;
+    min-width: 0;
+}
+html.small-screen .poke-info > .info-group.top label,
+html.small-screen .info-selectors label {
+    width: auto;
+    margin: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .poke-info > .info-group.top .level {
+    width: 100%;
+}
+/* The whole table (Base / IVs / EVs) needs the whole width. */
+html.small-screen .poke-info.ss-stats-full > .info-group:has(> table),
+html.small-screen .poke-info.ss-stats-full > .info-group.top,
+html.small-screen .poke-info.ss-stats-full > .info-selectors {
+    grid-column: 1 / -1;
+    grid-row: auto;
+}
+html.small-screen .poke-info:not(.ss-stats-full) .info-group table thead,
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .base),
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .ivs),
+html.small-screen .poke-info:not(.ss-stats-full) .info-group td:has(> .evs) {
+    /* The generation switcher shows the IV and EV cells with an inline style. */
+    display: none !important;
+}
+html.small-screen .poke-info .info-group table {
+    width: auto;
+    border-spacing: 0;
+}
+html.small-screen .poke-info .info-group table th {
+    padding: 1px 8px 1px 0;
+    text-align: left;
+    font-size: 12px;
+    white-space: nowrap;
+}
+html.small-screen .poke-info .info-group table td {
+    padding: 1px 3px;
+    font-variant-numeric: tabular-nums;
+}
+/* Nature, ability, item and status: each label sits in its box's border. */
+html.small-screen .poke-info > .info-selectors {
+    row-gap: 10px;
+    padding-top: 4px;
+}
+html.small-screen .info-selectors > div {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 0;
+}
+html.small-screen .info-selectors > div > label {
+    position: absolute;
+    z-index: 1;
+    top: -7px;
+    left: 7px;
+    padding: 0 3px;
+    background: var(--ss-card);
+    font-size: 9px;
+    line-height: 12px;
+}
+html.small-screen .info-selectors select:not([hidden]):not(.hide) {
+    width: 100%;
+    max-width: none;
+}
+.ss-stats-toggle {
+    display: none;
+}
+html.small-screen .ss-stats-toggle {
+    display: inline-block;
+}
+html.small-screen .boost-stepper button {
+    width: 28px;
+    height: 26px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+}
+/* The save lock, beside the set's name: "🔒 Edit anyway", or "Lock" once unlocked. */
+html.small-screen .ss-panel-head .save-lock-note {
+    flex: none;
+    margin: 0;
+    padding: 0;
+    background: none;
+}
+html.small-screen .ss-panel-head .save-lock-text {
+    display: none;
+}
+html.small-screen .ss-panel-head .save-lock-toggle {
+    height: 28px;
+    margin: 0;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-accent-soft);
+    color: var(--ss-accent-text);
+    font-size: 12px;
+    white-space: nowrap;
+}
+html.small-screen .save-locked .ss-panel-head .save-lock-toggle::before {
+    content: "\1F512  ";
+}
+html.small-screen .ss-panel-head .save-lock-open .save-lock-toggle {
+    background: var(--ss-btn);
+    color: var(--ss-text);
+}
+/* Current HP: "HP 321 / 321 100 %", then a slim bar, then Salt Cure. */
+html.small-screen .poke-info > .ss-hp {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+html.small-screen .ss-hp > label {
+    width: auto;
+    margin: 0;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ss-muted);
+    letter-spacing: 0.04em;
+}
+html.small-screen .ss-hp .current-hp,
+html.small-screen .ss-hp .percent-hp {
+    width: 3.2em;
+    text-align: right;
+}
+.ss-hp-sep,
+html.small-screen .ss-hp .max-hp {
+    color: var(--ss-muted, #667085);
+    font-size: 13px;
+}
+html.small-screen .hpbar {
+    --hp-color: #34c759;
+    flex: 1;
+    min-width: 40px;
+    height: 8px;
+    margin: 0;
+    border: 0;
+    border-radius: 999px;
+    background: linear-gradient(to right, var(--hp-color) var(--hp-fill, 100%), var(--ss-line) 0) !important;
+}
+html.small-screen .hpbar.hp-yellow {
+    --hp-color: #f5b400;
+}
+html.small-screen .hpbar.hp-red {
+    --hp-color: #ff3b30;
+}
+html.small-screen .ss-hp .left {
+    float: none;
+    margin: 0;
+}
+html.small-screen .ss-hp .left .btn {
+    width: auto;
+    white-space: nowrap;
+    height: 26px;
+    margin: 0;
+    padding: 0 10px;
+    line-height: 24px;
+    border-radius: 999px;
+    font-size: 12px;
+}
+/* Every field 28px tall, so the panel fits one screen. */
+html.small-screen .poke-info input:not([type="checkbox"]):not(.select2-offscreen),
+html.small-screen .poke-info select {
+    height: 28px;
+    min-height: 0;
+    box-sizing: border-box;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+html.small-screen .poke-info .select2-container .select2-choice {
+    height: 28px;
+    line-height: 26px;
+}
+/* The moves: one compact line each. */
+html.small-screen .poke-info > div[class^="move"] {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+html.small-screen .poke-info > div[class^="move"] > * {
+    margin: 0;
+}
+html.small-screen .poke-info > div[class^="move"] > .select2-container,
+html.small-screen .poke-info > div[class^="move"] > .move-selector {
+    flex: 1 1 0;
+    min-width: 0;
+}
+html.small-screen .poke-info .move-hits,
+html.small-screen .poke-info .stat-drops,
+html.small-screen .poke-info .metronome {
+    width: 4.4em;
+}
+html.small-screen .poke-info .move-bp {
+    width: 2.6em;
+}
+html.small-screen .poke-info .move-type,
+html.small-screen .poke-info .move-cat {
+    width: 5.6em;
+}
+.offline-status {
+    font-size: 0.85em;
+    opacity: 0.8;
+}
+/* The ? beside the ability, on the same line as its dropdown. */
+html.small-screen .info-selectors > div:has(> .ability-help) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    column-gap: 4px;
+}
+html.small-screen .info-selectors > div:has(> .ability-help) > label {
+    grid-column: 1 / -1;
+}
+html.small-screen .ability-help {
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    border-color: var(--ss-line);
+    color: var(--ss-text);
+}
+html.small-screen .ability-info {
+    grid-column: 1 / -1;
+    background: var(--ss-accent-soft);
+}
+/* Whether the ability is active (Intimidate...): a box beside it, not a line of its own. */
+html.small-screen .info-selectors > div:has(> .ability-help) {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+}
+html.small-screen .info-selectors .abilityToggle {
+    grid-row: 1;
+    grid-column: 2;
+    margin: 0;
+}
+/* The tabs already place each panel, so the "above Pokémon" options do nothing here. */
+html.small-screen .trainer-on-top,
+html.small-screen .box-position-option {
+    display: none !important;
+}
+/* Professor Oak's button, as a card. */
+html.small-screen #reset-trainer {
+    width: 40px;
+    height: 48px;
+    padding: 2px;
+    border: 1px solid var(--ss-line);
+    border-radius: 10px;
+    background: var(--ss-btn);
+}
+/* Import / Export: its fixed widths would overflow a narrow phone. */
+html.small-screen #import-1_wrapper,
+html.small-screen .import-actions,
+html.small-screen #fight-notes {
+    width: auto !important;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+/* "Only show imported sets / Clear Imported Sets" take a line on every Pokémon panel; the Box tab
+   manages your Pokémon on a small screen. */
+html.small-screen #importedSetsOptions {
+    display: none !important;
+}
+
+/* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
+   You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
+@media (max-width: 500px) and (orientation: portrait) {
+    html.small-screen .ss-tabs {
+        position: fixed;
+        top: auto;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        margin: 0;
+        padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+        box-shadow: 0 -1px 3px rgba(16, 24, 40, 0.12);
+    }
+    html.small-screen body {
+        padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    }
+    html.small-screen .wrapper {
+        padding-top: 8px;
+    }
+    /* Eight tabs with Wild: they share the width and the full-screen button narrows. */
+    html.small-screen .ss-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0;
+        font-size: 11px;
+        letter-spacing: -0.2px;
+    }
+    html.small-screen .ss-fullscreen {
+        flex: 0 0 26px;
+        font-size: 15px;
+    }
+    /* "Advanced" does not fit an eighth of a phone's width. */
+    html.small-screen .ss-tab[data-short] {
+        font-size: 0;
+    }
+    html.small-screen .ss-tab[data-short]::after {
+        content: attr(data-short);
+        font-size: 11px;
+    }
+    /* The stats, then type and level, then the details: one above the other. */
+    html.small-screen .poke-info > .info-group:has(> table),
+    html.small-screen .poke-info > .info-group.top,
+    html.small-screen .poke-info > .info-selectors {
+        grid-column: 1 / -1;
+        grid-row: auto;
+    }
+    html.small-screen .ss-panel-head {
+        flex-wrap: wrap;
+    }
+    /* Each move's name on its own line, its power, type and buttons under it. */
+    html.small-screen .poke-info > div[class^="move"] {
+        flex-wrap: wrap;
+    }
+    html.small-screen .poke-info > div[class^="move"] > .select2-container {
+        flex-basis: 100%;
+    }
+    html.small-screen .ss-panel-head .select2-container {
+        flex-basis: 100%;
+        order: -1;
+    }
+    html.small-screen .move-result-subgroup .btn {
+        padding: 0 4px;
+        font-size: 12px;
+    }
+    html.small-screen .move-result-subgroup span[id^="resultDamage"] {
+        font-size: 11px;
+    }
+}
+/* Advanced (small_screen.js compactFieldPanel): the trainer and run progress first, then the field
+   in sections (battle, weather, terrain, rooms), each side's conditions side by side, and Export. */
+html.small-screen[data-ss-tab="field"] .wrapper {
+    display: flex;
+    flex-direction: column;
+}
+html.small-screen[data-ss-tab="field"] .wrapper > .ss-tabs {
+    order: -2;
+}
+html.small-screen[data-ss-tab="field"] .wrapper > .panel:has(#trainer-nav) {
+    order: -1;
+}
+html.small-screen .field-info > .ss-moved-out {
+    display: none !important;
+}
+html.small-screen .field-info {
+    text-align: left;
+}
+.ss-field-section {
+    padding: 10px 0 8px;
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.ss-field-section:first-of-type {
+    border-top: 0;
+}
+.ss-field-section > h4,
+html.small-screen #trainer-nav .ss-section-title {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+/* Every group of buttons wraps as a row of pills (their own fixed widths and margins aside). */
+html.small-screen .field-info .ss-field-section div:not([hidden]):not([style*="none"]),
+html.small-screen .field-info .ss-field-chips {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 6px;
+    width: auto !important;
+    margin: 0 !important;
+    float: none;
+}
+html.small-screen .field-info .ss-field-section > div + div {
+    margin-top: 6px !important;
+}
+html.small-screen .field-info .btn {
+    float: none;
+    width: auto;
+    min-width: 0;
+    height: 30px;
+    margin: 0;
+    padding: 0 12px;
+    box-sizing: border-box;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 28px;
+    white-space: nowrap;
+}
+html.small-screen .field-info .visually-hidden:checked + .btn {
+    border-color: var(--ss-accent);
+    background: var(--ss-accent);
+    color: #fff;
+    font-weight: 600;
+}
+html.small-screen .field-info .ss-field-chips button {
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+}
+/* Your side and the foe's, as two columns with a line between. */
+.ss-field-sides {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.ss-field-sides > .ss-field-section {
+    border-top: 0;
+}
+.ss-field-sides > .ss-field-section + .ss-field-section {
+    padding-left: 10px;
+    border-left: 1px solid var(--ss-line, #dde2ea);
+}
+.ss-field-sides > .ss-field-section:first-child {
+    padding-right: 10px;
+}
+html.small-screen .battle-effect-lock {
+    margin: 0 0 6px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: var(--ss-accent-soft);
+    font-style: normal;
+    text-align: left;
+}
+/* The trainer, as a card: name and details, his team, then Previous / Next / KO'd and Oak. */
+html.small-screen #trainer-nav .trainer-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 8px;
+    margin: 0 0 6px;
+}
+html.small-screen #trainer-name {
+    font-size: 16px;
+}
+html.small-screen #trainer-details {
+    color: var(--ss-muted);
+    font-size: 12px;
+}
+html.small-screen .trainer-defeated {
+    margin-left: auto;
+    font-size: 12px;
+}
+html.small-screen #trainer-effect {
+    font-size: 12px;
+    color: var(--ss-muted);
+}
+html.small-screen .trainer-team {
+    gap: 6px;
+    min-height: 0;
+    margin: 6px 0 8px;
+}
+html.small-screen .trainer-team .pokemon-sprite {
+    width: 52px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--ss-line);
+    border-radius: 10px;
+    background: var(--ss-btn);
+}
+html.small-screen .trainer-team .pokemon-sprite img {
+    max-width: 100%;
+    max-height: 100%;
+}
+html.small-screen .trainer-pokemon-active {
+    outline: 0;
+    box-shadow: 0 0 0 2px var(--ss-card), 0 0 0 4px var(--ss-accent);
+}
+html.small-screen .trainer-buttons {
+    gap: 6px;
+}
+html.small-screen .trainer-buttons > button:not(#reset-trainer) {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 13px;
+}
+html.small-screen .trainer-buttons > button:disabled {
+    opacity: 0.4;
+}
+html.small-screen #trainer-ko {
+    color: var(--ss-danger);
+}
+html.small-screen .run-progress-row {
+    font-size: 12px;
+    margin: 0 0 8px;
+}
+html.small-screen .run-progress-row .hpbar {
+    margin-top: 4px;
+}
+/* More: Settings (small_screen.js buildSettingsCard), with sliding selectors for the mode and the
+   notation, switches for the display options, and the credits as the last card. */
+.ss-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 0;
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.ss-settings > legend + .ss-setting {
+    border-top: 0;
+}
+.ss-setting-label {
+    font-size: 13px;
+    font-weight: 600;
+}
+/* A segmented selector whose highlight slides to the chosen option. */
+html.small-screen .ss-segmented {
+    position: relative;
+    display: inline-grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    padding: 3px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+}
+html.small-screen .ss-segmented::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    bottom: 3px;
+    left: calc(3px + var(--seg-index, 0) * (100% - 6px) / var(--seg-count, 1));
+    width: calc((100% - 6px) / var(--seg-count, 1));
+    border-radius: 999px;
+    background: var(--ss-accent);
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.2);
+    transition: left 0.25s ease;
+}
+html.small-screen .ss-segmented.ss-segmented-none::before {
+    display: none;
+}
+html.small-screen .ss-segmented .btn {
+    position: relative;
+    z-index: 1;
+    width: auto;
+    min-width: 0;
+    height: 30px;
+    margin: 0;
+    padding: 0 12px;
+    border: 0;
+    border-radius: 999px;
+    background: none;
+    color: var(--ss-text);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 30px;
+    white-space: nowrap;
+    transition: color 0.25s ease;
+}
+html.small-screen .ss-segmented .visually-hidden:checked + .btn {
+    background: none;
+    color: #fff;
+}
+html.small-screen .ss-settings select,
+html.small-screen .ss-settings #dark-theme-toggle,
+html.small-screen .credits button {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 13px;
+}
+/* Accent color: a row of swatches; the chosen one ringed. */
+.ss-accent-picker {
+    display: flex;
+    gap: 8px;
+}
+.ss-accent-swatch {
+    width: 26px;
+    height: 26px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.ss-accent-swatch[aria-checked="true"] {
+    box-shadow: 0 0 0 2px var(--ss-card, #fff), 0 0 0 4px var(--ss-text, #1d2330);
+}
+/* Text size: a slider and its percentage. */
+.ss-text-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.ss-text-size input[type="range"] {
+    width: 150px;
+    accent-color: var(--ss-accent, #d63031);
+}
+.ss-text-size-value {
+    min-width: 3em;
+    text-align: right;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+    color: var(--ss-muted, #667085);
+}
+/* Install as an app. */
+.ss-install {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+html.small-screen #ss-install {
+    height: 32px;
+    padding: 0 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--ss-accent);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+}
+.ss-install-hint {
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+    text-align: right;
+}
+/* Show box search, Range Compare and crit chances: switches. */
+.ss-setting-switches {
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.ss-setting-switches > label {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.ss-setting-switches input[type="checkbox"] {
+    flex: none;
+    width: 40px;
+    height: 24px;
+    margin: 0;
+    border-radius: 999px;
+    background: var(--ss-line, #dde2ea);
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.ss-setting-switches input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.3);
+    transition: left 0.2s ease;
+}
+.ss-setting-switches input[type="checkbox"]:checked {
+    background: var(--ss-accent, #3a6fd8);
+}
+.ss-setting-switches input[type="checkbox"]:checked::before {
+    left: 19px;
+}
+/* The credits: a quiet last card. */
+html.small-screen .credits {
+    margin: 0 0 8px;
+    padding: 10px;
+    border-radius: 12px;
+    background: var(--ss-card);
+    box-shadow: var(--ss-shadow);
+    color: var(--ss-muted);
+    font-size: 12px;
+}
+html.small-screen .credits .site-settings {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 8px;
+    margin-top: 8px;
+}
+/* Range Compare: no empty chart, and pill buttons. */
+html.small-screen #rc-chart:empty {
+    display: none;
+}
+html.small-screen #range-compare .rc-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+}
+html.small-screen #range-compare button,
+html.small-screen .import-actions button {
+    height: 32px;
+    margin: 0;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 13px;
+}
+html.small-screen .fight-notes label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-align: left;
+}
+/* Import / Export: the Fight Notes use the card's width. */
+html.small-screen #fight-notes {
+    width: 100% !important;
+    height: 8em;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-card);
+    color: var(--ss-text);
+}
+/* Wild encounters tab (encounters.js), in the small-screen layout. */
+.encounters {
+    display: none;
+    min-width: 0; /* a fieldset is otherwise as wide as the longest location name */
+}
+.encounter-controls {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.encounter-controls select {
+    flex: 1;
+    min-width: 0;
+}
+.encounter-step,
+.encounter-time,
+.encounter-nuzlocke-status button {
+    min-height: 32px;
+    padding: 0 10px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 8px;
+    background: var(--ss-btn, #f3f5f9);
+    color: var(--ss-text, #1d2330);
+    cursor: pointer;
+}
+.encounter-time {
+    white-space: nowrap;
+}
+.encounter-time[aria-pressed="true"] {
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-accent-text, #2f5fc4);
+}
+.encounter-time-note {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+}
+.encounter-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 8px;
+    margin-top: 6px;
+}
+/* On foot on the left, on the water on the right; one above the other when narrow. */
+.encounter-column {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+/* The location's name is the card's title, so the legend goes. */
+html.small-screen .encounters > legend {
+    display: none;
+}
+/* Options and notes, under the Pokémon. */
+.encounter-footer {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid var(--ss-line, #dde2ea);
+}
+.encounter-options {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+}
+.encounter-options .encounter-time-note {
+    margin: 0;
+}
+.encounter-nuzlocke-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+.encounter-nuzlocke-status {
+    display: none;
+    margin: 0 0 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-text, #1d2330);
+    font-size: 12px;
+    line-height: 1.6;
+}
+.encounter-nuzlocke-on .encounter-nuzlocke-status {
+    display: block;
+}
+.encounter-nuzlocke-status button {
+    min-height: 26px;
+    padding: 0 8px;
+    font-size: 12px;
+}
+.encounter-nuzlocke-source,
+.encounter-nuzlocke-count {
+    color: var(--ss-muted, #667085);
+}
+.encounter-nuzlocke-count {
+    white-space: nowrap;
+}
+.encounter-nuzlocke-warning {
+    font-weight: 600;
+}
+.encounter-row[role="button"] {
+    cursor: pointer;
+}
+.encounter-row[role="button"]:hover,
+.encounter-row[role="button"]:focus-visible {
+    background: var(--ss-btn, #f3f5f9);
+}
+.encounter-chosen {
+    border-radius: 6px;
+    background: var(--ss-accent-soft, #e3ecfd);
+}
+.encounter-chosen .encounter-name {
+    font-weight: 700;
+}
+.encounter-blocked {
+    opacity: 0.4;
+}
+/* Nuzlocke dupes: blacked out, with the sprite as a silhouette. */
+.encounter-dupe {
+    border-radius: 6px;
+    background: var(--ss-dupe, #1d2330);
+    color: var(--ss-dupe-text, #b8bec9);
+}
+.encounter-dupe .encounter-levels {
+    color: inherit;
+}
+.encounter-dupe .encounter-sprite img {
+    filter: brightness(0) invert(0.45);
+}
+.encounter-dupe-tag {
+    padding: 0 4px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+.encounter-method h4 {
+    margin: 4px 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted, #667085);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+.encounter-row {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto auto;
+    align-items: center;
+    column-gap: 6px;
+    min-height: 30px;
+    border-bottom: 1px solid var(--ss-line, #dde2ea);
+    font-size: 13px;
+}
+.encounter-sprite img {
+    max-width: 34px;
+    max-height: 28px;
+}
+.encounter-name {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.encounter-levels {
+    font-size: 12px;
+    color: var(--ss-muted, #667085);
+    font-variant-numeric: tabular-nums;
+}
+.encounter-rate {
+    min-width: 3em;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+.encounter-forme {
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+}
+.encounter-owned .encounter-name {
+    color: var(--ss-muted, #667085);
+}
+.encounter-check {
+    color: #2e9e44;
+    font-weight: bold;
 }

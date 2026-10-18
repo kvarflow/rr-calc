@@ -28,6 +28,44 @@ function makeCachebuster(template, output) {
 	console.log("DONE");
 }
 
+// Offline mode (src/sw.js): list every page, each local file it loads and the images their
+// stylesheets use, for the service worker to save, with a version that changes whenever any
+// of them does, so browsers install the new set and delete the old one.
+function makeServiceWorker(pages) {
+	const files = new Set(['./']);
+	let contents = '';
+	for (const page of pages) {
+		const html = fs.readFileSync(path.resolve(rootDir, 'dist', page), 'utf8');
+		files.add('./' + page);
+		contents += html;
+		html.replace(/(?:src|href)="(\.\/[^"]+)"/g, function (match, url) {
+			files.add(url);
+		});
+	}
+	for (const file of Array.from(files)) {
+		const cssPath = file.split('?')[0];
+		if (!cssPath.endsWith('.css')) continue;
+		const css = fs.readFileSync(path.resolve(rootDir, 'dist', cssPath), 'utf8');
+		css.replace(/url\(['"]?([^'")]+)['"]?\)/g, function (match, url) {
+			if (/^(data:|https?:|\/\/)/.test(url)) return;
+			files.add('./' + path.posix.normalize(path.posix.join(path.posix.dirname(cssPath.slice(2)), url)));
+		});
+	}
+	// The app icons the manifest names (the pages only link the small ones).
+	const manifestPath = path.resolve(rootDir, 'dist', 'manifest.webmanifest');
+	if (fs.existsSync(manifestPath)) {
+		for (const icon of JSON.parse(fs.readFileSync(manifestPath, 'utf8')).icons || []) files.add('./' + icon.src);
+	}
+	const list = Array.from(files);
+	const version = crypto.createHash('md5').update(list.join('\n') + contents).digest('hex').substr(0, 8);
+	const swPath = path.resolve(rootDir, 'dist', 'sw.js');
+	const sw = fs.readFileSync(swPath, 'utf8')
+		.replace('"__VERSION__"', JSON.stringify(version))
+		.replace('__PRECACHE__', JSON.stringify(list, null, '\t'));
+	fs.writeFileSync(swPath, sw);
+	console.log('Service worker ' + version + ': ' + list.length + ' files for offline use');
+}
+
 function cpdir(src, dest) {
 	console.log("Copying `" + src + "` to `" + dest + "`");
 	try {
@@ -66,3 +104,4 @@ makeCachebuster('dist/honkalculate.template.html', 'dist/honkalculate.html');
 makeCachebuster('dist/index.template.html', 'dist/index.html');
 makeCachebuster('dist/normal.template.html', 'dist/normal.html');
 makeCachebuster('dist/hardcore.template.html', 'dist/hardcore.html');
+makeServiceWorker(['index.html', 'normal.html', 'hardcore.html']);

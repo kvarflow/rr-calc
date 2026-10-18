@@ -234,15 +234,20 @@ function drawHealthBar(poke, max, current) {
 		healthbar.removeClass("hp-" + unwantedColors[i]);
 	}
 	healthbar.css("background", "linear-gradient(to right, " + fillColor + " " + fillPercent + "%, white 0%");
+	// The small-screen layout draws its own slimmer bar from this.
+	healthbar.each(function () {
+		this.style.setProperty("--hp-fill", fillPercent + "%");
+	});
 }
 // TODO: these HP inputs should really be input type=number with min=0, step=1, constrained by max=maxHP or 100
-$(".current-hp").keyup(function () {
+// (keyup for keyboards, input for on-screen keyboards, which send no keyup)
+$(".current-hp").on("keyup input", function () {
 	var max = $(this).parent().children(".max-hp").text();
 	validate($(this), 0, max);
 	var current = $(this).val();
 	calcPercentHP($(this).parent(), max, current);
 });
-$(".percent-hp").keyup(function () {
+$(".percent-hp").on("keyup input", function () {
 	var max = $(this).parent().children(".max-hp").text();
 	validate($(this), 0, 100);
 	var percent = $(this).val();
@@ -321,6 +326,12 @@ var lastAutoWeather = ["", ""];
 // Field conditions a boss's battle effect fixes for the whole fight (set by
 // trainer_controls.js): abilities such as Drizzle or Electric Surge cannot change them.
 var lockedField = {weather: false, terrain: false};
+// Speed changes from a boss's battle effect ("Permanent swamp": your Pokémon's Speed is
+// quartered), used wherever the two Pokémon's speeds are compared. Set by trainer_controls.js.
+var battleSpeedMultiplier = {p1: 1, p2: 1};
+function getBattleSpeed(pokemon, side) {
+	return Math.floor(pokemon.stats.spe * battleSpeedMultiplier[side]);
+}
 function autosetWeather(ability, i, item) {
 	if (lockedField.weather) return;
 	var currentWeather = $("input:radio[name='weather']:checked").val();
@@ -911,13 +922,19 @@ function correctHiddenPower(pokemon) {
 	// After Gen 7 bottlecaps means you can have a HP without perfect IVs
 	// Level 100 is elided from sets so if its undefined its level 100
 	if (gen >= 7 && (!pokemon.level || pokemon.level >= 100)) return pokemon;
+	// Work on a copy: the set in setdex must keep its own IVs for the next time it loads.
+	pokemon = $.extend({}, pokemon, {
+		moves: pokemon.moves.slice(),
+		ivs: pokemon.ivs && $.extend({}, pokemon.ivs),
+		dvs: pokemon.dvs && $.extend({}, pokemon.dvs)
+	});
 
 	// Convert the legacy stats table to a useful one, and also figure out if all are maxed
 	var ivs = {};
 	var maxed = true;
 	for (var i = 0; i <= LEGACY_STATS[9].length; i++) {
 		var s = LEGACY_STATS[9][i];
-		var iv = ivs[legacyStatToStat(s)] = (pokemon.ivs && pokemon.ivs[s]) || 31;
+		var iv = ivs[legacyStatToStat(s)] = pokemon.ivs && pokemon.ivs[s] !== undefined ? pokemon.ivs[s] : 31;
 		if (iv !== 31) maxed = false;
 	}
 
@@ -929,8 +946,9 @@ function correctHiddenPower(pokemon) {
 		// want to attempt to reconcile the user's IVs so instead just correct the HP type
 		if (!maxed && expected.type !== m[1]) {
 			pokemon.moves[i] = "Hidden Power " + expected.type;
-		} else {
-			// Otherwise, use the default preset hidden power IVs that PS would use
+		} else if (maxed) {
+			// Otherwise, if the set gives no IVs of its own (a trainer's set gives the IVs that
+			// make its type), use the default preset hidden power IVs that PS would use
 			var hpIVs = calc.Stats.getHiddenPowerIVs(GENERATION, m[1]);
 			if (!hpIVs) continue; // some impossible type was specified, ignore
 			pokemon.ivs = pokemon.ivs || {hp: 31, at: 31, df: 31, sa: 31, sd: 31, sp: 31};
