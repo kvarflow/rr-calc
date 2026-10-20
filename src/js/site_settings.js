@@ -103,7 +103,9 @@ var CHANGELOG = [
 			"the AI it is built on",
 		"Taunt is favoured against Pokémon with a status move; a Pokémon with any Reflect or Light " +
 			"Screen plays as a screen setter; attacks that raise Attack (Power-Up Punch, Metal Claw) count " +
-			"as set-up; setup sweepers value status moves more; Recover isn't used at full HP to stall"
+			"as set-up; setup sweepers value status moves more; Recover isn't used at full HP to stall",
+		"Like the game, the AI judges who moves first by speed even when your predicted move has priority " +
+			"(a faster foe expects its attack to land before your Quick Attack)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

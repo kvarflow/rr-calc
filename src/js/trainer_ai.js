@@ -16,7 +16,7 @@
  *
  * Checked against Radical Red's own AI, decompiled from the ROM: it is CFRU's, with a few
  * differences from CFRU master, each marked "Radical Red" below (fighting styles, the setup
- * sweeper's status bonus, recovery at full HP, Taunt). The damage bonuses (KO first +9, slower KO,
+ * sweeper's status bonus, recovery at full HP, Taunt, the speed order against priority). The damage bonuses (KO first +9, slower KO,
  * desperate +9, strongest +2), the slower-KO table and the 0.93 damage roll match.
  *
  * What the calculator cannot know is assumed: no moves used yet this battle (so no Protect or
@@ -363,16 +363,15 @@ function bracketOf(side) {
 	return 0;
 }
 
-// MoveWouldHitBeforeOtherMove: speed ties go against the attacker.
+// MoveWouldHitBeforeOtherMove: speed ties go against the attacker. Radical Red's version has no
+// "the other move has higher priority, so this one goes second": it goes on to compare brackets
+// and speed (CFRU master returns false there).
 function hitsBefore(atk, move, def, defMove, battle) {
 	var field = battle.field;
 	if (!defMove) {
 		if (priorityOf(atk, move, field) > 0) return true;
-	} else {
-		var pa = priorityOf(atk, move, field);
-		var pd = priorityOf(def, defMove, field);
-		if (pa > pd) return true;
-		if (pd > pa) return false;
+	} else if (priorityOf(atk, move, field) > priorityOf(def, defMove, field)) {
+		return true;
 	}
 	if (bracketOf(atk) > bracketOf(def)) return true;
 	var sa = atk.speed;
