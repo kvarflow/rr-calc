@@ -96,6 +96,14 @@ var CHANGELOG = [
 			"Radical Red's own battle AI (Complete Fire Red Upgrade's), with each trainer's AI level and " +
 			"every move's data read from the game",
 		"The likeliest move gets the red stripe, tagged KO when it can knock you out"
+	]},
+	{version: "1.9", notes: [
+		"Trainer AI checked against Radical Red's own AI code, decompiled from the game: the KO and " +
+			"strongest-move scoring matched, and four rules now follow the game where it differs from " +
+			"the AI it is built on",
+		"Taunt is favoured against Pokémon with a status move; a Pokémon with any Reflect or Light " +
+			"Screen plays as a screen setter; attacks that raise Attack (Power-Up Punch, Metal Claw) count " +
+			"as set-up; setup sweepers value status moves more; Recover isn't used at full HP to stall"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

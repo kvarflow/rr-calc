@@ -14,6 +14,11 @@
  * Damage is the AI's single number: the calculator's highest roll x 0.93. The game's move data
  * (effects, accuracy, secondary chances) comes from the ROM (data/trainer_ai.js).
  *
+ * Checked against Radical Red's own AI, decompiled from the ROM: it is CFRU's, with a few
+ * differences from CFRU master, each marked "Radical Red" below (fighting styles, the setup
+ * sweeper's status bonus, recovery at full HP, Taunt). The damage bonuses (KO first +9, slower KO,
+ * desperate +9, strongest +2), the slower-KO table and the 0.93 damage roll match.
+ *
  * What the calculator cannot know is assumed: no moves used yet this battle (so no Protect or
  * Destiny Bond last turn, no Choice lock), the foe's Pokémon has just come in when it is at full
  * HP (Fake Out), the foe can switch when it has another Pokémon left, and neither side holds a
@@ -84,10 +89,12 @@ var SET_STATUS_EFFECTS = [E.SLEEP, E.TOXIC, E.POISON, E.PARALYZE, E.WILL_O_WISP,
 var STAT_LOWER_EFFECTS = [E.ATTACK_DOWN, E.DEFENSE_DOWN, E.SPEED_DOWN, E.SPECIAL_ATTACK_DOWN, E.SPECIAL_DEFENSE_DOWN,
 	E.ACCURACY_DOWN, E.EVASION_DOWN, E.ATTACK_DOWN_2, E.DEFENSE_DOWN_2, E.SPEED_DOWN_2, E.SPECIAL_ATTACK_DOWN_2,
 	E.SPECIAL_DEFENSE_DOWN_2, E.ACCURACY_DOWN_2, E.EVASION_DOWN_2, E.TICKLE, E.PLAY_NICE, E.VENOM_DRENCH];
+// The moves that make a set "boosting" for its fighting style, as Radical Red's own code lists them:
+// unlike CFRU master, attacks that raise the user's Attack count (Power-Up Punch, Metal Claw,
+// Meteor Mash, Fell Stinger), and the effects no Radical Red boosting move uses are left out.
 var BOOSTING_EFFECTS = [E.ATTACK_UP, E.DEFENSE_UP, E.SPEED_UP, E.SPECIAL_ATTACK_UP, E.SPECIAL_DEFENSE_UP, E.ACCURACY_UP,
-	E.EVASION_UP, E.ATK_SPATK_UP, E.ATK_ACC_UP, E.DEF_SPD_UP, E.ATTACK_UP_2, E.DEFENSE_UP_2, E.SPEED_UP_2,
-	E.SPECIAL_ATTACK_UP_2, E.SPECIAL_DEFENSE_UP_2, E.ACCURACY_UP_2, E.EVASION_UP_2, E.COSMIC_POWER, E.DRAGON_DANCE,
-	E.CALM_MIND, E.BULK_UP];
+	E.EVASION_UP, E.ATTACK_UP_2, E.DEFENSE_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2, E.SPECIAL_DEFENSE_UP_2,
+	E.ACCURACY_UP_2, E.EVASION_UP_2, E.ATTACK_UP_HIT, E.COSMIC_POWER, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE];
 var ABSORBING = {Electric: ["Volt Absorb", "Motor Drive", "Lightning Rod"], Water: ["Water Absorb", "Dry Skin", "Storm Drain"],
 	Fire: ["Flash Fire"], Grass: ["Sap Sipper"]};
 var STAT_INDEX = {atk: 0, def: 1, spe: 2, spa: 3, spd: 4, acc: 5, eva: 6};
@@ -775,9 +782,11 @@ function fightingStyle(side, foe, battle) {
 		}
 	}
 	if (style !== STYLE.NONE) return style;
-	if (screens >= 2 || veil) return attacks >= 2 ? STYLE.SETUP_SCREENS : STYLE.SUPPORT_SCREENS;
+	// Radical Red: any screen makes a support screener (CFRU master needs two, and makes a set with
+	// two attacks a setup screener).
+	if (screens >= 1 || veil) return STYLE.SUPPORT_SCREENS;
 	if (hazards >= 1) return phazing ? STYLE.PHAZING : STYLE.HAZARDS;
-	if (attacks >= 3) return boosting ? STYLE.SETUP_STATS : (statusMoves > 0 || phazing) ? STYLE.SETUP_STATUS : STYLE.KILL;
+	if (attacks >= 3) return boosting ? STYLE.SETUP_STATS : statusMoves > 0 ? STYLE.SETUP_STATUS : STYLE.KILL;
 	if (leechSeed && protect) return STYLE.STALL;
 	if (attacks >= 2 && (boosting || statusMoves > 0 || phazing)) return boosting ? STYLE.SETUP_STATS : STYLE.SETUP_STATUS;
 	return STYLE.STALL;
@@ -811,7 +820,8 @@ function statusBonus(turn, atk, def, boost) {
 	case STYLE.KILL:
 		return 0;
 	case STYLE.SETUP_STATS:
-		return can2HKO(turn, def, atk) ? 0 : 3;
+		// Radical Red adds the boost (CFRU master: a flat 3).
+		return can2HKO(turn, def, atk) ? 0 : 3 + boost;
 	case STYLE.SETUP_STATUS:
 	case STYLE.PHAZING:
 		return 4 + boost;
@@ -1256,13 +1266,9 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.RESTORE_HP:
 	case E.MORNING_SUN:
 	case E.SWALLOW:
-		if ((flags & AI_POSITIVES) && (secondaryDamage(def, field) > 0)) {
-			if (atk.hp === atk.maxHP) down(1);
-		} else if (atk.hp === atk.maxHP) {
-			down(10);
-		} else if (healthPercent(atk) >= 90) {
-			down(9);
-		}
+		// Radical Red has no "heal at full HP to stall a foe taking chip damage" rule (CFRU master's -1).
+		if (atk.hp === atk.maxHP) down(10);
+		else if (healthPercent(atk) >= 90) down(9);
 		return score;
 	case E.REST:
 		if (atk.hp === atk.maxHP || atk.status === "slp" || has(["Insomnia", "Vital Spirit", "Sweet Veil", "Comatose"], atk.ability) ||
@@ -1691,11 +1697,13 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.TAUNT:
 		if (isAsleep(def) && !hasEffect(def, [E.SLEEP_TALK])) break;
-		if (canBeChoiceLocked(def)) break;
-		if ((predicted && predicted.split === SPLIT_STATUS) || isGoodToTaunt(styleOf(turn, def))) status(3);
-		else if (hasMoveWhere(def, function (m) {
+		// Radical Red: +8 against any foe with a status move, and no Choice-item check.
+		var foeHasStatusMove = hasMoveWhere(def, function (m) {
 			return m.split === SPLIT_STATUS;
-		})) status(2);
+		});
+		if (foeHasStatusMove) up(8);
+		if ((predicted && predicted.split === SPLIT_STATUS) || isGoodToTaunt(styleOf(turn, def))) status(3);
+		else if (foeHasStatusMove) status(2);
 		break;
 	case E.ENCORE:
 		if (def.item !== "Mental Herb" && !hitsFirst(turn, atk, move, def) && predicted && predicted.split === SPLIT_STATUS) status(3);

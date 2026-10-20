@@ -105,6 +105,10 @@ picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgr
 - The highest score wins, ties at random. The AI's own rolls (a 50% crit, four random numbers it
   draws each turn, coin flips between equally strong moves, your predicted move when it is a tie)
   are enumerated exactly, so the percentages are exact for what the calculator knows.
+- The rules were checked against Radical Red's own AI, decompiled from the ROM with Ghidra. It is
+  CFRU's, and the KO and strongest-move scoring, the slower-KO table and the 93% damage roll
+  match; where it differs from CFRU's current code (Taunt, fighting styles, the setup sweeper's
+  status bonus, Recover at full HP) the port follows the game.
 - Each trainer's AI flags, and every move's effect, accuracy and secondary chance, come from the
   game (`import/radical-red-trainers/ai_flags.js` writes `src/js/data/trainer_ai.js` from the
   ROM). Required trainers not found in the ROM's tables use the smart AI, optional ones the basic.
