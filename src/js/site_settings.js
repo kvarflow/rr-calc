@@ -106,6 +106,13 @@ var CHANGELOG = [
 			"as set-up; setup sweepers value status moves more; Recover isn't used at full HP to stall",
 		"Like the game, the AI judges who moves first by speed even when your predicted move has priority " +
 			"(a faster foe expects its attack to land before your Quick Attack)"
+	]},
+	{version: "1.10", notes: [
+		"Trainer AI: every fight now has its AI level from the game, including ones outside Radical Red's " +
+			"boss tables"
+	], fixes: [
+		"The Route 22 rival and a few optional trainers were treated as the basic AI; they use the smart AI " +
+			"(the rival's Squirtle goes for Tail Whip, not mostly Bubble)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

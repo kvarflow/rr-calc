@@ -112,7 +112,8 @@ picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgr
   follows the game.
 - Each trainer's AI flags, and every move's effect, accuracy and secondary chance, come from the
   game (`import/radical-red-trainers/ai_flags.js` writes `src/js/data/trainer_ai.js` from the
-  ROM). Required trainers not found in the ROM's tables use the smart AI, optional ones the basic.
+  ROM: Radical Red's boss tables, then FireRed's trainer table for fights outside them, like the
+  early rival).
 
 What it cannot know is assumed: no moves used yet this battle (no Protect last turn, no Choice
 lock), the foe's Pokémon has just come in when it is at full HP (Fake Out), the foe can switch
