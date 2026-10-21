@@ -129,6 +129,12 @@ var CHANGELOG = [
 			"(a slower foe used Tackle while the calculator said Low Sweep 100%)",
 		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability (Radical Red gives it a new " +
 			"personality value)"
+	]},
+	{version: "1.13", notes: [
+		"Trainer AI checked further against Radical Red's own code: when it sets up stats (+2 going first, " +
+			"+3 going second, and half the time not into Haze, Roar or a priority 2HKO), Stealth Rock and Spikes " +
+			"(no penalty once you're down to three Pok\u00e9mon; -20 for rocks already up), Protect (never while " +
+			"badly poisoned), Counter and Mirror Coat (-10 half the time), Double Team and Minimize (no bonus)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

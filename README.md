@@ -107,9 +107,14 @@ picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgr
   are enumerated exactly, so the percentages are exact for what the calculator knows.
 - The rules were checked against Radical Red's own AI, decompiled from the ROM with Ghidra. It is
   CFRU's, and the KO and strongest-move scoring, the slower-KO table and the 93% damage roll
-  match; where it differs from CFRU's current code (Taunt, fighting styles, the setup sweeper's
-  status bonus, Recover at full HP, and who moves first against a higher-priority move) the port
-  follows the game.
+  match; where it differs from CFRU's current code the port follows the game: Taunt, fighting
+  styles, the setup sweeper's status bonus, Recover at full HP, who moves first against a
+  higher-priority move, when it sets up (+2 going first, +3 going second, and on half the rolls not
+  into Haze, Roar or a priority 2HKO), Stealth Rock and Spikes (nothing against them with three or
+  fewer of your Pokémon left, −20 for Stealth Rock already up, a coin against a Rapid Spin or Defog
+  user), Protect (not while badly poisoned; King's Shield half the time in Blade Forme), Double Team
+  and Minimize (no bonus), and the coins Radical Red adds: Low Sweep's speed control, Smack Down and
+  Counter each only count half the time.
 - Each trainer's AI flags, and every move's effect, accuracy and secondary chance, come from the
   game (`import/radical-red-trainers/ai_flags.js` writes `src/js/data/trainer_ai.js` from the
   ROM: Radical Red's boss tables, then FireRed's trainer table for fights outside them, like the

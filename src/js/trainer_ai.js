@@ -70,7 +70,9 @@ var AI_SMART_FLAGS = 7;
 // Fighting styles (ai_advanced.c), singles.
 var STYLE = {NONE: 0, KILL: 1, SETUP_STATS: 2, SETUP_STATUS: 3, SETUP_SCREENS: 4, STALL: 5, BATON_PASS: 6,
 	CLERIC: 7, SUPPORT_SCREENS: 8, PHAZING: 9, HAZARDS: 10};
+var MOVE_TARGET_BOTH = 0x8;
 var MOVE_TARGET_USER = 0x10;
+var MOVE_TARGET_FOES_AND_ALLY = 0x20;
 var MOVE_TARGET_FOES_FIELD = 0x40;
 var FLAG_CONTACT = 0x1;
 var FLAG_MAGIC_COAT = 0x4;
@@ -978,59 +980,56 @@ function goodIdeaToLower(turn, def, atk, move, stat) {
 	return true;
 }
 
-// ShouldTryToSetUpStat: worth a turn to set this stat up now?
-function shouldTrySetUp(turn, atk, def, move, stat, limit) {
+// ShouldTryToSetUpStat as Radical Red has it: no stat limit from the caller but +2 going first and
+// +3 going second, never while badly poisoned at 75% HP or less, and on half the rolls not into a
+// foe that can undo it (Haze, Roar and the like) or has priority and 2HKOs. (CFRU master: the
+// caller's limit, a Defence/Sp. Def exception, and no set-up into Focus Sash or Sturdy.)
+function shouldTrySetUp(turn, atk, def, move, stat) {
 	var field = turn.battle.field;
 	if (def.ability === "Unaware" && !hasMoveNamed(atk, ["Stored Power", "Power Trip"]) &&
 		!(stat === "def" && hasMoveNamed(atk, ["Body Press"]))) return false;
 	if (willFaintFromChip(atk, field)) return false;
+	if (atk.status === "tox" && !has(["Poison Heal", "Magic Guard", "Toxic Boost"], atk.ability) && healthPercent(atk) <= 75) return false;
+	var undoes = hasEffect(def, [E.HAZE, E.PSYCH_UP]) || hasMoveNamed(def, ["Topsy-Turvy"]) ||
+		((hasMoveNamed(def, ["Roar", "Whirlwind"]) || (hasMoveNamed(def, ["Dragon Tail"]) && atk.types.indexOf("Fairy") === -1) ||
+		(hasMoveNamed(def, ["Circle Throw"]) && atk.types.indexOf("Ghost") === -1)) && atk.monsLeft > 1) ||
+		(hasMoveWhere(def, function (m) {
+			return priorityOf(def, m, field) > 0;
+		}) && can2HKO(turn, def, atk));
+	if (undoes && turn.coin("setUp" + turn.phase + atk.key + atk.moves.indexOf(move), 0.5)) return false;
+	var predicted = turn.predicted(def);
 	if (hitsFirst(turn, atk, move, def)) {
 		if (canKnockOutWithChip(turn, def, atk)) return false;
-	} else {
-		var predicted = turn.predicted(def);
-		if (predicted && predicted.effect === E.SEMI_INVULNERABLE) return true;
-		if (stat === "spe" && stage(atk, "spe") < limit && !(predicted && knocksOut(turn, def, atk, def.moves.indexOf(predicted), 1))) {
-			var boost = has([E.SPEED_UP_2, E.DRAGON_DANCE], move.effect) && move.name !== "Dragon Dance" ? 2 : 1;
-			if (atk.ability === "Simple") boost *= 2;
-			if (Math.floor(atk.speed * (2 + boost) / 2) >= def.speed) return true;
-		}
-		if (can2HKO(turn, def, atk)) {
-			var strongest = def.moves[strongestMove(turn, def, atk)];
-			return !canKnockOut(turn, def, atk) && !!strongest &&
-				((stat === "def" && strongest.split === SPLIT_PHYSICAL) || (stat === "spd" && strongest.split === SPLIT_SPECIAL));
-		}
+		return stage(atk, stat) <= 8;
 	}
-	if (stage(atk, stat) >= limit) return false;
-	if ((stat === "atk" || stat === "spa") && def.hp === def.maxHP && (def.item === "Focus Sash" ||
-		(def.ability === "Sturdy" && !ignoresAbilities(atk))) && !isIncapacitated(def)) {
-		var split = stat === "atk" ? SPLIT_PHYSICAL : SPLIT_SPECIAL;
-		if (!hasMoveWhere(atk, function (m) {
-			return m.split === split && isMultiHit(m);
-		})) return false;
+	if (predicted && predicted.effect === E.SEMI_INVULNERABLE) return true;
+	if (stat === "spe" && stage(atk, "spe") <= 8 && !(predicted && knocksOut(turn, def, atk, def.moves.indexOf(predicted), 1))) {
+		var boost = has([E.SPEED_UP_2, E.DRAGON_DANCE], move.effect) && move.name !== "Dragon Dance" ? 2 : 1;
+		if (atk.ability === "Simple") boost *= 2;
+		if (Math.floor(atk.speed * (2 + boost) / 2) >= def.speed) return true;
 	}
-	return true;
+	if (can2HKO(turn, def, atk)) return false;
+	return stage(atk, stat) <= 9;
 }
 
-// IncreaseStatViability: what setting `stat` up is worth to this style.
+// IncreaseStatViability: what setting `stat` up is worth to this style. (`limit` was CFRU master's
+// stage cap, which Radical Red's ShouldTryToSetUpStat replaces with its own.)
 function statBonus(turn, atk, def, move, stat, limit, boost) {
-	var foeStyle = styleOf(turn, def);
-	if (limit < 12 && (((stat === "atk" || stat === "spa") && (foeStyle === STYLE.STALL || isTeamSupport(foeStyle))) ||
-		turn.predictedSwitch[def.key])) limit = 12;
 	switch (styleOf(turn, atk)) {
 	case STYLE.KILL:
-		if (shouldTrySetUp(turn, atk, def, move, stat, limit)) return 3 + boost;
+		if (shouldTrySetUp(turn, atk, def, move, stat)) return 3 + boost;
 		return isDamaging(move) && (stat === "atk" || stat === "spa") ? 1 : 0;
 	case STYLE.SETUP_STATS:
-		return shouldTrySetUp(turn, atk, def, move, stat, limit) ? 3 + boost : 0;
+		return shouldTrySetUp(turn, atk, def, move, stat) ? 3 + boost : 0;
 	case STYLE.PHAZING:
 		if (hasEffect(atk, [E.HAZE])) return 0;
-		return shouldTrySetUp(turn, atk, def, move, stat, limit) ? statusBonus(turn, atk, def, 1) : 0;
+		return shouldTrySetUp(turn, atk, def, move, stat) ? statusBonus(turn, atk, def, 1) : 0;
 	case STYLE.BATON_PASS:
-		if (stat === "eva") return shouldTrySetUp(turn, atk, def, move, stat, 12) ? 6 : 0;
-		if (stat === "def" || stat === "spd") return shouldTrySetUp(turn, atk, def, move, stat, 10) ? 4 : 0;
-		return shouldTrySetUp(turn, atk, def, move, stat, 10) ? 5 : 0;
+		if (stat === "eva") return shouldTrySetUp(turn, atk, def, move, stat) ? 6 : 0;
+		if (stat === "def" || stat === "spd") return shouldTrySetUp(turn, atk, def, move, stat) ? 4 : 0;
+		return shouldTrySetUp(turn, atk, def, move, stat) ? 5 : 0;
 	default:
-		return shouldTrySetUp(turn, atk, def, move, stat, limit) ? statusBonus(turn, atk, def, 1) : 0;
+		return shouldTrySetUp(turn, atk, def, move, stat) ? statusBonus(turn, atk, def, 1) : 0;
 	}
 }
 
@@ -1247,9 +1246,17 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (atk.sideState.lightScreen) down(10);
 		return score;
 	case E.SPIKES:
-		if (def.monsLeft <= 1) return down(10);
-		if ((move.name === "Stealth Rock" && def.sideState.sr) || (move.name === "Sticky Web" && def.sideState.stickyWeb) ||
-			(move.name === "Spikes" && def.sideState.spikes >= 3) || (move.name === "Toxic Spikes" && def.sideState.toxicSpikes >= 2)) down(10);
+		// Radical Red's own rule: Stone Axe and Ceaseless Edge are attacks; with three or fewer of your
+		// Pokémon left (or your Magic Bounce) nothing counts against hazards; a foe that can clear or
+		// reflect them costs 10 half the time; Stealth Rock already up costs 20. (A Rapid Spin used
+		// earlier in the battle would cost 9 half the time; no move has been used yet here.)
+		if (move.name === "Stone Axe" || move.name === "Ceaseless Edge") return standardDamage();
+		if (def.monsLeft <= 3 || def.ability === "Magic Bounce") return score;
+		if (((hasMoveNamed(def, ["Rapid Spin"]) && atk.types.indexOf("Ghost") === -1) || hasMoveNamed(def, ["Defog", "Magic Coat"])) &&
+			!turn.coin("hazardClear" + turn.phase + atk.key + i, 0.5)) down(10);
+		if (move.name === "Stealth Rock" && def.sideState.sr) down(20);
+		else if ((move.name === "Sticky Web" && def.sideState.stickyWeb) || (move.name === "Spikes" && def.sideState.spikes >= 3) ||
+			(move.name === "Toxic Spikes" && def.sideState.toxicSpikes >= 2)) down(10);
 		else if (goodAI && ((move.name === "Spikes" && def.sideState.spikes >= 1) || (move.name === "Toxic Spikes" &&
 			def.sideState.toxicSpikes === 1)) && hasMoveNamed(def, ["Rapid Spin", "Defog", "Mortal Spin", "Tidy Up"])) down(10);
 		return score;
@@ -1384,8 +1391,13 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return score;
 	case E.COUNTER:
 	case E.MIRROR_COAT:
-		if (!predicted || predicted.split === SPLIT_STATUS) return down(10);
-		if (move.name === "Metal Burst" && hitsFirst(turn, atk, move, def)) return down(10);
+		// Radical Red: a further -10 half the time, every turn (CFRU master: -8 only after a wrong guess).
+		if (!predicted || predicted.split === SPLIT_STATUS) down(10);
+		if (move.name === "Metal Burst" && hitsFirst(turn, atk, move, def)) {
+			down(10);
+			return standardDamage();
+		}
+		if (!turn.coin("counter" + turn.phase + atk.key + i, 0.5)) down(10);
 		return standardDamage();
 	case E.ENDEAVOR:
 	case E.PAIN_SPLIT:
@@ -1538,10 +1550,10 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.ACCURACY_UP_2:
 		raise("acc", 12, 2);
 		break;
+	// Radical Red: Double Team and Minimize get nothing (CFRU master scores them like other boosts).
 	case E.EVASION_UP:
 	case E.EVASION_UP_2:
 	case E.MINIMIZE:
-		raise("eva", 12, 4);
 		break;
 	case E.ATK_SPATK_UP:
 		if (!(hasPhysical(atk) && raise("atk", 8, 2))) raise("spa", 8, 2);
@@ -1694,7 +1706,19 @@ function scorePositives(turn, atk, def, i, score) {
 		}
 		break;
 	case E.PROTECT:
-		if (has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) break;
+		// Quick Guard, Wide Guard, Crafty Shield and Mat Block count as Protect when your predicted move
+		// is one they stop.
+		if (move.name === "Quick Guard" && !(predicted && priorityOf(def, predicted, field) > 0)) break;
+		if (move.name === "Wide Guard" && !(predicted && (predicted.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY)))) break;
+		if (move.name === "Crafty Shield" && !(predicted && predicted.split === SPLIT_STATUS && !isSelfTargeting(predicted))) break;
+		if (move.name === "Mat Block" && !(atk.firstTurn && predicted && isDamaging(predicted) && !isSelfTargeting(predicted))) break;
+		// Radical Red: an Aegislash in Blade Forme uses King's Shield half the time it can.
+		if (move.name === "King's Shield" && atk.ability === "Stance Change" && atk.name === "Aegislash-Blade" && !isIncapacitated(def) &&
+			turn.coin("kingsShield" + turn.phase + atk.key + i, 0.5)) {
+			if (style === STYLE.STALL) up(3);
+			else status(3);
+			break;
+		}
 		if (move.name === "Endure") {
 			if (canKnockOut(turn, def, atk) && ((/Berry$/.test(atk.item) && atk.hp > atk.maxHP / 4) ||
 				(hasMoveNamed(atk, ["Flail", "Reversal", "Endeavor"]) && atk.hp > 1))) status(3);
@@ -1920,12 +1944,13 @@ function shouldProtect(turn, atk, def) {
 	var field = turn.battle.field;
 	if ((willFaintFromChip(atk, field) && !has(["Moxie", "Beast Boost", "Chilling Neigh", "Grim Neigh"], def.ability)) ||
 		isIncapacitated(def)) return false;
+	// Radical Red: not while badly poisoned (CFRU master has no such rule, and Protects for Moody and
+	// when you will faint from chip damage, which Radical Red doesn't).
+	if (atk.status === "tox" && !has(["Poison Heal", "Magic Guard", "Toxic Boost"], atk.ability)) return false;
 	if ((atk.item === "Toxic Orb" && !atk.status && (has(["Poison Heal", "Toxic Boost", "Quick Feet", "Magic Guard"], atk.ability) ||
 		hasMoveNamed(atk, ["Facade"]))) || (atk.item === "Flame Orb" && !atk.status &&
 		(has(["Guts", "Flare Boost", "Magic Guard"], atk.ability) || hasMoveNamed(atk, ["Facade"])))) return true;
 	if (atk.ability === "Speed Boost" && atk.speed <= def.speed && stage(atk, "spe") < 12) return true;
-	if (atk.ability === "Moody") return true;
-	if (willFaintFromChip(def, field)) return true;
 	var predicted = turn.predicted(def);
 	if (predicted && predicted.effect === E.EXPLOSION) return true;
 	var passive = passiveRecovery(atk, field);
@@ -1946,7 +1971,7 @@ function twoHitsAfterHealing(turn, atk, def, heal) {
 function protectBonus(turn, atk, def) {
 	switch (styleOf(turn, atk)) {
 	case STYLE.STALL:
-		return 3;
+		return isTrappedBy(def, atk, turn.battle.field) ? 7 : 3;
 	case STYLE.KILL:
 	case STYLE.BATON_PASS:
 		return 0;
