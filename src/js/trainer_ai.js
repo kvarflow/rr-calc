@@ -19,10 +19,13 @@
  * sweeper's status bonus, recovery at full HP, Taunt, the speed order against priority). The damage bonuses (KO first +9, slower KO,
  * desperate +9, strongest +2), the slower-KO table and the 0.93 damage roll match.
  *
+ * Before its move the AI may switch out (ai_switching.c): the trainer's other Pokémon still
+ * standing are scored against yours, and the chance of each switch is shown with the moves.
+ *
  * What the calculator cannot know is assumed: no moves used yet this battle (so no Protect or
  * Destiny Bond last turn, no Choice lock), the foe's Pokémon has just come in when it is at full
- * HP (Fake Out), the foe can switch when it has another Pokémon left, and neither side holds a
- * Substitute. The AI's switching and item use are not modelled.
+ * HP (Fake Out, and it waits a turn before switching again unless it led), its benched Pokémon are
+ * at full HP with no status, and neither side holds a Substitute. Trainer item use isn't modelled.
  */
 
 // CFRU's move effects (include/constants/battle_move_effects.h), by number.
@@ -120,7 +123,7 @@ function getAIMoveData(move) {
  */
 function enumerateChances(decide, limit) {
 	var path = [];
-	var total = [0, 0, 0, 0];
+	var total = [];
 	var runs = 0;
 	for (;;) {
 		var depth = 0;
@@ -137,16 +140,17 @@ function enumerateChances(decide, limit) {
 			}
 		};
 		var shares = decide(rng);
-		for (var i = 0; i < 4; i++) total[i] += weight * shares[i];
+		for (var i = 0; i < shares.length; i++) total[i] = (total[i] || 0) + weight * shares[i];
 		path.length = depth;
 		while (path.length && path[path.length - 1] + 1 >= sizes[path.length - 1]) path.pop();
 		if (!path.length || ++runs >= limit) break;
 		path[path.length - 1]++;
 	}
-	var sum = total[0] + total[1] + total[2] + total[3];
-	return total.map(function (p) {
-		return sum ? p / sum : 0;
-	});
+	var sum = 0;
+	for (var j = 0; j < total.length; j++) sum += total[j] || 0;
+	var out = [];
+	for (var k = 0; k < total.length; k++) out.push(sum ? (total[k] || 0) / sum : 0);
+	return out;
 }
 
 // A battle turn being thought through: random values are drawn lazily and kept for the turn.
@@ -1726,6 +1730,7 @@ function scorePositives(turn, atk, def, i, score) {
 		}
 		var pivot = shouldPivot(turn, atk, def, i);
 		if (pivot === "pivot") up(pivotBonus(style));
+		else if (pivot === "immediately") up(9);
 		else if (pivot === "dont") {
 			score = Math.max(0, score - 9);
 			if (isStrongest(turn, atk, def, i)) recalcStrongestIgnoring(turn, atk, def, i);
@@ -1963,29 +1968,68 @@ function shouldUseFakeOut(turn, atk, def, move) {
 	return true;
 }
 
-// ShouldPivot, without knowing the AI's party (as if no switch-in stands out).
+// ShouldPivot: whether U-turn, Volt Switch, Flip Turn or Parting Shot is worth using now, using
+// how well the AI's best switch-in does against you (none for your side: your party isn't modelled).
+// "immediately" when the switching checks chose to pivot out instead of switching.
 function shouldPivot(turn, atk, def, i) {
 	var move = atk.moves[i];
-	if (atk.monsLeft <= 1) return "try";
-	if (atk.sideState.sr && atk.item !== "Heavy-Duty Boots" && atk.ability !== "Magic Guard") {
-		var effectiveness = atk.rockEffectiveness || 1;
-		if (atk.maxHP * effectiveness / 8 >= atk.maxHP / 4) return "dont";
-	}
-	if (turn.predictedSwitch[def.key]) return "pivot";
+	var field = turn.battle.field;
+	if (turn.goodToPivot && atk === turn.battle.ai) return "immediately";
 	var style = styleOf(turn, atk);
+	var usefulBoost = (usefulOffenseRaised(atk) && isDamager(style)) || stage(def, "eva") >= 10;
+	var flags = atk === turn.battle.ai && turn.battle.party && turn.battle.party.length ? switchInFlags(scoreSwitchIns(turn).best) : 0;
+	var F = SWITCH_FLAG;
+	if (hazardsHurt(atk, 4, field)) return "dont";
+	if (atk.monsLeft <= 1) return "try";
+	if (turn.predictedSwitch[def.key] && !usefulBoost) return "pivot";
+	var damaging = move.split !== SPLIT_STATUS;
+	var full = def.hp === def.maxHP;
+	var breaksSash = full && (def.item === "Focus Sash" || defAbility(atk, def) === "Sturdy" ||
+		has(["Multiscale", "Shadow Shield"], defAbility(atk, def)));
+	var hazardsOnSide = atk.sideState.sr || atk.sideState.spikes > 0;
+	// Pivot if its attacking stat is at -3 or worse (with both kinds of attack CFRU only looks at
+	// Sp. Atk: it compares the Attack stat's index, not its stage).
+	var weakAttacks = function () {
+		var physical = hasRealPhysical(atk);
+		var special = hasSpecial(atk);
+		if (physical && !special) return stage(atk, "atk") <= OFFENSIVE_STAT_MIN;
+		if (special) return stage(atk, "spa") <= OFFENSIVE_STAT_MIN;
+		return false;
+	};
 	if (hitsFirst(turn, atk, move, def)) {
-		if (!anotherMoveKnocksOut(turn, atk, def, i)) {
-			if (canKnockOut(turn, atk, def)) return "try";
-			if (isDamager(style) && can2HKO(turn, atk, def)) {
-				if (canKnockOut(turn, def, atk)) return "pivot";
+		if (anotherMoveKnocksOut(turn, atk, def, i)) return "dont";
+		if (canKnockOut(turn, atk, def)) return "try";
+		if (isDamager(style) && can2HKO(turn, atk, def)) {
+			if (canKnockOut(turn, def, atk)) return "pivot";
+			if (damaging && (((flags & F.RESIST_ALL) && (flags & (F.KO_FOE | F.REMOVE_HAZARDS))) || breaksSash)) return "pivot";
+		} else if (!usefulBoost) {
+			if (isDamager(style) && damaging && breaksSash) return "pivot";
+			if (flags & (F.WALLS_FOE | F.RESIST_ALL)) {
+				if (hazardsOnSide && (flags & F.REMOVE_HAZARDS)) return "pivot";
+				if (willFaintFromChip(atk, field)) return "pivot";
+				if (isDamager(style)) return weakAttacks() ? "pivot" : "try";
 			}
-			if (def.hp === def.maxHP && (def.item === "Focus Sash" || def.ability === "Sturdy" || def.ability === "Multiscale")) return "pivot";
 		}
-	} else {
-		if (canKnockOut(turn, def, atk)) return "try";
-		if (can2HKO(turn, def, atk) && !anotherMoveKnocksOut(turn, atk, def, i) && knocksOut(turn, atk, def, i, 1)) return "try";
-		if (canKnockOut(turn, atk, def) && !anotherMoveKnocksOut(turn, atk, def, i)) return "try";
-		if (can2HKO(turn, atk, def) && def.hp === def.maxHP && (def.item === "Focus Sash" || def.ability === "Sturdy")) return "pivot";
+		return "dont";
+	}
+	if (canKnockOut(turn, def, atk)) return move.effect === E.TELEPORT ? "dont" : "try";
+	if (can2HKO(turn, def, atk)) {
+		if (canKnockOut(turn, atk, def)) return anotherMoveKnocksOut(turn, atk, def, i) ? "dont" : "try";
+		if (isDamager(style) && (flags & F.KO_FOE) && (flags & (F.OUTSPEEDS | F.WALLS_FOE | F.RESIST_ALL))) return "pivot";
+		return "dont";
+	}
+	if (canKnockOut(turn, atk, def)) return !anotherMoveKnocksOut(turn, atk, def, i) && !usefulBoost ? "try" : "dont";
+	if (can2HKO(turn, atk, def)) {
+		if (isDamager(style) && damaging && (((flags & F.KO_FOE) && (flags & (F.OUTSPEEDS | F.WALLS_FOE | F.RESIST_ALL))) ||
+			((flags & F.RESIST_ALL) && (flags & F.REMOVE_HAZARDS)) || breaksSash)) return "pivot";
+		return "dont";
+	}
+	if (isDamager(style) && (flags & F.KO_FOE) && (flags & F.OUTSPEEDS)) return "pivot";
+	if (!usefulBoost && (flags & (F.OUTSPEEDS | F.WALLS_FOE | F.RESIST_ALL))) {
+		if (hazardsOnSide && (flags & F.REMOVE_HAZARDS)) return "pivot";
+		if (willFaintFromChip(atk, field)) return "pivot";
+		if (isDamager(style) && weakAttacks()) return "pivot";
+		return "try";
 	}
 	return "dont";
 }
@@ -2044,7 +2088,7 @@ function damageMoveBonus(turn, atk, def, i, score) {
 	}
 	var predictedIndex = predicted ? def.moves.indexOf(predicted) : -1;
 	if (noProtect && predictedIndex !== -1 && knocksOut(turn, def, atk, predictedIndex, 1) &&
-		strongestGoesFirst(turn, atk, def) === i &&
+		strongestGoesFirst(turn, atk, def) === i && !(turn.goodToPivot && atk === turn.battle.ai) &&
 		(style !== STYLE.HAZARDS || (turn.simulatedRNG(3) & 1)) &&
 		(style !== STYLE.PHAZING || (priorityOf(atk, move, field) > 0 && atk.speed < def.speed)) &&
 		(style !== STYLE.STALL || (priorityOf(atk, move, field) > 0 && atk.speed < def.speed)) &&
@@ -2085,6 +2129,886 @@ function slowKOBonus(turn, atk, def) {
 		return lastFoe ? 9 : !foe2HKO ? 3 : 6;
 	}
 	return 8;
+}
+
+/* ---------------------------------------------------------------------------------------------
+ * Switching (ai_switching.c, singles). Before choosing a move the AI may switch out: to take your
+ * predicted move with an absorbing ability, to escape a KO, when its moves are all bad, asleep,
+ * seeded, at -3 or worse, or to save a sweeper for later. Where it goes is decided by scoring each
+ * Pokémon left in its party against yours (CalcMostSuitableMonToSwitchInto), the same scoring
+ * that picks its next Pokémon after a KO. Damage between your Pokémon and its benched ones is the
+ * calculator's top roll x 0.96 ("more idealistic" than the 0.93 on the field), as in the game.
+ */
+var SWITCH_FLAG = {KO_FOE: 1, RESIST_ALL: 2, REVENGE_KILL: 4, WALLS_FOE: 8, CAN_2HKO: 16, REMOVE_HAZARDS: 32,
+	OUTSPEEDS: 64, FAINTS: 128};
+var SWITCH_SCORE = {KO_FOE: 31, RESIST_ALL: 17, REVENGE_KILL: 8, WALLS_FOE: 2, CAN_2HKO: 2, OUTSPEEDS: 14,
+	WEAK: 1, FAINTS: 39, FAINTS_BUT_OUTSPEEDS: 15};
+var SWITCH_SCORE_MAX = 31 + 17 + 8 + 14;
+// OFFENSIVE_STAT_MIN_NUM: a stat stage of 3 is -3.
+var OFFENSIVE_STAT_MIN = 3;
+var MOXIE_ABILITIES = ["Moxie", "Grim Neigh", "Chilling Neigh", "As One", "Beast Boost", "Soul-Heart", "Battle Bond"];
+var HP_ABSORBING = ["Water Absorb", "Volt Absorb"];
+var STAT_STAGE_RATIOS = [[10, 40], [10, 35], [10, 30], [10, 25], [10, 20], [10, 15], [10, 10], [15, 10], [20, 10],
+	[25, 10], [30, 10], [35, 10], [40, 10]];
+
+AITurn.prototype.keep = function (key, compute) {
+	this.kept = this.kept || {};
+	if (!(key in this.kept)) this.kept[key] = compute.call(this);
+	return this.kept[key];
+};
+
+function withStage(value, stageIndex) {
+	var ratio = STAT_STAGE_RATIOS[Math.max(0, Math.min(12, stageIndex))];
+	return Math.floor(value * ratio[0] / ratio[1]);
+}
+
+// AnyStatGreaterThan: any stat stage above `amount` (6 is no change).
+function anyStageAbove(side, amount) {
+	return ["atk", "def", "spe", "spa", "spd", "acc", "eva"].some(function (stat) {
+		return stage(side, stat) > amount;
+	});
+}
+
+// AnyUsefulOffseniveStatIsRaised.
+function usefulOffenseRaised(side) {
+	return (stage(side, "atk") > 6 && hasRealPhysical(side)) || (stage(side, "def") > 6 && hasMoveNamed(side, ["Body Press"])) ||
+		(stage(side, "spa") > 6 && hasSpecial(side)) || stage(side, "spe") > 6;
+}
+
+function typeEffectiveness(type, types) {
+	var row = typeof typeChart !== "undefined" && typeChart && typeChart[type];
+	if (!row) return 1;
+	return types.reduce(function (product, t) {
+		return product * (row[t] !== undefined ? row[t] : 1);
+	}, 1);
+}
+
+// GetMonEntryHazardDamage: Stealth Rock and Spikes on the AI's side of the field.
+function entryHazardDamage(mon, sideState, field) {
+	if (mon.ability === "Magic Guard" || mon.item === "Heavy-Duty Boots") return 0;
+	var damage = 0;
+	if (sideState.sr) damage += Math.floor(mon.maxHP * typeEffectiveness("Rock", mon.types) / 8);
+	if (sideState.spikes > 0 && isGrounded(mon, field)) damage += Math.floor(mon.maxHP / [0, 8, 6, 4][Math.min(3, sideState.spikes)]);
+	return damage;
+}
+
+function willFaintFromHazards(mon, sideState, field) {
+	return entryHazardDamage(mon, sideState, field) >= mon.hp;
+}
+
+// WillTakeSignificantDamageFromEntryHazards: coming back in would cost 1/fraction of its HP.
+function hazardsHurt(side, fraction, field) {
+	var damage = entryHazardDamage(side, side.sideState, field);
+	return damage > 0 && (damage >= side.hp || damage >= Math.floor(side.maxHP / fraction));
+}
+
+function isMoldBreaker(side) {
+	return has(MOLD_BREAKERS, side.ability);
+}
+
+// IsTrapped through an ability (Shadow Tag, Arena Trap, Magnet Pull); trapping moves are not known.
+function isTrappedBy(side, foe, field) {
+	if (side.types.indexOf("Ghost") !== -1 || side.item === "Shed Shell") return false;
+	if (foe.ability === "Shadow Tag") return side.ability !== "Shadow Tag";
+	if (foe.ability === "Arena Trap") return isGrounded(side, field);
+	if (foe.ability === "Magnet Pull") return side.types.indexOf("Steel") !== -1;
+	return false;
+}
+
+function isPivotMove(move) {
+	return !!move && move.effect === E.BATON_PASS && move.name !== "Baton Pass";
+}
+
+function hasPivotMoveThatAffects(turn, atk, def, mustGoFirst) {
+	return atk.moves.some(function (move, i) {
+		if (!isPivotMove(move) || !isUsable(atk, i, turn.battle.field)) return false;
+		if (move.split !== SPLIT_STATUS && move.maxDamage === 0) return false;
+		return !mustGoFirst || hitsFirst(turn, atk, move, def);
+	});
+}
+
+// HealingMoveInMonMoveset / HealingMoveInMoveset.
+function hasHealingMove(side) {
+	return hasEffect(side, [E.RESTORE_HP, E.MORNING_SUN, E.SWALLOW, E.WISH]);
+}
+
+/* A benched Pokémon against your Pokémon on the field, and back. */
+
+// GetFinalAIMoveDamageFromParty (AI_CalcPartyDmg): one use of a benched Pokémon's move on you.
+function partyDamage(turn, mon, def, i) {
+	return turn.keep("pdmg" + mon.key + i, function () {
+		var move = mon.moves[i];
+		var field = turn.battle.field;
+		if (!move || move.split === SPLIT_STATUS || move.power === 0) return 0;
+		if (move.effect === E.OHKO) return def.hp;
+		if (move.effect === E.BURN_UP && mon.types.indexOf("Fire") === -1) return 0;
+		if (field.terrain === "Psychic" && priorityOf(mon, move, field) > 0 && isGrounded(def, field)) return 0;
+		if (has(["Dazzling", "Queenly Majesty", "Armor Tail"], defAbility(mon, def)) && priorityOf(mon, move, field) > 0) return 0;
+		var damage;
+		if (has(FIXED_DAMAGE_EFFECTS, move.effect)) {
+			damage = move.effect === E.ENDEAVOR ? Math.max(0, def.hp - mon.hp) : move.maxDamage;
+		} else {
+			var crit = move.critChance >= 1 || (move.critChance >= 0.5 && turn.coin("pcrit" + mon.key + i, 0.5));
+			damage = Math.floor((crit ? move.maxCritDamage : move.maxDamage) * 96 / 100);
+			if (move.hits <= 1 && (move.effect === E.FALSE_SWIPE || (def.hp === def.maxHP &&
+				(def.item === "Focus Sash" || (defAbility(mon, def) === "Sturdy"))))) damage = Math.min(damage, def.hp - 1);
+		}
+		return Math.min(damage, def.maxHP);
+	});
+}
+
+function partyMoveKnocksOut(turn, mon, def, i) {
+	var move = mon.moves[i];
+	if (!move || move.split === SPLIT_STATUS) return false;
+	if (def.ability === "Disguise" && def.abilityOn && !isMoldBreaker(mon)) return false;
+	return partyDamage(turn, mon, def, i) >= def.hp;
+}
+
+// CanKnockOutFromParty: any of its moves.
+function partyCanKnockOut(turn, mon, def) {
+	for (var i = 0; i < 4; i++) {
+		if (mon.moves[i] && isUsable(mon, i, turn.battle.field) && partyMoveKnocksOut(turn, mon, def, i)) return true;
+	}
+	return false;
+}
+
+function partyMaxDamage(turn, mon, def) {
+	var best = 0;
+	for (var i = 0; i < 4; i++) {
+		if (mon.moves[i] && isUsable(mon, i, turn.battle.field)) best = Math.max(best, partyDamage(turn, mon, def, i));
+	}
+	return best;
+}
+
+// AI_CalcMonDefDmg: one use of your move on a benched Pokémon, after it comes in.
+function damageToBenched(turn, atk, mon, i) {
+	return turn.keep("bdmg" + atk.key + i + mon.key, function () {
+		var move = atk.moves[i];
+		var hit = mon.incoming[i];
+		if (!move || !hit) return 0;
+		if (move.effect !== E.PAIN_SPLIT && (move.split === SPLIT_STATUS || (hit.maxDamage === 0 && move.power > 0))) return 0;
+		switch (move.effect) {
+		case E.SUPER_FANG:
+			return Math.floor(mon.hp / 2);
+		case E.ENDEAVOR:
+			return Math.max(0, mon.hp - atk.hp);
+		case E.PAIN_SPLIT:
+			return Math.max(0, mon.hp - Math.max(1, Math.floor((atk.hp + mon.hp) / 2)));
+		case E.BURN_UP:
+			if (atk.types.indexOf("Fire") === -1) return 0;
+		}
+		if (has(FIXED_DAMAGE_EFFECTS, move.effect)) return hit.maxDamage;
+		var crit = hit.critChance >= 1 || (hit.critChance >= 0.5 && turn.coin("bcrit" + atk.key + i + mon.key, 0.5));
+		var damage = Math.floor((crit ? hit.maxCritDamage : hit.maxDamage) * 96 / 100);
+		if (move.hits <= 1) {
+			if (move.effect === E.FALSE_SWIPE) {
+				damage = Math.min(damage, mon.hp - 1);
+			} else if (entryHazardDamage(mon, mon.sideState, turn.battle.field) === 0 && mon.hp === mon.maxHP &&
+				((mon.ability === "Sturdy" && !isMoldBreaker(atk)) || mon.item === "Focus Sash")) {
+				damage = Math.min(damage, mon.hp - 1);
+			}
+		}
+		return damage;
+	});
+}
+
+// Disguise (and Ice Face against physical moves) takes the first hit.
+function disguiseTakesHit(mon, atk, move) {
+	if (isMoldBreaker(atk) || !mon.abilityOn) return false;
+	return mon.ability === "Disguise" || (mon.ability === "Ice Face" && move.split === SPLIT_PHYSICAL);
+}
+
+function benchedHitDamage(turn, mon, i) {
+	var player = turn.battle.player;
+	var move = player.moves[i];
+	if (disguiseTakesHit(mon, player, move)) return mon.ability === "Disguise" ? Math.floor(mon.maxHP / 8) : 0;
+	return damageToBenched(turn, player, mon, i) + entryHazardDamage(mon, mon.sideState, turn.battle.field);
+}
+
+// PredictedMoveWontDoTooMuchToMon: the switch-in can take your predicted move.
+function predictedHitIsSafe(turn, mon, flags) {
+	var player = turn.battle.player;
+	var move = turn.predicted(player);
+	if (flags & SWITCH_FLAG.FAINTS) return false;
+	if (!move || move.split === SPLIT_STATUS || move.name === "Pursuit") return true;
+	if (flags & SWITCH_FLAG.RESIST_ALL) return true;
+	if (move.effect === E.SUCKER_PUNCH) return true;
+	var damage = benchedHitDamage(turn, mon, player.moves.indexOf(move));
+	if (damage >= mon.hp) return false;
+	if (damage * 2 < mon.hp) return true;
+	return damage * 2 >= mon.maxHP && hasHealingMove(mon) && mon.speed > player.speed;
+}
+
+// PredictedMoveWontKOMon.
+function predictedHitWontKO(turn, mon) {
+	var player = turn.battle.player;
+	var move = turn.predicted(player);
+	if (!move || move.split === SPLIT_STATUS || move.effect === E.SUCKER_PUNCH) return true;
+	return benchedHitDamage(turn, mon, player.moves.indexOf(move)) < mon.hp;
+}
+
+// PredictedMoveKOsSelfDueToContact: your predicted move would faint you on its Rough Skin, Iron
+// Barbs or Rocky Helmet.
+function contactKnocksYouOut(turn, mon) {
+	var player = turn.battle.player;
+	var move = turn.predicted(player);
+	if (!move || !(move.flags & FLAG_CONTACT) || player.ability === "Long Reach" || player.item === "Protective Pads") return false;
+	if (player.ability === "Magic Guard") return false;
+	var damage = 0;
+	if (has(["Rough Skin", "Iron Barbs"], mon.ability) && !isMoldBreaker(player)) damage += Math.floor(player.maxHP / 8);
+	if (mon.item === "Rocky Helmet") damage += Math.floor(player.maxHP / 6);
+	return damage > 0 && damage >= player.hp;
+}
+
+/* CalcMostSuitableMonToSwitchInto: each benched Pokémon scored against yours. */
+function scoreSwitchIns(turn) {
+	return turn.keep("switchIns", function () {
+		var battle = turn.battle;
+		var foe = battle.player;
+		var ai = battle.ai;
+		var field = battle.field;
+		var smart = battle.flags > AI_NEGATIVES;
+		var hazardsUp = ai.sideState.sr || ai.sideState.spikes > 0;
+		var viable = 1 + battle.party.length;
+		var entries = [];
+		var best = null;
+		var second = null;
+		var lastValid = null;
+		var secondLastValid = null;
+		var sameAsBest = function (entry, other, key) {
+			if (entry.score !== other.score) return false;
+			if ((other.flags & SWITCH_FLAG.FAINTS) && !(entry.flags & SWITCH_FLAG.FAINTS)) return true;
+			return !(other.flags & SWITCH_FLAG.FAINTS) && !(entry.flags & SWITCH_FLAG.FAINTS) && turn.coin(key, 0.5);
+		};
+		battle.party.forEach(function (mon) {
+			var entry = {mon: mon, score: 0, flags: 0, canRemoveHazards: false, ranked: false};
+			entries.push(entry);
+			secondLastValid = lastValid;
+			lastValid = entry;
+			if (willFaintFromHazards(mon, ai.sideState, field)) return;
+			var noteHazardRemoval = function (move) {
+				if (move.effect === E.RAPID_SPIN && hazardsUp) entry.canRemoveHazards = viable >= 2;
+			};
+			if (mon.speed >= foe.speed) {
+				entry.score += SWITCH_SCORE.OUTSPEEDS;
+				entry.flags |= SWITCH_FLAG.OUTSPEEDS;
+			}
+			var k;
+			if (partyCanKnockOut(turn, mon, foe)) {
+				entry.score += SWITCH_SCORE.KO_FOE;
+				entry.flags |= SWITCH_FLAG.KO_FOE;
+				if (has(MOXIE_ABILITIES, mon.ability) || isTrappedBy(foe, mon, field)) {
+					entry.score += SWITCH_SCORE.REVENGE_KILL;
+					entry.flags |= SWITCH_FLAG.REVENGE_KILL;
+				} else {
+					// Priority moves first (each one found goes to the front), then the rest in order.
+					var ordered = [];
+					for (k = 0; k < 4; k++) {
+						if (!mon.moves[k] || !isUsable(mon, k, field)) continue;
+						if (priorityOf(mon, mon.moves[k], field) > 0) ordered.unshift({index: k, priority: true});
+						else ordered.push({index: k, priority: false});
+					}
+					for (var o = 0; o < ordered.length; o++) {
+						var move = mon.moves[ordered[o].index];
+						noteHazardRemoval(move);
+						if (move.split !== SPLIT_STATUS && ordered[o].priority && partyMoveKnocksOut(turn, mon, foe, ordered[o].index)) {
+							entry.score += SWITCH_SCORE.REVENGE_KILL;
+							entry.flags |= SWITCH_FLAG.REVENGE_KILL;
+							if (!(entry.flags & SWITCH_FLAG.OUTSPEEDS)) {
+								entry.score += SWITCH_SCORE.OUTSPEEDS;
+								entry.flags |= SWITCH_FLAG.OUTSPEEDS;
+							}
+							break;
+						} else if (move.name === "Fell Stinger" || move.name === "Pursuit") {
+							if (partyMoveKnocksOut(turn, mon, foe, ordered[o].index)) {
+								entry.score += SWITCH_SCORE.REVENGE_KILL;
+								entry.flags |= SWITCH_FLAG.REVENGE_KILL;
+								break;
+							}
+						}
+					}
+				}
+			} else {
+				var usable = false;
+				for (k = 0; k < 4; k++) {
+					var m = mon.moves[k];
+					if (!m || !isUsable(mon, k, field)) continue;
+					usable = true;
+					noteHazardRemoval(m);
+					if (m.split !== SPLIT_STATUS && partyMaxDamage(turn, mon, foe) >= Math.floor(foe.hp / 2)) {
+						entry.score += SWITCH_SCORE.CAN_2HKO;
+						entry.flags |= SWITCH_FLAG.CAN_2HKO;
+						break;
+					}
+				}
+				if (!usable) {
+					entry.score = -1;
+					return;
+				}
+			}
+
+			// How well it takes your moves (priority ones first).
+			var foeMoves = [];
+			var physical = false;
+			var special = false;
+			for (k = 0; k < 4; k++) {
+				var fm = foe.moves[k];
+				if (!fm || !isUsable(foe, k, field)) continue;
+				if (fm.split === SPLIT_PHYSICAL) physical = true;
+				else if (fm.split === SPLIT_SPECIAL) special = true;
+				else continue;
+				if (priorityOf(foe, fm, field) > 0) foeMoves.unshift({index: k, priority: true});
+				else foeMoves.push({index: k, priority: false});
+			}
+			var hpOnSwitchIn = Math.max(0, mon.hp - entryHazardDamage(mon, ai.sideState, field));
+			var faints = false;
+			var weak = false;
+			var neutral = 0;
+			var recovery = passiveRecovery(mon, field);
+			for (k = 0; k < foeMoves.length; k++) {
+				var hitMove = foe.moves[foeMoves[k].index];
+				if (smart) {
+					var first = damageToBenched(turn, foe, mon, foeMoves[k].index);
+					var other = first;
+					if (disguiseTakesHit(mon, foe, hitMove)) {
+						first = mon.ability === "Disguise" ? Math.floor(mon.maxHP / 8) : 0;
+					} else if (first >= hpOnSwitchIn) {
+						faints = true;
+						if ((entry.flags & SWITCH_FLAG.OUTSPEEDS) && foeMoves[k].priority &&
+							(field.terrain !== "Psychic" || !isGrounded(mon, field))) entry.flags &= ~SWITCH_FLAG.OUTSPEEDS;
+						break;
+					}
+					if (has(["Multiscale", "Shadow Shield"], mon.ability) && mon.hp === mon.maxHP && !isMoldBreaker(foe)) other *= 2;
+					var adjustedHP = Math.min(hpOnSwitchIn, mon.maxHP);
+					if (adjustedHP + recovery <= first + other) weak = true;
+					else if (adjustedHP + recovery * 2 <= first + other * 2) neutral++;
+				} else {
+					var effectiveness = mon.incoming[foeMoves[k].index].effectiveness;
+					if (effectiveness > 1) {
+						weak = true;
+						break;
+					} else if (effectiveness === 1) {
+						neutral++;
+					}
+				}
+			}
+			var weaken = function () {
+				entry.score = entry.score >= SWITCH_SCORE.WEAK ? entry.score - SWITCH_SCORE.WEAK : 0;
+			};
+			if (faints) {
+				if (!(entry.flags & SWITCH_FLAG.OUTSPEEDS)) {
+					entry.flags |= SWITCH_FLAG.FAINTS;
+					entry.score = entry.score >= SWITCH_SCORE.FAINTS ? entry.score - SWITCH_SCORE.FAINTS : 0;
+				} else if (!(entry.flags & SWITCH_FLAG.KO_FOE)) {
+					entry.score = entry.score >= SWITCH_SCORE.FAINTS_BUT_OUTSPEEDS ? entry.score - SWITCH_SCORE.FAINTS_BUT_OUTSPEEDS : 0;
+				} else {
+					weaken();
+				}
+			} else if (weak) {
+				weaken();
+			} else if (!neutral) {
+				entry.score += SWITCH_SCORE.RESIST_ALL;
+				entry.flags |= SWITCH_FLAG.RESIST_ALL;
+			} else {
+				var attack = withStage(foe.stats.atk, stage(foe, "atk"));
+				var spAttack = withStage(foe.stats.spa, stage(foe, "spa"));
+				var cantWall = (physical && mon.stats.def <= attack) || (!(physical && mon.stats.def <= attack) && special && mon.stats.spd <= spAttack);
+				if (!cantWall) {
+					entry.score += SWITCH_SCORE.WALLS_FOE;
+					entry.flags |= SWITCH_FLAG.WALLS_FOE;
+				}
+			}
+
+			entry.ranked = true;
+			if (entry.score >= SWITCH_SCORE_MAX && entry.canRemoveHazards) {
+				second = best;
+				best = entry;
+			} else if (!best || entry.score > best.score || sameAsBest(entry, best, "bestTie" + mon.key)) {
+				second = best;
+				best = entry;
+			} else if (!second || entry.score > second.score || sameAsBest(entry, second, "secondTie" + mon.key)) {
+				second = entry;
+			}
+		});
+		if (best) {
+			if (!(best.flags & SWITCH_FLAG.RESIST_ALL) &&
+				(best.flags & (SWITCH_FLAG.KO_FOE | SWITCH_FLAG.OUTSPEEDS)) !== (SWITCH_FLAG.KO_FOE | SWITCH_FLAG.OUTSPEEDS)) {
+				for (var i = 0; i < entries.length; i++) {
+					if (entries[i].canRemoveHazards && !(entries[i].flags & SWITCH_FLAG.FAINTS)) {
+						second = best;
+						best = entries[i];
+						break;
+					}
+				}
+			}
+			return {entries: entries, best: best, second: second};
+		}
+		// None stood out: the last ones checked.
+		var fallback = function (entry) {
+			return entry ? {mon: entry.mon, score: 0, flags: 0} : null;
+		};
+		return {entries: entries, best: fallback(lastValid), second: fallback(secondLastValid)};
+	});
+}
+
+function switchInFlags(entry) {
+	return entry ? entry.flags : 0;
+}
+
+// The best Pokémon, the second best, then the rest of the party in order.
+function switchInsInOrder(turn) {
+	var scored = scoreSwitchIns(turn);
+	var list = [];
+	if (scored.best) list.push({entry: scored.best, flags: scored.best.flags});
+	if (scored.second) list.push({entry: scored.second, flags: scored.second.flags});
+	scored.entries.forEach(function (entry) {
+		if (entry !== scored.best && entry !== scored.second) list.push({entry: entry, flags: entry.flags, rest: true});
+	});
+	return list;
+}
+
+/* The checks in ShouldSwitch, in order. Each returns null or {mon, pivot}; mon null means the best. */
+
+// FindMonThatAbsorbsOpponentsMove.
+function switchToAbsorb(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var move = turn.predicted(foe);
+	if (stage(ai, "eva") >= 9) return null;
+	if (!move || move.split === SPLIT_STATUS) return null;
+	if (!isDamager(styleOf(turn, foe))) {
+		if (justIn) return null;
+		if (turn.coin("absorbHalf", 0.5)) return null;
+	}
+	if (!hitsFirst(turn, foe, move, ai)) {
+		if (canKnockOut(turn, ai, foe)) return null;
+	} else if (!canKnockOut(turn, foe, ai) && canKnockOut(turn, ai, foe) && anyStageAbove(ai, 6)) {
+		return null;
+	}
+	if (!canKnockOut(turn, foe, ai) && anyStageAbove(ai, 7)) return null;
+	if (isMoldBreaker(foe)) return null;
+	var abilities = ABSORBING[move.type];
+	if (!abilities || has(abilities, ai.ability)) return null;
+	var list = switchInsInOrder(turn);
+	for (var i = 0; i < list.length; i++) {
+		var mon = list[i].entry.mon;
+		if (!has(abilities, mon.ability) || willFaintFromHazards(mon, ai.sideState, battle.field)) continue;
+		if (has(HP_ABSORBING, mon.ability) && mon.hp === mon.maxHP && entryHazardDamage(mon, ai.sideState, battle.field) === 0) {
+			if (justIn) continue;
+			if (finalDamage(turn, foe, ai, foe.moves.indexOf(move), 2) < ai.hp) continue;
+		}
+		return {mon: mon};
+	}
+	return null;
+}
+
+// ShouldSwitchIfWonderGuard: your Wonder Guard Pokémon, and nothing here can touch it.
+function switchForWonderGuard(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var field = battle.field;
+	if (foe.ability !== "Wonder Guard" || willFaintFromChip(foe, field)) return null;
+	for (var i = 0; i < 4; i++) {
+		var move = ai.moves[i];
+		if (!move || !isUsable(ai, i, field)) continue;
+		if (move.split !== SPLIT_STATUS) {
+			if (isMoldBreaker(ai) || move.effectiveness > 1) return null;
+			continue;
+		}
+		switch (move.effect) {
+		case E.SLEEP:
+		case E.YAWN:
+			if (canBeSlept(ai, foe, field)) return null;
+			break;
+		case E.ROAR:
+			if (foe.monsLeft > 1) return null;
+			break;
+		case E.TOXIC:
+		case E.POISON:
+			if (canBePoisoned(ai, foe, field)) return null;
+			break;
+		case E.WILL_O_WISP:
+			if (canBeBurned(ai, foe, field)) return null;
+			break;
+		case E.CONFUSE:
+		case E.SWAGGER:
+		case E.FLATTER:
+			if (canBeConfused(ai, foe, field)) return null;
+			break;
+		case E.PARALYZE:
+			if (canBeParalyzed(ai, foe, field)) return null;
+			break;
+		case E.LEECH_SEED:
+			if (foe.types.indexOf("Grass") === -1) return null;
+			break;
+		case E.CURSE:
+			if (ai.types.indexOf("Ghost") !== -1) return null;
+			break;
+		case E.SPIKES:
+			if ((move.name === "Stealth Rock" && !foe.sideState.sr) || (move.name === "Toxic Spikes" && foe.sideState.toxicSpikes < 2) ||
+				(move.name === "Sticky Web" && !foe.sideState.stickyWeb) || (move.name === "Spikes" && foe.sideState.spikes < 3)) return null;
+			break;
+		case E.SANDSTORM:
+			if (!foe.types.some(function (t) {
+				return has(["Rock", "Ground", "Steel"], t);
+			})) return null;
+			break;
+		case E.HAIL:
+			if (foe.types.indexOf("Ice") === -1) return null;
+			break;
+		case E.BATON_PASS:
+		case E.TELEPORT:
+			return null;
+		case E.MEMENTO:
+			return null;
+		}
+	}
+	for (var p = 0; p < battle.party.length; p++) {
+		var mon = battle.party[p];
+		if (mon.moves.some(function (m) {
+			return m && m.split !== SPLIT_STATUS && m.effectiveness > 1;
+		})) return {mon: mon};
+	}
+	return null;
+}
+
+// ResistsAllMoves: none of the attacker's moves does a third of the defender's HP.
+function resistsAllMoves(turn, atk, def) {
+	for (var i = 0; i < 4; i++) {
+		if (atk.moves[i] && isUsable(atk, i, turn.battle.field) && finalDamage(turn, atk, def, i, 1) >= Math.floor(def.hp / 3)) return false;
+	}
+	return true;
+}
+
+// WallsFoe: its Defence (Sp. Def) beats the attacker's Attack (Sp. Atk) for the moves it has.
+function wallsFoe(atk, def) {
+	var attack = withStage(atk.stats.atk, stage(atk, "atk"));
+	var spAttack = withStage(atk.stats.spa, stage(atk, "spa"));
+	if (hasPhysical(atk) && def.stats.def <= attack) return false;
+	if (hasSpecial(atk) && def.stats.spd <= spAttack) return false;
+	return true;
+}
+
+// OnlyBadMovesLeftInMoveset: nothing worth using (Negatives only) and nothing that hurts enough.
+function onlyBadMovesLeft(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var field = battle.field;
+	if (battle.flags === AI_NEGATIVES) return false;
+	var damaging = 0;
+	for (var i = 0; i < 4; i++) {
+		var move = ai.moves[i];
+		if (!move || !isUsable(ai, i, field)) continue;
+		if (scoreNegatives(turn, ai, foe, i, 100) >= 100) {
+			if (move.split === SPLIT_STATUS) return false;
+			if (move.effect === E.KNOCK_OFF && foe.item && foe.ability !== "Sticky Hold") return false;
+			damaging++;
+		}
+	}
+	if (hasEffect(ai, [E.PROTECT])) return false;
+	if (damaging === 0) return true;
+	if (hasPivotMoveThatAffects(turn, ai, foe, false)) return false;
+	var damage = finalDamage(turn, ai, foe, strongestMove(turn, ai, foe), 1);
+	if (damage >= foe.hp) return false;
+	var recovery = passiveRecovery(foe, field);
+	if (recovery || hasHealingMove(foe)) {
+		if (damage * 3 >= foe.hp + recovery * 2) return false;
+	} else if (damage * 3 >= foe.hp) {
+		return false;
+	}
+	var flags = switchInFlags(scoreSwitchIns(turn).best);
+	if (flags === 0) return false;
+	if (flags & (SWITCH_FLAG.KO_FOE | SWITCH_FLAG.CAN_2HKO)) return true;
+	if (flags & SWITCH_FLAG.RESIST_ALL) return !resistsAllMoves(turn, foe, ai);
+	if (flags & SWITCH_FLAG.WALLS_FOE) return !wallsFoe(foe, ai);
+	return true;
+}
+
+// ShouldSwitchIfOnlyBadMovesLeft.
+function switchFromBadMoves(turn, justIn) {
+	if (justIn || !onlyBadMovesLeft(turn)) return null;
+	var scored = scoreSwitchIns(turn);
+	var wanted = SWITCH_FLAG.OUTSPEEDS | SWITCH_FLAG.WALLS_FOE | SWITCH_FLAG.RESIST_ALL;
+	if (scored.best && (scored.best.flags & wanted) && predictedHitIsSafe(turn, scored.best.mon, scored.best.flags)) return {mon: null};
+	if (scored.second && (scored.second.flags & wanted) && predictedHitIsSafe(turn, scored.second.mon, scored.second.flags)) {
+		return {mon: scored.second.mon};
+	}
+	return null;
+}
+
+// SwitchToBestResistMon: one that resists everything, or one your contact move would faint you on.
+function switchToResist(turn, pivot, checkContact) {
+	var list = switchInsInOrder(turn);
+	for (var i = 0; i < list.length; i++) {
+		var mon = list[i].entry.mon;
+		if ((list[i].flags & SWITCH_FLAG.RESIST_ALL) ||
+			(checkContact && contactKnocksYouOut(turn, mon) && predictedHitWontKO(turn, mon))) return {mon: mon, pivot: pivot};
+	}
+	return null;
+}
+
+// ShouldSwitchIfNaturalCureOrRegenerator.
+function switchToHeal(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var field = battle.field;
+	if (ai.ability === "Natural Cure") {
+		if (hazardsHurt(ai, 4, field)) return null;
+		if (!(isAsleep(ai) || ai.status === "frz" || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
+	} else if (ai.ability === "Regenerator") {
+		if (ai.hp > Math.floor(ai.maxHP / 2) || hazardsHurt(ai, 3, field)) return null;
+		var predicted = turn.predicted(foe);
+		if (!predicted || !knocksOut(turn, foe, ai, foe.moves.indexOf(predicted), 1)) return null;
+		var own = turn.aiPrediction;
+		if (own && hitsFirst(turn, ai, own, foe) && knocksOut(turn, ai, foe, ai.moves.indexOf(own), 1)) return null;
+	} else {
+		return null;
+	}
+	var resist = switchToResist(turn, false, false);
+	if (resist) return resist;
+	var best = scoreSwitchIns(turn).best;
+	if (best && !predictedHitIsSafe(turn, best.mon, best.flags)) {
+		if (!predictedHitWontKO(turn, best.mon)) return null;
+		if (turn.coin("healHalf", 0.5)) return null;
+	}
+	return {mon: null};
+}
+
+// ShouldSwitchWhileAsleep.
+function switchWhileAsleep(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	if (justIn || !isAsleep(ai) || !turn.coin("sleepHalf", 0.5)) return null;
+	if (stage(ai, "atk") >= 8 || stage(ai, "spa") >= 8 || stage(ai, "spe") >= 8 || stage(ai, "eva") >= 9) {
+		if (turn.coin("sleepBoosted", 0.5)) return null;
+	}
+	if (has(["Shed Skin", "Early Bird"], ai.ability) || (ai.ability === "Hydration" && /Rain/.test(battle.field.weather || "")) ||
+		hasEffect(ai, [E.SLEEP_TALK, E.SNORE, E.REST]) ||
+		(styleOf(turn, ai) === STYLE.STALL && isTrappedBy(battle.player, ai, battle.field))) return null;
+	var best = scoreSwitchIns(turn).best;
+	if (best && !predictedHitIsSafe(turn, best.mon, best.flags)) return null;
+	return {mon: null};
+}
+
+// IsTakingAnnoyingSecondaryDamage: Leech Seed (a quarter of the time).
+function switchFromLeechSeed(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	if (ai.ability === "Magic Guard" || canKnockOut(turn, ai, foe) || battle.flags <= AI_NEGATIVES) return null;
+	if (!ai.seeded || !turn.coin("seedQuarter", 0.25) || usefulOffenseRaised(ai) || canKnockOut(turn, ai, foe)) return null;
+	if (hazardsHurt(ai, 4, battle.field)) return null;
+	var scored = scoreSwitchIns(turn);
+	var good = function (entry) {
+		if (!entry) return false;
+		var flags = entry.flags;
+		if ((flags & SWITCH_FLAG.OUTSPEEDS) && ((flags & SWITCH_FLAG.KO_FOE) ||
+			((flags & SWITCH_FLAG.CAN_2HKO) && !(flags & SWITCH_FLAG.FAINTS))) && predictedHitIsSafe(turn, entry.mon, flags)) return true;
+		if (flags & (SWITCH_FLAG.RESIST_ALL | SWITCH_FLAG.WALLS_FOE)) return true;
+		return can2HKO(turn, ai, foe);
+	};
+	if (good(scored.best)) return {mon: scored.best.mon};
+	if (good(scored.second)) return {mon: scored.second.mon};
+	return null;
+}
+
+// ShouldSwitchToAvoidDeath: you would KO it first, and a teammate takes the hit better.
+function switchToAvoidDeath(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	if (justIn || battle.flags <= AI_NEGATIVES) return null;
+	var own = turn.aiPrediction;
+	var predicted = turn.predicted(foe);
+	if (ai.status === "par" && ai.hp < Math.floor(ai.maxHP / 3) && !has(["Quick Feet", "Natural Cure"], ai.ability)) return null;
+	if (/^Aegislash/.test(ai.name) && ai.ability === "Stance Change" && hasMoveNamed(ai, ["King's Shield"]) && predicted &&
+		(predicted.flags & FLAG_CONTACT) && hasRealPhysical(foe)) return null;
+	if (!predicted || (own && hitsFirst(turn, ai, own, foe))) return null;
+	if (!knocksOut(turn, foe, ai, foe.moves.indexOf(predicted), 1) || hazardsHurt(ai, 3, battle.field)) return null;
+	var scored = scoreSwitchIns(turn);
+	if (healthPercent(ai) <= 20 && !(scored.best && scored.best.score >= SWITCH_SCORE_MAX)) return null;
+	var list = switchInsInOrder(turn);
+	for (var i = 0; i < list.length; i++) {
+		var mon = list[i].entry.mon;
+		var flags = list[i].flags;
+		var hit = mon.incoming[foe.moves.indexOf(predicted)];
+		var immune = predicted.power > 0 && hit && hit.maxDamage === 0;
+		if (((flags & (SWITCH_FLAG.OUTSPEEDS | SWITCH_FLAG.WALLS_FOE | SWITCH_FLAG.RESIST_ALL)) && immune) ||
+			(((flags & (SWITCH_FLAG.WALLS_FOE | SWITCH_FLAG.RESIST_ALL)) ||
+			((flags & SWITCH_FLAG.KO_FOE) && (flags & SWITCH_FLAG.OUTSPEEDS))) && predictedHitIsSafe(turn, mon, flags)) ||
+			(contactKnocksYouOut(turn, mon) && predictedHitWontKO(turn, mon))) return {mon: mon};
+	}
+	return null;
+}
+
+// ShouldSwitchWhenOffensiveStatsAreLow: an attacker at -3 or worse in what it attacks with.
+function switchFromLowStats(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var style = styleOf(turn, ai);
+	if (justIn || !isDamager(style)) return null;
+	var atk = stage(ai, "atk");
+	var spa = stage(ai, "spa");
+	var acc = stage(ai, "acc");
+	if (!(atk <= OFFENSIVE_STAT_MIN || spa <= OFFENSIVE_STAT_MIN || acc <= OFFENSIVE_STAT_MIN)) return null;
+	var physical = false;
+	var special = false;
+	ai.moves.forEach(function (move, i) {
+		if (!move || !isUsable(ai, i, battle.field) || move.power === 0) return;
+		if (move.split === SPLIT_PHYSICAL && move.effect !== E.COUNTER && move.name !== "Body Press" && move.name !== "Foul Play") physical = true;
+		else if (move.split === SPLIT_SPECIAL && move.effect !== E.MIRROR_COAT) special = true;
+	});
+	var inaccurate = acc <= OFFENSIVE_STAT_MIN && ai.moves.every(function (move) {
+		return !move || move.split === SPLIT_STATUS || move.accuracy === 0 ||
+			withStage(accuracyOf(ai, foe, move, battle.field), acc - stage(foe, "eva") + 6) < 70;
+	}) && style !== STYLE.STALL;
+	if (!((atk <= OFFENSIVE_STAT_MIN && physical && !special) || (spa <= OFFENSIVE_STAT_MIN && special && !physical) ||
+		(atk <= OFFENSIVE_STAT_MIN && spa <= OFFENSIVE_STAT_MIN && physical && special) || inaccurate)) return null;
+	var pivot = hasPivotMoveThatAffects(turn, ai, foe, true);
+	if (canKnockOut(turn, foe, ai) && acc > OFFENSIVE_STAT_MIN) return null;
+	var best = scoreSwitchIns(turn).best;
+	if (!best) return null;
+	if ((best.flags & (SWITCH_FLAG.WALLS_FOE | SWITCH_FLAG.RESIST_ALL)) ||
+		((best.flags & SWITCH_FLAG.OUTSPEEDS) && predictedHitIsSafe(turn, best.mon, best.flags))) return {mon: best.mon, pivot: pivot};
+	return null;
+}
+
+// OffensiveSetupMoveInMoveset (the status moves; the hit-and-boost moves never count, as in CFRU).
+function hasOffensiveSetupMove(side) {
+	return hasEffect(side, [E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2,
+		E.EVASION_UP_2, E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM]);
+}
+
+// CanHealFirstToPreventKnockOut.
+function canHealBeforeKO(turn, atk, def) {
+	var field = turn.battle.field;
+	for (var i = 0; i < 4; i++) {
+		var move = atk.moves[i];
+		if (!move || !isUsable(atk, i, field)) continue;
+		if (has([E.RESTORE_HP, E.MORNING_SUN, E.ABSORB, E.DREAM_EATER], move.effect) || (move.effect === E.PROTECT && turn.predicted(def))) {
+			var heal = move.effect === E.PROTECT ? 0 : healAmount(atk, def, move, field);
+			if (hitsFirst(turn, atk, move, def) && !canKnockOutAfterHealing(turn, def, atk, heal, false)) return true;
+		}
+	}
+	return false;
+}
+
+// ShouldSaveSweeperForLater: a sweeper that can't KO steps aside for one that can, or for a wall.
+function switchToSaveSweeper(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var field = battle.field;
+	if (justIn || battle.flags <= AI_NEGATIVES || ai.status === "frz") return null;
+	if (ai.status === "par" && !has(["Quick Feet", "Guts"], ai.ability)) return null;
+	if (!isDamager(styleOf(turn, ai))) return null;
+	var predicted = turn.predicted(foe);
+	var fakeOutHurts = predicted && predicted.name === "Fake Out" && !has(["Inner Focus", "Shield Dust"], ai.ability) &&
+		ai.item !== "Covert Cloak" && finalDamage(turn, foe, ai, foe.moves.indexOf(predicted), 1) >= Math.floor(ai.maxHP / 2);
+	if (canKnockOut(turn, ai, foe) && !fakeOutHurts) return null;
+	if (hazardsHurt(ai, 4, field)) return null;
+	var trappingFoe = isTrappedBy(foe, ai, field) && secondaryDamage(foe, field) > 0;
+	if (trappingFoe) return null;
+	var willDie = canKnockOut(turn, foe, ai) && !canHealBeforeKO(turn, ai, foe);
+	var reason = willDie;
+	if (!reason && !usefulOffenseRaised(ai) && stage(ai, "eva") < 9 && !hasOffensiveSetupMove(ai)) {
+		var scored = scoreSwitchIns(turn);
+		if (switchInFlags(scored.best) & SWITCH_FLAG.KO_FOE) {
+			reason = true;
+		} else if (turn.coin("sweeperHalf", 0.5) && (!can2HKO(turn, ai, foe) || turn.coin("sweeperAnyway", 0.5)) &&
+			!resistsAllMoves(turn, foe, ai)) {
+			var strongest = ai.moves[strongestMove(turn, ai, foe)];
+			reason = !(strongest && (strongest.effect === E.ABSORB || strongest.effect === E.DREAM_EATER));
+		}
+	}
+	if (!reason) return null;
+	var own = turn.aiPrediction;
+	if (own && ((own.name === "Fake Out" && !has(["Inner Focus", "Shield Dust"], foe.ability)) || own.effect === E.PROTECT)) return null;
+	var pivot = hasPivotMoveThatAffects(turn, ai, foe, true);
+	if (canKnockOut(turn, foe, ai)) {
+		if (own && hitsFirst(turn, ai, own, foe) && own.effect === E.DESTINY_BOND) return null;
+		var list = [scoreSwitchIns(turn).best, scoreSwitchIns(turn).second];
+		for (var i = 0; i < list.length; i++) {
+			var entry = list[i];
+			if (!entry) continue;
+			var flags = entry.flags;
+			var wanted = SWITCH_FLAG.OUTSPEEDS | SWITCH_FLAG.KO_FOE;
+			if (((flags & wanted) === wanted && predictedHitIsSafe(turn, entry.mon, flags)) ||
+				(contactKnocksYouOut(turn, entry.mon) && predictedHitWontKO(turn, entry.mon))) return {mon: entry.mon, pivot: pivot};
+		}
+	}
+	return switchToResist(turn, pivot, true);
+}
+
+/*
+ * ShouldSwitch's checks for the Pokémon on the field, in order; the first that says so decides.
+ * `justSwitchedIn`: it came in this turn (after a KO or a switch), when most of them wait a turn.
+ * Not modelled (the calculator doesn't know them): passing a Wish, Perish Song, a Yawn, your Fly or
+ * Dig in progress, a Choice lock, Toxic's turn count.
+ */
+function switchChecks(turn) {
+	var battle = turn.battle;
+	var justIn = battle.justSwitchedIn;
+	var decide = function (check) {
+		return function () {
+			if (isTrappedBy(battle.ai, battle.player, battle.field)) return null;
+			var decision = check();
+			if (decision && !decision.mon) {
+				var best = scoreSwitchIns(turn).best;
+				decision.mon = best ? best.mon : battle.party[0];
+			}
+			return decision;
+		};
+	};
+	return [
+		decide(function () {
+			return switchToAbsorb(turn, justIn);
+		}), decide(function () {
+			return switchForWonderGuard(turn);
+		}), decide(function () {
+			return switchFromBadMoves(turn, justIn);
+		}), decide(function () {
+			return switchToHeal(turn);
+		}), decide(function () {
+			return switchWhileAsleep(turn, justIn);
+		}), decide(function () {
+			return switchFromLeechSeed(turn);
+		}), decide(function () {
+			return switchToAvoidDeath(turn, justIn);
+		}), decide(function () {
+			return switchFromLowStats(turn, justIn);
+		}), decide(function () {
+			return switchToSaveSweeper(turn, justIn);
+		})
+	];
+}
+
+// The AI's own move as PredictMovesForBanks has it (smart flags; under 100 means it would switch).
+function predictAISelf(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	turn.phase = "p";
+	turn.cache = {};
+	var index = null;
+	if (!(isAsleep(ai) && !hasEffect(ai, [E.SLEEP_TALK, E.SNORE])) && ai.hp > 0) {
+		var values = runScripts(turn, ai, battle.player, AI_SMART_FLAGS, false);
+		var best = Math.max.apply(null, values);
+		if (best >= 100) {
+			var ties = [];
+			values.forEach(function (value, i) {
+				if (value === best && ai.moves[i]) ties.push(i);
+			});
+			index = ties.length === 1 ? ties[0] : ties[turn.rng.pick(ties.map(function () {
+				return 1 / ties.length;
+			}))];
+		}
+	}
+	turn.aiPrediction = index === null ? null : ai.moves[index];
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -2166,17 +3090,94 @@ function chooseShares(scores, moves) {
 	return shares;
 }
 
+// Why the AI switches, in ShouldSwitch's order (for the Battle tab's tooltip).
+var SWITCH_REASONS = ["to take your move with its ability", "against your Wonder Guard", "because its moves are no good here",
+	"to heal with its ability", "because it is asleep", "because of Leech Seed", "to avoid being knocked out",
+	"because its attacking stat is down", "to save it for later"];
+
 /*
- * The chance (0-1) the AI picks each of `battle.ai`'s four moves.
- * battle: {ai: side, player: side, field: calc Field (AI's view), trickRoom, flags}
+ * The chance (0-1) the AI picks each of `battle.ai`'s four moves, and of each switch.
+ * battle: {ai: side, player: side, field: calc Field (AI's view), trickRoom, flags,
+ *          party: the AI's benched sides (with .slot), justSwitchedIn}
+ * Returns {shares: [4 moves], switches: [{mon, share, reasons: {index: share}}], switchShare}.
  */
 function predictAIMoves(battle) {
-	var shares = enumerateChances(function (rng) {
+	var party = battle.party || [];
+	var reasons = SWITCH_REASONS.length;
+	var outcomes = enumerateChances(function (rng) {
 		var turn = new AITurn(rng, battle);
+		var outcome = [0, 0, 0, 0];
 		predictPlayer(turn);
-		return chooseShares(runScripts(turn, battle.ai, battle.player, battle.flags, true), battle.ai.moves);
+		if (party.length) {
+			predictAISelf(turn);
+			turn.phase = "w";
+			turn.cache = {};
+			turn.prediction[battle.ai.key] = turn.aiPrediction ? battle.ai.moves.indexOf(turn.aiPrediction) : null;
+			var decision = null;
+			var reason = -1;
+			var checks = switchChecks(turn);
+			for (var c = 0; c < checks.length && !decision; c++) {
+				decision = checks[c]();
+				reason = c;
+			}
+			turn.prediction[battle.ai.key] = null;
+			turn.phase = "a";
+			turn.cache = {};
+			if (decision && !decision.pivot) {
+				outcome[4 + party.indexOf(decision.mon) * reasons + reason] = 1;
+				return outcome;
+			}
+			if (decision) turn.goodToPivot = true;
+		}
+		var shares = chooseShares(runScripts(turn, battle.ai, battle.player, battle.flags, true), battle.ai.moves);
+		for (var i = 0; i < 4; i++) outcome[i] = shares[i];
+		return outcome;
 	}, 20000);
-	return {shares: shares};
+	var switches = party.map(function (mon, p) {
+		var entry = {mon: mon, share: 0, reasons: {}};
+		for (var r = 0; r < reasons; r++) {
+			var share = outcomes[4 + p * reasons + r] || 0;
+			if (share > 0) {
+				entry.share += share;
+				entry.reasons[r] = share;
+			}
+		}
+		return entry;
+	}).filter(function (entry) {
+		return entry.share > 0;
+	}).sort(function (a, b) {
+		return b.share - a.share;
+	});
+	return {
+		shares: [0, 1, 2, 3].map(function (i) {
+			return outcomes[i] || 0;
+		}),
+		switches: switches,
+		switchShare: switches.reduce(function (sum, entry) {
+			return sum + entry.share;
+		}, 0)
+	};
+}
+
+// Who the AI sends out next if you KO its Pokémon now: the best switch-in against yours.
+function predictReplacement(battle) {
+	var party = battle.party || [];
+	if (!party.length) return [];
+	var outcomes = enumerateChances(function (rng) {
+		var turn = new AITurn(rng, battle);
+		var outcome = [];
+		var best = scoreSwitchIns(turn).best;
+		outcome[party.indexOf(best ? best.mon : party[0])] = 1;
+		for (var i = 0; i < party.length; i++) outcome[i] = outcome[i] || 0;
+		return outcome;
+	}, 5000);
+	return party.map(function (mon, i) {
+		return {mon: mon, share: outcomes[i] || 0};
+	}).filter(function (entry) {
+		return entry.share > 0;
+	}).sort(function (a, b) {
+		return b.share - a.share;
+	});
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -2291,6 +3292,70 @@ function readSideState(suffix) {
 	};
 }
 
+// The highest crit roll of a calculation (for moves with a 50% crit chance).
+function maxCritRoll(result) {
+	try {
+		var move = result.move.clone();
+		move.isCrit = true;
+		return calc.calculate(gen, result.attacker, result.defender, move, result.field).range()[1];
+	} catch (e) {
+		return result.range()[1];
+	}
+}
+
+/*
+ * The trainer's other Pokémon still standing (not KO'd, not the one on the field), at full HP,
+ * each against yours and yours against each. None in double battles, which aren't modelled.
+ */
+function readAIParty(p1, playerField, aiField, options) {
+	if (typeof TRAINER_ORDER === "undefined" || typeof getTrainerVariant !== "function" || typeof activeTrainerSlot !== "number") return [];
+	var trainer = TRAINER_ORDER[currentTrainerIndex];
+	if (!trainer || /Doubles/i.test(typeof currentBattleEffect === "string" ? currentBattleEffect : "")) return [];
+	var kos = typeof getKOSlots === "function" ? getKOSlots(currentTrainerIndex) : [];
+	var party = [];
+	getTrainerVariant(trainer).sets.forEach(function (setId, slot) {
+		if (slot === activeTrainerSlot || kos.indexOf(slot) !== -1) return;
+		var pokemon;
+		try {
+			pokemon = createPokemon(setId);
+		} catch (e) {
+			return;
+		}
+		var out = [];
+		var incoming = [];
+		for (var m = 0; m < 4; m++) {
+			out[m] = calc.calculate(gen, pokemon, p1, pokemon.moves[m], aiField);
+			incoming[m] = calc.calculate(gen, p1, pokemon, p1.moves[m], playerField);
+		}
+		var mon = out[0].attacker;
+		var side = buildAISide("b" + slot, mon, out, p1, {
+			speed: getBattleSpeed(mon, "p2"), monsLeft: options.monsLeft, firstTurn: true, sideState: options.sideState,
+			critChance: function (move) {
+				return typeof getCritChance === "function" ? getCritChance(mon, p1, move, false) || 0 : 0;
+			},
+			critDamage: function (i) {
+				return maxCritRoll(out[i]);
+			}
+		});
+		side.slot = slot;
+		side.setId = setId;
+		side.incoming = incoming.map(function (result) {
+			var move = result.move;
+			if (!move || !move.name || move.name === "(No Move)") return null;
+			var crit = typeof getCritChance === "function" ? getCritChance(p1, mon, move, options.playerFocus) || 0 : 0;
+			var max = result.range()[1];
+			return {
+				maxDamage: max,
+				maxCritDamage: crit >= 0.5 && crit < 1 ? maxCritRoll(result) : max,
+				critChance: crit,
+				effectiveness: typeEffectiveness(move.type, side.types)
+			};
+		});
+		party.push(side);
+	});
+	return party;
+}
+
 // The battle as the AI sees it, from the last calculation (damageResults).
 function readAIBattle() {
 	if (!damageResults || !damageResults[1][0]) return null;
@@ -2323,7 +3388,14 @@ function readAIBattle() {
 		speed: getBattleSpeed(p2, "p2"), monsLeft: countFoeMonsLeft(), firstTurn: p2.curHP() === p2.maxHP(),
 		sideState: readSideState("R"), focusEnergy: focus.p2, critChance: critChance(p2, p1, "p2"), critDamage: critDamage(1)
 	});
-	return {ai: ai, player: player, field: field, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags()};
+	var party = readAIParty(p1, damageResults[0][0].field, field,
+		{monsLeft: ai.monsLeft, sideState: ai.sideState, playerFocus: focus.p1});
+	// It came in this turn, after a KO or a switch (the lead at full HP did not): the switching
+	// checks wait a turn.
+	var kos = typeof getKOSlots === "function" && typeof TRAINER_ORDER !== "undefined" ? getKOSlots(currentTrainerIndex) : [];
+	var justSwitchedIn = ai.firstTurn && (kos.length > 0 || (typeof activeTrainerSlot === "number" && activeTrainerSlot !== 0));
+	return {ai: ai, player: player, field: field, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags(),
+		party: party, justSwitchedIn: justSwitchedIn};
 }
 
 function formatAIShare(share) {
@@ -2344,9 +3416,16 @@ function markFoeLikelyMoves() {
 	} catch (e) {
 		battle = null;
 	}
-	if (!battle) return;
-	var shares = predictAIMoves(battle).shares;
-	var best = Math.max.apply(null, shares);
+	if (!battle) {
+		renderAISwitch(null);
+		return;
+	}
+	var prediction = predictAIMoves(battle);
+	var shares = prediction.shares;
+	renderAISwitch(battle, prediction);
+	var best = Math.max.apply(null, shares.concat(prediction.switches.map(function (entry) {
+		return entry.share;
+	})));
 	var hp = battle.player.hp;
 	shares.forEach(function (share, i) {
 		var label = labels.eq(i);
@@ -2358,4 +3437,45 @@ function markFoeLikelyMoves() {
 		label.attr("title", title);
 		if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
 	});
+}
+
+function shortMonName(mon) {
+	return (mon.name || "").replace(/-Mega.*$/, "");
+}
+
+// Under the foe's moves: its chance of switching out and to whom (with why), and who it sends out
+// next if you KO it now.
+function renderAISwitch(battle, prediction) {
+	var box = $("#ai-switch");
+	if (!box.length) {
+		box = $('<div id="ai-switch" class="ai-switch" aria-live="polite"></div>');
+		$('label[for="resultMoveR4"]').closest(".move-result-subgroup").append(box);
+	}
+	box.empty().removeAttr("title");
+	if (!battle || !battle.party || !battle.party.length) {
+		box.hide();
+		return;
+	}
+	var lines = [];
+	if (prediction.switchShare > 0) {
+		var why = [];
+		var line = $('<div class="ai-switch-out"></div>')
+			.append($("<b></b>").text("Switches " + formatAIShare(prediction.switchShare)), " \u2192 ",
+				document.createTextNode(prediction.switches.map(function (entry) {
+					Object.keys(entry.reasons).forEach(function (r) {
+						var text = SWITCH_REASONS[r];
+						if (why.indexOf(text) === -1) why.push(text);
+					});
+					return shortMonName(entry.mon) + (prediction.switches.length > 1 ? " " + formatAIShare(entry.share) : "");
+				}).join(" \u00b7 ")));
+		line.attr("title", "The trainer's AI switches out " + why.join(", or ") + ".");
+		lines.push(line);
+	}
+	var next = predictReplacement(battle);
+	if (next.length) {
+		lines.push($('<div class="ai-switch-next"></div>').text("After a KO \u2192 " + next.map(function (entry) {
+			return shortMonName(entry.mon) + (next.length > 1 ? " " + formatAIShare(entry.share) : "");
+		}).join(" \u00b7 ")).attr("title", "The Pok\u00e9mon the trainer sends out next if you knock this one out now"));
+	}
+	box.append(lines).toggle(lines.length > 0);
 }

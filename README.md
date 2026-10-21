@@ -115,10 +115,39 @@ picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgr
   ROM: Radical Red's boss tables, then FireRed's trainer table for fights outside them, like the
   early rival).
 
+### Switching
+
+Before it picks a move the AI may switch out, and under the foe's moves Battle shows how often
+("Switches 40% → Starmie", the reason in its tooltip) and who it sends out next if you KO the one
+out now ("After a KO → Starmie"). A move at 100% is 100% *of the turns it stays in*: when the
+switch line shows a chance, that's how often your move hits the Pokémon coming in instead.
+
+The port follows CFRU's `ai_switching.c` for single battles. The trainer's other Pokémon still
+standing (the ones you haven't marked KO'd) are scored against yours: +31 if it can KO you, +17 if
+none of your moves does much to it, +14 if it outspeeds you, +8 for a revenge kill (a priority KO,
+Moxie, a trapping ability), +2 if it walls you or can 2HKO you, minus a lot if you would KO it
+first. The best one comes in after a KO, and it's where the AI goes when one of these says to
+switch, checked in the game's order:
+
+- your predicted attack would be absorbed by a teammate's Volt Absorb, Water Absorb, Flash Fire,
+  Lightning Rod, Motor Drive, Storm Drain, Dry Skin or Sap Sipper;
+- your Wonder Guard, and nothing it has can touch it;
+- all its moves are bad here (none does a third of your HP) and a teammate does better;
+- Natural Cure with a status, or Regenerator at half HP or less when you would KO it;
+- it is asleep (half the time); it is seeded by Leech Seed (a quarter of the time);
+- you would KO it before it moves, and a teammate takes your hit well;
+- its attacking stat is at −3 or worse;
+- it is a sweeper that can't KO you, and a teammate can (or resists everything).
+
+With U-turn or Volt Switch that goes first it pivots out with the move instead. A Pokémon that
+just came in (after a KO or a switch; not the lead) waits a turn for most of these.
+
 What it cannot know is assumed: no moves used yet this battle (no Protect last turn, no Choice
-lock), the foe's Pokémon has just come in when it is at full HP (Fake Out), the foe can switch
-while it has a Pokémon left, and no Substitutes. Switching and item use are not modelled. Set the
-field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
+lock), the foe's Pokémon has just come in when it is at full HP and isn't the trainer's lead
+(Fake Out, and it waits before switching again), its benched Pokémon are at full HP, and no
+Substitutes. Double battles show the moves but not switching. Trainer item use isn't modelled.
+Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
+status as they are.
 
 ## Recent bug fixes
 

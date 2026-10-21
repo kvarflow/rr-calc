@@ -1389,6 +1389,24 @@ html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
 html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
     color: #fff;
 }
+/* Under the foe's moves (trainer_ai.js renderAISwitch): the AI's chance of switching out and to
+   whom, and who it sends out next after a KO. */
+.ai-switch {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+}
+.ai-switch-out {
+    color: var(--ss-danger, #c0392b);
+}
+.ai-switch-next {
+    color: var(--ss-muted, #667085);
+}
+html.small-screen .move-result-subgroup > #ai-switch {
+    display: block;
+    grid-column: 1 / -1;
+    margin-top: 2px;
+}
 /* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
 html.small-screen .move-result-subgroup label[for^="resultMove"] {
     position: relative;
