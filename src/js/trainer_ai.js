@@ -3461,10 +3461,10 @@ function shortMonName(mon) {
 // next if you KO it now.
 function renderAISwitch(battle, prediction) {
 	var box = $("#ai-switch");
-	if (!box.length) {
-		box = $('<div id="ai-switch" class="ai-switch" aria-live="polite"></div>');
-		$('label[for="resultMoveR4"]').closest(".move-result-subgroup").append(box);
-	}
+	if (!box.length) box = $('<div id="ai-switch" class="ai-switch" aria-live="polite"></div>');
+	// Small screens: in the foe's header (Battle has to fit the screen); otherwise under its moves.
+	if ($("html").hasClass("small-screen")) box.appendTo($("#resultHeaderR").closest(".result-move-header"));
+	else box.appendTo($('label[for="resultMoveR4"]').closest(".move-result-subgroup"));
 	box.empty().removeAttr("title");
 	if (!battle || !battle.party || !battle.party.length) {
 		box.hide();
@@ -3487,9 +3487,11 @@ function renderAISwitch(battle, prediction) {
 	}
 	var next = predictReplacement(battle);
 	if (next.length) {
-		lines.push($('<div class="ai-switch-next"></div>').text("After a KO \u2192 " + next.map(function (entry) {
+		lines.push($('<div class="ai-switch-next"></div>').text("Next \u2192 " + next.map(function (entry) {
 			return shortMonName(entry.mon) + (next.length > 1 ? " " + formatAIShare(entry.share) : "");
 		}).join(" \u00b7 ")).attr("title", "The Pok\u00e9mon the trainer sends out next if you knock this one out now"));
 	}
-	box.append(lines).toggle(lines.length > 0);
+	box.append(lines).toggle(lines.length > 0).attr("title", lines.map(function (line) {
+		return line.attr("title") ? line.text() + ": " + line.attr("title") : line.text();
+	}).join("\n"));
 }

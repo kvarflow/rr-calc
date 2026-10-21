@@ -1402,10 +1402,20 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]
 .ai-switch-next {
     color: var(--ss-muted, #667085);
 }
-html.small-screen .move-result-subgroup > #ai-switch {
-    display: block;
-    grid-column: 1 / -1;
-    margin-top: 2px;
+/* Battle has to fit the Thor's screen: on small screens it sits in the foe's header, after the
+   name, on one line (the whole of it in its tooltip). */
+html.small-screen .result-move-header #ai-switch {
+    display: inline;
+    margin: 0 0 0 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+html.small-screen #ai-switch > div {
+    display: inline;
+}
+html.small-screen #ai-switch > .ai-switch-next {
+    margin-left: 6px;
+    font-weight: 500;
 }
 /* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
 html.small-screen .move-result-subgroup label[for^="resultMove"] {
