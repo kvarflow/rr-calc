@@ -130,7 +130,7 @@ first. The best one comes in after a KO, and it's where the AI goes when one of 
 switch, checked in the game's order:
 
 - your predicted attack would be absorbed by a teammate's Volt Absorb, Water Absorb, Flash Fire,
-  Lightning Rod, Motor Drive, Storm Drain, Dry Skin or Sap Sipper;
+  Well-Baked Body, Lightning Rod, Motor Drive, Storm Drain, Dry Skin, Sap Sipper or Earth Eater;
 - your Wonder Guard, and nothing it has can touch it;
 - all its moves are bad here (none does a third of your HP) and a teammate does better;
 - Natural Cure with a status, or Regenerator at half HP or less when you would KO it;
@@ -142,10 +142,15 @@ switch, checked in the game's order:
 With U-turn or Volt Switch that goes first it pivots out with the move instead. A Pokémon that
 just came in (after a KO or a switch; not the lead) waits a turn for most of these.
 
+Radical Red's switching was decompiled from the ROM as well: it is CFRU's (same checks, order and
+scores) except that on a random quarter of its turns the AI skips these checks altogether, Earth
+Eater and Well-Baked Body count as absorbing, a Phoenix Down Pokémon doesn't switch out to avoid a
+KO, and trainers never use items (the Full Restores in their data go unused).
+
 What it cannot know is assumed: no moves used yet this battle (no Protect last turn, no Choice
 lock), the foe's Pokémon has just come in when it is at full HP and isn't the trainer's lead
 (Fake Out, and it waits before switching again), its benched Pokémon are at full HP, and no
-Substitutes. Double battles show the moves but not switching. Trainer item use isn't modelled.
+Substitutes. Double battles show the moves but not switching.
 Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
 status as they are.
 

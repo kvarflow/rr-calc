@@ -21,11 +21,13 @@
  *
  * Before its move the AI may switch out (ai_switching.c): the trainer's other Pokémon still
  * standing are scored against yours, and the chance of each switch is shown with the moves.
+ * Radical Red's version (decompiled too) skips the switching checks on a random quarter of turns,
+ * absorbs Ground moves with Earth Eater, keeps Phoenix Down in, and never uses trainer items.
  *
  * What the calculator cannot know is assumed: no moves used yet this battle (so no Protect or
  * Destiny Bond last turn, no Choice lock), the foe's Pokémon has just come in when it is at full
  * HP (Fake Out, and it waits a turn before switching again unless it led), its benched Pokémon are
- * at full HP with no status, and neither side holds a Substitute. Trainer item use isn't modelled.
+ * at full HP with no status, and neither side holds a Substitute.
  */
 
 // CFRU's move effects (include/constants/battle_move_effects.h), by number.
@@ -2152,7 +2154,11 @@ var SWITCH_SCORE_MAX = 31 + 17 + 8 + 14;
 // OFFENSIVE_STAT_MIN_NUM: a stat stage of 3 is -3.
 var OFFENSIVE_STAT_MIN = 3;
 var MOXIE_ABILITIES = ["Moxie", "Grim Neigh", "Chilling Neigh", "As One", "Beast Boost", "Soul-Heart", "Battle Bond"];
-var HP_ABSORBING = ["Water Absorb", "Volt Absorb"];
+// Radical Red's FindMonThatAbsorbsOpponentsMove: Earth Eater takes Ground moves and Well-Baked Body
+// Fire ones too, and Earth Eater counts as healing (IsHPAbsorptionAbility).
+var SWITCH_ABSORBING = {Electric: ["Volt Absorb", "Lightning Rod", "Motor Drive"], Water: ["Water Absorb", "Dry Skin", "Storm Drain"],
+	Fire: ["Flash Fire", "Well-Baked Body"], Grass: ["Sap Sipper"], Ground: ["Earth Eater"]};
+var HP_ABSORBING = ["Water Absorb", "Volt Absorb", "Earth Eater"];
 var STAT_STAGE_RATIOS = [[10, 40], [10, 35], [10, 30], [10, 25], [10, 20], [10, 15], [10, 10], [15, 10], [20, 10],
 	[25, 10], [30, 10], [35, 10], [40, 10]];
 
@@ -2174,10 +2180,10 @@ function anyStageAbove(side, amount) {
 	});
 }
 
-// AnyUsefulOffseniveStatIsRaised.
+// AnyUsefulOffseniveStatIsRaised, as Radical Red has it: Attack with a physical move, Sp. Atk with a
+// special one, or Speed (CFRU master also counts Defence with Body Press).
 function usefulOffenseRaised(side) {
-	return (stage(side, "atk") > 6 && hasRealPhysical(side)) || (stage(side, "def") > 6 && hasMoveNamed(side, ["Body Press"])) ||
-		(stage(side, "spa") > 6 && hasSpecial(side)) || stage(side, "spe") > 6;
+	return (stage(side, "atk") > 6 && hasRealPhysical(side)) || (stage(side, "spa") > 6 && hasSpecial(side)) || stage(side, "spe") > 6;
 }
 
 function typeEffectiveness(type, types) {
@@ -2593,7 +2599,7 @@ function switchToAbsorb(turn, justIn) {
 	}
 	if (!canKnockOut(turn, foe, ai) && anyStageAbove(ai, 7)) return null;
 	if (isMoldBreaker(foe)) return null;
-	var abilities = ABSORBING[move.type];
+	var abilities = SWITCH_ABSORBING[move.type];
 	if (!abilities || has(abilities, ai.ability)) return null;
 	var list = switchInsInOrder(turn);
 	for (var i = 0; i < list.length; i++) {
@@ -2830,6 +2836,8 @@ function switchToAvoidDeath(turn, justIn) {
 	var own = turn.aiPrediction;
 	var predicted = turn.predicted(foe);
 	if (ai.status === "par" && ai.hp < Math.floor(ai.maxHP / 3) && !has(["Quick Feet", "Natural Cure"], ai.ability)) return null;
+	// Radical Red: Phoenix Down (revives once at half HP) stays in while its revive is unused.
+	if (ai.ability === "Phoenix Down") return null;
 	if (/^Aegislash/.test(ai.name) && ai.ability === "Stance Change" && hasMoveNamed(ai, ["King's Shield"]) && predicted &&
 		(predicted.flags & FLAG_CONTACT) && hasRealPhysical(foe)) return null;
 	if (!predicted || (own && hitsFirst(turn, ai, own, foe))) return null;
@@ -3120,7 +3128,8 @@ function predictAIMoves(battle) {
 			turn.prediction[battle.ai.key] = turn.aiPrediction ? battle.ai.moves.indexOf(turn.aiPrediction) : null;
 			var decision = null;
 			var reason = -1;
-			var checks = switchChecks(turn);
+			// Radical Red: on a quarter of its turns the AI doesn't think about switching at all.
+			var checks = isTrappedBy(battle.ai, battle.player, battle.field) || turn.coin("noSwitchCheck", 0.25) ? [] : switchChecks(turn);
 			for (var c = 0; c < checks.length && !decision; c++) {
 				decision = checks[c]();
 				reason = c;
