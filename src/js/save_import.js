@@ -53,6 +53,8 @@ var SAVEBLOCK1_VARS_OFFSET = 0x1000;
 var VAR_STARTER_MON = 0x4031;
 var FLAG_SYS_POKEMON_GET = 0x828;
 var STARTER_TYPE_BY_VAR = ["Grass", "Water", "Fire"];
+// SaveBlock2 (section 0) keeps the trainer ID, which a new game picks at random.
+var SAVEBLOCK2_TRAINER_ID_OFFSET = 0x0A;
 
 var SAVE_NATURES = ["Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax",
 	"Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash",
@@ -257,7 +259,7 @@ function readStarterType(bytes, sections) {
 }
 
 /*
- * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -271,7 +273,8 @@ function parseRadicalRedSave(bytes) {
 		boxes: [],
 		hardcore: readExtraFlag(bytes, sections, HARDCORE_FLAG),
 		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG),
-		starter: readStarterType(bytes, sections)
+		starter: readStarterType(bytes, sections),
+		trainerId: view.getUint32(sections[0] + SAVEBLOCK2_TRAINER_ID_OFFSET, true)
 	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
@@ -376,16 +379,51 @@ function importSaveIntoBox(save) {
 var SAVE_MODE_LABELS = {normal: "Normal Mode", hardcore: "Hardcore Mode"};
 // Carries a parsed save to the other mode's page when the user chooses to switch.
 var PENDING_SAVE_IMPORT_KEY = "pendingSaveImport";
+// The trainer ID of the last save imported in each mode.
+var SAVE_TRAINER_ID_KEY = "saveTrainerId";
+
+function getSaveTrainerIdKey() {
+	return SAVE_TRAINER_ID_KEY + ":" + getPageMode();
+}
+
+// Whether the save is from a new game rather than the run in this mode's box: a new game has a
+// new trainer ID. Before the ID was kept, a save sharing no Pokémon with the last import is new.
+function isNewGameSave(save) {
+	var lastTrainerId = readSetting(getSaveTrainerIdKey());
+	if (lastTrainerId) return lastTrainerId !== String(save.trainerId);
+	var customsets = readCustomSets();
+	var lastPids = [];
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) {
+			var set = customsets[pokemonName][setName];
+			if (set.fromSave && set.pid !== undefined) lastPids.push(set.pid);
+		}
+	}
+	return lastPids.length > 0 && !save.party.concat(save.boxes).some(function (mon) {
+		return lastPids.indexOf(mon.pid) !== -1;
+	});
+}
 
 function getSaveMode(save) {
 	return save.hardcore ? "hardcore" : "normal";
 }
 
+// After Professor Oak, the next save starts the new run whatever its trainer ID.
+$(document).on("run:new", function () {
+	writeSetting(getSaveTrainerIdKey(), "");
+});
+
 function importSaveAndReport(save, fileName) {
+	// Your last run ended: Professor Oak starts a new one before the new game's box comes in.
+	var newGame = typeof startNewRun === "function" && isNewGameSave(save);
+	if (newGame) startNewRun();
 	importSaveIntoBox(save);
+	writeSetting(getSaveTrainerIdKey(), save.trainerId);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
-	alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
+	alert((newGame ? "This save is from a new game, so Professor Oak started a new run: your old box, KOs, " +
+		"defeated trainers and encounters were cleared.\n" : "") +
+		"Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
 		"\nThis is a " + SAVE_MODE_LABELS[getSaveMode(save)] + " save, Minimal Grinding " + (save.minimalGrinding ? "on" : "off") + "." +
 		(save.starter ? "\nYour starter is a " + save.starter + " type, so the rival's teams are set to match." : ""));
 }
@@ -462,5 +500,6 @@ $(document).ready(function () {
 		this.value = "";
 	});
 	$("#import-1_wrapper").append(button, fileInput);
-	importPendingSave();
+	// After every panel is built, since a new game starts a new run first.
+	setTimeout(importPendingSave, 0);
 });

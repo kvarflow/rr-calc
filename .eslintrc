@@ -76,6 +76,7 @@
         "performCalculations": false,
         "writeSetting": false,
         "clearTrainerProgress": false,
+        "startNewRun": false,
         "activeTrainerSlot": true,
         "getTrainerVariant": false,
         "currentTrainerIndex": true,

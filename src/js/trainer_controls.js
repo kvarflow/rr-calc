@@ -310,18 +310,21 @@ function confirmNewRun() {
 			"and goes back to the first trainer. Your Fight Notes are kept. This cannot be undone.",
 		[{
 			label: "Yes, my run is over: wipe and start again",
-			action: function () {
-				$(document).trigger("run:end"); // run_record.js keeps how far it got
-				writeBoxLayout({});
-				clearCustomSets();
-				clearTrainerProgress();
-				// A new run picks a new starter.
-				writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
-				updateStarterSelect();
-				$(document).trigger("run:new");
-				showTrainer(0);
-			}
+			action: startNewRun
 		}]);
+}
+
+// Also run by a .sav import from a new game (save_import.js).
+function startNewRun() {
+	$(document).trigger("run:end"); // run_record.js keeps how far it got
+	writeBoxLayout({});
+	clearCustomSets();
+	clearTrainerProgress();
+	// A new run picks a new starter.
+	writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
+	updateStarterSelect();
+	$(document).trigger("run:new");
+	showTrainer(0);
 }
 
 // Like "Team/Box above Pokémon 1": the trainer panel (and its progress bars) can sit above Pokémon 2.

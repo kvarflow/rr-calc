@@ -143,6 +143,10 @@ buttons, and nature (it can be changed in the game), item, status, current HP an
 editable. Matchup color coding is on
 unless you turn it off.
 
+A save from a new game (a new trainer ID, as after a lost Nuzlocke) starts a new run with
+Professor Oak before its Pokémon come in, so the last run goes into your run history and its box,
+KOs and encounters are cleared. Another save from the same game keeps the run.
+
 ## Planned features
 
 - The Toxic Spikes and Substitute field toggles, which only matter for the AI's choices.

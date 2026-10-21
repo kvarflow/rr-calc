@@ -113,6 +113,10 @@ var CHANGELOG = [
 	], fixes: [
 		"The Route 22 rival and a few optional trainers were treated as the basic AI; they use the smart AI " +
 			"(the rival's Squirtle goes for Tail Whip, not mostly Bubble)"
+	]},
+	{version: "1.11", fixes: [
+		"Importing a .sav from a new game (after your run ended) starts a new run with Professor Oak first, " +
+			"so the last run's box, KOs and encounters don't carry over"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -169,11 +173,11 @@ function getLatestVersion() {
 	return CHANGELOG[CHANGELOG.length - 1].version;
 }
 
-// Newest first; a version's bug fixes under their own heading.
+// Newest first; a version's bug fixes under their own heading (some versions only fix bugs).
 function showChangelog() {
 	var sections = [];
 	CHANGELOG.slice().reverse().forEach(function (entry) {
-		sections.push({heading: "Version " + entry.version, items: entry.notes});
+		if (entry.notes) sections.push({heading: "Version " + entry.version, items: entry.notes});
 		if (entry.fixes) sections.push({heading: "Version " + entry.version + ": bug fixes", items: entry.fixes});
 	});
 	showListDialog("What's new", sections, function () {
