@@ -228,6 +228,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		ivs: ivs,
 		moves: moves,
 		metLocation: view.getUint8(layout.metLocation),
+		// Met level, game of origin, ball and OT gender, set when it was caught.
+		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
 		pid: pid
 	};
@@ -338,8 +340,57 @@ function toCustomSet(mon) {
 		isCustomSet: true,
 		// Marks sets that the next .sav import replaces.
 		fromSave: true,
-		pid: mon.pid
+		pid: mon.pid,
+		// Kept through nature and ability changes (see findChangedPids).
+		origin: getSaveOriginKey(mon)
 	};
+}
+
+/*
+ * Radical Red writes a new personality value when you change a Pokémon's nature (a mint, the
+ * nature NPC) or ability, so the same Pokémon can come back from the next save with a new one.
+ * What it keeps: where, at what level and in which ball it was caught, and its nickname. A
+ * Pokémon is matched on those (or, for sets imported before they were kept, its nickname) when
+ * exactly one old and one new Pokémon share them. Returns {old pid: new pid}.
+ */
+function getSaveOriginKey(mon) {
+	return "o:" + mon.metLocation + "/" + mon.origins + "/" + (hasCustomNickname(mon) ? calc.toID(mon.nickname) : "");
+}
+
+function getSaveNicknameKey(mon) {
+	return hasCustomNickname(mon) ? "n:" + calc.toID(mon.nickname) : null;
+}
+
+function findChangedPids(customsets, mons) {
+	var newPids = {};
+	var byKey = {};
+	var count = function (map, key, pid) {
+		if (key) map[key] = map[key] === undefined ? pid : null;
+	};
+	mons.forEach(function (mon) {
+		newPids[mon.pid] = true;
+		count(byKey, getSaveOriginKey(mon), mon.pid);
+		count(byKey, getSaveNicknameKey(mon), mon.pid);
+	});
+	var olds = [];
+	var oldByKey = {};
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) {
+			var set = customsets[pokemonName][setName];
+			if (!set.fromSave || set.pid === undefined || newPids[set.pid]) continue;
+			// Older imports kept no origin: the set's name is its nickname unless it's where it was.
+			var key = set.origin || (/^(Party|Box) \d+( \d+)?$/.test(setName) ? null : "n:" + calc.toID(setName.replace(/ \d+$/, "")));
+			if (!key) continue;
+			olds.push({pid: set.pid, key: key});
+			count(oldByKey, key, set.pid);
+		}
+	}
+	var changed = {};
+	olds.forEach(function (old) {
+		var newPid = byKey[old.key];
+		if (oldByKey[old.key] === old.pid && newPid !== null && newPid !== undefined) changed[old.pid] = newPid;
+	});
+	return changed;
 }
 
 /*
@@ -349,6 +400,9 @@ function toCustomSet(mon) {
  */
 function importSaveIntoBox(save) {
 	var customsets = readCustomSets();
+	// Before the old sets go: their KOs and fainting follow a Pokémon whose nature changed.
+	var changedPids = findChangedPids(customsets, save.party.concat(save.boxes));
+	if (Object.keys(changedPids).length) $(document).trigger("save:pidsChanged", [changedPids]);
 	for (var pokemonName in customsets) {
 		for (var setName in customsets[pokemonName]) {
 			if (customsets[pokemonName][setName].fromSave) removeCustomSet(customsets, pokemonName, setName);
@@ -414,6 +468,8 @@ $(document).on("run:new", function () {
 });
 
 function importSaveAndReport(save, fileName) {
+	// The mode, Minimal Grinding and starter are only news for a new game (or the first import).
+	var firstImport = !readSetting(getSaveTrainerIdKey());
 	// Your last run ended: Professor Oak starts a new one before the new game's box comes in.
 	var newGame = typeof startNewRun === "function" && isNewGameSave(save);
 	if (newGame) startNewRun();
@@ -421,9 +477,13 @@ function importSaveAndReport(save, fileName) {
 	writeSetting(getSaveTrainerIdKey(), save.trainerId);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
+	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + ".";
+	if (!newGame && !firstImport) {
+		alert(imported);
+		return;
+	}
 	alert((newGame ? "This save is from a new game, so Professor Oak started a new run: your old box, KOs, " +
-		"defeated trainers and encounters were cleared.\n" : "") +
-		"Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
+		"defeated trainers and encounters were cleared.\n" : "") + imported +
 		"\nThis is a " + SAVE_MODE_LABELS[getSaveMode(save)] + " save, Minimal Grinding " + (save.minimalGrinding ? "on" : "off") + "." +
 		(save.starter ? "\nYour starter is a " + save.starter + " type, so the rival's teams are set to match." : ""));
 }
