@@ -1339,7 +1339,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (explosionKOs ? def.monsLeft >= 2 && anotherMoveKnocksOut(turn, atk, def, i) : true) down(4);
 		return standardDamage();
 	case E.SUCKER_PUNCH:
-		if (!hasMoveWhere(def, isDamaging)) return down(10);
+		// Radical Red: -9 whenever it would fail (CFRU master: -10 when you have no attacks).
 		if (!isSuckerPunchOkay(turn, atk, move, def)) return down(9);
 		return standardDamage();
 	case E.FOCUS_PUNCH:
@@ -1615,8 +1615,13 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.EVASION_DOWN_2:
 		status(2);
 		break;
+	// Radical Red: a speed-lowering attack (Low Sweep, Icy Wind) and grounding a foe in the air (Smack
+	// Down) only get their "past the strongest move" +3 on half the rolls; CFRU master always gives it.
 	case E.SPEED_DOWN_HIT:
-		if (move.chance >= 50 && goodIdeaToLower(turn, def, atk, move, "spe")) up(3);
+		if (move.chance >= 50 && goodIdeaToLower(turn, def, atk, move, "spe") && turn.coin("speedDrop" + turn.phase + atk.key + i, 0.5)) up(3);
+		break;
+	case E.SMACK_DOWN:
+		if (!isGrounded(def, field) && turn.coin("smackDown" + turn.phase + atk.key + i, 0.5)) up(3);
 		break;
 	case E.REFLECT:
 	case E.LIGHT_SCREEN:
