@@ -117,6 +117,18 @@ var CHANGELOG = [
 	{version: "1.11", fixes: [
 		"Importing a .sav from a new game (after your run ended) starts a new run with Professor Oak first, " +
 			"so the last run's box, KOs and encounters don't carry over"
+	]},
+	{version: "1.12", notes: [
+		"Trainer AI switching: under the foe's moves, how often it switches out and to whom (the reason in the " +
+			"tooltip), and who it sends out next after a KO. Its moves share the rest of the turn",
+		"Checked against Radical Red's own switching code: it skips switching on a random quarter of turns, " +
+			"Earth Eater absorbs Ground moves, and trainers never use items",
+		"Importing another save of the same game just says how many Pok\u00e9mon came in"
+	], fixes: [
+		"Low Sweep, Icy Wind and the like only get their speed-control bonus half the time, as in Radical Red " +
+			"(a slower foe used Tackle while the calculator said Low Sweep 100%)",
+		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability (Radical Red gives it a new " +
+			"personality value)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
