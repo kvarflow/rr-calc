@@ -499,8 +499,7 @@ function importSaveAndReport(save, fileName) {
 	writeSetting(getSaveTrainerIdKey(), save.trainerId);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
-	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
-		(getHighestPartyLevel(save) ? " Trainers' levels now follow your highest, Lv " + getHighestPartyLevel(save) + "." : "");
+	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + ".";
 	if (!newGame && !firstImport) {
 		alert(imported);
 		return;
