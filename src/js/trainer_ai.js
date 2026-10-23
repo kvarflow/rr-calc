@@ -112,6 +112,9 @@ var WIND_MOVES = ["Air Cutter", "Bleakwind Storm", "Blizzard", "Fairy Wind", "Gu
 	"Petal Blizzard", "Sandstorm", "Sandsear Storm", "Springtide Storm", "Twister", "Whirlwind", "Wildbolt Storm", "Sonic Slash"];
 // Moves that ignore the target's ability, like Mold Breaker.
 var ABILITY_IGNORING_MOVES = ["Moongeist Beam", "Shell Side Arm", "Photon Geyser", "Sunsteel Strike"];
+var RECOIL_QUARTER = ["Take Down", "Submission", "Wild Charge", "Head Charge", "Volt Tackle"];
+var RECOIL_THIRD = ["Double-Edge", "Flare Blitz", "Brave Bird", "Wood Hammer", "Draco Barrage", "Wave Crash"];
+var RECOIL_HALF = ["Head Smash", "Light of Ruin", "Chloroblast"];
 var STORM_MOVES = ["Springtide Storm", "Bleakwind Storm", "Wildbolt Storm", "Sandsear Storm"];
 // Radical Red's AI damage counts multi-hit moves from these tables (after the 0.93), not the hits the
 // calculator rolls: 2-5 hits as 2 (5 with Skill Link), two-hit moves as 2, Triple Kick and Triple Axel
@@ -249,16 +252,26 @@ function hasPhysical(side) {
 	});
 }
 
-// A physical move that uses its own Attack (not Foul Play or Body Press).
+// A physical move that uses its own Attack: Radical Red leaves out Counter, Metal Burst, Comeuppance, Fake
+// Out, Foul Play and Body Press.
 function hasRealPhysical(side) {
 	return hasMoveWhere(side, function (m) {
-		return m.split === SPLIT_PHYSICAL && m.power > 0 && m.name !== "Foul Play" && m.name !== "Body Press";
+		return m.split === SPLIT_PHYSICAL && m.power > 0 && m.effect !== E.COUNTER && m.effect !== E.FAKE_OUT &&
+			!has(["Foul Play", "Body Press", "Metal Burst", "Comeuppance"], m.name);
 	});
 }
 
+// Any physical attack but Counter (Radical Red's test in the Attack-lowering cases).
+function hasPhysicalAttack(side) {
+	return hasMoveWhere(side, function (m) {
+		return m.split === SPLIT_PHYSICAL && m.power > 0 && m.effect !== E.COUNTER;
+	});
+}
+
+// A special attack (Radical Red leaves out Mirror Coat).
 function hasSpecial(side) {
 	return hasMoveWhere(side, function (m) {
-		return m.split === SPLIT_SPECIAL && m.power > 0;
+		return m.split === SPLIT_SPECIAL && m.power > 0 && m.effect !== E.MIRROR_COAT;
 	});
 }
 
@@ -1176,8 +1189,8 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (!canApply) down(10);
 		return score;
 	};
-	var selfBoost = function (stats) {
-		var locked = goodAI && canBeChoiceLocked(atk);
+	var selfBoost = function (stats, noLockCheck) {
+		var locked = !noLockCheck && goodAI && canBeChoiceLocked(atk);
 		if (locked || atk.ability === "Contrary") return down(10);
 		if (!stats.some(function (stat) {
 			return canStatBeRaised(atk, stat) && (stat !== "atk" || hasRealPhysical(atk)) && (stat !== "spa" || hasSpecial(atk));
@@ -1185,9 +1198,79 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return score;
 	};
 
+	// Moves that fail now: nothing has been used yet this battle (Spit Up, Belch, Mimic going first...), the
+	// AI's bench is assumed healthy (Healing Wish), or this foe or field rules them out.
+	var failsNow = function () {
+		var first = hitsFirst(turn, atk, move, def);
+		switch (move.name) {
+		case "Splash": case "Conversion 2": case "Sketch": case "Belch": case "Recycle": case "Spit Up": case "Swallow":
+		case "Stuff Cheeks": case "Healing Wish": case "Lunar Dance": case "Celebrate": case "Hold Hands": case "Happy Hour":
+			return true;
+		case "Mimic": case "Spite":
+			return first || !predicted;
+		case "Disable":
+			return def.item === "Mental Herb" || first || !predicted;
+		case "Last Resort":
+			return atk.moves.filter(Boolean).length > 1;
+		case "Purify":
+			return !def.status;
+		case "Heal Pulse": case "Floral Healing":
+			return true;
+		case "Heal Bell": case "Aromatherapy": case "Sparkly Swirl":
+			return !atk.status || (move.name === "Heal Bell" && atk.ability === "Soundproof");
+		case "Refresh":
+			return !/^(psn|tox|brn|par)$/.test(atk.status);
+		case "Psycho Shift":
+			return !/^(psn|tox|brn|par)$/.test(atk.status) || !!def.status;
+		case "Magic Coat":
+			return !hasMoveWhere(def, function (m) {
+				return (m.flags & FLAG_MAGIC_COAT) !== 0;
+			});
+		case "Attract": case "Captivate":
+			return !atk.gender || !def.gender || atk.gender === "N" || def.gender === "N" || atk.gender === def.gender ||
+				(move.name === "Attract" && has(["Oblivious", "Aroma Veil"], ability));
+		case "Nightmare":
+			return !isAsleep(def) && def.ability !== "Comatose";
+		case "Mean Look": case "Block": case "Spider Web":
+			return isTrappedBy(def, atk, field);
+		case "Lock-On": case "Mind Reader":
+			return atk.ability === "No Guard" || def.ability === "No Guard";
+		case "Taunt":
+			return ability === "Aroma Veil";
+		case "Trick": case "Switcheroo":
+			return (!atk.item && !def.item) || ability === "Sticky Hold" || /ite$|ium Z$/.test(atk.item) || /ite$|ium Z$/.test(def.item);
+		case "Bestow":
+			return !atk.item || !!def.item || /ite$|ium Z$/.test(atk.item);
+		case "Magnet Rise":
+			return field.isGravity || atk.item === "Iron Ball" || !isGrounded(atk, field);
+		case "Defog":
+			return !!(def.sideState.sr || def.sideState.spikes || def.sideState.toxicSpikes || def.sideState.stickyWeb);
+		case "Powder":
+			return !hasMoveWhere(def, function (m) {
+				return m.type === "Fire" && m.split !== SPLIT_STATUS;
+			});
+		case "Memento":
+			return stage(def, "atk") === 0 && stage(def, "spa") === 0;
+		case "Flower Shield":
+			return atk.types.indexOf("Grass") === -1;
+		case "Burn Up": case "Double Shock":
+			return atk.types.indexOf("Fire") === -1;
+		case "Poltergeist":
+			return !def.item;
+		}
+		return false;
+	};
+	if (failsNow()) return down(10);
+	if (move.name === "Foresight" || move.name === "Odor Sleuth" || move.name === "Miracle Eye") {
+		if (!(def.types.indexOf(move.name === "Miracle Eye" ? "Dark" : "Ghost") !== -1 && stage(def, "eva") >= 5)) down(9);
+		return score;
+	}
+	if (move.name === "Laser Focus" && has(["Battle Armor", "Shell Armor"], ability)) return down(8);
+	if (move.name === "Torment" && def.item === "Mental Herb") return down(6);
+
 	switch (effect) {
 	case E.SLEEP:
-		if (move.effectiveness === 0 || (move.name === "Dark Void" && atk.name !== "Darkrai")) down(10);
+		if (move.effectiveness === 0) down(10);
 		return statusChecks(canBeSlept(atk, def, field));
 	case E.YAWN:
 		return statusChecks(canBeSlept(atk, def, field));
@@ -1207,7 +1290,6 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return statusChecks(canBeConfused(atk, def, field));
 	case E.ATTACK_UP:
 	case E.ATTACK_UP_2:
-		if (move.name === "Hone Claws") return selfBoost(["atk", "acc"]);
 		return selfBoost(["atk"]);
 	case E.DEFENSE_UP:
 	case E.DEFENSE_UP_2:
@@ -1219,7 +1301,17 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return selfBoost(["spe"]);
 	case E.SPECIAL_ATTACK_UP:
 	case E.SPECIAL_ATTACK_UP_2:
-		return selfBoost(["spa"]);
+		// Radical Red: Growth, Work Up, Rototiller and Gear Up are this effect and boost either attack;
+		// no Choice-lock check here.
+		if (atk.ability === "Contrary") return down(10);
+		if (has(["Growth", "Work Up", "Rototiller", "Gear Up"], move.name)) {
+			if (move.name === "Rototiller" && (atk.types.indexOf("Grass") === -1 || !isGrounded(atk, field))) return down(10);
+			if (move.name === "Gear Up" && !has(["Plus", "Minus"], atk.ability)) return score;
+			if (!((stage(atk, "atk") < 12 && hasRealPhysical(atk)) || (stage(atk, "spa") < 12 && hasSpecial(atk)))) down(10);
+		} else if (stage(atk, "spa") >= 12 || !hasSpecial(atk)) {
+			down(10);
+		}
+		return score;
 	case E.SPECIAL_DEFENSE_UP:
 	case E.SPECIAL_DEFENSE_UP_2:
 		return selfBoost(["spd"]);
@@ -1233,8 +1325,9 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.EVASION_UP:
 	case E.EVASION_UP_2:
 	case E.MINIMIZE:
-		return selfBoost(["eva"]);
+		return selfBoost(["eva"], true);
 	case E.ATK_SPATK_UP:
+		if (move.name === "Fickle Beam") return standardDamage();
 		return selfBoost(["atk", "spa"]);
 	case E.ATK_ACC_UP:
 		return selfBoost(["atk", "acc"]);
@@ -1242,28 +1335,42 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.COSMIC_POWER:
 		return selfBoost(["def", "spd"]);
 	case E.BULK_UP:
-		return selfBoost(["atk", "def"]);
+		// Radical Red: only when nothing can go up any more (Coil checks accuracy too).
+		if (atk.ability === "Contrary" || (goodAI && canBeChoiceLocked(atk))) return down(10);
+		if ((stage(atk, "atk") >= 12 || !hasRealPhysical(atk)) && stage(atk, "def") >= 12 &&
+			(move.name !== "Coil" || stage(atk, "acc") >= 12)) down(10);
+		return score;
 	case E.CALM_MIND:
 		if ((move.name === "Quiver Dance" || move.name === "Geomancy") && turn.battle.trickRoom) return down(10);
-		return selfBoost(move.name === "Quiver Dance" ? ["spa", "spd", "spe"] : ["spa", "spd"]);
+		if (move.name === "Quiver Dance" && def.ability === "Dancer") return down(10);
+		return selfBoost(move.name === "Quiver Dance" || move.name === "Geomancy" ? ["spa", "spd", "spe"] : ["spa", "spd"]);
 	case E.DRAGON_DANCE:
 		if (turn.battle.trickRoom) return down(10);
+		if (move.name === "Dragon Dance" && def.ability === "Dancer") return down(10);
 		return selfBoost(move.name === "Shell Smash" ? ["atk", "spa", "spe"] : ["atk", "spe"]);
 	case E.EXTREME_EVOBOOST:
-		return selfBoost(["atk", "def", "spa", "spd", "spe"]);
+		if (move.name === "Clangorous Soul" && atk.hp <= Math.floor(atk.maxHP / 3)) return down(10);
+		return selfBoost(["atk", "def", "spa", "spd", "spe"], true);
 	case E.BELLY_DRUM:
 		if (atk.ability === "Contrary" || healthPercent(atk) <= 50) down(10);
 		return score;
 	case E.CURSE:
 		if (atk.types.indexOf("Ghost") !== -1) {
 			if (healthPercent(atk) <= 50) down(6);
-		} else if (!canStatBeRaised(atk, "atk") && !canStatBeRaised(atk, "def")) {
+		} else if (!canStatBeRaised(atk, "atk") && !canStatBeRaised(atk, "def") && stage(atk, "spe") <= 0) {
 			down(10);
 		}
 		return score;
 	case E.ATTACK_DOWN:
 	case E.ATTACK_DOWN_2:
-		if (!canStatBeLowered(atk, def, "atk") || !hasRealPhysical(def)) down(10);
+		// Radical Red tests no abilities here; Noble Roar, Tearful Look and Play Nice take either attack.
+		var lowerAtk = stage(def, "atk") > 0 && hasPhysicalAttack(def);
+		if (has(["Noble Roar", "Tearful Look", "Play Nice"], move.name)) lowerAtk = lowerAtk || (stage(def, "spa") > 0 && hasSpecial(def));
+		else if (move.name === "Venom Drench") {
+			if (!/^(psn|tox)$/.test(def.status)) return down(10);
+			lowerAtk = lowerAtk || stage(def, "spe") > 0 || (stage(def, "spa") > 0 && hasSpecial(def));
+		}
+		if (!lowerAtk) down(10);
 		return score;
 	case E.DEFENSE_DOWN:
 	case E.DEFENSE_DOWN_2:
@@ -1285,7 +1392,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.EVASION_DOWN_2:
 		return statusChecks(canStatBeLowered(atk, def, "eva"));
 	case E.TICKLE:
-		if (!canStatBeLowered(atk, def, "atk") && (!canStatBeLowered(atk, def, "def") || !hasPhysical(def))) down(10);
+		if ((stage(def, "atk") === 0 || !hasPhysicalAttack(def)) && stage(def, "def") === 0) down(10);
 		return score;
 	case E.REFLECT:
 		if (move.name === "Aurora Veil") {
@@ -1313,16 +1420,16 @@ function scoreNegatives(turn, atk, def, i, score) {
 			def.sideState.toxicSpikes === 1)) && hasMoveNamed(def, ["Rapid Spin", "Defog", "Mortal Spin", "Tidy Up"])) down(10);
 		return score;
 	case E.SANDSTORM:
-		if (field.weather === "Sand") down(10);
+		if (field.weather === "Sand" || has(["Harsh Sunshine", "Heavy Rain", "Strong Winds"], field.weather)) down(10);
 		return score;
 	case E.RAIN_DANCE:
-		if (/Rain/.test(field.weather || "")) down(10);
+		if (/Rain/.test(field.weather || "") || has(["Harsh Sunshine", "Heavy Rain", "Strong Winds"], field.weather)) down(10);
 		return score;
 	case E.SUNNY_DAY:
-		if (/Sun/.test(field.weather || "")) down(10);
+		if (/Sun/.test(field.weather || "") || has(["Harsh Sunshine", "Heavy Rain", "Strong Winds"], field.weather)) down(10);
 		return score;
 	case E.HAIL:
-		if (isHail(field)) down(10);
+		if (isHail(field) || has(["Harsh Sunshine", "Heavy Rain", "Strong Winds"], field.weather)) down(10);
 		return score;
 	case E.SET_TERRAIN:
 		if (field.terrain && move.name.indexOf(field.terrain) === 0) down(10);
@@ -1335,12 +1442,15 @@ function scoreNegatives(turn, atk, def, i, score) {
 		else if (healthPercent(atk) >= 90) down(9);
 		return score;
 	case E.REST:
-		if (atk.hp === atk.maxHP || atk.status === "slp" || has(["Insomnia", "Vital Spirit", "Sweet Veil", "Comatose"], atk.ability) ||
+		// Radical Red's CanRest: Insomnia and Vital Spirit don't stop it.
+		if (atk.hp === atk.maxHP || atk.status === "slp" || has(["Purifying Salt", "Sweet Veil", "Comatose"], atk.ability) ||
+			(atk.ability === "Leaf Guard" && /Sun/.test(field.weather || "") && atk.item !== "Utility Umbrella") ||
 			((field.terrain === "Electric" || field.terrain === "Misty") && isGrounded(atk, field))) down(10);
 		if (atk.hp === atk.maxHP) down(10);
 		else if (healthPercent(atk) >= 90) down(9);
 		return score;
 	case E.PROTECT:
+		if (def.ability === "Unseen Fist") return down(10);
 		if (has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) return down(10);
 		if (move.name === "Mat Block" && !atk.firstTurn) return down(10);
 		if (move.name === "Endure" && (atk.hp === 1 || secondaryDamage(atk, field) > 0)) down(10);
@@ -1362,7 +1472,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.FIELD_EFFECTS:
 		if (move.name === "Trick Room") {
 			if (turn.battle.trickRoom ? atk.speed < def.speed : atk.speed > def.speed) down(10);
-		} else if (move.name === "Gravity" && field.isGravity) {
+		} else if (move.name === "Gravity" && field.isGravity && atk.types.indexOf("Flying") === -1 && atk.item !== "Air Balloon") {
 			down(10);
 		}
 		return score;
@@ -1370,8 +1480,11 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (move.name === "Tailwind" && (atk.sideState.tailwind || turn.battle.trickRoom)) down(10);
 		return score;
 	case E.FAKE_OUT:
-		if (!atk.firstTurn) return down(10);
-		if (canBeChoiceLocked(atk) && (def.monsLeft >= 2 || !knocksOut(turn, atk, def, i, 1)) && atk.monsLeft <= 1) down(10);
+		if (!atk.firstTurn) {
+			down(10);
+			return standardDamage();
+		}
+		if (move.name === "Fake Out" && canBeChoiceLocked(atk) && (def.monsLeft >= 2 || !knocksOut(turn, atk, def, i, 1)) && atk.monsLeft <= 1) down(10);
 		return standardDamage();
 	case E.BATON_PASS:
 		if (move.name === "Baton Pass") {
@@ -1379,6 +1492,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 			if (!Object.keys(atk.boosts).some(function (stat) {
 				return atk.boosts[stat] > 0;
 			})) down(6);
+			return score;
+		}
+		if (move.name === "Shed Tail") {
+			if (atk.monsLeft <= 1 || healthPercent(atk) <= 50) down(10);
 			return score;
 		}
 		if (move.name === "Parting Shot") {
@@ -1395,10 +1512,12 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if ([atk, def].some(function (side) {
 			return side.ability === "Damp";
 		}) && !ignoresAbilities(atk)) return down(10);
+		// Radical Red: not into a foe that can Protect or hide (Fly, Dig); no type check after.
+		if (hasProtectMove(def) || hasEffect(def, [E.SEMI_INVULNERABLE])) return down(10);
 		var explosionKOs = knocksOut(turn, atk, def, i, 1);
-		if (def.monsLeft <= 1 && explosionKOs) return standardDamage();
-		if (explosionKOs ? def.monsLeft >= 2 && anotherMoveKnocksOut(turn, atk, def, i) : true) down(4);
-		return standardDamage();
+		if (def.monsLeft <= 1 && explosionKOs) return score;
+		if (!explosionKOs || (def.monsLeft >= 2 && anotherMoveKnocksOut(turn, atk, def, i))) down(4);
+		return score;
 	case E.SUCKER_PUNCH:
 		// Radical Red: -9 whenever it would fail (CFRU master: -10 when you have no attacks).
 		if (!isSuckerPunchOkay(turn, atk, move, def)) return down(9);
@@ -1417,16 +1536,16 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return score;
 	case E.ROAR:
 		if (willFaintFromChip(def, field) || def.seeded || (/^(psn|tox)$/.test(def.status) && secondaryDamage(def, field) >= def.maxHP / 4)) {
-			return down(10);
+			down(10);
 		}
-		if (move.name === "Dragon Tail" || move.name === "Circle Throw") return standardDamage();
+		if (move.name === "Dragon Tail" || move.name === "Circle Throw" || move.name === "Roar of Time") return standardDamage();
 		if (def.monsLeft <= 1 || ability === "Suction Cups") down(10);
 		return score;
 	case E.KNOCK_OFF:
-		return standardDamage();
+		return score;
 	case E.DREAM_EATER:
 		if (!isAsleep(def) && def.ability !== "Comatose") return down(10);
-		return standardDamage();
+		return score;
 	case E.RECHARGE:
 		if (knocksOut(turn, atk, def, i, 1) && anotherMoveKnocksOut(turn, atk, def, i) && atk.ability !== "Truant") down(9);
 		return standardDamage();
@@ -1436,7 +1555,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 		}
 		return standardDamage();
 	case E.RECOIL_IF_MISS:
-		if (accuracyOf(atk, def, move, field) < 75 && atk.ability !== "Magic Guard") down(6);
+		if (accuracyOf(atk, def, move, field) < 70 && atk.ability !== "Magic Guard") down(6);
 		return standardDamage();
 	case E.FOCUS_ENERGY:
 		if (atk.focusEnergy) down(10);
@@ -1461,9 +1580,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return standardDamage();
 	case E.FALSE_SWIPE:
 		if (knocksOut(turn, atk, def, i, 1) && anotherMoveKnocksOut(turn, atk, def, i)) down(10);
-		return standardDamage();
+		return score;
 	case E.PERISH_SONG:
-		if ((atk.monsLeft <= 1 && atk.ability !== "Soundproof" && def.monsLeft >= 2) || def.ability === "Soundproof") down(10);
+		if (atk.monsLeft <= 1 && atk.ability !== "Soundproof" && def.monsLeft >= 2) down(10);
+		if (def.ability === "Soundproof") down(10);
 		return score;
 	case E.MEMENTO:
 		if (atk.monsLeft <= 1) return down(10);
@@ -1474,26 +1594,45 @@ function scoreNegatives(turn, atk, def, i, score) {
 		down(10);
 		return score;
 	case E.SEMI_INVULNERABLE:
+		// Radical Red: Fly, Dig and the like aren't treated as charging moves.
+		if (predicted && predicted.effect === E.SEMI_INVULNERABLE && hitsFirst(turn, atk, move, def)) down(10);
+		if ((move.name === "Fly" || move.name === "Bounce") && secondaryDamage(atk, field) > 0 && (field.weather === "Sand" || isHail(field)) &&
+			atk.hp <= Math.floor(atk.maxHP / 16)) down(10);
+		return standardDamage();
 	case E.SOLARBEAM:
 	case E.SKULL_BASH:
 	case E.SKY_ATTACK:
 	case E.RAZOR_WIND:
-		if (needsCharge(atk, move, field)) {
-			if (willFaintFromChip(atk, field)) return down(10);
-			if (goodAI && !isIncapacitated(def) && def.status !== "par") {
-				if (hasProtectMove(def) && !willFaintFromChip(def, field)) down(8);
-				else if (atk.speed > def.speed ? canKnockOut(turn, def, atk) && predicted : can2HKO(turn, def, atk) && predicted) {
-					down(atk.speed > def.speed ? 4 : 8);
-				}
-			}
+		// Radical Red: always -4 for the charging turn (-10 if it would faint first), whatever the AI level.
+		if (!needsCharge(atk, move, field)) return standardDamage();
+		down(willFaintFromChip(atk, field) ? 10 : 4);
+		if (def.status === "par" || isAsleep(def)) return standardDamage();
+		if (hasProtectMove(def) && !willFaintFromChip(def, field)) {
+			down(8);
+			return standardDamage();
 		}
+		if (atk.speed > def.speed) {
+			if (canKnockOut(turn, def, atk) && predicted) down(4);
+		} else if (can2HKO(turn, def, atk) && predicted) {
+			down(8);
+		}
+		return standardDamage();
+	case E.ABSORB:
+		if (move.name === "Strength Sap") {
+			if (ability === "Contrary" || stage(def, "atk") === 0) down(10);
+			return score;
+		}
+		if (ability === "Liquid Ooze" && !knocksOut(turn, atk, def, i, 1)) down(6);
 		return standardDamage();
 	case E.RECOIL:
-		if (atk.ability !== "Magic Guard" && atk.ability !== "Rock Head" && move.recoil && def.monsLeft > 1) {
-			var recoil = Math.floor(moveDamage(turn, atk, def, i) * move.recoil[0] / move.recoil[1]);
-			if (recoil >= atk.hp && (!knocksOut(turn, atk, def, i, 1) || anotherMoveKnocksOut(turn, atk, def, i))) down(4);
-		}
-		return standardDamage();
+		// Radical Red's recoil lists; a move not on them counts its whole damage as recoil.
+		if (has(["Magic Guard", "Rock Head"], atk.ability)) return standardDamage();
+		var dealt = moveDamage(turn, atk, def, i);
+		var recoil = has(RECOIL_QUARTER, move.name) ? Math.max(1, dealt >> 2) : has(RECOIL_THIRD, move.name) ? Math.max(1, Math.floor(dealt / 3)) :
+			has(RECOIL_HALF, move.name) ? Math.max(1, dealt >> 1) : has(["Mind Blown", "Steel Beam"], move.name) ? Math.max(1, atk.maxHP >> 1) : dealt;
+		if (atk.hp > recoil || def.monsLeft <= 1) return standardDamage();
+		if (def.hp > recoil || anotherMoveKnocksOut(turn, atk, def, i)) down(4);
+		return score;
 	}
 	return standardDamage();
 }
@@ -3285,6 +3424,7 @@ function buildAISide(key, pokemon, results, foe, options) {
 		item: pokemon.item || "",
 		status: pokemon.status || "",
 		level: pokemon.level,
+		gender: pokemon.gender || "",
 		hp: pokemon.curHP(),
 		maxHP: pokemon.maxHP(),
 		boosts: $.extend({atk: 0, def: 0, spa: 0, spd: 0, spe: 0}, pokemon.boosts),
