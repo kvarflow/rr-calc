@@ -157,8 +157,69 @@ function setStarter(type, fromSave) {
 }
 
 $(document).on("save:imported", function (event, save) {
+	recordSaveProgress(save);
 	if (save.starter) setStarter(save.starter, true);
+	else if ($("#trainer-starter").length) showTrainer(currentTrainerIndex);
 });
+
+/*
+ * Many trainers' Pokémon have no fixed level: the game sets it from your highest-level party
+ * Pokémon ("Highest Lv -3" in the boss documents, `levelBelowHighest` in the trainer data). Each
+ * .sav import records that level and your badges, so those levels follow your party, and the
+ * level cap shown is at least the one your badges give (fights you can do before a gym, like the
+ * ones around Cerulean, are listed under the earlier cap). Without a save the document's levels
+ * are kept.
+ */
+var PLAYER_HIGHEST_LEVEL_KEY = "playerHighestLevel";
+var SAVE_BADGES_KEY = "saveBadges";
+// The gyms in the order the boss documents raise the level cap (Sabrina before Koga).
+var LEVEL_CAP_LEADERS = ["Brock", "Misty", "Lt. Surge", "Erika", "Sabrina", "Koga", "Blaine", "Giovanni"];
+
+function recordSaveProgress(save) {
+	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), getHighestPartyLevel(save));
+	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), save.badges || 0);
+}
+
+function getPlayerHighestLevel() {
+	return parseInt(readSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode())) || 0;
+}
+
+$(document).on("run:new", function () {
+	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), "");
+	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), "");
+});
+
+// Sets the level of each team Pokémon whose level follows yours; the others keep the document's.
+function applyRelativeLevels(variant) {
+	var highest = getPlayerHighestLevel();
+	variant.sets.forEach(function (setId, slot) {
+		var species = setId.substring(0, setId.indexOf(" ("));
+		var set = setdex[species] && setdex[species][setId.substring(setId.indexOf("(") + 1, setId.lastIndexOf(")"))];
+		if (!set) return;
+		if (set.documentLevel === undefined) set.documentLevel = set.level;
+		var below = variant.levelBelowHighest ? variant.levelBelowHighest[slot] : null;
+		set.level = highest && typeof below === "number" ? Math.max(1, Math.min(100, highest - below)) : set.documentLevel;
+	});
+}
+
+// The cap after your badges: the next higher cap of a required fight after your last gym leader.
+function getBadgeLevelCap() {
+	var badges = parseInt(readSetting(SAVE_BADGES_KEY + ":" + getPageMode())) || 0;
+	if (!badges) return 0;
+	var leader = LEVEL_CAP_LEADERS[Math.min(badges, LEVEL_CAP_LEADERS.length) - 1];
+	var at = -1;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		// Giovanni's gym is his last fight; the others' first is their gym (not a rematch).
+		if (trainer.name === leader && (at === -1 || leader === "Giovanni")) at = index;
+	});
+	if (at === -1) return 0;
+	var cap = parseInt(TRAINER_ORDER[at].levelCap) || 0;
+	for (var i = at + 1; i < TRAINER_ORDER.length; i++) {
+		var next = parseInt(TRAINER_ORDER[i].levelCap) || 0;
+		if (!TRAINER_ORDER[i].optional && next > cap) return next;
+	}
+	return cap;
+}
 
 function isRivalStarterVariant(variant) {
 	return /^Rival Has /.test(variant.label);
@@ -173,11 +234,19 @@ function getTrainerVariant(trainer) {
 }
 
 function describeTrainer(trainer, index) {
-	return [
+	var badgeCap = getBadgeLevelCap();
+	var listed = parseInt(trainer.levelCap) || 0;
+	var details = [
 		(index + 1) + " / " + TRAINER_ORDER.length,
 		trainer.location,
-		"Level cap " + trainer.levelCap
-	].concat(trainer.optional ? ["Optional"] : []).join(" · ");
+		"Level cap " + (badgeCap > listed ? badgeCap : trainer.levelCap)
+	];
+	var highest = getPlayerHighestLevel();
+	var variant = getTrainerVariant(trainer);
+	if (highest && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
+		return typeof n === "number";
+	})) details.push("Levels from your Lv " + highest);
+	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");
 }
 
 // The team slot loaded into Pokémon 2. A team can repeat a set (Creator's five Shedinja),
@@ -273,6 +342,7 @@ function showTrainer(index) {
 	writeSetting(getTrainerIndexKey(), currentTrainerIndex);
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	var variant = getTrainerVariant(trainer);
+	applyRelativeLevels(variant);
 
 	$("#trainer-name").text(trainer.name);
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));

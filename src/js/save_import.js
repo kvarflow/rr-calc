@@ -52,6 +52,8 @@ var SAVEBLOCK1_VARS_OFFSET = 0x1000;
 // 0 until you have a Pokémon, so FLAG_SYS_POKEMON_GET says whether it has been set.
 var VAR_STARTER_MON = 0x4031;
 var FLAG_SYS_POKEMON_GET = 0x828;
+// FireRed's badge flags: FLAG_BADGE01_GET (Boulder Badge) to FLAG_BADGE08_GET (Earth Badge).
+var FLAG_BADGE01_GET = 0x820;
 var STARTER_TYPE_BY_VAR = ["Grass", "Water", "Fire"];
 // SaveBlock2 (section 0) keeps the trainer ID, which a new game picks at random.
 var SAVEBLOCK2_TRAINER_ID_OFFSET = 0x0A;
@@ -251,6 +253,25 @@ function readSaveBlock1Byte(bytes, sections, offset) {
 	return bytes[sections[1 + Math.floor(offset / SAVEBLOCK1_SECTION_SIZE)] + offset % SAVEBLOCK1_SECTION_SIZE];
 }
 
+function readSaveBlock1Flag(bytes, sections, flagId) {
+	return ((readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (flagId >> 3)) >> (flagId & 7)) & 1) === 1;
+}
+
+// Trainers' Pokémon with no fixed level take theirs from this (trainer_controls.js).
+function getHighestPartyLevel(save) {
+	return save.party.reduce(function (highest, mon) {
+		return Math.max(highest, mon.level || 0);
+	}, 0);
+}
+
+function countBadges(bytes, sections) {
+	var badges = 0;
+	for (var i = 0; i < 8; i++) {
+		if (readSaveBlock1Flag(bytes, sections, FLAG_BADGE01_GET + i)) badges++;
+	}
+	return badges;
+}
+
 // "Fire", "Water" or "Grass", or null before you have chosen.
 function readStarterType(bytes, sections) {
 	var flagByte = readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (FLAG_SYS_POKEMON_GET >> 3));
@@ -261,7 +282,7 @@ function readStarterType(bytes, sections) {
 }
 
 /*
- * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId, badges} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -276,7 +297,8 @@ function parseRadicalRedSave(bytes) {
 		hardcore: readExtraFlag(bytes, sections, HARDCORE_FLAG),
 		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG),
 		starter: readStarterType(bytes, sections),
-		trainerId: view.getUint32(sections[0] + SAVEBLOCK2_TRAINER_ID_OFFSET, true)
+		trainerId: view.getUint32(sections[0] + SAVEBLOCK2_TRAINER_ID_OFFSET, true),
+		badges: countBadges(bytes, sections)
 	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
@@ -477,7 +499,8 @@ function importSaveAndReport(save, fileName) {
 	writeSetting(getSaveTrainerIdKey(), save.trainerId);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
-	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + ".";
+	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
+		(getHighestPartyLevel(save) ? " Trainers' levels now follow your highest, Lv " + getHighestPartyLevel(save) + "." : "");
 	if (!newGame && !firstImport) {
 		alert(imported);
 		return;

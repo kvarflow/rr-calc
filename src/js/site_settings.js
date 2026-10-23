@@ -135,6 +135,15 @@ var CHANGELOG = [
 			"+3 going second, and half the time not into Haze, Roar or a priority 2HKO), Stealth Rock and Spikes " +
 			"(no penalty once you're down to three Pok\u00e9mon; -20 for rocks already up), Protect (never while " +
 			"badly poisoned), Counter and Mirror Coat (-10 half the time), Double Team and Minimize (no bonus)"
+	]},
+	{version: "1.14", notes: [
+		"Trainers' Pok\u00e9mon whose level follows yours (\"Highest Lv -3\" in the boss documents) now take it " +
+			"from your highest-level party Pok\u00e9mon each time you import a .sav, instead of a fixed guess",
+		"The level cap shown rises with your badges: fights you can do before a gym (like those around Cerulean) " +
+			"now show the cap after it once you have the badge",
+		"Trainer AI checked against Radical Red's own code once more: every trainer uses the full AI, " +
+			"multi-hit moves, Sucker Punch, Pursuit, Quick Claw and many move rules match the game, and the turn a " +
+			"boss Mega Evolves is scored the way the game does it"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

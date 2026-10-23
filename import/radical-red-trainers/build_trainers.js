@@ -101,6 +101,16 @@ function sentenceCase(text, properNouns) {
 		.replace(/(^|[+.]\s*)([a-z])/g, (m, p, c) => p + c.toUpperCase());
 }
 
+// A level given relative to the player ("Highest Lv -3", "Highest Lv", "Player Max Level"): how many
+// levels below the player's highest-level party Pokémon, or null for a fixed level.
+function levelBelowHighest(level) {
+	if (typeof level === 'number') return null;
+	const text = String(level || '');
+	if (/player max level/i.test(text)) return 0;
+	const match = /highest\s*lv\.?\s*(?:-\s*(\d+))?/i.exec(text);
+	return match ? parseInt(match[1] || '0', 10) : null;
+}
+
 // Names that cannot be resolved keep the document's spelling (and show in the report).
 function documentedMon(mon) {
 	const species = resolveSpecies(mon.species);
@@ -115,6 +125,7 @@ function documentedMon(mon) {
 		species,
 		docSpecies: mon.species,
 		level: typeof mon.level === 'number' ? mon.level : null,
+		levelBelowHighest: levelBelowHighest(mon.level),
 		nature: calc.NATURES[mon.nature] ? mon.nature : '',
 		abilityLines,
 		abilities: abilityLines.map(a => a.name),
@@ -285,6 +296,7 @@ function matchDocument(documented, setdex) {
 			const label = titleCase(t.name) + (t.variants.length > 1 ? ' (' + variantLabel(v.note, vi) + ')' : '');
 			// The ability a trainer's Mega has before it Mega Evolves, by team slot.
 			const preMega = {};
+			const below = [];
 			const sets = team.map((m, slot) => {
 				const candidates = [];
 				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
@@ -316,6 +328,7 @@ function matchDocument(documented, setdex) {
 				used[setId] = true;
 				if (!claims[setId]) claims[setId] = key;
 				reuse[m.species] = best;
+				below.push(m.levelBelowHighest);
 				m.species = best.species;
 				const set = setdex[best.species][best.name];
 				if (APPLY && compare(m, set).length) {
@@ -331,6 +344,7 @@ function matchDocument(documented, setdex) {
 			}).filter(Boolean);
 			const variant = {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
 			if (Object.keys(preMega).length) variant.preMega = preMega;
+			if (below.some(n => n !== null)) variant.levelBelowHighest = below;
 			return variant;
 		})
 	}));
@@ -384,7 +398,18 @@ function addRivalTeams(order, setdex) {
 			});
 			// Each team can have its own battle effect (in Hardcore, the last Route 22 fight is
 			// rain, swamp or magma storm depending on his team); none unless the file gives one.
-			trainer.variants.push({label, battleEffect: (fight.battleEffects || {})[label] || null, sets});
+			const variant = {label, battleEffect: (fight.battleEffects || {})[label] || null, sets};
+			// Levels relative to the player, as in the documented team: by species, and the starter
+			// (the one species that differs) takes the documented starter's.
+			if (model.levelBelowHighest) {
+				const left = model.sets.map((id, k) => ({species: baseOf(id.slice(0, id.lastIndexOf(' ('))), below: model.levelBelowHighest[k]}));
+				const below = sets.map(id => {
+					const k = left.findIndex(x => x.species === baseOf(id.slice(0, id.lastIndexOf(' ('))));
+					return k === -1 ? undefined : left.splice(k, 1)[0].below;
+				});
+				variant.levelBelowHighest = below.map(n => n === undefined ? (left.length ? left.shift().below : null) : n);
+			}
+			trainer.variants.push(variant);
 			added++;
 		});
 	});
