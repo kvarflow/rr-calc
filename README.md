@@ -21,6 +21,9 @@ Damage calculator for all generations of Pokémon battling.
   boss documents; the trainer panel and Professor Oak reset button follow syl-rnb-calc. The
   rival's teams for each starter (`import/radical-red-trainers/rival_teams.json`) were read from
   the game's trainer data, and a `.sav` import reads the starter you chose so his teams match.
+  Pokémon the documents give a level relative to yours ("Highest Lv -3") take it from the
+  highest-level Pokémon in the party of the last `.sav` imported, and the level cap shown rises
+  with the save's badges.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
 - Ability descriptions (`src/js/data/ability_descriptions.js`, for the ? beside each ability) are
