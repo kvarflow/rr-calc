@@ -115,6 +115,8 @@ var ABILITY_IGNORING_MOVES = ["Moongeist Beam", "Shell Side Arm", "Photon Geyser
 var RECOIL_QUARTER = ["Take Down", "Submission", "Wild Charge", "Head Charge", "Volt Tackle"];
 var RECOIL_THIRD = ["Double-Edge", "Flare Blitz", "Brave Bird", "Wood Hammer", "Draco Barrage", "Wave Crash"];
 var RECOIL_HALF = ["Head Smash", "Light of Ruin", "Chloroblast"];
+// Radical Red's IsMoxieAbility (no Chilling Neigh or As One).
+var MOXIE_ABILITIES = ["Moxie", "Battle Bond", "Beast Boost", "Soul-Heart", "Grim Neigh"];
 var STORM_MOVES = ["Springtide Storm", "Bleakwind Storm", "Wildbolt Storm", "Sandsear Storm"];
 // Radical Red's AI damage counts multi-hit moves from these tables (after the 0.93), not the hits the
 // calculator rolls: 2-5 hits as 2 (5 with Skill Link), two-hit moves as 2, Triple Kick and Triple Axel
@@ -1129,7 +1131,9 @@ function scoreNegatives(turn, atk, def, i, score) {
 				down(amount);
 				return score;
 			};
-			if (ABSORBING[move.type] && has(ABSORBING[move.type], ability)) return stops(20);
+			// Hardcore Erika's rematch: her Grass moves ignore immunities, Sap Sipper included.
+			var grassIgnores = move.type === "Grass" && typeof currentBattleEffect === "string" && /grass type moves.*ignore immunities/i.test(currentBattleEffect);
+			if (ABSORBING[move.type] && has(ABSORBING[move.type], ability) && !grassIgnores) return stops(20);
 			if (ability === "Mountaineer" && move.type === "Rock" && move.split !== SPLIT_STATUS) return stops(20);
 			if (ability === "Wind Rider" && has(WIND_MOVES, move.name)) return stops(10);
 			if (ability === "Good as Gold" && move.split === SPLIT_STATUS && (move.target & ~MOVE_TARGET_BOTH) === 0) return stops(20);
@@ -1411,7 +1415,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 		// earlier in the battle would cost 9 half the time; no move has been used yet here.)
 		if (move.name === "Stone Axe" || move.name === "Ceaseless Edge") return standardDamage();
 		if (def.monsLeft <= 3 || def.ability === "Magic Bounce") return score;
-		if (((hasMoveNamed(def, ["Rapid Spin"]) && atk.types.indexOf("Ghost") === -1) || hasMoveNamed(def, ["Defog", "Magic Coat"])) &&
+		// A fight where hazards can't be removed (Hardcore Clair and Lance) only counts Magic Coat.
+		var hazardsStay = typeof currentBattleEffect === "string" && /Can't remove hazards/i.test(currentBattleEffect);
+		if (((!hazardsStay && ((hasMoveNamed(def, ["Rapid Spin"]) && atk.types.indexOf("Ghost") === -1) || hasMoveNamed(def, ["Defog"]))) ||
+			hasMoveNamed(def, ["Magic Coat"])) &&
 			!turn.coin("hazardClear" + turn.phase + atk.key + i, 0.5)) down(10);
 		if (move.name === "Stealth Rock" && def.sideState.sr) down(20);
 		else if ((move.name === "Sticky Web" && def.sideState.stickyWeb) || (move.name === "Spikes" && def.sideState.spikes >= 3) ||
@@ -2133,7 +2140,7 @@ function canKnockOutAfterHealing(turn, atk, def, heal, dealOneHitFirst) {
 
 function shouldProtect(turn, atk, def) {
 	var field = turn.battle.field;
-	if ((willFaintFromChip(atk, field) && !has(["Moxie", "Beast Boost", "Chilling Neigh", "Grim Neigh"], def.ability)) ||
+	if ((willFaintFromChip(atk, field) && !has(MOXIE_ABILITIES, def.ability)) ||
 		isIncapacitated(def)) return false;
 	// Radical Red: not while badly poisoned (CFRU master has no such rule, and Protects for Moody and
 	// when you will faint from chip damage, which Radical Red doesn't).
@@ -2300,7 +2307,7 @@ function damageMoveBonus(turn, atk, def, i, score) {
 		E.ATK_ACC_UP]) || hasMoveNamed(atk, ["Coil", "Defog"]);
 	var noProtect = !hasProtectMove(atk);
 	var chipSafe = !willFaintFromChip(def, field) || (predicted && (predicted.effect === E.RESTORE_HP ||
-		predicted.effect === E.MORNING_SUN)) || has(["Moxie", "Beast Boost", "Chilling Neigh", "Grim Neigh"], atk.ability);
+		predicted.effect === E.MORNING_SUN)) || has(MOXIE_ABILITIES, atk.ability);
 
 	if (!switching && knocksOutWithBestAccuracy(turn, atk, def, i, true) &&
 		(accuracyOf(atk, def, move, field) >= 70 || !helpsAccuracy || canKnockOut(turn, def, atk))) {
@@ -2369,7 +2376,7 @@ var SWITCH_SCORE = {KO_FOE: 31, RESIST_ALL: 17, REVENGE_KILL: 8, WALLS_FOE: 2, C
 var SWITCH_SCORE_MAX = 31 + 17 + 8 + 14;
 // OFFENSIVE_STAT_MIN_NUM: a stat stage of 3 is -3.
 var OFFENSIVE_STAT_MIN = 3;
-var MOXIE_ABILITIES = ["Moxie", "Grim Neigh", "Chilling Neigh", "As One", "Beast Boost", "Soul-Heart", "Battle Bond"];
+
 // Radical Red's FindMonThatAbsorbsOpponentsMove: Earth Eater takes Ground moves and Well-Baked Body
 // Fire ones too, and Earth Eater counts as healing (IsHPAbsorptionAbility).
 var SWITCH_ABSORBING = {Electric: ["Volt Absorb", "Lightning Rod", "Motor Drive"], Water: ["Water Absorb", "Dry Skin", "Storm Drain"],
@@ -3334,14 +3341,14 @@ function predictAIMoves(battle) {
 	var party = battle.party || [];
 	var reasons = SWITCH_REASONS.length;
 	var outcomes = enumerateChances(function (rng) {
-		var turn = new AITurn(rng, battle);
+		var turn = new AITurn(rng, megaPhaseBattle(battle, false));
 		var outcome = [0, 0, 0, 0];
 		predictPlayer(turn);
 		if (party.length) {
 			predictAISelf(turn);
 			turn.phase = "w";
 			turn.cache = {};
-			turn.prediction[battle.ai.key] = turn.aiPrediction ? battle.ai.moves.indexOf(turn.aiPrediction) : null;
+			turn.prediction[battle.ai.key] = turn.aiPrediction ? turn.battle.ai.moves.indexOf(turn.aiPrediction) : null;
 			var decision = null;
 			var reason = -1;
 			// Radical Red: on a quarter of its turns the AI doesn't think about switching at all.
@@ -3351,15 +3358,16 @@ function predictAIMoves(battle) {
 				reason = c;
 			}
 			turn.prediction[battle.ai.key] = null;
-			turn.phase = "a";
-			turn.cache = {};
 			if (decision && !decision.pivot) {
 				outcome[4 + party.indexOf(decision.mon) * reasons + reason] = 1;
 				return outcome;
 			}
 			if (decision) turn.goodToPivot = true;
 		}
-		var shares = chooseShares(runScripts(turn, battle.ai, battle.player, battle.flags, true), battle.ai.moves);
+		turn.phase = "a";
+		turn.cache = {};
+		turn.battle = megaPhaseBattle(battle, true);
+		var shares = chooseShares(runScripts(turn, turn.battle.ai, turn.battle.player, battle.flags, true), battle.ai.moves);
 		for (var i = 0; i < 4; i++) outcome[i] = shares[i];
 		return outcome;
 	}, 20000);
@@ -3546,6 +3554,14 @@ function readAIParty(p1, playerField, aiField, options) {
 		var pokemon;
 		try {
 			pokemon = createPokemon(setId);
+			// A benched Mega hasn't Mega Evolved: the game scores it in its base form.
+			if (/-Mega/.test(pokemon.name)) {
+				var baseName = pokemon.name.split("-Mega")[0];
+				var variant = getTrainerVariant(trainer);
+				pokemon = new calc.Pokemon(gen, baseName, {level: pokemon.level, gender: pokemon.gender, nature: pokemon.nature,
+					item: pokemon.item, evs: pokemon.evs, ivs: pokemon.ivs, moves: pokemon.moves, abilityOn: true,
+					ability: (variant.preMega && variant.preMega[slot]) || pokedex[baseName].abilities[0]});
+			}
 		} catch (e) {
 			return;
 		}
@@ -3622,8 +3638,68 @@ function readAIBattle() {
 	// checks wait a turn.
 	var kos = typeof getKOSlots === "function" && typeof TRAINER_ORDER !== "undefined" ? getKOSlots(currentTrainerIndex) : [];
 	var justSwitchedIn = ai.firstTurn && (kos.length > 0 || (typeof activeTrainerSlot === "number" && activeTrainerSlot !== 0));
-	return {ai: ai, player: player, field: field, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags(),
+	var battle = {ai: ai, player: player, field: field, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags(),
 		party: party, justSwitchedIn: justSwitchedIn};
+	battle.mega = readPendingMega(p1, p2, field, damageResults[0][0].field, {ai: ai, player: player, focus: focus});
+	return battle;
+}
+
+/*
+ * A boss shown in its base form ("Base form" on the trainer panel) Mega Evolves when it moves this
+ * turn. Radical Red decides whether to switch, predicts both moves and works out every damage number
+ * as if it were already the Mega, but scores its move with the base form's speed, priority, ability and
+ * types (CFRU master uses the Mega throughout). {ai, player}: the Mega and you against it.
+ */
+function readPendingMega(p1, p2, aiField, playerField, base) {
+	if (typeof showingMegaBase === "undefined" || !showingMegaBase || typeof getActiveTrainerSet !== "function") return null;
+	var mega;
+	try {
+		mega = createPokemon(getActiveTrainerSet());
+	} catch (e) {
+		return null;
+	}
+	if (!/-Mega/.test(mega.name)) return null;
+	mega.originalCurHP = p2.curHP();
+	mega.status = p2.status;
+	mega.boosts = $.extend({}, p2.boosts);
+	var out = [];
+	var incoming = [];
+	for (var m = 0; m < 4; m++) {
+		out[m] = calc.calculate(gen, mega, p1, mega.moves[m], aiField);
+		incoming[m] = calc.calculate(gen, p1, mega, p1.moves[m], playerField);
+	}
+	var crit = function (attacker, defender, focus) {
+		return function (move) {
+			return typeof getCritChance === "function" ? getCritChance(attacker, defender, move, focus) || 0 : 0;
+		};
+	};
+	var megaSide = out[0].attacker;
+	return {
+		ai: buildAISide("p2", megaSide, out, p1, {speed: getBattleSpeed(megaSide, "p2"), monsLeft: base.ai.monsLeft,
+			firstTurn: base.ai.firstTurn, sideState: base.ai.sideState, focusEnergy: base.focus.p2, critChance: crit(megaSide, p1, base.focus.p2),
+			critDamage: function (i) {
+				return maxCritRoll(out[i]);
+			}}),
+		player: buildAISide("p1", incoming[0].attacker, incoming, megaSide, {speed: base.player.speed, monsLeft: base.player.monsLeft,
+			firstTurn: base.player.firstTurn, sideState: base.player.sideState, focusEnergy: base.focus.p1,
+			critChance: crit(p1, megaSide, base.focus.p1), critDamage: function (i) {
+				return maxCritRoll(incoming[i]);
+			}})
+	};
+}
+
+// The battle as each thinking phase sees it: everything but the move choice sees the pending Mega; the
+// move choice keeps the base form but with the Mega's damage numbers.
+function megaPhaseBattle(battle, choosing) {
+	if (!battle.mega) return battle;
+	var view = $.extend({}, battle, {player: battle.mega.player, ai: battle.mega.ai});
+	if (choosing) {
+		view.ai = $.extend({}, battle.ai, {moves: battle.ai.moves.map(function (move, i) {
+			var megaMove = battle.mega.ai.moves[i];
+			return move && megaMove ? $.extend({}, move, {maxDamage: megaMove.maxDamage, maxCritDamage: megaMove.maxCritDamage}) : move;
+		})});
+	}
+	return view;
 }
 
 function formatAIShare(share) {

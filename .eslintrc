@@ -78,6 +78,8 @@
         "clearTrainerProgress": false,
         "startNewRun": false,
         "currentBattleEffect": true,
+        "showingMegaBase": true,
+        "getActiveTrainerSet": false,
         "activeTrainerSlot": true,
         "getTrainerVariant": false,
         "currentTrainerIndex": true,
