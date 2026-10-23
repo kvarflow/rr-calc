@@ -103,7 +103,24 @@ var BOOSTING_EFFECTS = [E.ATTACK_UP, E.DEFENSE_UP, E.SPEED_UP, E.SPECIAL_ATTACK_
 	E.EVASION_UP, E.ATTACK_UP_2, E.DEFENSE_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2, E.SPECIAL_DEFENSE_UP_2,
 	E.ACCURACY_UP_2, E.EVASION_UP_2, E.ATTACK_UP_HIT, E.COSMIC_POWER, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE];
 var ABSORBING = {Electric: ["Volt Absorb", "Motor Drive", "Lightning Rod"], Water: ["Water Absorb", "Dry Skin", "Storm Drain"],
-	Fire: ["Flash Fire"], Grass: ["Sap Sipper"]};
+	Fire: ["Flash Fire", "Well-Baked Body"], Grass: ["Sap Sipper"], Ground: ["Earth Eater"]};
+// Radical Red's stat-lowering table for Contrary, Clear Body, Defiant and Competitive (no Tickle).
+var RR_STAT_LOWER_EFFECTS = [E.ATTACK_DOWN, E.DEFENSE_DOWN, E.SPEED_DOWN, E.SPECIAL_ATTACK_DOWN, E.SPECIAL_DEFENSE_DOWN,
+	E.ACCURACY_DOWN, E.EVASION_DOWN, E.ATTACK_DOWN_2, E.DEFENSE_DOWN_2, E.SPEED_DOWN_2, E.SPECIAL_ATTACK_DOWN_2,
+	E.SPECIAL_DEFENSE_DOWN_2, E.ACCURACY_DOWN_2, E.EVASION_DOWN_2];
+var WIND_MOVES = ["Air Cutter", "Bleakwind Storm", "Blizzard", "Fairy Wind", "Gust", "Heat Wave", "Hurricane", "Icy Wind",
+	"Petal Blizzard", "Sandstorm", "Sandsear Storm", "Springtide Storm", "Twister", "Whirlwind", "Wildbolt Storm", "Sonic Slash"];
+// Moves that ignore the target's ability, like Mold Breaker.
+var ABILITY_IGNORING_MOVES = ["Moongeist Beam", "Shell Side Arm", "Photon Geyser", "Sunsteel Strike"];
+var STORM_MOVES = ["Springtide Storm", "Bleakwind Storm", "Wildbolt Storm", "Sandsear Storm"];
+// Radical Red's AI damage counts multi-hit moves from these tables (after the 0.93), not the hits the
+// calculator rolls: 2-5 hits as 2 (5 with Skill Link), two-hit moves as 2, Triple Kick and Triple Axel
+// as 6 of the first hit, anything else (Population Bomb) as 1.
+var TWO_TO_FIVE_HIT_MOVES = ["Arm Thrust", "Barrage", "Bone Rush", "Bullet Seed", "Comet Punch", "Double Slap", "Fury Attack",
+	"Fury Swipes", "Icicle Spear", "Pin Missile", "Rock Blast", "Scale Shot", "Spike Cannon", "Tail Slap", "Water Shuriken",
+	"Surging Strikes", "Beat Up", "Triple Dive"];
+var TWO_HIT_MOVES = ["Bonemerang", "Double Hit", "Double Iron Bash", "Double Kick", "Dragon Darts", "Dual Chop", "Dual Wingbeat",
+	"Gear Grind", "Twineedle", "Twin Beam", "Tachyon Cutter"];
 var STAT_INDEX = {atk: 0, def: 1, spe: 2, spa: 3, spd: 4, acc: 5, eva: 6};
 
 function has(list, value) {
@@ -307,7 +324,6 @@ function isStatusAffected(def) {
 function needsCharge(atk, move, field) {
 	if (!has(CHARGE_MOVES, move.name) || atk.item === "Power Herb") return false;
 	if ((move.name === "Solar Beam" || move.name === "Solar Blade") && /Sun/.test(field.weather || "")) return false;
-	if (move.name === "Electro Shot" && /Rain/.test(field.weather || "")) return false;
 	return true;
 }
 
@@ -360,28 +376,34 @@ function priorityOf(side, move, field) {
 	if (side.ability === "Prankster" && move.split === SPLIT_STATUS) priority++;
 	if (side.ability === "Gale Wings" && move.type === "Flying" && side.hp === side.maxHP) priority++;
 	if (side.ability === "Triage" && (move.flags & FLAG_TRIAGE)) priority += 3;
-	if (move.name === "Grassy Glide" && field.terrain === "Grassy" && isGrounded(side, field)) priority++;
+	if (side.ability === "Blazing Soul" && move.type === "Fire" && side.hp === side.maxHP) priority++;
+	// Radical Red doesn't check that the user is grounded.
+	if (move.name === "Grassy Glide" && field.terrain === "Grassy") priority++;
 	return priority;
 }
 
-function bracketOf(side) {
+// The speed bracket: Quick Draw (30% with an attack) and Quick Claw (20%) are rolled afresh each time
+// the game asks, here once per side and thinking phase.
+function bracketOf(side, foe, move, turn) {
+	if (side.ability === "Quick Draw" && move && move.split !== SPLIT_STATUS && turn && turn.coin("quickDraw" + turn.phase + side.key, 0.3)) return 1;
+	if (side.item === "Custap Berry" && !has(["Unnerve", "As One"], foe.ability) &&
+		side.hp <= side.maxHP / (side.ability === "Gluttony" ? 2 : 4)) return 1;
 	if (side.item === "Lagging Tail" || side.item === "Full Incense") return -2;
-	if (side.ability === "Stall") return -1;
-	if (side.item === "Custap Berry" && side.hp <= side.maxHP / (side.ability === "Gluttony" ? 2 : 4)) return 1;
+	if (side.item === "Quick Claw" && turn && turn.coin("quickClaw" + turn.phase + side.key, 0.2)) return 1;
 	return 0;
 }
 
 // MoveWouldHitBeforeOtherMove: speed ties go against the attacker. Radical Red's version has no
 // "the other move has higher priority, so this one goes second": it goes on to compare brackets
 // and speed (CFRU master returns false there).
-function hitsBefore(atk, move, def, defMove, battle) {
+function hitsBefore(atk, move, def, defMove, battle, turn) {
 	var field = battle.field;
 	if (!defMove) {
 		if (priorityOf(atk, move, field) > 0) return true;
 	} else if (priorityOf(atk, move, field) > priorityOf(def, defMove, field)) {
 		return true;
 	}
-	if (bracketOf(atk) > bracketOf(def)) return true;
+	if (bracketOf(atk, def, move, turn) > bracketOf(def, atk, defMove, turn)) return true;
 	var sa = atk.speed;
 	var sd = def.speed;
 	if (battle.trickRoom) {
@@ -392,13 +414,13 @@ function hitsBefore(atk, move, def, defMove, battle) {
 }
 
 function hitsFirst(turn, atk, move, def) {
-	return hitsBefore(atk, move, def, turn.predicted(def), turn.battle);
+	return hitsBefore(atk, move, def, turn.predicted(def), turn.battle, turn);
 }
 
 function moveWillHit(atk, def, move, field) {
 	if (atk.ability === "No Guard" || def.ability === "No Guard") return true;
 	if (move.accuracy === 0) return true;
-	if (move.effect === E.THUNDER && /Rain/.test(field.weather || "")) return true;
+	if ((move.effect === E.THUNDER || has(STORM_MOVES, move.name)) && /Rain/.test(field.weather || "")) return true;
 	if (move.name === "Toxic" && atk.types.indexOf("Poison") !== -1) return true;
 	return false;
 }
@@ -410,6 +432,7 @@ function accuracyOf(atk, def, move, field) {
 	var defAbil = defAbility(atk, def);
 	if (defAbil === "Wonder Skin" && move.split === SPLIT_STATUS) acc = Math.min(acc, 50);
 	if (atk.ability === "Compound Eyes") acc = acc * 13 / 10;
+	if (atk.ability === "Illuminate") acc = acc * 12 / 10;
 	if (atk.ability === "Hustle" && move.split === SPLIT_PHYSICAL) acc = acc * 8 / 10;
 	if (atk.ability === "Victory Star") acc = acc * 11 / 10;
 	if ((defAbil === "Sand Veil" && field.weather === "Sand") || (defAbil === "Snow Cloak" && isHail(field))) acc = acc * 8 / 10;
@@ -444,7 +467,13 @@ function moveDamage(turn, atk, def, i) {
 		var field = turn.battle.field;
 		if (!move || move.split === SPLIT_STATUS || move.power === 0) return 0;
 		if (move.effect === E.FAKE_OUT && !atk.firstTurn) return 0;
-		if (move.effect === E.SUCKER_PUNCH && !isSuckerPunchOkay(turn, atk, move, def)) return 0;
+		// Radical Red fills its damage numbers before it predicts moves, so on a first turn Sucker Punch
+		// (which needs a prediction) counts 0, and so do your Counter, Mirror Coat and Metal Burst.
+		if (move.effect === E.SUCKER_PUNCH) return 0;
+		if (atk.isPlayer && (move.effect === E.COUNTER || move.effect === E.MIRROR_COAT)) return 0;
+		if (move.effect === E.OHKO) return isOHKOUsable(atk, def, move, field) ? (!atk.isPlayer || moveWillHit(atk, def, move, field) ? def.hp : 1) : 0;
+		if (move.name === "Final Gambit") return Math.min(atk.hp, def.hp);
+		if (move.effect === E.PSYWAVE) return Math.min(atk.level, def.hp);
 		if (move.effect === E.BURN_UP && atk.types.indexOf("Fire") === -1) return 0;
 		if (field.terrain === "Psychic" && priorityOf(atk, move, field) > 0 && isGrounded(def, field)) return 0;
 		if (has(["Dazzling", "Queenly Majesty", "Armor Tail"], defAbility(atk, def)) && priorityOf(atk, move, field) > 0) return 0;
@@ -455,8 +484,10 @@ function moveDamage(turn, atk, def, i) {
 			if (move.effect === E.ENDEAVOR) damage = Math.max(0, def.hp - atk.hp);
 		} else {
 			var crit = move.critChance >= 1 || (move.critChance >= 0.5 && turn.coin("crit" + atk.key + i, 0.5));
-			damage = Math.floor((crit ? move.maxCritDamage : move.maxDamage) * 93 / 100);
-			if (move.hits <= 1 && def.hp === def.maxHP && (def.item === "Focus Sash" ||
+			var hits = aiHitCount(atk, move);
+			var oneHit = Math.floor((crit ? move.maxCritDamage : move.maxDamage) / calcHitCount(move));
+			damage = Math.floor(oneHit * 93 / 100) * hits;
+			if (hits <= 1 && move.hits <= 1 && def.hp === def.maxHP && (def.item === "Focus Sash" ||
 				(defAbility(atk, def) === "Sturdy") || move.effect === E.FALSE_SWIPE)) {
 				damage = Math.min(damage, def.hp - 1);
 			} else if (move.effect === E.FALSE_SWIPE) {
@@ -475,10 +506,11 @@ function counterDamage(turn, atk, def, move) {
 	var basis = def.moves[strongest];
 	var damage = 0;
 	var split = move.effect === E.COUNTER && move.name !== "Metal Burst" ? SPLIT_PHYSICAL : SPLIT_SPECIAL;
-	if (basis && basis.split !== SPLIT_STATUS && !needsCharge(def, basis, turn.battle.field)) {
+	if (basis && basis.split !== SPLIT_STATUS) {
 		var hit = moveDamage(turn, def, atk, strongest);
 		if (move.name === "Metal Burst") damage = Math.floor(hit * 3 / 2);
 		else if (basis.split === split) damage = hit * 2;
+		if (atk.ability === "Parental Bond") damage *= 2;
 	}
 	turn.counting = false;
 	return Math.min(damage, def.hp);
@@ -522,16 +554,29 @@ function isMultiHit(move) {
 	return move.effect === E.MULTI_HIT || move.effect === E.DOUBLE_HIT || move.effect === E.TRIPLE_KICK || move.hits > 1;
 }
 
+// How many single hits Radical Red's AI damage counts a move as (see TWO_TO_FIVE_HIT_MOVES), and how many
+// the calculator's number covers.
+function aiHitCount(atk, move) {
+	if (has(TWO_TO_FIVE_HIT_MOVES, move.name)) return atk.ability === "Skill Link" ? 5 : 2;
+	if (has(TWO_HIT_MOVES, move.name)) return 2;
+	if (move.effect === E.TRIPLE_KICK) return 6;
+	return 1;
+}
+
+function calcHitCount(move) {
+	return move.effect === E.TRIPLE_KICK ? 6 : Math.max(1, move.hits || 1);
+}
+
 // The player's side is the human: PickMoveHumanLikelyToChoose's order of preference.
-function shouldUseHumanLikelyMove(atk, def) {
-	return atk.isPlayer || def.monsLeft <= 1;
+function shouldUseHumanLikelyMove(atk, def, field) {
+	return atk.isPlayer || def.monsLeft <= 1 || (!!field && isTrappedBy(def, atk, field));
 }
 
 function humanLikelyPreference(atk, def, a, b) {
 	var tests = [
 		function (m) {
-			return m.chance >= 50 && (m.drain || has([E.ATTACK_UP_HIT, E.SPECIAL_ATTACK_UP_HIT, E.SPEED_UP_1_HIT, E.DEFENSE_UP_HIT,
-				E.ALL_STATS_UP_HIT], m.effect));
+			return m.chance * (atk.ability === "Serene Grace" ? 2 : 1) >= 50 && (m.drain || has([E.ABSORB, E.DREAM_EATER, E.SPEED_UP_1_HIT,
+				E.SPECIAL_ATTACK_UP_HIT, E.DEFENSE_UP_2_HIT, E.DEFENSE_UP_HIT, E.ATTACK_UP_HIT, E.HIGHER_OFFENSES_DEFENSES_UP_HIT], m.effect));
 		},
 		function (m) {
 			return m.effectiveness > 1;
@@ -558,8 +603,9 @@ function winsDamageTie(turn, atk, def, challenger, current, key) {
 	var a = atk.moves[challenger];
 	var b = atk.moves[current];
 	if (b.effect === E.FUTURE_SIGHT) return true;
-	var pa = priorityOf(atk, a, field);
-	var pb = priorityOf(atk, b, field);
+	// Compared as unsigned bytes, as the game does: a negative priority (Revenge, Avalanche) wins.
+	var pa = priorityOf(atk, a, field) & 0xFF;
+	var pb = priorityOf(atk, b, field) & 0xFF;
 	if (pa > pb && a.effect !== E.FUTURE_SIGHT) return true;
 	if (pa !== pb) return false;
 	var accA = moveWillHit(atk, def, a, field) ? 100 : aiAccuracy(atk, def, a, field);
@@ -577,7 +623,7 @@ function winsDamageTie(turn, atk, def, challenger, current, key) {
 		verdict = prefer(function (m) {
 			return !(m.flags & FLAG_CONTACT);
 		}) || ((a.flags & FLAG_CONTACT) && (b.flags & FLAG_CONTACT) ? prefer(function (m) {
-			return !isMultiHit(m);
+			return m.effect !== E.MULTI_HIT;
 		}) : 0);
 	}
 	if (!verdict && atk.ability !== "Magic Guard") verdict = prefer(function (m) {
@@ -586,13 +632,15 @@ function winsDamageTie(turn, atk, def, challenger, current, key) {
 	if (!verdict && atk.ability !== "Contrary") verdict = prefer(function (m) {
 		return !has(STAT_DROP_SELF_EFFECTS, m.effect);
 	});
-	if (!verdict && shouldUseHumanLikelyMove(atk, def)) verdict = humanLikelyPreference(atk, def, a, b);
+	if (!verdict && shouldUseHumanLikelyMove(atk, def, field)) verdict = humanLikelyPreference(atk, def, a, b);
 	if (verdict) return verdict > 0;
 	return turn.coin(key, 0.5);
 }
 
-function isEffectivePursuit(atk, def, move) {
-	return move.effect === E.PURSUIT && def.monsLeft > 1 && !atk.isPlayer;
+// Pursuit counts as hitting a switch when the target can switch (not trapped, another Pokémon left) and
+// has switched before; you haven't yet as far as the calculator knows, so only against the AI.
+function isEffectivePursuit(atk, def, move, field) {
+	return move.effect === E.PURSUIT && def.monsLeft > 1 && !(field && isTrappedBy(def, atk, field)) && !def.isPlayer;
 }
 
 function isOHKOUsable(atk, def, move, field) {
@@ -616,9 +664,9 @@ function strongestMove(turn, atk, def) {
 			if (damage > best) {
 				strongest = i;
 				best = damage;
-			} else if (damage === best && damage > 0 && move.effect !== E.COUNTER && move.effect !== E.MIRROR_COAT &&
-				move.effect !== E.FUTURE_SIGHT && !isEffectivePursuit(atk, def, atk.moves[strongest])) {
-				if (isEffectivePursuit(atk, def, move) ||
+			} else if (damage === best && i !== strongest && move.effect !== E.COUNTER && move.effect !== E.MIRROR_COAT &&
+				move.effect !== E.FUTURE_SIGHT && !isEffectivePursuit(atk, def, atk.moves[strongest], field)) {
+				if (isEffectivePursuit(atk, def, move, field) ||
 					winsDamageTie(turn, atk, def, i, strongest, "strong" + atk.key + i + "-" + strongest)) strongest = i;
 			}
 		}
@@ -675,52 +723,54 @@ function anotherMoveKnocksOut(turn, atk, def, skip) {
 	return false;
 }
 
-// MoveKnocksOutPossiblyGoesFirstWithBestAccuracy: one of the most accurate moves that KO.
-function knocksOutWithBestAccuracy(turn, atk, def, i, checkFirst) {
+// PriorityMoveInMoveset as Radical Red has it: the highest priority the side's moves get.
+function priorityMoveInMoveset(side, field) {
+	var best = 0;
+	side.moves.forEach(function (move, i) {
+		if (!move || !isUsable(side, i, field)) return;
+		var p = 0;
+		if (move.name === "Extreme Speed") p = 2;
+		else if (side.ability === "Triage" && move.effect === E.ABSORB) p = 3;
+		else if (move.priority === 1 || (side.hp === side.maxHP && ((side.ability === "Blazing Soul" && move.type === "Fire") ||
+			(side.ability === "Gale Wings" && move.type === "Flying")))) p = 1;
+		best = Math.max(best, p);
+	});
+	return best;
+}
+
+// MoveKnocksOutPossiblyGoesFirstWithBestAccuracy in Radical Red's (older) form: the KO moves with the
+// best accuracy, ties kept when this one's priority is no higher, or when a plain priority-0 move would
+// already beat you and your priority beats it; no Pursuit, contact or multi-hit rules.
+var PLAIN_MOVE = {name: "Tackle", type: "Normal", priority: 0, split: SPLIT_PHYSICAL, flags: 0, effect: 0, power: 40};
+function knocksOutWithBestAccuracy(turn, atk, def, check, checkFirst) {
 	var field = turn.battle.field;
-	var playerIsAttacker = shouldUseHumanLikelyMove(atk, def);
-	var kos = [];
+	var best = [];
+	var bestAcc = 0;
+	var last = -1;
 	for (var j = 0; j < 4; j++) {
 		var move = atk.moves[j];
-		if (!move || !isUsable(atk, j, field) || !knocksOut(turn, atk, def, j, 1)) continue;
-		if (checkFirst && (!hitsFirst(turn, atk, move, def) || move.effect === E.FUTURE_SIGHT)) continue;
-		kos.push(j);
-	}
-	if (kos.indexOf(i) === -1) return false;
-	var perfect = kos.filter(function (j) {
-		return moveWillHit(atk, def, atk.moves[j], field) && !playerIsAttacker;
-	});
-	var set;
-	if (perfect.length) {
-		set = perfect;
-	} else {
-		set = [];
-		var bestAcc = -1;
-		kos.forEach(function (j) {
-			var move = atk.moves[j];
-			var acc = playerIsAttacker && moveWillHit(atk, def, move, field) ? 100 : aiAccuracy(atk, def, move, field);
-			if (!set.length || (acc > bestAcc && bestAcc < 100)) {
-				set = [j];
-				bestAcc = acc;
-			} else if (acc === bestAcc || acc >= 100) {
-				var pursuitSet = set.some(function (k) {
-					return isEffectivePursuit(atk, def, atk.moves[k]);
-				});
-				if (isEffectivePursuit(atk, def, move)) set = [j];
-				else if (!pursuitSet && priorityOf(atk, move, field) > priorityOf(atk, atk.moves[set[0]], field)) set = [j];
-				else set.push(j);
+		if (!move) break;
+		if (!isUsable(atk, j, field)) continue;
+		var acc = aiAccuracy(atk, def, move, field);
+		if (acc === 0xFFFF) acc = 100;
+		if (checkFirst && !hitsFirst(turn, atk, move, def)) continue;
+		if (!knocksOut(turn, atk, def, j, 1)) continue;
+		if ((moveWillHit(atk, def, move, field) && bestAcc <= 99) || acc > bestAcc) {
+			best = [j];
+			bestAcc = acc;
+			last = j;
+		} else if (acc === bestAcc) {
+			var mine = priorityOf(atk, move, field);
+			if (mine <= priorityOf(atk, atk.moves[last], field) ||
+				(hitsBefore(atk, PLAIN_MOVE, def, turn.predicted(def), turn.battle, turn) && mine < priorityMoveInMoveset(def, field))) {
+				best.push(j);
+			} else {
+				best = [j];
 			}
-		});
+			last = j;
+		}
 	}
-	if (set.indexOf(i) === -1) return false;
-	var mine = atk.moves[i];
-	if (badIdeaToMakeContact(atk, def) && (mine.flags & FLAG_CONTACT) && set.some(function (j) {
-		return !(atk.moves[j].flags & FLAG_CONTACT);
-	})) return false;
-	if ((mine.flags & FLAG_CONTACT) && isMultiHit(mine) && set.some(function (j) {
-		return !isMultiHit(atk.moves[j]);
-	})) return false;
-	return true;
+	return best.indexOf(check) !== -1;
 }
 
 /* ---------------------------------------------------------------------------------------------
@@ -1054,44 +1104,40 @@ function scoreNegatives(turn, atk, def, i, score) {
 	};
 
 	if (!isSelfTargeting(move)) {
-		if (flags === 1 && turn.coin("tryToKill", 0.5) && hasMoveWhere(atk, isDamaging) && damaging) {
-			if (knocksOutWithBestAccuracy(turn, atk, def, i, true)) up(7);
-			else if (isStrongest(turn, atk, def, i)) up(2);
-		}
 		if (field.isGravity && has(GRAVITY_BANNED, move.name)) return 0;
 		if (has(POWDER_MOVES, move.name) && (def.types.indexOf("Grass") !== -1 || def.ability === "Overcoat" ||
 			def.item === "Safety Goggles")) down(10);
-		if (ability) {
-			if (ABSORBING[move.type] && has(ABSORBING[move.type], ability)) {
-				down(20);
+		// Radical Red: Ground moves (status ones too) do nothing to a Pokémon in the air, except Thousand
+		// Arrows, Bonemerang, Bone Zone and Mold Breaker (Levitate is left to the type check below).
+		if (move.type === "Ground" && !isGrounded(def, field) && move.name !== "Thousand Arrows" && move.name !== "Bonemerang" &&
+			atk.ability !== "Bone Zone" && !ignoresAbilities(atk) && def.ability !== "Levitate") return 0;
+		if (ability && !has(ABILITY_IGNORING_MOVES, move.name)) {
+			var stops = function (amount) {
+				down(amount);
 				return score;
-			}
-			if ((ability === "Soundproof" && move.sound) || (ability === "Bulletproof" && move.bullet)) {
-				down(10);
-				return score;
-			}
-			if (has(["Dazzling", "Queenly Majesty", "Armor Tail"], ability) && priorityOf(atk, move, field) > 0) {
-				down(10);
-				return score;
-			}
-			if (ability === "Magic Bounce" && (move.flags & FLAG_MAGIC_COAT)) {
-				down(20);
-				return score;
-			}
-			if (has(STAT_LOWER_EFFECTS, effect) || move.name === "Parting Shot") {
-				if (ability === "Contrary" || ability === "Mirror Armor") down(20);
-				else if (has(["Clear Body", "Full Metal Body", "White Smoke"], ability)) down(10);
-				else if ((ability === "Hyper Cutter" && (effect === E.ATTACK_DOWN || effect === E.ATTACK_DOWN_2)) ||
-					(ability === "Keen Eye" && (effect === E.ACCURACY_DOWN || effect === E.ACCURACY_DOWN_2)) ||
-					(ability === "Big Pecks" && (effect === E.DEFENSE_DOWN || effect === E.DEFENSE_DOWN_2))) down(10);
-				else if (has(["Defiant", "Competitive"], ability) && move.split === SPLIT_STATUS &&
-					canStatBeRaised(def, ability === "Defiant" ? "atk" : "spa") && (hasPhysical(def) || hasSpecial(def))) {
-					down(8);
-					return score;
-				}
-			}
-			if (has(SET_STATUS_EFFECTS, effect) && (ability === "Comatose" || (ability === "Leaf Guard" && /Sun/.test(field.weather || "")))) down(10);
-			if ((effect === E.SLEEP || effect === E.YAWN) && ability === "Sweet Veil") down(10);
+			};
+			if (ABSORBING[move.type] && has(ABSORBING[move.type], ability)) return stops(20);
+			if (ability === "Mountaineer" && move.type === "Rock" && move.split !== SPLIT_STATUS) return stops(20);
+			if (ability === "Wind Rider" && has(WIND_MOVES, move.name)) return stops(10);
+			if (ability === "Good as Gold" && move.split === SPLIT_STATUS && (move.target & ~MOVE_TARGET_BOTH) === 0) return stops(20);
+			if (ability === "Purifying Salt" && has(SET_STATUS_EFFECTS, effect)) return stops(10);
+			if (ability === "Aroma Veil" && has(["Disable", "Attract", "Encore", "Torment", "Taunt", "Heal Block"], move.name)) return stops(20);
+			if ((ability === "Soundproof" && move.sound) || (ability === "Bulletproof" && move.bullet)) return stops(10);
+			if (has(["Dazzling", "Queenly Majesty", "Armor Tail"], ability) && priorityOf(atk, move, field) > 0) return stops(10);
+			if (ability === "Magic Bounce" && (move.flags & FLAG_MAGIC_COAT)) return stops(20);
+			var lowers = has(RR_STAT_LOWER_EFFECTS, effect);
+			if (ability === "Contrary" && lowers) return stops(20);
+			if (has(["Clear Body", "Full Metal Body", "White Smoke"], ability) && (lowers || move.name === "Parting Shot")) return stops(10);
+			if (ability === "Hyper Cutter" && (effect === E.ATTACK_DOWN || effect === E.ATTACK_DOWN_2)) return stops(10);
+			if (ability === "Defiant" && move.split === SPLIT_STATUS && lowers && canStatBeRaised(def, "atk") && hasRealPhysical(def)) return stops(8);
+			if (ability === "Competitive" && move.split === SPLIT_STATUS && lowers && canStatBeRaised(def, "spa") && hasSpecial(def)) return stops(8);
+			if (ability === "Justified" && move.type === "Dark" && move.split !== SPLIT_STATUS && canStatBeRaised(def, "atk") &&
+				!knocksOut(turn, atk, def, i, 2) && hasRealPhysical(def)) down(4);
+			if (ability === "Steam Engine" && (move.type === "Fire" || move.type === "Water") && move.split !== SPLIT_STATUS &&
+				canStatBeRaised(def, "spe") && !knocksOut(turn, atk, def, i, 1) && atk.speed > def.speed) down(knocksOut(turn, atk, def, i, 2) ? 5 : 9);
+			if (has(SET_STATUS_EFFECTS, effect) && (ability === "Comatose" || (ability === "Shields Down" && /^Minior/.test(def.name) &&
+				!/Core/.test(def.name)) || (ability === "Leaf Guard" && /Sun/.test(field.weather || "") && def.item !== "Utility Umbrella"))) return stops(10);
+			if ((effect === E.SLEEP || effect === E.YAWN) && ability === "Sweet Veil") return stops(10);
 		}
 		if (atk.ability === "Prankster" && move.split === SPLIT_STATUS && !(move.target & MOVE_TARGET_FOES_FIELD) &&
 			def.types.indexOf("Dark") !== -1) {
@@ -1103,7 +1149,8 @@ function scoreNegatives(turn, atk, def, i, score) {
 				down(10);
 				return score;
 			}
-			if (field.terrain === "Misty" && (has(SET_STATUS_EFFECTS, effect) || effect === E.CONFUSE || effect === E.SWAGGER ||
+			// Radical Red's table has the damaging confusion moves (Psybeam), not Confuse Ray.
+			if (field.terrain === "Misty" && (has(SET_STATUS_EFFECTS, effect) || effect === E.CONFUSE_HIT || effect === E.SWAGGER ||
 				effect === E.FLATTER)) {
 				down(10);
 				return score;
@@ -1115,6 +1162,11 @@ function scoreNegatives(turn, atk, def, i, score) {
 		}
 	}
 	if (move.sound && atk.throatChopped) return 0;
+	if (move.split !== SPLIT_STATUS && ((field.weather === "Harsh Sunshine" && move.type === "Water" && move.name !== "Hydro Steam") ||
+		(field.weather === "Heavy Rain" && move.type === "Fire"))) {
+		down(20);
+		return score;
+	}
 
 	var standardDamage = function () {
 		if (damaging && move.effectiveness === 0) down(15);
@@ -3293,13 +3345,10 @@ function buildAISide(key, pokemon, results, foe, options) {
 	return side;
 }
 
+// Radical Red's GetAIFlags gives every trainer battle the smart flags (7); the AI flags stored with each
+// trainer (most have 1) are never read.
 function getAIFlags() {
-	if (typeof TRAINER_AI_FLAGS === "undefined" || typeof TRAINER_ORDER === "undefined") return AI_SMART_FLAGS;
-	var trainer = TRAINER_ORDER[currentTrainerIndex];
-	if (!trainer) return AI_SMART_FLAGS;
-	var flags = (TRAINER_AI_FLAGS[getPageMode()] || {})[trainer.name + "|" + trainer.location + "|" + trainer.levelCap];
-	if (flags === undefined) flags = trainer.optional ? AI_NEGATIVES : AI_SMART_FLAGS;
-	return flags;
+	return AI_SMART_FLAGS;
 }
 
 function countYourMonsLeft() {
