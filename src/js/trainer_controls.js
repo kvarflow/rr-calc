@@ -172,8 +172,9 @@ $(document).on("save:imported", function (event, save) {
  */
 var PLAYER_HIGHEST_LEVEL_KEY = "playerHighestLevel";
 var SAVE_BADGES_KEY = "saveBadges";
-// The gyms in the order the boss documents raise the level cap (Sabrina before Koga).
-var LEVEL_CAP_LEADERS = ["Brock", "Misty", "Lt. Surge", "Erika", "Sabrina", "Koga", "Blaine", "Giovanni"];
+// The gyms in the order the boss documents raise the level cap (Sabrina before Koga; Clair leads
+// the Viridian gym).
+var LEVEL_CAP_LEADERS = ["Brock", "Misty", "Lt. Surge", "Erika", "Sabrina", "Koga", "Blaine", "Clair"];
 
 function recordSaveProgress(save) {
 	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), getHighestPartyLevel(save));
@@ -187,6 +188,7 @@ function getPlayerHighestLevel() {
 $(document).on("run:new", function () {
 	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), "");
 	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), "");
+	writeSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode(), "");
 });
 
 // Sets the level of each team Pokémon whose level follows yours; the others keep the document's.
@@ -202,16 +204,35 @@ function applyRelativeLevels(variant) {
 	});
 }
 
-// The cap after your badges: the next higher cap of a required fight after your last gym leader.
-function getBadgeLevelCap() {
-	var badges = parseInt(readSetting(SAVE_BADGES_KEY + ":" + getPageMode())) || 0;
-	if (!badges) return 0;
-	var leader = LEVEL_CAP_LEADERS[Math.min(badges, LEVEL_CAP_LEADERS.length) - 1];
-	var at = -1;
-	TRAINER_ORDER.forEach(function (trainer, index) {
-		// Giovanni's gym is his last fight; the others' first is their gym (not a rematch).
-		if (trainer.name === leader && (at === -1 || leader === "Giovanni")) at = index;
-	});
+// A fight by its trainer's name (a gym leader's gym; rematches are named "Misty (Rematch)").
+function findFight(name) {
+	for (var i = 0; i < TRAINER_ORDER.length; i++) {
+		if (TRAINER_ORDER[i].name === name) return i;
+	}
+	return -1;
+}
+
+// How many gyms you have beaten, in LEVEL_CAP_LEADERS order: the save's badges, or as far as the
+// gym fights marked Defeated go.
+function countGymsBeaten() {
+	var gyms = parseInt(readSetting(SAVE_BADGES_KEY + ":" + getPageMode())) || 0;
+	if (typeof isTrainerDefeated === "function") {
+		LEVEL_CAP_LEADERS.forEach(function (name, k) {
+			var at = findFight(name);
+			if (at !== -1 && isTrainerDefeated(at)) gyms = Math.max(gyms, k + 1);
+		});
+	}
+	return Math.min(gyms, LEVEL_CAP_LEADERS.length);
+}
+
+function isGymBeaten(name) {
+	return countGymsBeaten() > LEVEL_CAP_LEADERS.indexOf(name);
+}
+
+// The cap after your last gym: the next higher cap of a required fight after it.
+function getProgressLevelCap() {
+	var gyms = countGymsBeaten();
+	var at = gyms ? findFight(LEVEL_CAP_LEADERS[gyms - 1]) : -1;
 	if (at === -1) return 0;
 	var cap = parseInt(TRAINER_ORDER[at].levelCap) || 0;
 	for (var i = at + 1; i < TRAINER_ORDER.length; i++) {
@@ -221,11 +242,83 @@ function getBadgeLevelCap() {
 	return cap;
 }
 
+/*
+ * Fights you can do before or after a gym (`parallel`: Nugget Bridge, the Dig House and the S.S.
+ * Anne around Misty; Route 9 to the Celadon gym around Lt. Surge; the rematches around Sabrina).
+ * "Skip for now" moves one after the last fight of its group, so Previous / Next take you there
+ * later, and it shows the cap after the gym.
+ */
+var SKIPPED_FIGHTS_KEY = "skippedFights";
+
+function readSkippedFights() {
+	try {
+		return JSON.parse(readSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode())) || [];
+	} catch (e) {
+		return [];
+	}
+}
+
+function isFightSkipped(index) {
+	return !!TRAINER_ORDER[index].parallel && readSkippedFights().indexOf(index) !== -1;
+}
+
+function setFightSkipped(index, skipped) {
+	var list = readSkippedFights().filter(function (i) {
+		return i !== index;
+	});
+	if (skipped) list.push(index);
+	writeSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode(), JSON.stringify(list));
+	showTrainer(index);
+}
+
+// The last fight of each group: its gym or the last fight that can be done around it.
+function getParallelGroupEnds() {
+	var ends = {};
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (!trainer.parallel) return;
+		var gate = trainer.parallel.gate;
+		ends[gate] = Math.max(ends[gate] === undefined ? findFight(gate) : ends[gate], index);
+	});
+	return ends;
+}
+
+// The order Previous and Next follow: the document's, with skipped fights after their group.
+function getTrainerNavOrder() {
+	var ends = getParallelGroupEnds();
+	var waiting = {};
+	var order = [];
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (isFightSkipped(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
+		else order.push(index);
+		Object.keys(ends).forEach(function (gate) {
+			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
+		});
+	});
+	return order;
+}
+
+function stepTrainer(step) {
+	var order = getTrainerNavOrder();
+	var next = order[order.indexOf(currentTrainerIndex) + step];
+	if (next !== undefined) showTrainer(next);
+}
+
 function isRivalStarterVariant(variant) {
 	return /^Rival Has /.test(variant.label);
 }
 
+function isBadgeVariant(variant) {
+	return variant.thunderBadge !== undefined;
+}
+
 function getTrainerVariant(trainer) {
+	// Bugsy's team follows the Thunder Badge (Lt. Surge beaten), as his script does.
+	if (trainer.variants.some(isBadgeVariant)) {
+		var afterSurge = isGymBeaten("Lt. Surge");
+		return trainer.variants.filter(function (variant) {
+			return variant.thunderBadge === afterSurge;
+		})[0] || trainer.variants[0];
+	}
 	var wanted = trainer.variants.some(isRivalStarterVariant) ?
 		RIVAL_TEAM_FOR_STARTER[getStarterType()] : readSetting(TRAINER_VARIANT_KEY);
 	return trainer.variants.filter(function (variant) {
@@ -234,18 +327,21 @@ function getTrainerVariant(trainer) {
 }
 
 function describeTrainer(trainer, index) {
-	var badgeCap = getBadgeLevelCap();
+	var progressCap = getProgressLevelCap();
+	if (isFightSkipped(index)) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
 	var listed = parseInt(trainer.levelCap) || 0;
 	var details = [
-		(index + 1) + " / " + TRAINER_ORDER.length,
+		(getTrainerNavOrder().indexOf(index) + 1) + " / " + TRAINER_ORDER.length,
 		trainer.location,
-		"Level cap " + (badgeCap > listed ? badgeCap : trainer.levelCap)
+		"Level cap " + (progressCap > listed ? progressCap : trainer.levelCap)
 	];
 	var highest = getPlayerHighestLevel();
 	var variant = getTrainerVariant(trainer);
 	if (highest && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
 		return typeof n === "number";
 	})) details.push("Levels from your Lv " + highest);
+	if (variant.thunderBadge !== undefined) details.push(variant.thunderBadge ? "Team after Lt. Surge" : "Team before Lt. Surge");
+	if (trainer.randomTeams) details.push("Random team (1 in 3)");
 	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");
 }
 
@@ -352,14 +448,21 @@ function showTrainer(index) {
 			return $("<option></option>").val(v.label).text(v.label);
 		}))
 		.val(variant.label)
-		// Rival teams follow the starter setting instead of a per-fight choice.
-		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant));
+		// Rival teams follow the starter setting, Bugsy's your badges, instead of a per-fight choice.
+		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant) && !isBadgeVariant(variant));
+	var ends = getParallelGroupEnds();
+	$("#trainer-skip-label").toggle(!!trainer.parallel)
+		.attr("title", trainer.parallel ? "You can do this fight before or after " + trainer.parallel.gate +
+			": Previous / Next bring it up after " + TRAINER_ORDER[ends[trainer.parallel.gate]].name + ", at the cap after the gym" : "");
+	$("#trainer-skip-where").text(trainer.parallel ? " (fight it after " + TRAINER_ORDER[ends[trainer.parallel.gate]].location + ")" : "");
+	$("#trainer-skip").prop("checked", isFightSkipped(currentTrainerIndex));
 	releaseBattleEffect();
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
-	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
-	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
+	var order = getTrainerNavOrder();
+	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
+	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
 	currentBattleEffect = variant.battleEffect || "";
 	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
@@ -412,6 +515,8 @@ function buildTrainerPanel() {
 		'<legend align="center">Opposing Trainer</legend>' +
 		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
+		'<label id="trainer-skip-label" class="trainer-skip"><input type="checkbox" id="trainer-skip" /> Skip for now' +
+		'<span id="trainer-skip-where"></span></label>' +
 		'<label class="trainer-starter">Your starter\u2019s type: <select id="trainer-starter"></select>' +
 		'<span id="trainer-starter-lock" class="trainer-starter-lock"> \uD83D\uDD12 from your save</span></label> ' +
 		'<select id="trainer-variant" aria-label="Which team this trainer uses"></select>' +
@@ -435,10 +540,13 @@ function buildTrainerPanel() {
 
 function bindTrainerEvents() {
 	$("#previous-trainer").click(function () {
-		showTrainer(currentTrainerIndex - 1);
+		stepTrainer(-1);
 	});
 	$("#next-trainer").click(function () {
-		showTrainer(currentTrainerIndex + 1);
+		stepTrainer(1);
+	});
+	$("#trainer-skip").change(function () {
+		setFightSkipped(currentTrainerIndex, this.checked);
 	});
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);

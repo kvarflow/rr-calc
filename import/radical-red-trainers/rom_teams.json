@@ -1,0 +1,1172 @@
+{
+ "normal": [
+  {
+   "trainer": "Bugsy",
+   "trainerIds": [
+    47,
+    8
+   ],
+   "choice": "thunderBadge",
+   "teams": {
+    "Pre Lt. Surge": [
+     {
+      "species": "Lokix",
+      "nature": "Jolly",
+      "ability": "Tinted Lens",
+      "item": "Silver Powder",
+      "moves": [
+       "First Impression",
+       "Knock Off",
+       "U-turn",
+       "Leech Life"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Ledian",
+      "nature": "Jolly",
+      "ability": "Iron Fist",
+      "item": "Focus Sash",
+      "moves": [
+       "Drain Punch",
+       "Mach Punch",
+       "Ice Punch",
+       "Thunder Punch"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scyther",
+      "nature": "Jolly",
+      "ability": "Technician",
+      "item": "Charti Berry",
+      "moves": [
+       "Bug Bite",
+       "Swords Dance",
+       "Rock Smash",
+       "Aerial Ace"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scizor",
+      "nature": "Careful",
+      "ability": "Technician",
+      "item": "Sitrus Berry",
+      "moves": [
+       "Bullet Punch",
+       "U-turn",
+       "Rock Smash",
+       "Aerial Ace"
+      ],
+      "evs": {}
+     }
+    ],
+    "After Lt. Surge": [
+     {
+      "species": "Kleavor",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "Focus Sash",
+      "moves": [
+       "Stone Axe",
+       "Night Slash",
+       "U-turn",
+       "X-Scissor"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Scizor",
+      "nature": "Careful",
+      "ability": "Technician",
+      "item": "Scizorite",
+      "moves": [
+       "Bullet Punch",
+       "Dual Wingbeat",
+       "U-turn",
+       "Rock Smash"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "df": 4
+      }
+     },
+     {
+      "species": "Scyther",
+      "nature": "Adamant",
+      "ability": "Technician",
+      "item": "Eviolite",
+      "moves": [
+       "Swords Dance",
+       "Dual Wingbeat",
+       "Bug Bite",
+       "Rock Smash"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Lokix",
+      "nature": "Jolly",
+      "ability": "Tinted Lens",
+      "item": "Silver Powder",
+      "moves": [
+       "Sucker Punch",
+       "First Impression",
+       "Knock Off",
+       "U-turn"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Araquanid",
+      "nature": "Impish",
+      "ability": "Water Bubble",
+      "item": "Leftovers",
+      "moves": [
+       "X-Scissor",
+       "Liquidation",
+       "Protect",
+       "Toxic"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 4,
+       "df": 252
+      }
+     },
+     {
+      "species": "Vikavolt",
+      "nature": "Modest",
+      "ability": "Levitate",
+      "item": "Magnet",
+      "moves": [
+       "Thunder",
+       "Bug Buzz",
+       "Volt Switch",
+       "Energy Ball"
+      ],
+      "evs": {
+       "hp": 252,
+       "df": 4,
+       "sa": 252
+      }
+     }
+    ]
+   }
+  },
+  {
+   "trainer": "Pryce",
+   "trainerIds": [
+    58,
+    59,
+    60
+   ],
+   "choice": "random",
+   "teams": [
+    [
+     {
+      "species": "Jynx",
+      "nature": "Timid",
+      "ability": "Dry Skin",
+      "item": "Focus Sash",
+      "moves": [
+       "Lovely Kiss",
+       "Psystrike",
+       "Freeze-Dry",
+       "Focus Blast"
+      ],
+      "evs": {
+       "sp": 252,
+       "sa": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Cloyster",
+      "nature": "Jolly",
+      "ability": "Skill Link",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Icicle Spear",
+       "Waterfall",
+       "Rock Blast"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Walrein",
+      "nature": "Calm",
+      "ability": "Fur Coat",
+      "item": "Leftovers",
+      "moves": [
+       "Toxic",
+       "Rest",
+       "Sleep Talk",
+       "Ice Beam"
+      ],
+      "evs": {
+       "hp": 252,
+       "df": 4,
+       "sd": 252
+      }
+     },
+     {
+      "species": "Baxcalibur",
+      "nature": "Jolly",
+      "ability": "Thermal Exchange",
+      "item": "Dragon Fang",
+      "moves": [
+       "Dragon Dance",
+       "Icicle Crash",
+       "Glaive Rush",
+       "Earthquake"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Arctozolt",
+      "nature": "Lonely",
+      "ability": "Slush Rush",
+      "item": "Life Orb",
+      "moves": [
+       "Bolt Beak",
+       "Icicle Crash",
+       "Freeze-Dry",
+       "Low Kick"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Glalie",
+      "nature": "Jolly",
+      "ability": "Ice Body",
+      "item": "Glalitite",
+      "moves": [
+       "Fake Out",
+       "Quick Attack",
+       "Earthquake",
+       "Double-Edge"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     }
+    ]
+   ]
+  },
+  {
+   "trainer": "Jasmine",
+   "trainerIds": [
+    62,
+    63,
+    64
+   ],
+   "choice": "random",
+   "teams": [
+    [
+     {
+      "species": "Steelix",
+      "nature": "Adamant",
+      "ability": "Sturdy",
+      "item": "Chople Berry",
+      "moves": [
+       "Stealth Rock",
+       "Earthquake",
+       "Iron Head",
+       "Roar"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Melmetal",
+      "nature": "Adamant",
+      "ability": "Iron Fist",
+      "item": "Leftovers",
+      "moves": [
+       "Double Iron Bash",
+       "Earthquake",
+       "Thunder Punch",
+       "Ice Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Duraludon",
+      "nature": "Modest",
+      "ability": "Stalwart",
+      "item": "Assault Vest",
+      "moves": [
+       "Dragon Pulse",
+       "Flash Cannon",
+       "Thunderbolt",
+       "Body Press"
+      ],
+      "evs": {
+       "hp": 252,
+       "sa": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Durant",
+      "nature": "Jolly",
+      "ability": "Hustle",
+      "item": "Life Orb",
+      "moves": [
+       "Iron Head",
+       "Close Combat",
+       "X-Scissor",
+       "Hone Claws"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Samurott",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Razor Shell",
+       "Cut",
+       "Sacred Sword"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Aggron",
+      "nature": "Adamant",
+      "ability": "Sturdy",
+      "item": "Aggronite",
+      "moves": [
+       "Earthquake",
+       "Heavy Slam",
+       "Body Press",
+       "Fire Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "df": 4
+      }
+     }
+    ],
+    [
+     {
+      "species": "Bronzong",
+      "nature": "Relaxed",
+      "ability": "Levitate",
+      "item": "Leftovers",
+      "moves": [
+       "Stealth Rock",
+       "Earthquake",
+       "Gyro Ball",
+       "Explosion"
+      ],
+      "evs": {
+       "hp": 252,
+       "df": 252,
+       "sd": 4
+      },
+      "ivs": {
+       "hp": 31,
+       "at": 31,
+       "df": 31,
+       "sp": 0,
+       "sa": 31,
+       "sd": 31
+      }
+     },
+     {
+      "species": "Melmetal",
+      "nature": "Adamant",
+      "ability": "Iron Fist",
+      "item": "Leftovers",
+      "moves": [
+       "Double Iron Bash",
+       "Earthquake",
+       "Body Press",
+       "Thunder Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Magnezone",
+      "nature": "Modest",
+      "ability": "Magnet Pull",
+      "item": "Magnet",
+      "moves": [
+       "Thunderbolt",
+       "Volt Switch",
+       "Flash Cannon",
+       "Hidden Power Fire"
+      ],
+      "evs": {
+       "sp": 252,
+       "sa": 252,
+       "sd": 4
+      },
+      "ivs": {
+       "hp": 31,
+       "at": 30,
+       "df": 31,
+       "sp": 30,
+       "sa": 30,
+       "sd": 31
+      }
+     },
+     {
+      "species": "Excadrill",
+      "nature": "Jolly",
+      "ability": "Mold Breaker",
+      "item": "Air Balloon",
+      "moves": [
+       "Iron Head",
+       "Earthquake",
+       "Rock Slide",
+       "Swords Dance"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Samurott",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Razor Shell",
+       "Cut",
+       "Sacred Sword"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Aggron",
+      "nature": "Adamant",
+      "ability": "Sturdy",
+      "item": "Aggronite",
+      "moves": [
+       "Earthquake",
+       "Heavy Slam",
+       "Body Press",
+       "Fire Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "df": 4
+      }
+     }
+    ],
+    [
+     {
+      "species": "Forretress",
+      "nature": "Relaxed",
+      "ability": "Sturdy",
+      "item": "Custap Berry",
+      "moves": [
+       "Stealth Rock",
+       "Earthquake",
+       "Gyro Ball",
+       "Explosion"
+      ],
+      "evs": {
+       "hp": 252,
+       "df": 252,
+       "sd": 4
+      },
+      "ivs": {
+       "hp": 31,
+       "at": 31,
+       "df": 31,
+       "sp": 0,
+       "sa": 31,
+       "sd": 31
+      }
+     },
+     {
+      "species": "Melmetal",
+      "nature": "Adamant",
+      "ability": "Iron Fist",
+      "item": "Leftovers",
+      "moves": [
+       "Double Iron Bash",
+       "Earthquake",
+       "Body Press",
+       "Thunder Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Magnezone",
+      "nature": "Modest",
+      "ability": "Magnet Pull",
+      "item": "Magnet",
+      "moves": [
+       "Thunderbolt",
+       "Volt Switch",
+       "Flash Cannon",
+       "Hidden Power Fire"
+      ],
+      "evs": {
+       "sp": 252,
+       "sa": 252,
+       "sd": 4
+      },
+      "ivs": {
+       "hp": 31,
+       "at": 30,
+       "df": 31,
+       "sp": 30,
+       "sa": 30,
+       "sd": 31
+      }
+     },
+     {
+      "species": "Lucario",
+      "nature": "Jolly",
+      "ability": "Inner Focus",
+      "item": "Air Balloon",
+      "moves": [
+       "Swords Dance",
+       "Extreme Speed",
+       "Close Combat",
+       "Meteor Mash"
+      ],
+      "evs": {
+       "at": 252,
+       "sp": 252,
+       "sd": 4
+      }
+     },
+     {
+      "species": "Samurott",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Razor Shell",
+       "Cut",
+       "Sacred Sword"
+      ],
+      "evs": {
+       "at": 252,
+       "df": 4,
+       "sp": 252
+      }
+     },
+     {
+      "species": "Aggron",
+      "nature": "Adamant",
+      "ability": "Sturdy",
+      "item": "Aggronite",
+      "moves": [
+       "Earthquake",
+       "Heavy Slam",
+       "Body Press",
+       "Fire Punch"
+      ],
+      "evs": {
+       "hp": 252,
+       "at": 252,
+       "df": 4
+      }
+     }
+    ]
+   ]
+  }
+ ],
+ "hardcore": [
+  {
+   "trainer": "Bugsy",
+   "trainerIds": [
+    47,
+    8
+   ],
+   "choice": "thunderBadge",
+   "teams": {
+    "Pre Lt. Surge": [
+     {
+      "species": "Kleavor",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "Focus Sash",
+      "moves": [
+       "X-Scissor",
+       "U-turn",
+       "Stone Axe",
+       "Night Slash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scizor",
+      "nature": "Careful",
+      "ability": "Technician",
+      "item": "Assault Vest",
+      "moves": [
+       "Bullet Punch",
+       "Aerial Ace",
+       "U-turn",
+       "Rock Smash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scyther",
+      "nature": "Adamant",
+      "ability": "Technician",
+      "item": "Muscle Band",
+      "moves": [
+       "Swords Dance",
+       "Aerial Ace",
+       "U-turn",
+       "Rock Smash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Lokix",
+      "nature": "Jolly",
+      "ability": "Tinted Lens",
+      "item": "Silver Powder",
+      "moves": [
+       "U-turn",
+       "First Impression",
+       "Sucker Punch",
+       "Knock Off"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Araquanid",
+      "nature": "Impish",
+      "ability": "Water Bubble",
+      "item": "Leftovers",
+      "moves": [
+       "Bug Bite",
+       "Waterfall",
+       "Protect",
+       "Toxic"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Vikavolt",
+      "nature": "Modest",
+      "ability": "Levitate",
+      "item": "Magnet",
+      "moves": [
+       "Volt Switch",
+       "Signal Beam",
+       "Roost",
+       "Hidden Power Grass"
+      ],
+      "evs": {},
+      "ivs": {
+       "hp": 31,
+       "at": 30,
+       "df": 31,
+       "sp": 31,
+       "sa": 30,
+       "sd": 31
+      }
+     }
+    ],
+    "After Lt. Surge": [
+     {
+      "species": "Kleavor",
+      "nature": "Jolly",
+      "ability": "Sharpness",
+      "item": "Focus Sash",
+      "moves": [
+       "Stone Axe",
+       "X-Scissor",
+       "U-turn",
+       "Night Slash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scizor",
+      "nature": "Careful",
+      "ability": "Technician",
+      "item": "Scizorite",
+      "moves": [
+       "Bullet Punch",
+       "Dual Wingbeat",
+       "U-turn",
+       "Rock Smash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Scyther",
+      "nature": "Adamant",
+      "ability": "Technician",
+      "item": "Eviolite",
+      "moves": [
+       "Swords Dance",
+       "Dual Wingbeat",
+       "Bug Bite",
+       "Rock Smash"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Lokix",
+      "nature": "Jolly",
+      "ability": "Tinted Lens",
+      "item": "Bug Gem",
+      "moves": [
+       "First Impression",
+       "U-turn",
+       "Knock Off",
+       "Sucker Punch"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Araquanid",
+      "nature": "Impish",
+      "ability": "Water Bubble",
+      "item": "Leftovers",
+      "moves": [
+       "X-Scissor",
+       "Liquidation",
+       "Protect",
+       "Toxic"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Vikavolt",
+      "nature": "Modest",
+      "ability": "Levitate",
+      "item": "Magnet",
+      "moves": [
+       "Thunder",
+       "Bug Buzz",
+       "Volt Switch",
+       "Energy Ball"
+      ],
+      "evs": {}
+     }
+    ]
+   }
+  },
+  {
+   "trainer": "Pryce",
+   "trainerIds": [
+    58,
+    59,
+    60
+   ],
+   "choice": "random",
+   "teams": [
+    [
+     {
+      "species": "Jynx",
+      "nature": "Timid",
+      "ability": "Dry Skin",
+      "item": "Focus Sash",
+      "moves": [
+       "Lovely Kiss",
+       "Psystrike",
+       "Blizzard",
+       "Focus Blast"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Cloyster",
+      "nature": "Jolly",
+      "ability": "Skill Link",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Icicle Spear",
+       "Waterfall",
+       "Rock Blast"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Clefable",
+      "nature": "Modest",
+      "ability": "Magic Guard",
+      "item": "Life Orb",
+      "moves": [
+       "Thunder Wave",
+       "Teleport",
+       "Light of Ruin",
+       "Flamethrower"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Kyurem-Black",
+      "nature": "Jolly",
+      "ability": "Teravolt",
+      "item": "Icium Z",
+      "moves": [
+       "Dragon Dance",
+       "Icicle Crash",
+       "Fusion Bolt",
+       "Roost"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Arctozolt",
+      "nature": "Lonely",
+      "ability": "Slush Rush",
+      "item": "Life Orb",
+      "moves": [
+       "Bolt Beak",
+       "Icicle Crash",
+       "Freeze-Dry",
+       "Low Kick"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Glalie",
+      "nature": "Jolly",
+      "ability": "Ice Body",
+      "item": "Glalitite",
+      "moves": [
+       "Fake Out",
+       "Quick Attack",
+       "Earthquake",
+       "Double-Edge"
+      ],
+      "evs": {}
+     }
+    ],
+    [
+     {
+      "species": "Sandslash-Alola",
+      "nature": "Adamant",
+      "ability": "Slush Rush",
+      "item": "Focus Sash",
+      "moves": [
+       "Stealth Rock",
+       "Earthquake",
+       "Icicle Spear",
+       "Iron Head"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Reuniclus",
+      "nature": "Bold",
+      "ability": "Regenerator",
+      "item": "Leftovers",
+      "moves": [
+       "Calm Mind",
+       "Recover",
+       "Psychic",
+       "Focus Blast"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Clefable",
+      "nature": "Modest",
+      "ability": "Magic Guard",
+      "item": "Life Orb",
+      "moves": [
+       "Thunder Wave",
+       "Teleport",
+       "Light of Ruin",
+       "Flamethrower"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Kyurem-Black",
+      "nature": "Jolly",
+      "ability": "Teravolt",
+      "item": "Icium Z",
+      "moves": [
+       "Dragon Dance",
+       "Icicle Crash",
+       "Fusion Bolt",
+       "Roost"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Arctovish",
+      "nature": "Adamant",
+      "ability": "Slush Rush",
+      "item": "Life Orb",
+      "moves": [
+       "Fishious Rend",
+       "Icicle Crash",
+       "Stone Edge",
+       "Psychic Fangs"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Glalie",
+      "nature": "Jolly",
+      "ability": "Ice Body",
+      "item": "Glalitite",
+      "moves": [
+       "Fake Out",
+       "Quick Attack",
+       "Earthquake",
+       "Double-Edge"
+      ],
+      "evs": {}
+     }
+    ],
+    [
+     {
+      "species": "Jynx",
+      "nature": "Timid",
+      "ability": "Dry Skin",
+      "item": "Focus Sash",
+      "moves": [
+       "Lovely Kiss",
+       "Psystrike",
+       "Blizzard",
+       "Focus Blast"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Cloyster",
+      "nature": "Jolly",
+      "ability": "Skill Link",
+      "item": "White Herb",
+      "moves": [
+       "Shell Smash",
+       "Icicle Spear",
+       "Waterfall",
+       "Rock Blast"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Clefable",
+      "nature": "Modest",
+      "ability": "Magic Guard",
+      "item": "Life Orb",
+      "moves": [
+       "Blizzard",
+       "Teleport",
+       "Light of Ruin",
+       "Flamethrower"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Kyurem-Black",
+      "nature": "Jolly",
+      "ability": "Teravolt",
+      "item": "Icium Z",
+      "moves": [
+       "Dragon Dance",
+       "Icicle Crash",
+       "Fusion Bolt",
+       "Roost"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Arctozolt",
+      "nature": "Lonely",
+      "ability": "Slush Rush",
+      "item": "Life Orb",
+      "moves": [
+       "Bolt Beak",
+       "Icicle Crash",
+       "Freeze-Dry",
+       "Low Kick"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Glalie",
+      "nature": "Jolly",
+      "ability": "Ice Body",
+      "item": "Glalitite",
+      "moves": [
+       "Fake Out",
+       "Quick Attack",
+       "Earthquake",
+       "Double-Edge"
+      ],
+      "evs": {}
+     }
+    ]
+   ]
+  },
+  {
+   "trainer": "Jasmine",
+   "trainerIds": [
+    62,
+    63,
+    64
+   ],
+   "choice": "random",
+   "teams": [
+    [
+     {
+      "species": "Gliscor",
+      "nature": "Jolly",
+      "ability": "Poison Heal",
+      "item": "Toxic Orb",
+      "moves": [
+       "Stealth Rock",
+       "High Horsepower",
+       "Protect",
+       "Toxic"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Tapu Bulu",
+      "nature": "Jolly",
+      "ability": "Grassy Surge",
+      "item": "Life Orb",
+      "moves": [
+       "Grassy Glide",
+       "Play Rough",
+       "Close Combat",
+       "Swords Dance"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Necrozma-Dusk-Mane",
+      "nature": "Jolly",
+      "ability": "Prism Armor",
+      "item": "Weakness Policy",
+      "moves": [
+       "Dragon Dance",
+       "Sunsteel Strike",
+       "Stone Edge",
+       "High Horsepower"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Genesect",
+      "nature": "Naive",
+      "ability": "Download",
+      "item": "Life Orb",
+      "moves": [
+       "Extreme Speed",
+       "U-turn",
+       "Flamethrower",
+       "Thunderbolt"
+      ],
+      "evs": {}
+     },
+     {
+      "species": "Magnezone",
+      "nature": "Modest",
+      "ability": "Sturdy",
+      "item": "Assault Vest",
+      "moves": [
+       "Thunderbolt",
+       "Flash Cannon",
+       "Hidden Power Grass",
+       "Body Press"
+      ],
+      "evs": {},
+      "ivs": {
+       "hp": 31,
+       "at": 30,
+       "df": 31,
+       "sp": 31,
+       "sa": 30,
+       "sd": 31
+      }
+     },
+     {
+      "species": "Aggron",
+      "nature": "Careful",
+      "ability": "Sturdy",
+      "item": "Aggronite",
+      "moves": [
+       "Curse",
+       "Heavy Slam",
+       "Rest",
+       "Sleep Talk"
+      ],
+      "evs": {}
+     }
+    ]
+   ]
+  }
+ ]
+}

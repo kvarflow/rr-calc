@@ -328,7 +328,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Catcher Cale",
@@ -350,7 +354,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Lass Ali",
@@ -372,7 +380,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Youngster Timmy",
@@ -394,7 +406,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Lass Relli",
@@ -416,7 +432,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Camper Ethan",
@@ -438,7 +458,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Grunt",
@@ -462,7 +486,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Bugsy",
@@ -481,6 +509,31 @@ var TRAINER_ORDER = [
      "Araquanid (*Leader Bugsy Set 1)",
      "Vikavolt (*Leader Bugsy Set 1)"
     ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "thunderBadge": false
+   },
+   {
+    "label": "After Lt. Surge",
+    "battleEffect": "Permanent rain",
+    "sets": [
+     "Kleavor (*Leader Bugsy Set 1)",
+     "Scizor-Mega (*Leader Bugsy)",
+     "Scyther (*Leader Bugsy Set 2)",
+     "Lokix (*Leader Bugsy Set 2)",
+     "Araquanid (*Leader Bugsy Set 2)",
+     "Vikavolt (*Leader Bugsy Set 2)"
+    ],
+    "preMega": {
+     "1": "Technician"
+    },
+    "thunderBadge": true,
     "levelBelowHighest": [
      0,
      0,
@@ -534,7 +587,11 @@ var TRAINER_ORDER = [
      3
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Camper Jeff",
@@ -560,7 +617,11 @@ var TRAINER_ORDER = [
      1
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Ann & Brooks",
@@ -586,7 +647,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Edmond & Trevor",
@@ -614,7 +679,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Brendan",
@@ -642,7 +711,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Whitney",
@@ -746,7 +819,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Picnicker Caitlin",
@@ -770,7 +847,11 @@ var TRAINER_ORDER = [
      1
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Picnicker Dana",
@@ -796,7 +877,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Maniac Herman",
@@ -820,7 +905,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Morty",
@@ -877,7 +966,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Ace Mary",
@@ -901,7 +994,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Erika",
@@ -2058,7 +2155,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Misty (Rematch)",
@@ -2089,7 +2190,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Lt. Surge (Rematch)",
@@ -2120,7 +2225,11 @@ var TRAINER_ORDER = [
      0
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Erika (Rematch)",
@@ -2263,8 +2372,55 @@ var TRAINER_ORDER = [
      0,
      0
     ]
+   },
+   {
+    "label": "Team Two",
+    "battleEffect": "Permanent snow",
+    "sets": [
+     "Sandslash-Alola (*Leader Pryce)",
+     "Reuniclus (*Leader Pryce)",
+     "Clefable (*Leader Pryce Set 2)",
+     "Kyurem-Black (*Leader Pryce)",
+     "Arctovish (*Leader Pryce)",
+     "Glalie-Mega (*Leader Pryce)"
+    ],
+    "preMega": {
+     "5": "Ice Body"
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
+   },
+   {
+    "label": "Team Three",
+    "battleEffect": "Permanent snow",
+    "sets": [
+     "Jynx (*Leader Pryce)",
+     "Cloyster (*Leader Pryce)",
+     "Clefable (*Leader Pryce Set 1)",
+     "Kyurem-Black (*Leader Pryce)",
+     "Arctozolt (*Leader Pryce)",
+     "Glalie-Mega (*Leader Pryce)"
+    ],
+    "preMega": {
+     "5": "Ice Body"
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ]
    }
-  ]
+  ],
+  "randomTeams": true
  },
  {
   "name": "May",

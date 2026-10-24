@@ -822,6 +822,11 @@ legend:has(> .header-sprite)::before {
     margin-left: 4px;
     white-space: nowrap;
 }
+.trainer-skip {
+    display: block;
+    font-size: 0.85em;
+    margin: 2px 0 4px;
+}
 .run-progress-row {
     font-size: 0.85em;
     margin-bottom: 6px;

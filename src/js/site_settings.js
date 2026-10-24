@@ -144,6 +144,16 @@ var CHANGELOG = [
 		"Trainer AI checked against Radical Red's own code once more: every trainer uses the full AI, " +
 			"multi-hit moves, Sucker Punch, Pursuit, Quick Claw and many move rules match the game, and the turn a " +
 			"boss Mega Evolves is scored the way the game does it"
+	]},
+	{version: "1.15", notes: [
+		"\"Skip for now\" on fights you can do before or after a gym (Nugget Bridge, the Dig House and the S.S. Anne " +
+			"around Misty; Route 9 to the Celadon gym around Lt. Surge; the rematches around Sabrina): Previous / Next " +
+			"bring a skipped fight up after the rest of its group, at the cap after the gym",
+		"Bugsy uses his other team once Lt. Surge is beaten (marked Defeated, or the Thunder Badge in your save), " +
+			"as the game does; in Default Mode that team was missing",
+		"Jasmine (Default) and Pryce (Hardcore) pick one of three teams at random in the game: all three are in the " +
+			"team list now, read from the game",
+		"Marking a gym leader Defeated raises the level cap shown, like the badges in an imported save"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

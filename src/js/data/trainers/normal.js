@@ -222,7 +222,11 @@ var TRAINER_ORDER = [
      3
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Catcher Cale",
@@ -244,7 +248,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Lass Ali",
@@ -266,7 +274,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Youngster Timmy",
@@ -288,7 +300,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Lass Reli",
@@ -310,7 +326,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Camper Ethan",
@@ -332,7 +352,11 @@ var TRAINER_ORDER = [
      3
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Grunt",
@@ -356,7 +380,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Bugsy",
@@ -374,6 +402,31 @@ var TRAINER_ORDER = [
      "Scizor (*Leader Bugsy)"
     ],
     "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
+    ],
+    "thunderBadge": false
+   },
+   {
+    "label": "After Lt. Surge",
+    "battleEffect": "Permanent rain",
+    "sets": [
+     "Kleavor (*Leader Bugsy)",
+     "Scizor-Mega (*Leader Bugsy)",
+     "Scyther (*Leader Bugsy Set 2)",
+     "Lokix (*Leader Bugsy Set 2)",
+     "Araquanid (*Leader Bugsy)",
+     "Vikavolt (*Leader Bugsy)"
+    ],
+    "preMega": {
+     "1": "Technician"
+    },
+    "thunderBadge": true,
+    "levelBelowHighest": [
+     2,
+     2,
      2,
      2,
      2,
@@ -422,7 +475,11 @@ var TRAINER_ORDER = [
      3
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Ann & Brooks",
@@ -448,7 +505,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Edmond & Trevor",
@@ -474,7 +535,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Brendan",
@@ -498,7 +563,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 34
+  }
  },
  {
   "name": "Whitney",
@@ -570,7 +639,11 @@ var TRAINER_ORDER = [
      4
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Morty",
@@ -1626,7 +1699,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Misty (Rematch)",
@@ -1657,7 +1734,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Lt. Surge (Rematch)",
@@ -1688,7 +1769,11 @@ var TRAINER_ORDER = [
      2
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Erika (Rematch)",
@@ -1857,8 +1942,55 @@ var TRAINER_ORDER = [
      2,
      2
     ]
+   },
+   {
+    "label": "Team Two",
+    "battleEffect": null,
+    "sets": [
+     "Bronzong (*Leader Jasmine)",
+     "Melmetal (*Leader Jasmine Set 1)",
+     "Magnezone (*Leader Jasmine)",
+     "Excadrill (*Leader Jasmine)",
+     "Samurott (*Leader Jasmine)",
+     "Aggron-Mega (*Leader Jasmine)"
+    ],
+    "preMega": {
+     "5": "Sturdy"
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
+   },
+   {
+    "label": "Team Three",
+    "battleEffect": null,
+    "sets": [
+     "Forretress (*Leader Jasmine)",
+     "Melmetal (*Leader Jasmine Set 1)",
+     "Magnezone (*Leader Jasmine)",
+     "Lucario (*Leader Jasmine)",
+     "Samurott (*Leader Jasmine)",
+     "Aggron-Mega (*Leader Jasmine)"
+    ],
+    "preMega": {
+     "5": "Sturdy"
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ]
    }
-  ]
+  ],
+  "randomTeams": true
  },
  {
   "name": "Ace Derek",

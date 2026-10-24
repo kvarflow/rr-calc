@@ -23,7 +23,11 @@ Damage calculator for all generations of Pokémon battling.
   the game's trainer data, and a `.sav` import reads the starter you chose so his teams match.
   Pokémon the documents give a level relative to yours ("Highest Lv -3") take it from the
   highest-level Pokémon in the party of the last `.sav` imported, and the level cap shown rises
-  with the save's badges.
+  with the save's badges (or the gym leaders you mark Defeated). Fights the Hardcore document gives
+  a "before/after" cap (Nugget Bridge to the S.S. Anne around Misty, and so on) can be skipped for
+  now and come up after the rest of their group. Teams the documents leave out come from the game's
+  scripts (`import/radical-red-trainers/rom_teams.json`): Bugsy's after Lt. Surge (the script checks
+  the Thunder Badge), and the three teams Pryce and Jasmine pick from at random.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
 - Ability descriptions (`src/js/data/ability_descriptions.js`, for the ? beside each ability) are
