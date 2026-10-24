@@ -363,8 +363,9 @@ function getTrainerVariant(trainer) {
 
 function describeTrainer(trainer, index) {
 	// A fight you have beaten keeps the cap it is listed with.
-	var progressCap = typeof isTrainerDefeated === "function" && isTrainerDefeated(index) ? 0 : getProgressLevelCap();
-	if (isFightSkipped(index) && progressCap) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
+	var beatenFight = typeof isTrainerDefeated === "function" && isTrainerDefeated(index);
+	var progressCap = beatenFight ? 0 : getProgressLevelCap();
+	if (isFightSkipped(index) && !beatenFight) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
 	var listed = parseInt(trainer.levelCap) || 0;
 	var details = [
 		(getTrainerNavOrder().indexOf(index) + 1) + " / " + TRAINER_ORDER.length,
