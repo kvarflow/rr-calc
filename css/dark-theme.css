@@ -1,0 +1,191 @@
+/* Dark mode styles */
+
+:root {
+    /* Should make it easier to change colors in the future */
+    --text: #e4e4e4;
+    --background: #1b1b1b;
+
+    --button-hover: black;
+    --button-selected: #232e51;
+    --fieldset-color: #2a2a2a;
+
+    --column-1: #2a2a2a;
+}
+
+html, body {
+    color: var(--text);
+    background-color: var(--background);
+    color-scheme: dark;
+}
+
+.btn {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.btn:hover {
+    z-index: 10;
+    background: var(--button-hover);
+}
+
+.visually-hidden:focus + .btn,
+.btn:hover {
+    z-index: 10;
+    background: var(--button-hover);
+}
+
+.visually-hidden:checked + .btn {
+    font-weight: bold;
+    color: var(--text);
+    background: var(--button-selected);
+}
+
+.visually-hidden:disabled + .btn {
+    color: var(--button-hover);
+}
+
+fieldset {
+    background-color: var(--fieldset-color);
+}
+
+select {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+a.links-lighten {
+    color: #7A9CFF;
+}
+
+a.links-lighten:hover {
+    color: #C2D0FF;
+}
+
+a.links-lighten:visited {
+    color: #BC8BEA;
+}
+
+a.links-lighten:visited:hover {
+    color: #DACAF7;
+}
+
+input {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+textarea {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.wrapper {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+a.collapsible-link {
+    color: var(--text);
+}
+
+.bs-btn {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.bs-btn:hover {
+    z-index: 10;
+    background: var(--button-hover);
+    color: var(--text);
+}
+
+.dataTables_info {
+    color: var(--text) !important; /* I know, don't use !important, but w/e */
+}
+
+.search-label {
+    color: var(--text);
+}
+
+tr.odd, tr.even {
+    background-color: var(--background) !important;
+}
+
+
+td.sorting_1 {
+    background-color: var(--column-1) !important;
+}
+
+
+label:not(.btn) {
+    color: var(--text);
+}
+
+/* Select2 Dropdown stylings */
+
+.select2-container .select2-choice {
+    background: var(--background);
+    background-image: linear-gradient(#333, 70%, #1b1b1b);
+    /* Not fully satisfied w/ this gradient, but it's w/e */
+    color: var(--text);
+}
+
+.select2-container .select2-choice .select2-arrow {
+    background: none;
+    border-left: none;
+}
+
+.select2-dropdown-open .select2-choice {
+    -webkit-box-shadow: 0 1px 0 var(--background) inset;
+    box-shadow: 0 1px 0 var(--background) inset;
+    background-image: none;
+}
+
+.select2-drop {
+    background-color: var(--background);
+    color: var(--text);
+}
+
+.select2-dropdown-open.select2-drop-above .select2-choice,
+.select2-dropdown-open.select2-drop-above .select2-choices {
+    background-image: none;
+}
+
+.select2-no-results {
+    background-color: var(--background) !important;
+}
+
+input.select2-input {
+    color: var(--text);
+    /* 
+    * I have to use this URL because this CSS file is in the dist/css folder,
+    * whereas the Select2 CSS file is right next to the select2.png file
+    */
+    background: url('../js/vendor/select2/select2.png') no-repeat 100% -22px, var(--background);
+}
+
+.box-dialog {
+    background: var(--fieldset-color);
+}
+
+/* Small-screen layout (small_screen.js): its colors in the dark theme. */
+:root {
+    --ss-dark-bg: #141414;
+    --ss-dark-card: #232323;
+    --ss-dark-text: #e8e8e8;
+    --ss-dark-muted: #9aa0aa;
+    --ss-dark-dupe: #000000;
+    --ss-dark-dupe-text: #8a909a;
+    --ss-dark-good: #6fd08c;
+    --ss-dark-good-soft: #17361f;
+    --ss-dark-danger: #ff7b6b;
+    --ss-dark-line: #3a3a3a;
+    --ss-dark-btn: #2d2d2d;
+    /* The accent color chosen under More (main.css has each one's dark values). */
+    --ss-dark-accent: var(--ss-a-dark, #5b8def);
+    --ss-dark-accent-soft: var(--ss-a-dark-soft, #24324f);
+    --ss-dark-accent-text: var(--ss-a-dark-text, #a9c4ff);
+    --ss-dark-cc-veil: rgba(35, 35, 35, 0.45);
+    /* "Slower" is near black in the light theme; on dark cards it needs to show. */
+    --ss-dark-slower: #6b6b6b;
+}
