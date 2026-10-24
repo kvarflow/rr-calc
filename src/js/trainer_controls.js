@@ -316,7 +316,7 @@ function getTrainerNavOrder() {
 	var order = [];
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (isFightSkipped(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
-		else order.push(index);
+		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
 		Object.keys(ends).forEach(function (gate) {
 			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
 		});
@@ -368,7 +368,7 @@ function describeTrainer(trainer, index) {
 	if (isFightSkipped(index) && !beatenFight) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
 	var listed = parseInt(trainer.levelCap) || 0;
 	var details = [
-		(getTrainerNavOrder().indexOf(index) + 1) + " / " + TRAINER_ORDER.length,
+		(getTrainerNavOrder().indexOf(index) + 1) + " / " + getTrainerNavOrder().length,
 		trainer.location,
 		"Level cap " + (progressCap > listed ? progressCap : trainer.levelCap)
 	];

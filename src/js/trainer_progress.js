@@ -145,6 +145,11 @@ function getArc(index) {
 	while (first > 0 && caps[first - 1] === caps[index]) first--;
 	while (last < caps.length - 1 && caps[last + 1] === caps[index]) last++;
 	var boss = -1;
+	// Named after its gym leader; else its last required fight at the arc's cap.
+	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
+	for (var g = last; g >= first && boss === -1; g--) {
+		if (leaders.indexOf(TRAINER_ORDER[g].name) !== -1) boss = g;
+	}
 	for (var i = last; i >= first && boss === -1; i--) {
 		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === caps[index]) boss = i;
 	}
@@ -166,18 +171,24 @@ function renderTrainerProgress() {
 	if (!$("#run-progress").length) return;
 	var kos = readTrainerKOs();
 	var arc = getArc(currentTrainerIndex);
-	var arcTotal = arc.last - arc.first + 1;
+	var arcTotal = 0;
 	var arcDefeated = 0;
+	var total = 0;
 	var defeated = 0;
+	// A fight the documents list twice (marked duplicate) counts once.
 	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.duplicate) return;
+		var inArc = index >= arc.first && index <= arc.last;
+		total++;
+		if (inArc) arcTotal++;
 		if (!isTrainerDefeated(index, kos)) return;
 		defeated++;
-		if (index >= arc.first && index <= arc.last) arcDefeated++;
+		if (inArc) arcDefeated++;
 	});
 	$("#arc-progress-label").text(arc.name + " Arc — " + arcDefeated + "/" + arcTotal + " trainers defeated");
 	drawProgressBar($("#arc-progress-bar"), arcDefeated, arcTotal);
-	$("#game-progress-label").text("Game progress — " + defeated + "/" + TRAINER_ORDER.length + " trainers defeated");
-	drawProgressBar($("#game-progress-bar"), defeated, TRAINER_ORDER.length);
+	$("#game-progress-label").text("Game progress — " + defeated + "/" + total + " trainers defeated");
+	drawProgressBar($("#game-progress-bar"), defeated, total);
 
 	// The current team: greyed-out KOs, the Defeated box and the KO button's label.
 	var slots = getKOSlots(currentTrainerIndex, kos);

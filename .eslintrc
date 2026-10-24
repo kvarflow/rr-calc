@@ -77,6 +77,7 @@
         "writeSetting": false,
         "clearTrainerProgress": false,
         "startNewRun": false,
+        "LEVEL_CAP_LEADERS": false,
         "getDefeatLevel": false,
         "getPlayerHighestLevel": false,
         "getVariantKey": false,

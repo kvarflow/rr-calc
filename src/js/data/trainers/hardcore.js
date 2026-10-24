@@ -1629,7 +1629,7 @@ var TRAINER_ORDER = [
      "Gallade-Mega (*Leader Chuck)"
     ],
     "preMega": {
-     "5": "Steadfast"
+     "5": "Sharpness"
     },
     "levelBelowHighest": [
      0,

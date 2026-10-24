@@ -637,6 +637,29 @@
      }
     ]
    ]
+  },
+  {
+   "trainer": "Picnicker Alma",
+   "trainerIds": [
+    466
+   ],
+   "choice": "replace",
+   "teams": [
+    [
+     {
+      "species": "Tangrowth"
+     },
+     {
+      "species": "Chansey"
+     },
+     {
+      "species": "Chandelure"
+     },
+     {
+      "species": "Altaria"
+     }
+    ]
+   ]
   }
  ],
  "hardcore": [
@@ -1168,5 +1191,259 @@
     ]
    ]
   }
- ]
+ ],
+ "fixes": {
+  "normal": [
+   {
+    "trainer": "Chuck",
+    "species": "Gallade-Mega",
+    "preMega": "Sharpness"
+   },
+   {
+    "trainer": "Jasmine",
+    "label": "Team One",
+    "species": "Aggron-Mega",
+    "preMega": "Sturdy"
+   },
+   {
+    "trainer": "Tamer Ramiro",
+    "species": "Goodra-Hisui",
+    "levelBelowHighest": 5
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Charmander",
+    "species": "Sandy Shocks",
+    "levelBelowHighest": 2
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Charmander",
+    "species": "Azumarill",
+    "levelBelowHighest": 3
+   },
+   {
+    "trainer": "Picnicker Alma",
+    "species": "*",
+    "levelBelowHighest": 5
+   }
+  ],
+  "hardcore": [
+   {
+    "trainer": "Chuck",
+    "species": "Gallade-Mega",
+    "preMega": "Sharpness"
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Bulbasaur",
+    "species": "Bulbasaur",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sd": 4
+    }
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Hoopa-Unbound",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Aegislash-Blade",
+    "evs": {
+     "hp": 252,
+     "at": 4,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Ogerpon-Cornerstone",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Simisear",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Celebi",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "species": "Machamp-Mega",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "df": 4
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Max",
+    "location": "Pokemon Mansion 4f",
+    "species": "Qwilfish-Hisui",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Max",
+    "location": "Pokemon Mansion 4f",
+    "species": "Wugtrio",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Max",
+    "location": "Pokemon Mansion 4f",
+    "species": "Magcargo",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Max",
+    "location": "Pokemon Mansion 4f",
+    "species": "Hydrapple",
+    "evs": {
+     "hp": 252,
+     "sa": 252,
+     "sd": 4
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Max",
+    "location": "Pokemon Mansion 4f",
+    "species": "Fezandipiti",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Anson",
+    "location": "Pokemon Mansion 4f",
+    "species": "Shiftry",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Anson",
+    "location": "Pokemon Mansion 4f",
+    "species": "Okidogi",
+    "evs": {
+     "at": 252,
+     "df": 4,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Anson",
+    "location": "Pokemon Mansion 4f",
+    "species": "Munkidori",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Anson",
+    "location": "Pokemon Mansion 4f",
+    "species": "Scream Tail",
+    "evs": {
+     "hp": 252,
+     "df": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Burglar Anson",
+    "location": "Pokemon Mansion 4f",
+    "species": "Persian",
+    "evs": {
+     "df": 4,
+     "sp": 252,
+     "sa": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Creator",
+    "location": "Indigo Plateau",
+    "species": "Gigalith",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "df": 4
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Dumass Creator",
+    "location": "Indigo Plateau",
+    "species": "Shedinja",
+    "evs": {
+     "at": 252,
+     "sp": 252
+    },
+    "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   }
+  ]
+ },
+ "_comment": "Teams and corrections from the game where the boss documents leave a team out or differ: Bugsy's two teams (his script checks the Thunder Badge), the random teams Pryce and Jasmine pick from, Picnicker Alma's team (the Default document repeats Susie's), and fixes checked against the game's trainer data (pre-Mega abilities, relative levels, EVs)."
 }

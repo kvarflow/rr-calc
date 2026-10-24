@@ -1153,7 +1153,7 @@ var TRAINER_ORDER = [
      "Gallade-Mega (*Leader Chuck)"
     ],
     "preMega": {
-     "5": "Steadfast"
+     "5": "Sharpness"
     },
     "levelBelowHighest": [
      2,
@@ -1378,21 +1378,20 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Permanent sun",
     "sets": [
-     "Shiftry (*Picnicker Susie)",
-     "Goodra (*Picnicker Susie)",
-     "Espeon (*Picnicker Susie)",
-     "Arcanine-Hisui (*Picnicker Susie)",
-     "Alcremie-Mega (*Picnicker Susie)"
+     "Tangrowth (*Picnicker Alma)",
+     "Chansey (*Picnicker Alma)",
+     "Chandelure (*Picnicker Alma)",
+     "Altaria-Mega (*Picnicker Alma)"
     ],
-    "preMega": {
-     "4": "Sweet Veil"
-    },
     "levelBelowHighest": [
      5,
      5,
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     466
     ]
    }
   ]
@@ -1533,7 +1532,8 @@ var TRAINER_ORDER = [
      5
     ]
    }
-  ]
+  ],
+  "duplicate": true
  },
  {
   "name": "Ace Haley",
@@ -1803,7 +1803,7 @@ var TRAINER_ORDER = [
      4,
      4,
      4,
-     4
+     5
     ],
     "trainerIds": [
      308
@@ -2161,7 +2161,7 @@ var TRAINER_ORDER = [
      "Aggron-Mega (*Leader Jasmine)"
     ],
     "preMega": {
-     "5": "Rock Head"
+     "5": "Sturdy"
     },
     "levelBelowHighest": [
      2,
@@ -2604,8 +2604,8 @@ var TRAINER_ORDER = [
     "levelBelowHighest": [
      2,
      4,
-     3,
      2,
+     3,
      2,
      2
     ],

@@ -452,6 +452,21 @@ function addRomTeams(order, setdex) {
 			const ids = setsFor(team).map(x => x.id);
 			return ids.every(Boolean) && trainer.variants.some(v => v.sets.slice().sort().join() === ids.slice().sort().join());
 		};
+		if (entry.choice === 'replace') {
+			// The document repeats another fight's team: the trainer's own calc sets (by species) instead.
+			const own = name => {
+				const found = [];
+				formesOf(name).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
+					if (toKey(trainerOf(n)) === toKey(entry.trainer)) found.push(sp + ' (' + n + ')');
+				}));
+				if (found.length !== 1) throw new Error(`${mode} ${entry.trainer}: ${found.length} sets for ${name}`);
+				return found[0];
+			};
+			model.sets = entry.teams[0].map(m => own(m.species));
+			model.trainerIds = entry.trainerIds;
+			delete model.preMega;
+			return;
+		}
 		const labels = entry.choice === 'thunderBadge' ? Object.keys(entry.teams) : entry.teams.map((t, k) => ['Team One', 'Team Two', 'Team Three'][k]);
 		const teams = entry.choice === 'thunderBadge' ? labels.map(l => entry.teams[l]) : entry.teams;
 		teams.forEach((team, k) => {
@@ -537,6 +552,20 @@ function markParallelFights(order) {
  * by rr-rom's analysis/progression/trainer_ids.js), so a .sav's trainer flags say which fights
  * you have won. A double battle has both trainers' ids.
  */
+// The Default document repeats Bird Keeper Robert's block (no location, same team): kept so the
+// fights after it keep their place, but marked so navigation and progress skip it.
+function markDuplicates(order) {
+	let marked = 0;
+	order.forEach((t, i) => {
+		const prev = order[i - 1];
+		if (prev && !t.location && t.name === prev.name && JSON.stringify(t.variants.map(v => v.sets)) === JSON.stringify(prev.variants.map(v => v.sets))) {
+			t.duplicate = true;
+			marked++;
+		}
+	});
+	return marked;
+}
+
 function addTrainerIds(order) {
 	const ids = JSON.parse(fs.readFileSync(path.join(__dirname, 'trainer_ids.json'), 'utf8'))[mode] || [];
 	let added = 0;
@@ -548,6 +577,32 @@ function addTrainerIds(order) {
 		}
 	}));
 	return added;
+}
+
+// Corrections checked against the game's trainer data (rom_teams.json "fixes"): a team Pokémon's
+// ability before it Mega Evolves, its level below your highest, or its set's EVs.
+function applyRomFixes(order, setdex) {
+	const fixes = (JSON.parse(fs.readFileSync(path.join(__dirname, 'rom_teams.json'), 'utf8')).fixes || {})[mode] || [];
+	let applied = 0;
+	fixes.forEach(fix => {
+		// The fight (two rival fights share Route 22) whose team has that Pokémon.
+		const variant = [].concat(...order.filter(t => t.name === fix.trainer && (!fix.location || t.location === fix.location))
+			.map(t => t.variants)).find(v => (!fix.label || v.label === fix.label) &&
+			(fix.species === '*' || v.sets.some(id => id.slice(0, id.lastIndexOf(' (')) === fix.species)));
+		if (!variant) throw new Error(`${mode}: no ${fix.trainer} ${fix.label || ''} with ${fix.species} to fix`);
+		variant.sets.forEach((id, slot) => {
+			const species = id.slice(0, id.lastIndexOf(' ('));
+			if (fix.species !== '*' && species !== fix.species) return;
+			if (fix.preMega) variant.preMega = Object.assign({}, variant.preMega, {[slot]: fix.preMega});
+			if (typeof fix.levelBelowHighest === 'number') {
+				variant.levelBelowHighest = variant.levelBelowHighest || variant.sets.map(() => null);
+				variant.levelBelowHighest[slot] = fix.levelBelowHighest;
+			}
+			if (fix.evs) setdex[species][id.slice(id.lastIndexOf(' (') + 2, -1)].evs = fix.evs;
+			applied++;
+		});
+	});
+	return applied;
 }
 
 function writeReport(setdex, report, stats, trainerCount, namesFixed) {
@@ -578,7 +633,9 @@ function build() {
 	if (mode === 'hardcore') writeParallelFights(documented);
 	const parallel = markParallelFights(order);
 	const withIds = addTrainerIds(order);
-	if (APPLY || romSets) writeSetdex(setdex);
+	const duplicates = markDuplicates(order);
+	const romFixes = applyRomFixes(order, setdex);
+	if (APPLY || romSets || romFixes) writeSetdex(setdex);
 
 	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
 	fs.mkdirSync(path.dirname(outFile), {recursive: true});
@@ -589,7 +646,7 @@ function build() {
 		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();
