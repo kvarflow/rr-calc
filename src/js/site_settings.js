@@ -153,7 +153,11 @@ var CHANGELOG = [
 			"as the game does; in Default Mode that team was missing",
 		"Jasmine (Default) and Pryce (Hardcore) pick one of three teams at random in the game: all three are in the " +
 			"team list now, read from the game",
-		"Marking a gym leader Defeated raises the level cap shown, like the badges in an imported save"
+		"Marking a gym leader Defeated raises the level cap shown, like the badges in an imported save",
+		"Importing a .sav marks every boss fight you have won as Defeated (the game keeps a flag for each trainer " +
+			"beaten), with the team you actually fought: Bugsy's before or after Lt. Surge, the rival's, a random one",
+		"A beaten fight keeps its levels and cap: the levels it had when you marked it Defeated, or the document's " +
+			"when the save marked it, instead of following your party"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

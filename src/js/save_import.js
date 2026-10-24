@@ -54,6 +54,10 @@ var VAR_STARTER_MON = 0x4031;
 var FLAG_SYS_POKEMON_GET = 0x828;
 // FireRed's badge flags: FLAG_BADGE01_GET (Boulder Badge) to FLAG_BADGE08_GET (Earth Badge).
 var FLAG_BADGE01_GET = 0x820;
+// A trainer you have beaten has its flag set: 0x500 + its trainer id (ids below 0x300 stay
+// clear of the system flags from 0x800).
+var TRAINER_FLAGS_START = 0x500;
+var TRAINER_FLAG_IDS = 0x300;
 var STARTER_TYPE_BY_VAR = ["Grass", "Water", "Fire"];
 // SaveBlock2 (section 0) keeps the trainer ID, which a new game picks at random.
 var SAVEBLOCK2_TRAINER_ID_OFFSET = 0x0A;
@@ -272,6 +276,14 @@ function countBadges(bytes, sections) {
 	return badges;
 }
 
+function readBeatenTrainers(bytes, sections) {
+	var beaten = [];
+	for (var id = 1; id < TRAINER_FLAG_IDS; id++) {
+		if (readSaveBlock1Flag(bytes, sections, TRAINER_FLAGS_START + id)) beaten.push(id);
+	}
+	return beaten;
+}
+
 // "Fire", "Water" or "Grass", or null before you have chosen.
 function readStarterType(bytes, sections) {
 	var flagByte = readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (FLAG_SYS_POKEMON_GET >> 3));
@@ -282,7 +294,8 @@ function readStarterType(bytes, sections) {
 }
 
 /*
- * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId, badges} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId, badges,
+ * beatenTrainers: [trainer id]} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -298,7 +311,8 @@ function parseRadicalRedSave(bytes) {
 		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG),
 		starter: readStarterType(bytes, sections),
 		trainerId: view.getUint32(sections[0] + SAVEBLOCK2_TRAINER_ID_OFFSET, true),
-		badges: countBadges(bytes, sections)
+		badges: countBadges(bytes, sections),
+		beatenTrainers: readBeatenTrainers(bytes, sections)
 	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);

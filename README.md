@@ -27,7 +27,9 @@ Damage calculator for all generations of Pokémon battling.
   a "before/after" cap (Nugget Bridge to the S.S. Anne around Misty, and so on) can be skipped for
   now and come up after the rest of their group. Teams the documents leave out come from the game's
   scripts (`import/radical-red-trainers/rom_teams.json`): Bugsy's after Lt. Surge (the script checks
-  the Thunder Badge), and the three teams Pryce and Jasmine pick from at random.
+  the Thunder Badge), and the three teams Pryce and Jasmine pick from at random. Each team carries the
+  game's trainer id(s) (`trainer_ids.json`), so a `.sav` import marks the fights its trainer flags say
+  you have won; a beaten fight keeps the levels it had then.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
 - Ability descriptions (`src/js/data/ability_descriptions.js`, for the ? beside each ability) are

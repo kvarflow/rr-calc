@@ -14,6 +14,9 @@ var TRAINER_ORDER = [
     "sets": [
      "Starly (Rival Blue)",
      "Squirtle (Rival Blue Set 1)"
+    ],
+    "trainerIds": [
+     329
     ]
    },
    {
@@ -22,6 +25,9 @@ var TRAINER_ORDER = [
     "sets": [
      "Starly (Rival Blue)",
      "Charmander (Rival Blue Set 1)"
+    ],
+    "trainerIds": [
+     331
     ]
    },
    {
@@ -30,6 +36,9 @@ var TRAINER_ORDER = [
     "sets": [
      "Starly (Rival Blue)",
      "Bulbasaur (Rival Blue Set 1)"
+    ],
+    "trainerIds": [
+     330
     ]
    }
   ]
@@ -46,6 +55,9 @@ var TRAINER_ORDER = [
     "sets": [
      "Corphish (PkMn Trainer Brendan)",
      "Treecko (PkMn Trainer Brendan)"
+    ],
+    "trainerIds": [
+     44
     ]
    }
   ]
@@ -68,6 +80,9 @@ var TRAINER_ORDER = [
      3,
      5,
      3
+    ],
+    "trainerIds": [
+     4
     ]
    }
   ]
@@ -88,6 +103,9 @@ var TRAINER_ORDER = [
     "levelBelowHighest": [
      3,
      3
+    ],
+    "trainerIds": [
+     21
     ]
    }
   ]
@@ -105,6 +123,9 @@ var TRAINER_ORDER = [
      "Rufflet (Leader Falkner)",
      "Wattrel (Leader Falkner)",
      "Flittle (Leader Falkner)"
+    ],
+    "trainerIds": [
+     45
     ]
    }
   ]
@@ -123,6 +144,9 @@ var TRAINER_ORDER = [
      "Varoom (Leader Brock)",
      "Onix (Leader Brock)",
      "Archen (Leader Brock)"
+    ],
+    "trainerIds": [
+     414
     ]
    }
   ]
@@ -147,6 +171,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     170
     ]
    }
   ]
@@ -164,6 +191,9 @@ var TRAINER_ORDER = [
      "Glimmet (Rocket Admin Archer)",
      "Houndour (Rocket Admin Archer)",
      "Mightyena (Rocket Admin Archer)"
+    ],
+    "trainerIds": [
+     46
     ]
    }
   ]
@@ -188,6 +218,9 @@ var TRAINER_ORDER = [
      4,
      2,
      3
+    ],
+    "trainerIds": [
+     332
     ]
    },
    {
@@ -204,6 +237,9 @@ var TRAINER_ORDER = [
      4,
      2,
      3
+    ],
+    "trainerIds": [
+     333
     ]
    },
    {
@@ -220,6 +256,9 @@ var TRAINER_ORDER = [
      4,
      2,
      3
+    ],
+    "trainerIds": [
+     334
     ]
    }
   ],
@@ -246,6 +285,9 @@ var TRAINER_ORDER = [
      5,
      4,
      4
+    ],
+    "trainerIds": [
+     110
     ]
    }
   ],
@@ -272,6 +314,9 @@ var TRAINER_ORDER = [
      3,
      4,
      4
+    ],
+    "trainerIds": [
+     123
     ]
    }
   ],
@@ -298,6 +343,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     92
     ]
    }
   ],
@@ -324,6 +372,9 @@ var TRAINER_ORDER = [
      4,
      5,
      4
+    ],
+    "trainerIds": [
+     122
     ]
    }
   ],
@@ -350,6 +401,9 @@ var TRAINER_ORDER = [
      3,
      2,
      3
+    ],
+    "trainerIds": [
+     144
     ]
    }
   ],
@@ -378,6 +432,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     356
     ]
    }
   ],
@@ -407,7 +464,10 @@ var TRAINER_ORDER = [
      2,
      2
     ],
-    "thunderBadge": false
+    "thunderBadge": false,
+    "trainerIds": [
+     47
+    ]
    },
    {
     "label": "After Lt. Surge",
@@ -431,6 +491,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     8
     ]
    }
   ]
@@ -449,6 +512,9 @@ var TRAINER_ORDER = [
      "Floatzel (Leader Misty)",
      "Starmie (Leader Misty)",
      "Clodsire (Leader Misty)"
+    ],
+    "trainerIds": [
+     415
     ]
    }
   ]
@@ -473,6 +539,9 @@ var TRAINER_ORDER = [
      3,
      5,
      3
+    ],
+    "trainerIds": [
+     355
     ]
    }
   ],
@@ -503,6 +572,10 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     126,
+     482
     ]
    }
   ],
@@ -533,6 +606,10 @@ var TRAINER_ORDER = [
      5,
      4,
      4
+    ],
+    "trainerIds": [
+     134,
+     135
     ]
    }
   ],
@@ -561,6 +638,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     50
     ]
    }
   ],
@@ -591,6 +671,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     49
     ]
    }
   ]
@@ -613,7 +696,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Intimidate"
-    }
+    },
+    "trainerIds": [
+     416
+    ]
    }
   ]
  },
@@ -637,6 +723,9 @@ var TRAINER_ORDER = [
      2,
      4,
      4
+    ],
+    "trainerIds": [
+     155
     ]
    }
   ],
@@ -672,6 +761,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     52
     ]
    }
   ]
@@ -694,7 +786,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Overgrow"
-    }
+    },
+    "trainerIds": [
+     417
+    ]
    }
   ]
  },
@@ -718,6 +813,9 @@ var TRAINER_ORDER = [
      3,
      4,
      4
+    ],
+    "trainerIds": [
+     357
     ]
    }
   ]
@@ -742,6 +840,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     366
     ]
    }
   ]
@@ -766,6 +867,9 @@ var TRAINER_ORDER = [
      4,
      4,
      3
+    ],
+    "trainerIds": [
+     367
     ]
    }
   ]
@@ -789,7 +893,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Inner Focus"
-    }
+    },
+    "trainerIds": [
+     348
+    ]
    }
   ]
  },
@@ -820,6 +927,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     18
     ]
    }
   ]
@@ -845,6 +955,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     16
     ]
    }
   ]
@@ -872,6 +985,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     17
     ]
    }
   ]
@@ -916,6 +1032,9 @@ var TRAINER_ORDER = [
      3,
      3,
      2
+    ],
+    "trainerIds": [
+     432
     ]
    },
    {
@@ -934,6 +1053,9 @@ var TRAINER_ORDER = [
      3,
      3,
      2
+    ],
+    "trainerIds": [
+     433
     ]
    },
    {
@@ -952,6 +1074,9 @@ var TRAINER_ORDER = [
      3,
      3,
      2
+    ],
+    "trainerIds": [
+     434
     ]
    }
   ]
@@ -976,7 +1101,11 @@ var TRAINER_ORDER = [
     "preMega": {
      "2": "Intimidate",
      "5": "Early Bird"
-    }
+    },
+    "trainerIds": [
+     53,
+     54
+    ]
    }
   ]
  },
@@ -999,7 +1128,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Scrappy"
-    }
+    },
+    "trainerIds": [
+     349
+    ]
    }
   ]
  },
@@ -1030,6 +1162,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     317
     ]
    }
   ]
@@ -1053,7 +1188,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Trace"
-    }
+    },
+    "trainerIds": [
+     420
+    ]
    }
   ]
  },
@@ -1084,6 +1222,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     25
     ]
    }
   ]
@@ -1110,6 +1251,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     285
     ]
    }
   ]
@@ -1132,6 +1276,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     477
     ]
    }
   ]
@@ -1152,6 +1299,9 @@ var TRAINER_ORDER = [
     "levelBelowHighest": [
      5,
      5
+    ],
+    "trainerIds": [
+     233
     ]
    }
   ]
@@ -1179,6 +1329,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     300
     ]
    }
   ]
@@ -1208,6 +1361,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     467
     ]
    }
   ]
@@ -1263,6 +1419,10 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     268,
+     269
     ]
    }
   ]
@@ -1287,6 +1447,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     301
     ]
    }
   ]
@@ -1314,6 +1477,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     195
     ]
    }
   ]
@@ -1338,6 +1504,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     302
     ]
    }
   ]
@@ -1393,6 +1562,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     15
     ]
    }
   ]
@@ -1415,6 +1587,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     199
     ]
    }
   ]
@@ -1433,6 +1608,9 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      5
+    ],
+    "trainerIds": [
+     249
     ]
    }
   ]
@@ -1453,6 +1631,9 @@ var TRAINER_ORDER = [
     "levelBelowHighest": [
      5,
      5
+    ],
+    "trainerIds": [
+     250
     ]
    }
   ]
@@ -1477,6 +1658,9 @@ var TRAINER_ORDER = [
      5,
      5,
      4
+    ],
+    "trainerIds": [
+     202
     ]
    }
   ]
@@ -1504,6 +1688,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     251
     ]
    }
   ]
@@ -1533,6 +1720,9 @@ var TRAINER_ORDER = [
      5,
      5,
      null
+    ],
+    "trainerIds": [
+     201
     ]
    }
   ]
@@ -1557,6 +1747,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     206
     ]
    }
   ]
@@ -1581,6 +1774,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     309
     ]
    }
   ]
@@ -1608,6 +1804,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     308
     ]
    }
   ]
@@ -1635,6 +1834,9 @@ var TRAINER_ORDER = [
      5,
      5,
      5
+    ],
+    "trainerIds": [
+     307
     ]
    }
   ]
@@ -1666,6 +1868,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     57
     ]
    }
   ]
@@ -1697,6 +1902,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     56
     ]
    }
   ],
@@ -1732,6 +1940,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     48
     ]
    }
   ],
@@ -1767,6 +1978,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     51
     ]
    }
   ],
@@ -1802,6 +2016,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     65
     ]
    }
   ]
@@ -1825,7 +2042,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Punk Rock"
-    }
+    },
+    "trainerIds": [
+     418
+    ]
    }
   ]
  },
@@ -1856,6 +2076,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     66
     ]
    }
   ]
@@ -1887,6 +2110,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     58
     ]
    }
   ]
@@ -1910,7 +2136,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Speed Boost"
-    }
+    },
+    "trainerIds": [
+     61
+    ]
    }
   ]
  },
@@ -1941,6 +2170,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     62
     ]
    },
    {
@@ -1964,6 +2196,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     63
     ]
    },
    {
@@ -1987,6 +2222,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     64
     ]
    }
   ],
@@ -2017,6 +2255,9 @@ var TRAINER_ORDER = [
      5,
      4,
      4
+    ],
+    "trainerIds": [
+     179
     ]
    }
   ]
@@ -2043,6 +2284,9 @@ var TRAINER_ORDER = [
      5,
      4,
      5
+    ],
+    "trainerIds": [
+     215
     ]
    }
   ]
@@ -2069,6 +2313,9 @@ var TRAINER_ORDER = [
      4,
      5,
      4
+    ],
+    "trainerIds": [
+     180
     ]
    }
   ]
@@ -2092,7 +2339,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Solar Power"
-    }
+    },
+    "trainerIds": [
+     419
+    ]
    }
   ]
  },
@@ -2113,7 +2363,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Unnerve"
-    }
+    },
+    "trainerIds": [
+     67
+    ]
    }
   ]
  },
@@ -2134,7 +2387,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Intimidate"
-    }
+    },
+    "trainerIds": [
+     68
+    ]
    }
   ]
  },
@@ -2157,7 +2413,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Unnerve"
-    }
+    },
+    "trainerIds": [
+     69
+    ]
    }
   ]
  },
@@ -2188,6 +2447,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     20
     ]
    }
   ]
@@ -2208,6 +2470,9 @@ var TRAINER_ORDER = [
      "Magearna (Leader Clair)",
      "Gouging Fire (Leader Clair)",
      "Naganadel (Leader Clair)"
+    ],
+    "trainerIds": [
+     74
     ]
    }
   ]
@@ -2234,6 +2499,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     454
     ]
    }
   ]
@@ -2260,6 +2528,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     455
     ]
    }
   ]
@@ -2291,6 +2562,9 @@ var TRAINER_ORDER = [
      3,
      2,
      2
+    ],
+    "trainerIds": [
+     435
     ]
    },
    {
@@ -2311,6 +2585,9 @@ var TRAINER_ORDER = [
      3,
      2,
      2
+    ],
+    "trainerIds": [
+     436
     ]
    },
    {
@@ -2331,6 +2608,9 @@ var TRAINER_ORDER = [
      2,
      2,
      2
+    ],
+    "trainerIds": [
+     437
     ]
    }
   ]
@@ -2354,7 +2634,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Overgrow"
-    }
+    },
+    "trainerIds": [
+     26
+    ]
    }
   ]
  },
@@ -2383,6 +2666,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     406
     ]
    }
   ]
@@ -2412,6 +2698,9 @@ var TRAINER_ORDER = [
      4,
      4,
      4
+    ],
+    "trainerIds": [
+     396
     ]
    }
   ]
@@ -2434,7 +2723,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Mold Breaker"
-    }
+    },
+    "trainerIds": [
+     393
+    ]
    }
   ]
  },
@@ -2456,7 +2748,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Cute Charm"
-    }
+    },
+    "trainerIds": [
+     403
+    ]
    }
   ]
  },
@@ -2478,7 +2773,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Speed Boost"
-    }
+    },
+    "trainerIds": [
+     394
+    ]
    }
   ]
  },
@@ -2500,7 +2798,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Regenerator"
-    }
+    },
+    "trainerIds": [
+     404
+    ]
    }
   ]
  },
@@ -2520,6 +2821,9 @@ var TRAINER_ORDER = [
      "Shedinja (Dumbass Creator)",
      "Shedinja (Dumbass Creator)",
      "Shedinja (Dumbass Creator)"
+    ],
+    "trainerIds": [
+     24
     ]
    }
   ]
@@ -2543,7 +2847,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Torrent"
-    }
+    },
+    "trainerIds": [
+     78
+    ]
    },
    {
     "label": "Snow Team",
@@ -2558,7 +2865,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Snow Warning"
-    }
+    },
+    "trainerIds": [
+     77
+    ]
    }
   ]
  },
@@ -2581,7 +2891,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Inner Focus"
-    }
+    },
+    "trainerIds": [
+     81
+    ]
    },
    {
     "label": "Team Two",
@@ -2596,7 +2909,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Inner Focus"
-    }
+    },
+    "trainerIds": [
+     80
+    ]
    }
   ]
  },
@@ -2627,6 +2943,9 @@ var TRAINER_ORDER = [
      null,
      2,
      2
+    ],
+    "trainerIds": [
+     84
     ]
    },
    {
@@ -2650,6 +2969,9 @@ var TRAINER_ORDER = [
      null,
      2,
      2
+    ],
+    "trainerIds": [
+     83
     ]
    }
   ]
@@ -2673,7 +2995,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Intimidate"
-    }
+    },
+    "trainerIds": [
+     86
+    ]
    },
    {
     "label": "Team Two",
@@ -2688,7 +3013,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Intimidate"
-    }
+    },
+    "trainerIds": [
+     87
+    ]
    }
   ]
  },
@@ -2711,7 +3039,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Tough Claws"
-    }
+    },
+    "trainerIds": [
+     438
+    ]
    },
    {
     "label": "Rival Has Charmander",
@@ -2726,7 +3057,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Tough Claws"
-    }
+    },
+    "trainerIds": [
+     440
+    ]
    },
    {
     "label": "Rival Has Bulbasaur",
@@ -2741,7 +3075,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Tough Claws"
-    }
+    },
+    "trainerIds": [
+     439
+    ]
    }
   ]
  }

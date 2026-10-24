@@ -158,6 +158,7 @@ function setStarter(type, fromSave) {
 
 $(document).on("save:imported", function (event, save) {
 	recordSaveProgress(save);
+	markBeatenFights(save.beatenTrainers);
 	if (save.starter) setStarter(save.starter, true);
 	else if ($("#trainer-starter").length) showTrainer(currentTrainerIndex);
 });
@@ -191,9 +192,35 @@ $(document).on("run:new", function () {
 	writeSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode(), "");
 });
 
+// Fights the save says you have won (the game's trainer flags) are marked Defeated, with the team
+// you beat: Bugsy's before or after Lt. Surge, Jasmine's or Pryce's random one, the rival's.
+function markBeatenFights(beaten) {
+	if (!beaten || !beaten.length || typeof readTrainerKOs !== "function") return;
+	var kos = readTrainerKOs();
+	var marked = false;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		trainer.variants.forEach(function (variant) {
+			if (!variant.trainerIds || isVariantDefeated(index, variant, kos) || !variant.trainerIds.every(function (id) {
+				return beaten.indexOf(id) !== -1;
+			})) return;
+			kos[getVariantKey(index, variant)] = variant.sets.map(function (set, slot) {
+				return slot;
+			});
+			marked = true;
+		});
+	});
+	if (marked) writeTrainerKOs(kos);
+}
+
+// The level the team's Pokémon follow: your highest now, or, once beaten, what it was then.
+function getTeamHighestLevel(index, variant) {
+	if (typeof isVariantDefeated === "function" && isVariantDefeated(index, variant)) return getDefeatLevel(index, variant);
+	return getPlayerHighestLevel();
+}
+
 // Sets the level of each team Pokémon whose level follows yours; the others keep the document's.
-function applyRelativeLevels(variant) {
-	var highest = getPlayerHighestLevel();
+function applyRelativeLevels(index, variant) {
+	var highest = getTeamHighestLevel(index, variant);
 	variant.sets.forEach(function (setId, slot) {
 		var species = setId.substring(0, setId.indexOf(" ("));
 		var set = setdex[species] && setdex[species][setId.substring(setId.indexOf("(") + 1, setId.lastIndexOf(")"))];
@@ -312,6 +339,14 @@ function isBadgeVariant(variant) {
 }
 
 function getTrainerVariant(trainer) {
+	// A fight the game picks a team for (by badge or at random) shows the one you beat.
+	if ((trainer.randomTeams || trainer.variants.some(isBadgeVariant)) && typeof isVariantDefeated === "function") {
+		var index = TRAINER_ORDER.indexOf(trainer);
+		var beaten = trainer.variants.filter(function (variant) {
+			return isVariantDefeated(index, variant);
+		})[0];
+		if (beaten) return beaten;
+	}
 	// Bugsy's team follows the Thunder Badge (Lt. Surge beaten), as his script does.
 	if (trainer.variants.some(isBadgeVariant)) {
 		var afterSurge = isGymBeaten("Lt. Surge");
@@ -327,19 +362,21 @@ function getTrainerVariant(trainer) {
 }
 
 function describeTrainer(trainer, index) {
-	var progressCap = getProgressLevelCap();
-	if (isFightSkipped(index)) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
+	// A fight you have beaten keeps the cap it is listed with.
+	var progressCap = typeof isTrainerDefeated === "function" && isTrainerDefeated(index) ? 0 : getProgressLevelCap();
+	if (isFightSkipped(index) && progressCap) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
 	var listed = parseInt(trainer.levelCap) || 0;
 	var details = [
 		(getTrainerNavOrder().indexOf(index) + 1) + " / " + TRAINER_ORDER.length,
 		trainer.location,
 		"Level cap " + (progressCap > listed ? progressCap : trainer.levelCap)
 	];
-	var highest = getPlayerHighestLevel();
 	var variant = getTrainerVariant(trainer);
+	var highest = getTeamHighestLevel(index, variant);
+	var beaten = typeof isVariantDefeated === "function" && isVariantDefeated(index, variant);
 	if (highest && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
 		return typeof n === "number";
-	})) details.push("Levels from your Lv " + highest);
+	})) details.push((beaten ? "Levels from your Lv " + highest + " when beaten" : "Levels from your Lv " + highest));
 	if (variant.thunderBadge !== undefined) details.push(variant.thunderBadge ? "Team after Lt. Surge" : "Team before Lt. Surge");
 	if (trainer.randomTeams) details.push("Random team (1 in 3)");
 	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");
@@ -438,7 +475,7 @@ function showTrainer(index) {
 	writeSetting(getTrainerIndexKey(), currentTrainerIndex);
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	var variant = getTrainerVariant(trainer);
-	applyRelativeLevels(variant);
+	applyRelativeLevels(currentTrainerIndex, variant);
 
 	$("#trainer-name").text(trainer.name);
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));

@@ -27,6 +27,7 @@ function writeTrainerKOs(kos) {
 
 // Called by the Professor Oak button when a new run starts.
 function clearTrainerProgress() {
+	writeSetting(getDefeatLevelsKey(), "");
 	writeTrainerKOs({});
 }
 
@@ -43,7 +44,47 @@ function setKOSlots(index, slots) {
 	var kos = readTrainerKOs();
 	if (slots.length) kos[getTeamKey(index)] = slots;
 	else delete kos[getTeamKey(index)];
+	recordDefeatLevel(index, slots.length >= getTeamSize(index));
 	writeTrainerKOs(kos);
+}
+
+function getVariantKey(index, variant) {
+	return index + "|" + variant.label;
+}
+
+// Whether that team of a fight is beaten (a fight with several teams can be beaten with any).
+function isVariantDefeated(index, variant, kos) {
+	var slots = (kos || readTrainerKOs())[getVariantKey(index, variant)] || [];
+	return variant.sets.length > 0 && slots.length >= variant.sets.length;
+}
+
+/*
+ * A beaten team keeps the levels it had: the highest level of your party when you marked it
+ * defeated (its Pokémon followed that). A fight a save marks won (trainer_controls.js) has none
+ * recorded and shows the document's levels.
+ */
+function getDefeatLevelsKey() {
+	return "defeatLevels:" + getPageMode();
+}
+
+function readDefeatLevels() {
+	try {
+		return JSON.parse(readSetting(getDefeatLevelsKey())) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function recordDefeatLevel(index, defeated) {
+	var levels = readDefeatLevels();
+	var highest = typeof getPlayerHighestLevel === "function" ? getPlayerHighestLevel() : 0;
+	if (defeated && highest) levels[getTeamKey(index)] = highest;
+	else delete levels[getTeamKey(index)];
+	writeSetting(getDefeatLevelsKey(), JSON.stringify(levels));
+}
+
+function getDefeatLevel(index, variant) {
+	return readDefeatLevels()[getVariantKey(index, variant)] || 0;
 }
 
 function getTeamSize(index) {

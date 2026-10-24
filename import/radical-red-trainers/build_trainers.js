@@ -532,6 +532,24 @@ function markParallelFights(order) {
 	return marked;
 }
 
+/*
+ * The game's trainer ids for each team (trainer_ids.json, matched against the ROM's trainer data
+ * by rr-rom's analysis/progression/trainer_ids.js), so a .sav's trainer flags say which fights
+ * you have won. A double battle has both trainers' ids.
+ */
+function addTrainerIds(order) {
+	const ids = JSON.parse(fs.readFileSync(path.join(__dirname, 'trainer_ids.json'), 'utf8'))[mode] || [];
+	let added = 0;
+	order.forEach((t, i) => t.variants.forEach(v => {
+		const found = ids[i] && ids[i][v.label];
+		if (found) {
+			v.trainerIds = found;
+			added++;
+		}
+	}));
+	return added;
+}
+
 function writeReport(setdex, report, stats, trainerCount, namesFixed) {
 	const {checked, withDiffs, notFound, applied} = stats;
 	const lines = ['# ' + titleCase(mode) + ' Mode: calc sets vs. the boss document', '',
@@ -559,6 +577,7 @@ function build() {
 	const romSets = addRomTeams(order, setdex);
 	if (mode === 'hardcore') writeParallelFights(documented);
 	const parallel = markParallelFights(order);
+	const withIds = addTrainerIds(order);
 	if (APPLY || romSets) writeSetdex(setdex);
 
 	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
@@ -570,7 +589,7 @@ function build() {
 		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();
