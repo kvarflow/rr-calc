@@ -100,7 +100,7 @@ var CHANGELOG = [
 		"Levels that follow yours follow your progress too: a fight you left for later (Bugsy after Lt. Surge) " +
 			"comes at the cap you are at, a fight ahead at its own cap, a beaten one keeps the level and cap it was " +
 			"beaten at"
-	],
+	]},
 	{version: "1.7", notes: [
 		"Trainer AI: the last part of Radical Red's move scoring, checked against the game's code: Reflect and " +
 			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
