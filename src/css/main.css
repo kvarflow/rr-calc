@@ -1489,11 +1489,17 @@ html.small-screen .main-result-group .small-text {
 /* Teams: yours on the left, the trainer's on the right; tap one to load it. */
 html.small-screen[data-ss-tab="results"] .ss-quick {
     display: flex !important;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 8px;
 }
+/* The Box under the teams: only on upright phones (below), where there is room for it. */
+.ss-quick-side.ss-quick-box {
+    display: none;
+    flex-basis: 100%;
+}
 .ss-quick-side {
-    flex: 1 1 50%;
+    flex: 1 1 calc(50% - 4px);
     min-width: 0;
     padding: 8px;
     box-sizing: border-box;
@@ -2124,6 +2130,16 @@ html.small-screen #importedSetsOptions {
 /* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
    You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
 @media (max-width: 500px) and (orientation: portrait) {
+    html.small-screen .ss-quick-side.ss-quick-box {
+        display: block;
+    }
+    html.small-screen .ss-quick-box .ss-quick-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    /* A half-width card: the trainer's buttons wrap rather than run off the screen. */
+    html.small-screen .ss-quick-head {
+        flex-wrap: wrap;
+    }
     html.small-screen .ss-tabs {
         position: fixed;
         top: auto;
