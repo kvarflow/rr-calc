@@ -2048,7 +2048,8 @@ html.small-screen .poke-info > div[class^="move"] > .move-selector {
 }
 html.small-screen .poke-info .move-hits,
 html.small-screen .poke-info .stat-drops,
-html.small-screen .poke-info .metronome {
+html.small-screen .poke-info .metronome,
+html.small-screen .poke-info .move-uses {
     width: 4.4em;
 }
 html.small-screen .poke-info .move-bp {
