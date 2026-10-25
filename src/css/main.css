@@ -1083,6 +1083,20 @@ select.boost-select {
     display: inline;
     width: auto;
 }
+/* Protean: the type its last move gave it (protean.js). */
+.protean-note {
+    margin: 4px 0;
+    font-size: 0.85em;
+}
+.poke-info .protean-note-text {
+    display: inline;
+    width: auto;
+}
+.protean-reset {
+    margin-left: 4px;
+    font-size: 0.95em;
+    cursor: pointer;
+}
 .save-lock-toggle {
     margin-left: 4px;
     font-size: 0.95em;

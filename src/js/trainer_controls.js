@@ -163,8 +163,8 @@ $(document).on("save:imported", function (event, save) {
 	else if ($("#trainer-starter").length) showTrainer(currentTrainerIndex);
 });
 
-// Marking fights KO'd or Defeated can change the cap and levels shown for the current fight.
-$(document).on("trainer:progress", function () {
+// Marking fights KO'd or Defeated, or changing your Team, can change the cap and levels shown.
+$(document).on("trainer:progress customsets:changed box:rendered", function () {
 	if (!$("#trainer-details").length) return;
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	applyRelativeLevels(currentTrainerIndex, getTrainerVariant(trainer));
@@ -190,8 +190,19 @@ function recordSaveProgress(save) {
 	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), save.badges || 0);
 }
 
+// Your highest level: the highest-level Pokémon in your Team (from a .sav, or made or edited by
+// hand), else the last save's party.
 function getPlayerHighestLevel() {
-	return parseInt(readSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode())) || 0;
+	var highest = 0;
+	if (typeof resolveBoxLayout === "function") {
+		var sets = readCustomSets();
+		resolveBoxLayout(sets, readBoxLayout()).team.forEach(function (id) {
+			var split = id.indexOf(" (");
+			var set = split !== -1 && sets[id.slice(0, split)] && sets[id.slice(0, split)][id.slice(split + 2, -1)];
+			if (set && set.level > highest) highest = set.level;
+		});
+	}
+	return highest || parseInt(readSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode())) || 0;
 }
 
 $(document).on("run:new", function () {
@@ -286,7 +297,28 @@ function isGymBeaten(name) {
 }
 
 // The cap after your last gym: the next higher cap of a required fight after it.
-function getProgressLevelCap() {
+/*
+ * The fights that raise the level cap and the cap after each: the last required fight at a cap
+ * before a required fight with a higher one (gyms, and story fights between them: Archer at Mt.
+ * Moon, the first Giovanni, Ariana & Archer at Silph...). Optional and before-or-after fights don't.
+ */
+var capRaisers = null;
+
+function getCapRaisers() {
+	if (capRaisers) return capRaisers;
+	capRaisers = [];
+	var last = -1;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		var cap = parseInt(trainer.levelCap) || 0;
+		if (trainer.optional || trainer.parallel || trainer.duplicate || !cap) return;
+		if (last !== -1 && cap > (parseInt(TRAINER_ORDER[last].levelCap) || 0)) capRaisers.push({index: last, capAfter: cap});
+		last = index;
+	});
+	return capRaisers;
+}
+
+// The cap after your badges: the next higher cap of a required fight after your last gym leader.
+function getBadgeLevelCap() {
 	var gyms = countGymsBeaten();
 	var at = gyms ? findFight(LEVEL_CAP_LEADERS[gyms - 1]) : -1;
 	if (at === -1) return 0;
@@ -294,6 +326,18 @@ function getProgressLevelCap() {
 	for (var i = at + 1; i < TRAINER_ORDER.length; i++) {
 		var next = parseInt(TRAINER_ORDER[i].levelCap) || 0;
 		if (!TRAINER_ORDER[i].optional && next > cap) return next;
+	}
+	return cap;
+}
+
+// The cap you are at: after the furthest cap-raising fight you have beaten (marked Defeated, or
+// won in your save), or what your badges give.
+function getProgressLevelCap() {
+	var cap = getBadgeLevelCap();
+	if (typeof isTrainerDefeated === "function") {
+		getCapRaisers().forEach(function (raiser) {
+			if (raiser.capAfter > cap && isTrainerDefeated(raiser.index)) cap = raiser.capAfter;
+		});
 	}
 	return cap;
 }
