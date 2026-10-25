@@ -89,7 +89,38 @@ var GRAVITY_BANNED = ["Fly", "Bounce", "Sky Drop", "High Jump Kick", "Jump Kick"
 var CHARGE_MOVES = ["Razor Wind", "Sky Attack", "Skull Bash", "Meteor Beam", "Freeze Shock", "Ice Burn", "Geomancy", "Solar Beam",
 	"Solar Blade", "Fly", "Dig", "Dive", "Bounce", "Phantom Force", "Shadow Force", "Sky Drop", "Electro Shot"];
 var HEX_MOVES = ["Hex", "Infernal Parade", "Bitter Malice", "Barb Barrage"];
-var HAZING_MOVES = ["Haze", "Clear Smog"];
+// Radical Red's DoubleDamageWithStatusMoveInMovesetThatAffects table.
+var DOUBLE_DAMAGE_MOVES = ["Bitter Malice", "Infernal Parade", "Hex", "Venoshock"];
+// The moves Sheer Force boosts (Radical Red's table), which then have no secondary effect.
+var SHEER_FORCE_MOVES = ["Acid", "Acid Spray", "Air Slash", "Anchor Shot", "Ancient Power", "Apple Acid", "Astonish",
+	"Aurora Beam", "Bite", "Blaze Kick", "Blizzard", "Blue Flare", "Body Slam", "Bolt Strike", "Bone Club", "Bounce", "Bubble",
+	"Bubble Beam", "Bug Buzz", "Bulldoze", "Burning Jealousy", "Charge Beam", "Chatter", "Confusion", "Constrict",
+	"Cross Poison", "Crunch", "Crush Claw", "Dark Pulse", "Diamond Storm", "Discharge", "Dizzy Punch", "Double Iron Bash",
+	"Dragon Breath", "Dragon Rush", "Drum Beating", "Dynamic Punch", "Earth Power", "Electroweb", "Ember", "Energy Ball",
+	"Extrasensory", "Fake Out", "Fiery Dance", "Fire Blast", "Fire Fang", "Fire Lash", "Fire Punch", "Flame Charge",
+	"Flame Wheel", "Flamethrower", "Flare Blitz", "Flash Cannon", "Focus Blast", "Force Palm", "Freeze Shock", "Freeze-Dry",
+	"Frost Breath", "Glaciate", "Grav Apple", "Gunk Shot", "Headbutt", "Head Charge", "Heart Stamp", "Heat Wave", "Hurricane",
+	"Hyper Fang", "Ice Beam", "Ice Burn", "Ice Fang", "Ice Punch", "Icicle Crash", "Icy Wind", "Inferno", "Iron Head",
+	"Iron Tail", "Lava Plume", "Leaf Tornado", "Lick", "Liquidation", "Low Sweep", "Lunge", "Luster Purge", "Metal Claw",
+	"Meteor Mash", "Mirror Shot", "Mist Ball", "Moonblast", "Mud Bomb", "Mud Shot", "Muddy Water", "Mud-Slap",
+	"Mystical Fire", "Needle Arm", "Night Daze", "Nuzzle", "Octazooka", "Ominous Wind", "Play Rough", "Poison Fang",
+	"Poison Jab", "Poison Sting", "Poison Tail", "Powder Snow", "Power-Up Punch", "Psybeam", "Psychic", "Pyro Ball",
+	"Razor Shell", "Relic Song", "Rock Climb", "Rock Slide", "Rock Smash", "Rock Tomb", "Rolling Kick", "Sacred Fire",
+	"Scald", "Scale Shot", "Scorching Sands", "Searing Shot", "Secret Power", "Seed Flare", "Shadow Ball", "Shadow Bone",
+	"Signal Beam", "Silver Wind", "Skitter Smack", "Sky Attack", "Sludge", "Sludge Bomb", "Sludge Wave", "Smog", "Snarl",
+	"Snore", "Spark", "Sparkling Aria", "Spirit Break", "Spirit Shackle", "Steam Eruption", "Steamroller", "Steel Wing",
+	"Stomp", "Strange Steam", "Struggle Bug", "Throat Chop", "Thunder", "Thunder Fang", "Thunder Punch", "Thunder Shock",
+	"Thunderbolt", "Tri Attack", "Trop Kick", "Twineedle", "Twister", "Volt Tackle", "Water Pulse", "Waterfall",
+	"Zap Cannon", "Zen Headbutt", "Zing Zap", "Fiery Wrath", "Freezing Glare", "Thunderous Kick", "Ceaseless Edge",
+	"Triple Arrows", "Barb Barrage", "Hydro Cannon", "Frenzy Plant", "Blast Burn", "Bitter Malice", "Esper Wing",
+	"Breaking Swipe", "Flash", "Springtide Storm", "Sandsear Storm", "Wildbolt Storm", "Bleakwind Storm", "Alluring Voice",
+	"Psychic Noise", "Malignant Chain", "Matcha Gotcha"];
+// Moves that thaw the user (Radical Red's table), worth +10 to a frozen AI.
+var UNFREEZE_MOVES = ["Flame Wheel", "Sacred Fire", "Flare Blitz", "Scald", "Scorching Sands", "Fusion Flare", "Steam Eruption",
+	"Burn Up", "Pyro Ball", "Matcha Gotcha"];
+// Radical Red's IsClearBodyAbility tests Clear Body alone; White Smoke and Full Metal Body are taken to
+// share its battle id (they do the same thing).
+var CLEAR_BODY_ABILITIES = ["Clear Body", "White Smoke", "Full Metal Body"];
 var STAT_DROP_SELF_EFFECTS = [E.SUPERPOWER, E.OVERHEAT];
 var FIXED_DAMAGE_EFFECTS = [E.LEVEL_DAMAGE, E.SUPER_FANG, E.DRAGON_RAGE, E.SONICBOOM, E.PSYWAVE, E.ENDEAVOR, E.PAIN_SPLIT];
 var SET_STATUS_EFFECTS = [E.SLEEP, E.TOXIC, E.POISON, E.PARALYZE, E.WILL_O_WISP, E.YAWN];
@@ -949,33 +980,71 @@ function canBeConfused(atk, def, field) {
 	return defAbility(atk, def) !== "Own Tempo" && !(field.terrain === "Misty" && isGrounded(def, field));
 }
 
-// Status a foe would rather have, or shrug off (BadIdeaTo...).
+// The status a move gives (par, brn, psn, slp) can land on def.
+function canBeStatusedWith(atk, def, kind, field) {
+	if (kind === "par") return canBeParalyzed(atk, def, field);
+	if (kind === "brn") return canBeBurned(atk, def, field);
+	if (kind === "psn") return canBePoisoned(atk, def, field);
+	return canBeSlept(atk, def, field);
+}
+
+// GoodIdeaTo<Status>Self: the side would like the status (what a Synchronize foe passes back).
+function goodIdeaToStatusSelf(side, kind, field) {
+	if (!canBeStatusedWith(side, side, kind, field)) return false;
+	var ability = side.ability;
+	if (ability === "Quick Feet" || (ability === "Guts" && hasRealPhysical(side)) || hasMoveNamed(side, ["Facade", "Psycho Shift"])) return true;
+	if (kind === "par") return ability === "Marvel Scale";
+	if (kind === "brn") return has(["Heatproof", "Magic Guard"], ability) || (ability === "Flare Boost" && hasSpecial(side));
+	return has(["Marvel Scale", "Poison Heal", "Magic Guard"], ability) || (ability === "Toxic Boost" && hasRealPhysical(side));
+}
+
+var CURE_BERRIES = {par: "Cheri Berry", brn: "Rawst Berry", psn: "Pecha Berry"};
+
+// Status a foe would rather have, or shrug off (BadIdeaToParalyze/Burn/Poison/PutToSleep). Radical Red:
+// the curing berries count in every battle (CFRU master: the Battle Frontier only), Magic Guard always
+// counts against burn and poison, and paralysis has no Rest rule.
 function badIdeaToStatus(atk, def, kind, field) {
 	var ability = defAbility(atk, def);
-	if (has(["Shed Skin", "Quick Feet", "Synchronize", "Guts"], ability)) return true;
-	if (ability === "Marvel Scale" && hasPhysical(atk)) return true;
-	if (ability === "Natural Cure" && def.monsLeft > 1) return true;
-	if (ability === "Hydration" && /Rain/.test(field.weather || "")) return true;
-	if (hasMoveNamed(def, ["Facade", "Psycho Shift"]) && kind !== "slp") return true;
-	if (kind === "slp") return ability === "Early Bird";
-	if (kind === "psn") {
-		if (ability === "Poison Heal" || ability === "Toxic Boost") return true;
-		if (ability === "Magic Guard" && !hasMoveNamed(atk, HEX_MOVES.concat(["Venoshock"]))) return true;
+	var rain = ability === "Hydration" && /Rain/.test(field.weather || "") && def.item !== "Utility Umbrella";
+	if (kind === "slp") {
+		return has(["Early Bird", "Shed Skin"], ability) || rain || (ability === "Synchronize" && canBeSlept(def, atk, field));
 	}
-	if (kind === "par" && hasMoveNamed(def, ["Rest"])) return true;
-	if (kind === "brn") {
-		if (ability === "Flare Boost") return true;
-		if (ability === "Magic Guard" && !hasMoveNamed(atk, HEX_MOVES)) return true;
+	if (def.item === CURE_BERRIES[kind] || def.item === "Lum Berry") return true;
+	if (has(["Shed Skin", "Quick Feet"], ability) || rain) return true;
+	if (ability === "Synchronize" && canBeStatusedWith(def, atk, kind, field) && !goodIdeaToStatusSelf(atk, kind, field)) return true;
+	if (ability === "Marvel Scale" && hasPhysical(atk)) return true;
+	if (ability === "Natural Cure" && def.monsLeft > 1 && !isTrappedBy(def, atk, field)) return true;
+	if (ability === "Guts" && hasPhysical(def)) return true;
+	if (hasMoveNamed(def, ["Facade", "Psycho Shift"])) return true;
+	if (kind === "brn") return ability === "Magic Guard" || (ability === "Flare Boost" && hasSpecial(def));
+	if (kind === "psn") {
+		if (has(["Poison Heal", "Magic Guard"], ability) || (ability === "Toxic Boost" && hasPhysical(def))) return true;
+		return atk.ability === "Poison Touch" && hasMoveWhere(atk, function (m) {
+			return isDamaging(m) && (m.flags & FLAG_CONTACT) && m.effectiveness > 0;
+		});
 	}
 	return false;
 }
 
+// DoubleDamageWithStatusMoveInMovesetThatAffects: Hex and the like, which hit a statused foe twice as hard.
+function hasDoubleDamageMove(atk) {
+	return hasMoveWhere(atk, function (m) {
+		return has(DOUBLE_DAMAGE_MOVES, m.name) && m.effectiveness > 0;
+	});
+}
+
+// CalcSecondaryEffectChance: none for the moves Sheer Force boosts, doubled by Serene Grace.
+function chanceOf(atk, move) {
+	if (atk.ability === "Sheer Force" && has(SHEER_FORCE_MOVES, move.name)) return 0;
+	return move.chance * (atk.ability === "Serene Grace" ? 2 : 1);
+}
+
+// CanStatBeLowered (Negatives): not at -6 (+6 with Contrary), and Radical Red tests only Clear Body,
+// and Hyper Cutter for Attack.
 function canStatBeLowered(atk, def, stat) {
 	var ability = defAbility(atk, def);
-	if (has(["Clear Body", "White Smoke", "Full Metal Body", "Mirror Armor"], ability)) return false;
-	if ((stat === "atk" && ability === "Hyper Cutter") || (stat === "def" && ability === "Big Pecks") ||
-		(stat === "acc" && ability === "Keen Eye")) return false;
-	return stage(def, stat) > 0;
+	if (has(CLEAR_BODY_ABILITIES, ability) || (stat === "atk" && ability === "Hyper Cutter")) return false;
+	return ability === "Contrary" ? stage(def, stat) < 12 : stage(def, stat) > 0;
 }
 
 function canStatBeRaised(side, stat) {
@@ -990,14 +1059,21 @@ function likelySplit(turn, side) {
 	return SPLIT_STATUS;
 }
 
+// BadIdeaToRaise<Stat>: a predicted phazing move (Roar, Haze, Clear Smog), a predicted sleep move from a
+// slower foe that will land, an Unaware foe not about to faint; Attack into King's Shield and Defence
+// into Obstruct when the AI's strongest move makes contact; Speed under Trick Room. (Having used a
+// phazing move this battle is history the calculator doesn't have.)
 function badIdeaToRaiseStat(turn, atk, def, stat) {
 	var predicted = turn.predicted(def);
 	var field = turn.battle.field;
-	if (predicted && (has(HAZING_MOVES, predicted.name) || predicted.effect === E.ROAR)) return true;
-	if (def.isPlayer && hasMoveNamed(def, HAZING_MOVES)) return true;
+	if (predicted && has([E.ROAR, E.HAZE, E.REMOVE_TARGET_STAT_CHANGES], predicted.effect)) return true;
 	if (predicted && (predicted.effect === E.SLEEP || predicted.effect === E.YAWN) &&
 		(moveWillHit(def, atk, predicted, field) || accuracyOf(def, atk, predicted, field) >= 80) && def.speed < atk.speed) return true;
 	if (def.ability === "Unaware" && !willFaintFromChip(def, field)) return true;
+	if (stat === "atk" || stat === "def") {
+		var best = atk.moves[strongestMove(turn, atk, def)];
+		if (hasMoveNamed(def, [stat === "atk" ? "King's Shield" : "Obstruct"]) && best && (best.flags & FLAG_CONTACT)) return true;
+	}
 	if (stat === "spe" && turn.battle.trickRoom) return true;
 	return false;
 }
@@ -1024,15 +1100,24 @@ function goodIdeaToRaise(turn, atk, def, stat) {
 	return 1;
 }
 
+// GoodIdeaToLower<Stat>. Radical Red tests only Clear Body, and Hyper Cutter for Attack; Defiant and
+// Competitive rule out all but Speed and accuracy, Contrary all.
 function goodIdeaToLower(turn, def, atk, move, stat) {
 	var field = turn.battle.field;
+	var ability = defAbility(atk, def);
+	if (has(CLEAR_BODY_ABILITIES, ability) || (stat === "atk" && ability === "Hyper Cutter") || ability === "Contrary") return false;
+	if (stat !== "spe" && stat !== "acc" && has(["Defiant", "Competitive"], ability)) return false;
+	if (stat === "eva") {
+		if (stage(def, "eva") > 6) return true;
+		if (!hasMoveWhere(atk, function (m) {
+			return isDamaging(m) && accuracyOf(atk, def, m, field) < 90;
+		})) return false;
+		return atk.speed >= def.speed ? !canKnockOut(turn, def, atk) : !can2HKO(turn, def, atk);
+	}
 	if (!hitsFirst(turn, atk, move, def) && canKnockOut(turn, atk, def)) return false;
-	if (stat === "atk" && willFaintFromChip(def, field)) return false;
-	if (!canStatBeLowered(atk, def, stat) || defAbility(atk, def) === "Contrary") return false;
-	if (stat !== "spe" && stat !== "acc" && has(["Defiant", "Competitive"], defAbility(atk, def))) return false;
 	switch (stat) {
 	case "atk":
-		return stage(def, "atk") > 4 && hasRealPhysical(def);
+		return !willFaintFromChip(def, field) && stage(def, "atk") > 4 && hasRealPhysical(def);
 	case "def":
 		return stage(def, "def") > 4 && hasPhysical(atk);
 	case "spa":
@@ -1061,7 +1146,7 @@ function shouldTrySetUp(turn, atk, def, move, stat) {
 		(hasMoveWhere(def, function (m) {
 			return priorityOf(def, m, field) > 0;
 		}) && can2HKO(turn, def, atk));
-	if (undoes && turn.coin("setUp" + turn.phase + atk.key + atk.moves.indexOf(move), 0.5)) return false;
+	if (undoes && turn.coin("setUp" + turn.phase + atk.key + atk.moves.indexOf(move) + stat, 0.5)) return false;
 	var predicted = turn.predicted(def);
 	if (hitsFirst(turn, atk, move, def)) {
 		if (canKnockOutWithChip(turn, def, atk)) return false;
@@ -1090,9 +1175,10 @@ function statBonus(turn, atk, def, move, stat, limit, boost) {
 		if (hasEffect(atk, [E.HAZE])) return 0;
 		return shouldTrySetUp(turn, atk, def, move, stat) ? statusBonus(turn, atk, def, 1) : 0;
 	case STYLE.BATON_PASS:
-		if (stat === "eva") return shouldTrySetUp(turn, atk, def, move, stat) ? 6 : 0;
-		if (stat === "def" || stat === "spd") return shouldTrySetUp(turn, atk, def, move, stat) ? 4 : 0;
-		return shouldTrySetUp(turn, atk, def, move, stat) ? 5 : 0;
+		// Radical Red: a Baton Passer sets up to +4 (evasion +6) without ShouldTryToSetUpStat.
+		if (stat === "eva") return stage(atk, "eva") < 12 ? 6 : 0;
+		if (stat === "def" || stat === "spd") return stage(atk, stat) < 10 ? 4 : 0;
+		return stage(atk, stat) < 10 ? 5 : 0;
 	default:
 		return shouldTrySetUp(turn, atk, def, move, stat) ? statusBonus(turn, atk, def, 1) : 0;
 	}
