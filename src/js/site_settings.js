@@ -89,6 +89,17 @@ var CHANGELOG = [
 			"Badge), and the three teams Jasmine (Default) and Pryce (Hardcore) pick from at random"
 	], fixes: [
 		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability"
+	]},
+	{version: "1.6", notes: [
+		"Protean: picking a Protean Pok\u00e9mon's move turns it into that move's type, so the other side's moves " +
+			"hit it as that type (Misty's Frogadier); Reset type brings its own back",
+		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
+			"cap you are at",
+		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
+			"Giovanni, Silph Co.), not just badges",
+		"Levels that follow yours follow your progress too: a fight you left for later (Bugsy after Lt. Surge) " +
+			"comes at the cap you are at, a fight ahead at its own cap, a beaten one keeps the level and cap it was " +
+			"beaten at"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
