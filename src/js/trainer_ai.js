@@ -1784,6 +1784,17 @@ function shouldUseWish(turn, atk, def) {
 	return healthPercent(atk) < 65;
 }
 
+// ShouldCourtChange: swapping the sides' conditions helps the side (the other side has screens or
+// a Tailwind it lacks, or it has hazards the other lacks).
+function shouldCourtChange(side, foe) {
+	var mine = side.sideState, theirs = foe.sideState;
+	return ["reflect", "lightScreen", "auroraVeil", "tailwind"].some(function (k) {
+		return theirs[k] && !mine[k];
+	}) || ["sr", "spikes", "stickyWeb"].some(function (k) {
+		return mine[k] && !theirs[k];
+	});
+}
+
 // CountUsefulStatChanges: raised (sign 1) or lowered (sign -1) stages of the stats the side uses.
 function usefulStatChanges(side, sign) {
 	var total = 0;
@@ -2186,11 +2197,158 @@ function scorePositives(turn, atk, def, i, score) {
 		if (def.item !== "Mental Herb" && !hitsFirst(turn, atk, move, def) && predicted && predicted.split === SPLIT_STATUS) status(3);
 		break;
 	case E.FIELD_EFFECTS:
-		if (move.name === "Trick Room" && !turn.battle.trickRoom && atk.speed < def.speed) status(3);
+		if (move.name === "Trick Room") {
+			if (!turn.battle.trickRoom && atk.speed < def.speed) status(3);
+		} else if (move.name === "Magic Room") {
+			status(1);
+		} else if (move.name === "Wonder Room") {
+			// When swapping the defences helps against what the foe hits with.
+			if ((hasPhysical(def) && atk.stats.def < atk.stats.spd) || (hasSpecial(def) && atk.stats.spd < atk.stats.def)) status(2);
+		} else if (move.name === "Gravity" && !field.isGravity) {
+			// Radical Red: nothing once Gravity is up. A shaky sleep move goes through the sleep rules.
+			var sleeper = atk.moves.filter(function (m) {
+				return m && m.effect === E.SLEEP && m.accuracy && m.accuracy < 90;
+			})[0];
+			if (sleeper) up(sleepBonus(turn, atk, def, sleeper));
+			else if (defAbility(atk, def) !== "Levitate") status(hasMoveWhere(atk, function (m) {
+				return m.accuracy && m.accuracy < 90;
+			}) ? 2 : 1);
+		}
 		break;
 	case E.TEAM_EFFECTS:
 		if (move.name === "Tailwind") {
 			status(has([STYLE.SETUP_SCREENS, STYLE.BATON_PASS, STYLE.CLERIC, STYLE.SUPPORT_SCREENS, STYLE.PHAZING], style) ? 2 : 1);
+		} else if (move.name === "Lucky Chant") {
+			status(1);
+		} else if (move.name === "Magnet Rise" && isGrounded(atk, field) && hasMoveWhere(def, function (m) {
+			return isDamaging(m) && m.type === "Ground";
+		}) && typeEffectiveness("Ground", atk.types) >= 1) {
+			var groundPredicted = predicted && predicted.type === "Ground" && isDamaging(predicted);
+			status(groundPredicted && hitsFirst(turn, atk, move, def) ? 3 : groundPredicted ? 2 : 1);
+		}
+		break;
+	case E.TRAP:
+		// Not into Rapid Spin, a Ghost or a foe already trapped. Radical Red: Salt Cure +8 on Water and
+		// Steel types, else +4; the others when a staller should trap.
+		if (hasMoveNamed(def, ["Rapid Spin"]) || def.types.indexOf("Ghost") !== -1) break;
+		if (move.name === "Salt Cure") {
+			if (!def.saltCured) up(def.types.indexOf("Water") !== -1 || def.types.indexOf("Steel") !== -1 ? 8 : 4);
+		} else if (shouldTrap(turn, atk, def, move)) up(7);
+		break;
+	case E.MIST:
+		if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(6);
+		break;
+	case E.SAFEGUARD:
+		if (has([STYLE.BATON_PASS, STYLE.CLERIC, STYLE.SUPPORT_SCREENS, STYLE.PHAZING], style) &&
+			!(field.terrain === "Misty" && isGrounded(atk, field))) status(1);
+		break;
+	case E.PERISH_SONG:
+		if (isTrappedBy(def, atk, field)) status(3);
+		break;
+	case E.NIGHTMARE:
+		if ((def.status === "slp" || def.ability === "Comatose") && defAbility(atk, def) !== "Magic Guard") status(3);
+		break;
+	case E.ATTRACT:
+		if (willFaintFromChip(def, field) && atk.speed < def.speed) break;
+		status(def.status || isTrappedBy(def, atk, field) ? 2 : 1);
+		break;
+	case E.PURSUIT:
+		// A sweeper's Pursuit into a predicted U-turn or Volt Switch that comes after it.
+		if (isSweeper(style) && predicted && isPivotMove(predicted) && !hitsFirst(turn, atk, move, def)) up(3);
+		break;
+	case E.RAPID_SPIN:
+		// Hazards on its own side with someone left to protect: worth clearing. Defog also for the
+		// foe's screens (or to lower evasion); Court Change when swapping the sides helps; Rapid Spin
+		// and Mortal Spin to free a seeded AI.
+		if ((atk.sideState.sr || atk.sideState.spikes || atk.sideState.toxicSpikes || atk.sideState.stickyWeb) && atk.monsLeft > 1) {
+			status(3);
+		} else if (move.name === "Defog") {
+			if (def.sideState.reflect || def.sideState.lightScreen || def.sideState.auroraVeil) status(3);
+			else if (!(def.sideState.sr || def.sideState.spikes || def.sideState.toxicSpikes || def.sideState.stickyWeb) &&
+				goodIdeaToLower(turn, def, atk, move, "eva")) status(2);
+		} else if (move.name === "Court Change") {
+			if (shouldCourtChange(atk, def) && !shouldCourtChange(def, atk)) status(2);
+		} else if (atk.seeded && move.effectiveness > 0) {
+			status(3);
+		}
+		break;
+	case E.FEINT:
+		if (predicted && predicted.effect === E.PROTECT) up(3);
+		break;
+	case E.IMPRISON:
+		status(predicted && hasMoveNamed(atk, [predicted.name]) ? 3 : 1);
+		break;
+	case E.INGRAIN:
+		status(atk.item === "Big Root" ? 2 : 1);
+		break;
+	case E.HEAL_BELL:
+		if (style === STYLE.CLERIC && atk.status && !(move.name === "Heal Bell" && atk.ability === "Soundproof")) up(7);
+		break;
+	case E.REFRESH:
+		if (move.name !== "Psycho Shift" && atk.status) status(3);
+		break;
+	case E.LOCK_ON:
+		// Radical Red: only Laser Focus, when the AI can't KO now and survives to use the crit.
+		if (move.name === "Laser Focus" && !canKnockOut(turn, atk, def) &&
+			(atk.speed > def.speed ? !canKnockOut(turn, def, atk) : !can2HKO(turn, def, atk))) status(1);
+		break;
+	case E.FURY_CUTTER:
+		if (isSweeper(style) && atk.item === "Metronome") up(3);
+		break;
+	case E.TORMENT:
+		status(/^Choice /.test(def.item) || def.ability === "Gorilla Tactics" ? 2 : 0);
+		break;
+	case E.MAGIC_COAT:
+		if (predicted && predicted.split === SPLIT_STATUS && (predicted.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_FIELD))) status(3);
+		break;
+	case E.SNATCH:
+		if (predicted && (predicted.flags & 0x8)) status(3); // FLAG_SNATCH_AFFECTED
+		break;
+	case E.DISABLE:
+		if (def.item !== "Mental Herb" && !hitsFirst(turn, atk, move, def) && predicted && predicted.split === SPLIT_STATUS) status(1);
+		break;
+	case E.PAIN_SPLIT:
+		// Radical Red: only a staller, when the split heals it enough.
+		if ((atk.hp + def.hp) / 2 > atk.hp * 1.2 && style === STYLE.STALL) status(2);
+		break;
+	case E.SEMI_INVULNERABLE:
+		if (isSweeper(style)) {
+			if (hitsFirst(turn, atk, move, def) ? predicted && has([E.EXPLOSION, E.PROTECT], predicted.effect) :
+				predicted && predicted.effect === E.SEMI_INVULNERABLE) up(3);
+		}
+		break;
+	case E.LAST_RESORT:
+		// Radical Red: Sky Drop against a foe taking chip damage, for a sweeper.
+		if (move.name === "Sky Drop" && isSweeper(style) && secondaryDamage(def, field) > 0) up(3);
+		break;
+	case E.TYPE_CHANGES:
+		if (move.name === "Soak") {
+			if (isSweeper(style) && hasMoveWhere(atk, function (m) {
+				return isDamaging(m) && (m.type === "Electric" || m.type === "Grass");
+			})) status(2);
+		} else if (defAbility(atk, def) === "Wonder Guard") {
+			status(2);
+		}
+		break;
+	case E.ATTACK_BLOCKERS:
+		var healer = hasEffect(def, [E.RESTORE_HP, E.MORNING_SUN, E.SWALLOW, E.WISH, E.REST]);
+		if (move.name === "Throat Chop") {
+			if (hitsFirst(turn, atk, move, def) && predicted && predicted.sound) status(3);
+			else if (isSweeper(style) && hasMoveWhere(def, function (m) {
+				return m.sound;
+			})) up(3);
+		} else if (move.name === "Telekinesis") {
+			if (hasMoveWhere(atk, function (m) {
+				return m.accuracy && m.accuracy < 90;
+			})) status(1);
+		} else if (move.name === "Embargo") {
+			if (def.item) status(1);
+		} else if (move.name !== "Powder") {
+			// Heal Block, Psychic Noise, Glaive Rush: against healing.
+			if (hitsFirst(turn, atk, move, def) && predicted && has([E.RESTORE_HP, E.MORNING_SUN, E.SWALLOW, E.WISH, E.REST], predicted.effect)) status(3);
+			else if (healer || def.item === "Leftovers" || (def.item === "Black Sludge" && def.types.indexOf("Poison") !== -1)) status(2);
+		} else if (predicted && predicted.type === "Fire" && isDamaging(predicted)) {
+			status(3);
 		}
 		break;
 	case E.FAKE_OUT:
