@@ -367,15 +367,19 @@ function buildSettingsCard() {
 	segmentedSelector(target);
 }
 
-// The run record (run_record.js) on your team: KOs each one has made, the fainted greyed out, and
-// Fainted / Revive for the one in Pokémon 1.
-function markRunOnTeam(card, p1Set) {
+// The run record (run_record.js) on a card of your Pokémon: KOs each one has made, the fainted greyed out.
+function markRunOnMons(card) {
 	card.find(".ss-quick-mon").each(function () {
 		var mon = getRunMon($(this).attr("data-set-id"));
 		$(this).toggleClass("ss-quick-fainted", mon.fainted);
 		if (mon.frags) $(this).append($('<span class="ss-quick-frags"></span>').text("\u2694" + mon.frags));
 		if (mon.fainted) $(this).attr("title", $(this).attr("title") + " \u2014 fainted" + (mon.faintedBy ? " to " + mon.faintedBy : ""));
 	});
+}
+
+// The same on your team, and Fainted / Revive for the one in Pokémon 1.
+function markRunOnTeam(card, p1Set) {
+	markRunOnMons(card);
 	if (!getRunKey(p1Set)) return;
 	var fainted = getRunMon(p1Set).fainted;
 	card.find(".ss-quick-head").append($('<button type="button" class="ss-quick-faint-btn"></button>')
@@ -399,6 +403,16 @@ function renderQuickStrips() {
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
+	// Upright phones have room under the teams for the Box (and Box 2) too; the CSS shows them only there.
+	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
+		var mons = $('.box-dropzone[data-section="' + box.section + '"] .box-pokemon');
+		if (!mons.length) return;
+		var card = buildTeamCard(box.label, mons, mons.map(function () {
+			return $(this).attr("data-set-id");
+		}).get().indexOf(p1Set)).addClass("ss-quick-box");
+		if (typeof getRunMon === "function") markRunOnMons(card);
+		quick.append(card);
+	});
 }
 
 // Shorter results text that fits beside each move.
