@@ -7,7 +7,8 @@
  * (all of Mt. Moon's floors are one). A .sav import fills in where each of your Pokémon was caught;
  * tapping a Pokémon, or "Missed it", uses up a location by hand. Professor Oak's new run clears them.
  * Dupes clause: anything in the evolution family of a Pokémon you have caught (or have in your box) is
- * blacked out at other locations, and is not your encounter there.
+ * blacked out at other locations, and is not your encounter there. One that fainted, was moved to the
+ * Trash, deleted or released still counts until Professor Oak starts a new run.
  */
 
 var ENCOUNTER_LOCATION_KEY = "encounterLocation";
@@ -24,6 +25,8 @@ var ENCOUNTER_METHODS = [
 var NUZLOCKE_KEY = "nuzlocke";
 // {location name: {species: [names], fromSave: bool, missed: bool}}
 var NUZLOCKE_ENCOUNTERS_KEY = "nuzlockeEncounters";
+// [species] of every Pokémon in this mode's Team, Box, Box 2 or Trash this run, kept after it is deleted.
+var RUN_SPECIES_KEY = "runSpecies";
 
 // A tab of the small-screen layout, so not on desktop.
 function isWildTabShown() {
@@ -64,11 +67,32 @@ function getEvolutionFamily(name) {
 	return evolutionFamilyOf[name] || name;
 }
 
-// The families of everything you have caught: your Nuzlocke encounters and your box.
+function readRunSpecies() {
+	try {
+		return JSON.parse(readSetting(RUN_SPECIES_KEY + ":" + getPageMode())) || [];
+	} catch (e) {
+		return [];
+	}
+}
+
+// Adds this mode's sets to the run's species (every change to them comes through here).
+function recordRunSpecies() {
+	var species = readRunSpecies();
+	var added = Object.keys(readCustomSets()).filter(function (name) {
+		return species.indexOf(name) === -1;
+	});
+	if (added.length) writeSetting(RUN_SPECIES_KEY + ":" + getPageMode(), JSON.stringify(species.concat(added)));
+}
+
+// The families of everything you have caught: your Nuzlocke encounters, your box (Trash too), every
+// Pokémon you have had this run and the ones that fainted.
 function getCaughtFamilies(owned, encounters) {
 	var caught = {};
-	Object.keys(owned).forEach(function (name) {
-		caught[getEvolutionFamily(name)] = true;
+	var record = typeof readRunRecord === "function" ? readRunRecord() : {mons: {}};
+	Object.keys(owned).concat(readRunSpecies(), Object.keys(record.mons).map(function (key) {
+		return record.mons[key].name;
+	})).forEach(function (name) {
+		if (name) caught[getEvolutionFamily(name)] = true;
 	});
 	Object.keys(encounters).forEach(function (location) {
 		encounters[location].species.forEach(function (name) {
@@ -103,21 +127,22 @@ function setNuzlockeEncounter(name, encounter) {
 }
 
 // The save's Pokémon by where they were caught (gifts, trades and eggs are not wild locations).
-// They replace an earlier import's; locations you marked yourself stay as you marked them.
+// They replace an earlier import's for the same location; a location the save no longer has a
+// Pokémon from (it was released) stays used, and locations you marked yourself stay as you marked them.
 function recordSaveEncounters(save) {
 	var wild = {};
 	ENCOUNTERS.forEach(function (location) {
 		wild[location.name] = true;
 	});
-	var encounters = readNuzlockeEncounters();
-	Object.keys(encounters).forEach(function (name) {
-		if (encounters[name].fromSave) delete encounters[name];
-	});
+	var found = {};
 	save.party.concat(save.boxes).forEach(function (mon) {
 		var name = MAP_SECTIONS.names[mon.metLocation - MAP_SECTIONS.first];
 		if (!name || !wild[name]) return;
-		var encounter = encounters[name] = encounters[name] || {species: [], fromSave: true};
-		if (encounter.fromSave) encounter.species.push(mon.species);
+		(found[name] = found[name] || []).push(mon.species);
+	});
+	var encounters = readNuzlockeEncounters();
+	Object.keys(found).forEach(function (name) {
+		if (!encounters[name] || encounters[name].fromSave) encounters[name] = {species: found[name], fromSave: true};
 	});
 	writeNuzlockeEncounters(encounters);
 }
@@ -250,8 +275,11 @@ $(document).on("save:imported", function (event, save) {
 });
 $(document).on("run:new", function () {
 	writeNuzlockeEncounters({});
+	writeSetting(RUN_SPECIES_KEY + ":" + getPageMode(), "[]");
 	if ($("#encounters").length) renderEncounters();
 });
+$(document).on("customsets:changed", recordRunSpecies);
+$(document).ready(recordRunSpecies);
 
 $(document).ready(function () {
 	if (!isWildTabShown()) return;

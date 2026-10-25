@@ -94,6 +94,8 @@ var CHANGELOG = [
 		"Protean: picking a Protean Pok\u00e9mon's move turns it into that move's type, so the other side's moves " +
 			"hit it as that type (Misty's Frogadier); Reset type brings its own back. Its own damage already has " +
 			"STAB on every move",
+		"Nuzlocke dupes last the whole run: a Pok\u00e9mon that fainted, went to the Trash, was deleted or was " +
+			"released still makes its family a dupe until Professor Oak starts a new run",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
