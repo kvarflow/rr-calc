@@ -52,7 +52,15 @@ var SAVEBLOCK1_VARS_OFFSET = 0x1000;
 // 0 until you have a Pokémon, so FLAG_SYS_POKEMON_GET says whether it has been set.
 var VAR_STARTER_MON = 0x4031;
 var FLAG_SYS_POKEMON_GET = 0x828;
+// FireRed's badge flags: FLAG_BADGE01_GET (Boulder Badge) to FLAG_BADGE08_GET (Earth Badge).
+var FLAG_BADGE01_GET = 0x820;
+// A trainer you have beaten has its flag set: 0x500 + its trainer id (ids below 0x300 stay
+// clear of the system flags from 0x800).
+var TRAINER_FLAGS_START = 0x500;
+var TRAINER_FLAG_IDS = 0x300;
 var STARTER_TYPE_BY_VAR = ["Grass", "Water", "Fire"];
+// SaveBlock2 (section 0) keeps the trainer ID, which a new game picks at random.
+var SAVEBLOCK2_TRAINER_ID_OFFSET = 0x0A;
 
 var SAVE_NATURES = ["Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed", "Impish", "Lax",
 	"Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet", "Bashful", "Rash",
@@ -226,6 +234,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		ivs: ivs,
 		moves: moves,
 		metLocation: view.getUint8(layout.metLocation),
+		// Met level, game of origin, ball and OT gender, set when it was caught.
+		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
 		pid: pid
 	};
@@ -247,6 +257,33 @@ function readSaveBlock1Byte(bytes, sections, offset) {
 	return bytes[sections[1 + Math.floor(offset / SAVEBLOCK1_SECTION_SIZE)] + offset % SAVEBLOCK1_SECTION_SIZE];
 }
 
+function readSaveBlock1Flag(bytes, sections, flagId) {
+	return ((readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (flagId >> 3)) >> (flagId & 7)) & 1) === 1;
+}
+
+// Trainers' Pokémon with no fixed level take theirs from this (trainer_controls.js).
+function getHighestPartyLevel(save) {
+	return save.party.reduce(function (highest, mon) {
+		return Math.max(highest, mon.level || 0);
+	}, 0);
+}
+
+function countBadges(bytes, sections) {
+	var badges = 0;
+	for (var i = 0; i < 8; i++) {
+		if (readSaveBlock1Flag(bytes, sections, FLAG_BADGE01_GET + i)) badges++;
+	}
+	return badges;
+}
+
+function readBeatenTrainers(bytes, sections) {
+	var beaten = [];
+	for (var id = 1; id < TRAINER_FLAG_IDS; id++) {
+		if (readSaveBlock1Flag(bytes, sections, TRAINER_FLAGS_START + id)) beaten.push(id);
+	}
+	return beaten;
+}
+
 // "Fire", "Water" or "Grass", or null before you have chosen.
 function readStarterType(bytes, sections) {
 	var flagByte = readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_FLAGS_OFFSET + (FLAG_SYS_POKEMON_GET >> 3));
@@ -257,7 +294,8 @@ function readStarterType(bytes, sections) {
 }
 
 /*
- * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter} with each mon as returned by decodeSaveMon plus a
+ * Returns {party: [mon], boxes: [mon], hardcore: bool, minimalGrinding: bool, starter, trainerId, badges,
+ * beatenTrainers: [trainer id]} with each mon as returned by decodeSaveMon plus a
  * `location` label, or null if the file is not a readable Radical Red save.
  */
 function parseRadicalRedSave(bytes) {
@@ -271,7 +309,10 @@ function parseRadicalRedSave(bytes) {
 		boxes: [],
 		hardcore: readExtraFlag(bytes, sections, HARDCORE_FLAG),
 		minimalGrinding: readExtraFlag(bytes, sections, MINIMAL_GRINDING_FLAG),
-		starter: readStarterType(bytes, sections)
+		starter: readStarterType(bytes, sections),
+		trainerId: view.getUint32(sections[0] + SAVEBLOCK2_TRAINER_ID_OFFSET, true),
+		badges: countBadges(bytes, sections),
+		beatenTrainers: readBeatenTrainers(bytes, sections)
 	};
 	var partyBase = sections[SAVE_PARTY_SECTION];
 	var partyCount = Math.min(view.getUint32(partyBase + SAVE_PARTY_COUNT_OFFSET, true), 6);
@@ -335,8 +376,57 @@ function toCustomSet(mon) {
 		isCustomSet: true,
 		// Marks sets that the next .sav import replaces.
 		fromSave: true,
-		pid: mon.pid
+		pid: mon.pid,
+		// Kept through nature and ability changes (see findChangedPids).
+		origin: getSaveOriginKey(mon)
 	};
+}
+
+/*
+ * Radical Red writes a new personality value when you change a Pokémon's nature (a mint, the
+ * nature NPC) or ability, so the same Pokémon can come back from the next save with a new one.
+ * What it keeps: where, at what level and in which ball it was caught, and its nickname. A
+ * Pokémon is matched on those (or, for sets imported before they were kept, its nickname) when
+ * exactly one old and one new Pokémon share them. Returns {old pid: new pid}.
+ */
+function getSaveOriginKey(mon) {
+	return "o:" + mon.metLocation + "/" + mon.origins + "/" + (hasCustomNickname(mon) ? calc.toID(mon.nickname) : "");
+}
+
+function getSaveNicknameKey(mon) {
+	return hasCustomNickname(mon) ? "n:" + calc.toID(mon.nickname) : null;
+}
+
+function findChangedPids(customsets, mons) {
+	var newPids = {};
+	var byKey = {};
+	var count = function (map, key, pid) {
+		if (key) map[key] = map[key] === undefined ? pid : null;
+	};
+	mons.forEach(function (mon) {
+		newPids[mon.pid] = true;
+		count(byKey, getSaveOriginKey(mon), mon.pid);
+		count(byKey, getSaveNicknameKey(mon), mon.pid);
+	});
+	var olds = [];
+	var oldByKey = {};
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) {
+			var set = customsets[pokemonName][setName];
+			if (!set.fromSave || set.pid === undefined || newPids[set.pid]) continue;
+			// Older imports kept no origin: the set's name is its nickname unless it's where it was.
+			var key = set.origin || (/^(Party|Box) \d+( \d+)?$/.test(setName) ? null : "n:" + calc.toID(setName.replace(/ \d+$/, "")));
+			if (!key) continue;
+			olds.push({pid: set.pid, key: key});
+			count(oldByKey, key, set.pid);
+		}
+	}
+	var changed = {};
+	olds.forEach(function (old) {
+		var newPid = byKey[old.key];
+		if (oldByKey[old.key] === old.pid && newPid !== null && newPid !== undefined) changed[old.pid] = newPid;
+	});
+	return changed;
 }
 
 /*
@@ -346,6 +436,9 @@ function toCustomSet(mon) {
  */
 function importSaveIntoBox(save) {
 	var customsets = readCustomSets();
+	// Before the old sets go: their KOs and fainting follow a Pokémon whose nature changed.
+	var changedPids = findChangedPids(customsets, save.party.concat(save.boxes));
+	if (Object.keys(changedPids).length) $(document).trigger("save:pidsChanged", [changedPids]);
 	for (var pokemonName in customsets) {
 		for (var setName in customsets[pokemonName]) {
 			if (customsets[pokemonName][setName].fromSave) removeCustomSet(customsets, pokemonName, setName);
@@ -376,16 +469,57 @@ function importSaveIntoBox(save) {
 var SAVE_MODE_LABELS = {normal: "Normal Mode", hardcore: "Hardcore Mode"};
 // Carries a parsed save to the other mode's page when the user chooses to switch.
 var PENDING_SAVE_IMPORT_KEY = "pendingSaveImport";
+// The trainer ID of the last save imported in each mode.
+var SAVE_TRAINER_ID_KEY = "saveTrainerId";
+
+function getSaveTrainerIdKey() {
+	return SAVE_TRAINER_ID_KEY + ":" + getPageMode();
+}
+
+// Whether the save is from a new game rather than the run in this mode's box: a new game has a
+// new trainer ID. Before the ID was kept, a save sharing no Pokémon with the last import is new.
+function isNewGameSave(save) {
+	var lastTrainerId = readSetting(getSaveTrainerIdKey());
+	if (lastTrainerId) return lastTrainerId !== String(save.trainerId);
+	var customsets = readCustomSets();
+	var lastPids = [];
+	for (var pokemonName in customsets) {
+		for (var setName in customsets[pokemonName]) {
+			var set = customsets[pokemonName][setName];
+			if (set.fromSave && set.pid !== undefined) lastPids.push(set.pid);
+		}
+	}
+	return lastPids.length > 0 && !save.party.concat(save.boxes).some(function (mon) {
+		return lastPids.indexOf(mon.pid) !== -1;
+	});
+}
 
 function getSaveMode(save) {
 	return save.hardcore ? "hardcore" : "normal";
 }
 
+// After Professor Oak, the next save starts the new run whatever its trainer ID.
+$(document).on("run:new", function () {
+	writeSetting(getSaveTrainerIdKey(), "");
+});
+
 function importSaveAndReport(save, fileName) {
+	// The mode, Minimal Grinding and starter are only news for a new game (or the first import).
+	var firstImport = !readSetting(getSaveTrainerIdKey());
+	// Your last run ended: Professor Oak starts a new one before the new game's box comes in.
+	var newGame = typeof startNewRun === "function" && isNewGameSave(save);
+	if (newGame) startNewRun();
 	importSaveIntoBox(save);
+	writeSetting(getSaveTrainerIdKey(), save.trainerId);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
-	alert("Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + "." +
+	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + ".";
+	if (!newGame && !firstImport) {
+		alert(imported);
+		return;
+	}
+	alert((newGame ? "This save is from a new game, so Professor Oak started a new run: your old box, KOs, " +
+		"defeated trainers and encounters were cleared.\n" : "") + imported +
 		"\nThis is a " + SAVE_MODE_LABELS[getSaveMode(save)] + " save, Minimal Grinding " + (save.minimalGrinding ? "on" : "off") + "." +
 		(save.starter ? "\nYour starter is a " + save.starter + " type, so the rival's teams are set to match." : ""));
 }
@@ -462,5 +596,6 @@ $(document).ready(function () {
 		this.value = "";
 	});
 	$("#import-1_wrapper").append(button, fileInput);
-	importPendingSave();
+	// After every panel is built, since a new game starts a new run first.
+	setTimeout(importPendingSave, 0);
 });

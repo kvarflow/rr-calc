@@ -27,6 +27,7 @@ function writeTrainerKOs(kos) {
 
 // Called by the Professor Oak button when a new run starts.
 function clearTrainerProgress() {
+	writeSetting(getDefeatLevelsKey(), "");
 	writeTrainerKOs({});
 }
 
@@ -43,7 +44,47 @@ function setKOSlots(index, slots) {
 	var kos = readTrainerKOs();
 	if (slots.length) kos[getTeamKey(index)] = slots;
 	else delete kos[getTeamKey(index)];
+	recordDefeatLevel(index, slots.length >= getTeamSize(index));
 	writeTrainerKOs(kos);
+}
+
+function getVariantKey(index, variant) {
+	return index + "|" + variant.label;
+}
+
+// Whether that team of a fight is beaten (a fight with several teams can be beaten with any).
+function isVariantDefeated(index, variant, kos) {
+	var slots = (kos || readTrainerKOs())[getVariantKey(index, variant)] || [];
+	return variant.sets.length > 0 && slots.length >= variant.sets.length;
+}
+
+/*
+ * A beaten team keeps the levels it had: the highest level of your party when you marked it
+ * defeated (its Pokémon followed that). A fight a save marks won (trainer_controls.js) has none
+ * recorded and shows the document's levels.
+ */
+function getDefeatLevelsKey() {
+	return "defeatLevels:" + getPageMode();
+}
+
+function readDefeatLevels() {
+	try {
+		return JSON.parse(readSetting(getDefeatLevelsKey())) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function recordDefeatLevel(index, defeated) {
+	var levels = readDefeatLevels();
+	var highest = typeof getPlayerHighestLevel === "function" ? getPlayerHighestLevel() : 0;
+	if (defeated && highest) levels[getTeamKey(index)] = highest;
+	else delete levels[getTeamKey(index)];
+	writeSetting(getDefeatLevelsKey(), JSON.stringify(levels));
+}
+
+function getDefeatLevel(index, variant) {
+	return readDefeatLevels()[getVariantKey(index, variant)] || 0;
 }
 
 function getTeamSize(index) {
@@ -104,6 +145,11 @@ function getArc(index) {
 	while (first > 0 && caps[first - 1] === caps[index]) first--;
 	while (last < caps.length - 1 && caps[last + 1] === caps[index]) last++;
 	var boss = -1;
+	// Named after its gym leader; else its last required fight at the arc's cap.
+	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
+	for (var g = last; g >= first && boss === -1; g--) {
+		if (leaders.indexOf(TRAINER_ORDER[g].name) !== -1) boss = g;
+	}
 	for (var i = last; i >= first && boss === -1; i--) {
 		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === caps[index]) boss = i;
 	}
@@ -125,18 +171,24 @@ function renderTrainerProgress() {
 	if (!$("#run-progress").length) return;
 	var kos = readTrainerKOs();
 	var arc = getArc(currentTrainerIndex);
-	var arcTotal = arc.last - arc.first + 1;
+	var arcTotal = 0;
 	var arcDefeated = 0;
+	var total = 0;
 	var defeated = 0;
+	// A fight the documents list twice (marked duplicate) counts once.
 	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.duplicate) return;
+		var inArc = index >= arc.first && index <= arc.last;
+		total++;
+		if (inArc) arcTotal++;
 		if (!isTrainerDefeated(index, kos)) return;
 		defeated++;
-		if (index >= arc.first && index <= arc.last) arcDefeated++;
+		if (inArc) arcDefeated++;
 	});
 	$("#arc-progress-label").text(arc.name + " Arc — " + arcDefeated + "/" + arcTotal + " trainers defeated");
 	drawProgressBar($("#arc-progress-bar"), arcDefeated, arcTotal);
-	$("#game-progress-label").text("Game progress — " + defeated + "/" + TRAINER_ORDER.length + " trainers defeated");
-	drawProgressBar($("#game-progress-bar"), defeated, TRAINER_ORDER.length);
+	$("#game-progress-label").text("Game progress — " + defeated + "/" + total + " trainers defeated");
+	drawProgressBar($("#game-progress-bar"), defeated, total);
 
 	// The current team: greyed-out KOs, the Defeated box and the KO button's label.
 	var slots = getKOSlots(currentTrainerIndex, kos);

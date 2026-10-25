@@ -822,6 +822,11 @@ legend:has(> .header-sprite)::before {
     margin-left: 4px;
     white-space: nowrap;
 }
+.trainer-skip {
+    display: block;
+    font-size: 0.85em;
+    margin: 2px 0 4px;
+}
 .run-progress-row {
     font-size: 0.85em;
     margin-bottom: 6px;
@@ -1388,6 +1393,34 @@ html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
 }
 html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
     color: #fff;
+}
+/* Under the foe's moves (trainer_ai.js renderAISwitch): the AI's chance of switching out and to
+   whom, and who it sends out next after a KO. */
+.ai-switch {
+    margin-top: 6px;
+    font-size: 12px;
+    line-height: 1.35;
+}
+.ai-switch-out {
+    color: var(--ss-danger, #c0392b);
+}
+.ai-switch-next {
+    color: var(--ss-muted, #667085);
+}
+/* Battle has to fit the Thor's screen: on small screens it sits in the foe's header, after the
+   name, on one line (the whole of it in its tooltip). */
+html.small-screen .result-move-header #ai-switch {
+    display: inline;
+    margin: 0 0 0 6px;
+    font-size: 10px;
+    font-weight: 600;
+}
+html.small-screen #ai-switch > div {
+    display: inline;
+}
+html.small-screen #ai-switch > .ai-switch-next {
+    margin-left: 6px;
+    font-weight: 500;
 }
 /* A move made a crit by double-tapping it (small_screen.js bindDoubleTapCrit). */
 html.small-screen .move-result-subgroup label[for^="resultMove"] {

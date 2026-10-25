@@ -1,0 +1,86 @@
+[
+ {
+  "key": "rival|ceruleancity",
+  "gate": "Misty"
+ },
+ {
+  "key": "catchercale|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "lasali|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "youngstertimy|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "lasreli|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "camperethan|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "grunt|nugetbridge",
+  "gate": "Misty"
+ },
+ {
+  "key": "grunt|dighouse",
+  "gate": "Misty"
+ },
+ {
+  "key": "camperjef|route6",
+  "gate": "Misty"
+ },
+ {
+  "key": "anbroks|sane",
+  "gate": "Misty"
+ },
+ {
+  "key": "edmondtrevor|sane",
+  "gate": "Misty"
+ },
+ {
+  "key": "brendan|sane",
+  "gate": "Misty"
+ },
+ {
+  "key": "picnickeralicia|route9",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "picnickercaitlin|route9",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "picnickerdana|rocktunel",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "maniacherman|route10",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "supernerdaidan|route8",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "acemary|celadoncitygym",
+  "gate": "Lt. Surge"
+ },
+ {
+  "key": "brockrematch|pewtercity",
+  "gate": "Sabrina"
+ },
+ {
+  "key": "mistyrematch|ceruleancity",
+  "gate": "Sabrina"
+ },
+ {
+  "key": "ltsurgerematch|vermilioncity",
+  "gate": "Sabrina"
+ }
+]

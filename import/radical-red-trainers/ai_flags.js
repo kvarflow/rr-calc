@@ -10,7 +10,8 @@
  *
  * Radical Red keeps its boss teams in tables of its own (60-byte entries naming a FireRed trainer
  * id); the flags are that trainer's in gTrainers. Each fight in src/js/data/trainers/<mode>.js is
- * matched to a table entry by trainer name and team (most of the team's species in common).
+ * matched to a table entry by trainer name and team (most of the team's species in common), or
+ * failing that to a FireRed trainer entry the same way (the early rival is one).
  */
 
 const fs = require('fs');
@@ -64,6 +65,18 @@ function main(romFile) {
 				entries.push({name: text(trainer + 4).toLowerCase(), flags: rom.readUInt32LE(trainer + 0x1C), team});
 			}
 		}
+		// Fights not in the boss tables (the early rival, most regular trainers) are FireRed trainer
+		// entries: every gTrainers entry, by name and party, comes after the boss tables.
+		for (let trainerId = 1; trainerId < 743; trainerId++) {
+			const trainer = G_TRAINERS + trainerId * 40;
+			const size = rom[trainer + 0x20];
+			const party = rom.readUInt32LE(trainer + 0x24) - ROM_BASE;
+			const record = rom[trainer] & 1 ? 16 : 8; // custom moves make each Pokémon 16 bytes
+			if (!size || size > 6 || party < 0 || party + size * record > rom.length) continue;
+			const team = new Set();
+			for (let i = 0; i < size; i++) team.add(base(species[rom.readUInt16LE(party + i * record + 4)]));
+			entries.push({name: text(trainer + 4).toLowerCase(), flags: rom.readUInt32LE(trainer + 0x1C), team, fallback: true});
+		}
 		out[mode] = {};
 		let matched = 0;
 		const order = load('src/js/data/trainers/' + mode + '.js', 'TRAINER_ORDER');
@@ -76,8 +89,9 @@ function main(romFile) {
 				const team = variant.sets.map(set => base(set.split(' (')[0]));
 				for (const entry of entries) {
 					const overlap = team.filter(s => entry.team.has(s)).length / Math.max(team.length, entry.team.size);
-					const named = names.some(n => entry.name === n || entry.name.endsWith(n));
-					const score = overlap + (named ? 1 : 0);
+					const named = names.some(n => entry.name === n);
+					// A boss table entry beats a FireRed trainer entry that matches as well.
+					const score = overlap + (named ? 1 : 0) - (entry.fallback ? 0.01 : 0);
 					if ((named ? overlap >= 0.3 : overlap >= 0.8) && score > bestScore) {
 						bestScore = score;
 						best = entry;
@@ -90,6 +104,17 @@ function main(romFile) {
 			}
 		}
 		console.log(mode + ': ' + matched + ' of ' + order.length + ' fights matched');
+	}
+	// A fight found in one mode's data but not the other's is the same trainer: same flags.
+	for (const mode of Object.keys(out)) {
+		const other = mode === 'normal' ? 'hardcore' : 'normal';
+		const order = load('src/js/data/trainers/' + mode + '.js', 'TRAINER_ORDER');
+		for (const fight of order) {
+			const key = fight.name + '|' + fight.location + '|' + fight.levelCap;
+			if (out[mode][key] !== undefined) continue;
+			const twin = Object.keys(out[other]).find(k => k.split('|').slice(0, 2).join('|') === fight.name + '|' + fight.location);
+			if (twin) out[mode][key] = out[other][twin];
+		}
 	}
 	// Moves by their id in the calculator's spelling (lowercase letters and digits only).
 	const moves = {};

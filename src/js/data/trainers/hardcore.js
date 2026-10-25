@@ -15,6 +15,14 @@ var TRAINER_ORDER = [
      "Snubbull (*Rival Blue)",
      "Litleo (*Rival Blue)",
      "Squirtle (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     329
     ]
    },
    {
@@ -24,6 +32,14 @@ var TRAINER_ORDER = [
      "Snubbull (*Rival Blue)",
      "Slowpoke (*Rival Blue)",
      "Bulbasaur (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     330
     ]
    },
    {
@@ -33,6 +49,14 @@ var TRAINER_ORDER = [
      "Snubbull (*Rival Blue)",
      "Slowpoke (*Rival Blue)",
      "Charmander (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     331
     ]
    }
   ]
@@ -51,6 +75,15 @@ var TRAINER_ORDER = [
      "Corphish (*PkMn Trainer Brendan)",
      "Numel (*PkMn Trainer Brendan)",
      "Treecko (*PkMn Trainer Brendan)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     44
     ]
    }
   ]
@@ -68,6 +101,14 @@ var TRAINER_ORDER = [
      "Stufful (*Lass Anne)",
      "Clefairy (*Lass Anne)",
      "Audino (*Lass Anne)"
+    ],
+    "levelBelowHighest": [
+     1,
+     3,
+     1
+    ],
+    "trainerIds": [
+     4
     ]
    }
   ]
@@ -84,6 +125,13 @@ var TRAINER_ORDER = [
     "sets": [
      "Charcadet (*Ace Trainer Nelle)",
      "Gulpin (*Ace Trainer Nelle)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1
+    ],
+    "trainerIds": [
+     21
     ]
    }
   ]
@@ -101,6 +149,14 @@ var TRAINER_ORDER = [
      "Kricketune (*Bug Catcher Sammy)",
      "Dustox (*Bug Catcher Sammy)",
      "Volbeat (*Bug Catcher Sammy)"
+    ],
+    "levelBelowHighest": [
+     3,
+     2,
+     3
+    ],
+    "trainerIds": [
+     104
     ]
    }
   ]
@@ -120,6 +176,16 @@ var TRAINER_ORDER = [
      "Yanma (*Leader Falkner)",
      "Squawkabilly (*Leader Falkner)",
      "Farfetch’d-Galar (*Leader Falkner)"
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     3,
+     2,
+     2
+    ],
+    "trainerIds": [
+     45
     ]
    }
   ]
@@ -140,6 +206,9 @@ var TRAINER_ORDER = [
      "Lileep (Leader Brock)",
      "Archen (Leader Brock)",
      "Varoom (Leader Brock)"
+    ],
+    "trainerIds": [
+     414
     ]
    }
   ]
@@ -158,6 +227,15 @@ var TRAINER_ORDER = [
      "Oricorio-Sensu (*Lass Sally)",
      "Whimsicott (*Lass Sally)",
      "Mawile (*Lass Sally)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     2
+    ],
+    "trainerIds": [
+     117
     ]
    }
   ]
@@ -177,6 +255,16 @@ var TRAINER_ORDER = [
      "Swoobat (*Super Nerd Miguel)",
      "Skiddo (*Super Nerd Miguel)",
      "Sableye (*Super Nerd Miguel)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     1,
+     1
+    ],
+    "trainerIds": [
+     170
     ]
    }
   ]
@@ -196,6 +284,16 @@ var TRAINER_ORDER = [
      "Houndour (*Rocket Admin Archer)",
      "Mightyena (*Rocket Admin Archer)",
      "Fearow (*Rocket Admin Archer)"
+    ],
+    "levelBelowHighest": [
+     3,
+     2,
+     0,
+     2,
+     3
+    ],
+    "trainerIds": [
+     46
     ]
    }
   ]
@@ -216,6 +314,17 @@ var TRAINER_ORDER = [
      "Simisear (*Rival Blue)",
      "Arbok (*Rival Blue)",
      "Wartortle (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     2,
+     1,
+     1,
+     0,
+     0
+    ],
+    "trainerIds": [
+     332
     ]
    },
    {
@@ -228,6 +337,17 @@ var TRAINER_ORDER = [
      "Arbok (*Rival Blue)",
      "Eevee (*Rival Blue Set 1)",
      "Ivysaur (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     1,
+     0,
+     2,
+     0
+    ],
+    "trainerIds": [
+     333
     ]
    },
    {
@@ -240,9 +360,24 @@ var TRAINER_ORDER = [
      "Arbok (*Rival Blue)",
      "Eevee (*Rival Blue Set 1)",
      "Charmeleon (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     1,
+     0,
+     2,
+     0
+    ],
+    "trainerIds": [
+     334
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Catcher Cale",
@@ -257,9 +392,21 @@ var TRAINER_ORDER = [
      "Vivillon (*Bug Catcher Cale)",
      "Butterfree (*Bug Catcher Cale)",
      "Wormadam-Sandy (*Bug Catcher Cale)"
+    ],
+    "levelBelowHighest": [
+     3,
+     2,
+     2
+    ],
+    "trainerIds": [
+     110
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Lass Ali",
@@ -274,9 +421,21 @@ var TRAINER_ORDER = [
      "Jigglypuff (*Lass Ali)",
      "Amaura (*Lass Ali)",
      "Brionne (*Lass Ali)"
+    ],
+    "levelBelowHighest": [
+     1,
+     2,
+     2
+    ],
+    "trainerIds": [
+     123
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Youngster Timmy",
@@ -291,9 +450,21 @@ var TRAINER_ORDER = [
      "Plusle (*Youngster Timmy)",
      "Electrike (*Youngster Timmy)",
      "Snover (*Youngster Timmy)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     92
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Lass Relli",
@@ -308,9 +479,21 @@ var TRAINER_ORDER = [
      "Greedent (*Lass Reli)",
      "Togetic (*Lass Reli)",
      "Clamperl (*Lass Reli)"
+    ],
+    "levelBelowHighest": [
+     2,
+     3,
+     2
+    ],
+    "trainerIds": [
+     122
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Camper Ethan",
@@ -325,9 +508,21 @@ var TRAINER_ORDER = [
      "Mabosstiff (*Camper Ethan)",
      "Salandit (*Camper Ethan)",
      "Misdreavus (*Camper Ethan)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     144
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Grunt",
@@ -343,9 +538,22 @@ var TRAINER_ORDER = [
      "Druddigon (*Team Rocket Grunt)",
      "Togedemaru (*Team Rocket Grunt)",
      "Komala (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     1,
+     0
+    ],
+    "trainerIds": [
+     356
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Bugsy",
@@ -363,6 +571,45 @@ var TRAINER_ORDER = [
      "Lokix (*Leader Bugsy Set 1)",
      "Araquanid (*Leader Bugsy Set 1)",
      "Vikavolt (*Leader Bugsy Set 1)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "thunderBadge": false,
+    "trainerIds": [
+     47
+    ]
+   },
+   {
+    "label": "After Lt. Surge",
+    "battleEffect": "Permanent rain",
+    "sets": [
+     "Kleavor (*Leader Bugsy Set 1)",
+     "Scizor-Mega (*Leader Bugsy)",
+     "Scyther (*Leader Bugsy Set 2)",
+     "Lokix (*Leader Bugsy Set 2)",
+     "Araquanid (*Leader Bugsy Set 2)",
+     "Vikavolt (*Leader Bugsy Set 2)"
+    ],
+    "preMega": {
+     "1": "Technician"
+    },
+    "thunderBadge": true,
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     8
     ]
    }
   ]
@@ -383,6 +630,9 @@ var TRAINER_ORDER = [
      "Clodsire (Leader Misty)",
      "Starmie (Leader Misty)",
      "Toxicroak (Leader Misty)"
+    ],
+    "trainerIds": [
+     415
     ]
    }
   ]
@@ -401,9 +651,22 @@ var TRAINER_ORDER = [
      "Crobat (*Team Rocket Grunt)",
      "Raticate (*Team Rocket Grunt)",
      "Veluza (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     1,
+     3
+    ],
+    "trainerIds": [
+     355
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Camper Jeff",
@@ -420,9 +683,23 @@ var TRAINER_ORDER = [
      "Perrserker (*Camper Jeff)",
      "Boltund (*Camper Jeff)",
      "Granbull (*Camper Jeff)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     0,
+     1,
+     1
+    ],
+    "trainerIds": [
+     146
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Ann & Brooks",
@@ -439,9 +716,24 @@ var TRAINER_ORDER = [
      "Decidueye (*Gentleman Brooks)",
      "Simisage (*Gentleman Brooks)",
      "Wigglytuff (*Gentleman Brooks)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     126,
+     482
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Edmond & Trevor",
@@ -459,9 +751,25 @@ var TRAINER_ORDER = [
      "Cramorant (*Sailor Trevor)",
      "Nidoqueen (*Sailor Trevor)",
      "Masquerain (*Sailor Trevor)"
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     1,
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     134,
+     135
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Brendan",
@@ -479,9 +787,24 @@ var TRAINER_ORDER = [
      "Gardevoir (*PkMn Trainer Brendan)",
      "Sceptile (*PkMn Trainer Brendan)",
      "Hariyama (*PkMn Trainer Brendan)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     50
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Misty",
+   "capAfter": 36
+  }
  },
  {
   "name": "Whitney",
@@ -502,7 +825,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Natural Cure"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     49
+    ]
    }
   ]
  },
@@ -521,6 +855,16 @@ var TRAINER_ORDER = [
      "Swanna (*Gentleman Tucker)",
      "Pikachu-Surfing (*Gentleman Tucker)",
      "Dugtrio (*Gentleman Tucker)"
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     1,
+     1,
+     0
+    ],
+    "trainerIds": [
+     423
     ]
    }
   ]
@@ -544,7 +888,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Plus"
-    }
+    },
+    "trainerIds": [
+     416
+    ]
    }
   ]
  },
@@ -562,9 +909,22 @@ var TRAINER_ORDER = [
      "Bruxish (*Picnicker Alicia)",
      "Flareon (*Picnicker Alicia)",
      "Chatot (*Picnicker Alicia)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     0,
+     0
+    ],
+    "trainerIds": [
+     154
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Picnicker Caitlin",
@@ -580,9 +940,22 @@ var TRAINER_ORDER = [
      "Spinda (*Picnicker Caitlin)",
      "Sneasel-Hisui (*Picnicker Caitlin)",
      "Liepard (*Picnicker Caitlin)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     1,
+     1
+    ],
+    "trainerIds": [
+     155
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Picnicker Dana",
@@ -599,9 +972,23 @@ var TRAINER_ORDER = [
      "Clawitzer (*Picnicker Dana)",
      "Rampardos (*Picnicker Dana)",
      "Magmortar (*Picnicker Dana)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     474
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Maniac Herman",
@@ -617,9 +1004,22 @@ var TRAINER_ORDER = [
      "Victreebel (*Pokemaniac Herman)",
      "Cherrim (*Pokemaniac Herman)",
      "Sylveon (*Pokemaniac Herman)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     0,
+     0
+    ],
+    "trainerIds": [
+     163
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Morty",
@@ -640,7 +1040,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Levitate"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     52
+    ]
    }
   ]
  },
@@ -659,9 +1070,23 @@ var TRAINER_ORDER = [
      "Arcanine-Hisui (*Super Nerd Aidan)",
      "Basculegion-F (*Super Nerd Aidan)",
      "Braviary-Hisui (*Super Nerd Aidan)"
+    ],
+    "levelBelowHighest": [
+     1,
+     1,
+     1,
+     0,
+     0
+    ],
+    "trainerIds": [
+     171
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Ace Mary",
@@ -677,9 +1102,22 @@ var TRAINER_ORDER = [
      "Coalossal (*Ace Trainer Mary)",
      "Maractus (*Ace Trainer Mary)",
      "Copperajah (*Ace Trainer Mary)"
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     1,
+     0
+    ],
+    "trainerIds": [
+     402
     ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Lt. Surge",
+   "capAfter": 44
+  }
  },
  {
   "name": "Erika",
@@ -700,7 +1138,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Overgrow"
-    }
+    },
+    "trainerIds": [
+     417
+    ]
    }
   ]
  },
@@ -718,6 +1159,15 @@ var TRAINER_ORDER = [
      "Aerodactyl (*Team Rocket Grunt)",
      "Tinkaton (*Team Rocket Grunt)",
      "Inteleon (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     0,
+     1,
+     1,
+     1
+    ],
+    "trainerIds": [
+     357
     ]
    }
   ]
@@ -736,6 +1186,15 @@ var TRAINER_ORDER = [
      "Slaking (*Team Rocket Grunt)",
      "Lilligant-Hisui (*Team Rocket Grunt)",
      "Rotom-Frost (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     366
     ]
    }
   ]
@@ -754,6 +1213,15 @@ var TRAINER_ORDER = [
      "Shiftry (*Team Rocket Grunt)",
      "Okidogi (*Team Rocket Grunt)",
      "Rotom-Wash (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     367
     ]
    }
   ]
@@ -777,7 +1245,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Inner Focus"
-    }
+    },
+    "trainerIds": [
+     348
+    ]
    }
   ]
  },
@@ -796,6 +1267,16 @@ var TRAINER_ORDER = [
      "Drifblim (*Channeler Ruth)",
      "Cresselia (*Channeler Ruth)",
      "Polteageist (*Channeler Ruth)"
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     448
     ]
    }
   ]
@@ -830,6 +1311,16 @@ var TRAINER_ORDER = [
      "Ninetales-Alola (*Team Rocket Grunt)",
      "Mr. Rime (*Team Rocket Grunt)",
      "Arctovish (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     1,
+     0,
+     0
+    ],
+    "trainerIds": [
+     369
     ]
    }
   ]
@@ -849,6 +1340,16 @@ var TRAINER_ORDER = [
      "Braviary (*Team Rocket Grunt)",
      "Dragalge (*Team Rocket Grunt)",
      "Honchkrow (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     370
     ]
    }
   ]
@@ -868,6 +1369,16 @@ var TRAINER_ORDER = [
      "Magnezone (*Team Rocket Grunt)",
      "Golurk (*Team Rocket Grunt)",
      "Primarina (*Team Rocket Grunt)"
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     371
     ]
    }
   ]
@@ -891,7 +1402,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Torrent"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     432
+    ]
    },
    {
     "label": "Rival Has Bulbasaur",
@@ -903,6 +1425,17 @@ var TRAINER_ORDER = [
      "Gorebyss (*Rival Blue)",
      "Darmanitan (*Rival Blue)",
      "Venusaur-Mega (*Rival Blue Set 1)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     433
     ]
    },
    {
@@ -915,6 +1448,17 @@ var TRAINER_ORDER = [
      "Electivire (*Rival Blue)",
      "Gorebyss (*Rival Blue)",
      "Charizard-Mega-X (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     434
     ]
    }
   ]
@@ -939,7 +1483,11 @@ var TRAINER_ORDER = [
     "preMega": {
      "2": "Intimidate",
      "5": "Early Bird"
-    }
+    },
+    "trainerIds": [
+     53,
+     54
+    ]
    }
   ]
  },
@@ -962,7 +1510,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Sand Veil"
-    }
+    },
+    "trainerIds": [
+     349
+    ]
    }
   ]
  },
@@ -985,7 +1536,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Flash Fire"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     18
+    ]
    }
   ]
  },
@@ -1006,7 +1568,16 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Ripen"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     16
+    ]
    }
   ]
  },
@@ -1027,7 +1598,16 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Ripen"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     17
+    ]
    }
   ]
  },
@@ -1049,8 +1629,19 @@ var TRAINER_ORDER = [
      "Gallade-Mega (*Leader Chuck)"
     ],
     "preMega": {
-     "5": "Steadfast"
-    }
+     "5": "Sharpness"
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     317
+    ]
    }
   ]
  },
@@ -1073,7 +1664,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Solid Rock"
-    }
+    },
+    "trainerIds": [
+     420
+    ]
    }
   ]
  },
@@ -1096,7 +1690,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Damp"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     25
+    ]
    }
   ]
  },
@@ -1119,7 +1724,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Rain Dish"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     285
+    ]
    }
   ]
  },
@@ -1137,6 +1753,15 @@ var TRAINER_ORDER = [
      "Cetitan (*Camper Justin)",
      "Conkeldurr (*Camper Justin)",
      "Gengar (*Camper Justin)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     477
     ]
    }
   ]
@@ -1154,6 +1779,14 @@ var TRAINER_ORDER = [
      "Froslass (*Fisherman Andrew)",
      "Barbaracle (*Fisherman Andrew)",
      "Baxcalibur (*Fisherman Andrew)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     233
     ]
    }
   ]
@@ -1176,7 +1809,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Blaze"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     300
+    ]
    }
   ]
  },
@@ -1198,7 +1841,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Sweet Veil"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     467
+    ]
    }
   ]
  },
@@ -1220,7 +1873,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Natural Cure"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     466
+    ]
    }
   ]
  },
@@ -1240,6 +1903,18 @@ var TRAINER_ORDER = [
      "Goodra (*Beauty Sheila)",
      "Bouffalant (*Beauty Sheila)",
      "Zebstrika (*Beauty Sheila)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     1
+    ],
+    "trainerIds": [
+     268,
+     269
     ]
    }
   ]
@@ -1259,6 +1934,16 @@ var TRAINER_ORDER = [
      "Ogerpon-Hearthflame (*Bird Keeper Perry)",
      "Rapidash (*Bird Keeper Perry)",
      "Dragapult (*Bird Keeper Perry)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     301
     ]
    }
   ]
@@ -1281,7 +1966,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Solid Rock"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     195
+    ]
    }
   ]
  },
@@ -1300,6 +1995,16 @@ var TRAINER_ORDER = [
      "Emboar (*Bird Keeper Robert)",
      "Jolteon (*Bird Keeper Robert)",
      "Druddigon (*Bird Keeper Robert)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     302
     ]
    }
   ]
@@ -1323,7 +2028,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Shed Skin"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     15
+    ]
    }
   ]
  },
@@ -1340,6 +2056,14 @@ var TRAINER_ORDER = [
      "Mienshao (*Biker Lao)",
      "Heliolisk (*Biker Lao)",
      "Dugtrio-Alola (*Biker Lao)"
+    ],
+    "levelBelowHighest": [
+     3,
+     2,
+     2
+    ],
+    "trainerIds": [
+     199
     ]
    }
   ]
@@ -1359,7 +2083,14 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "0": "Hyper Cutter"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2
+    ],
+    "trainerIds": [
+     249
+    ]
    }
   ]
  },
@@ -1376,6 +2107,14 @@ var TRAINER_ORDER = [
      "Zygarde-10% (*Cue Ball Luke)",
      "Hariyama (*Cue Ball Luke)",
      "Golem (*Cue Ball Luke)"
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2
+    ],
+    "trainerIds": [
+     250
     ]
    }
   ]
@@ -1398,7 +2137,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Limber"
-    }
+    },
+    "levelBelowHighest": [
+     3,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     202
+    ]
    }
   ]
  },
@@ -1420,7 +2169,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Swarm"
-    }
+    },
+    "levelBelowHighest": [
+     3,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     251
+    ]
    }
   ]
  },
@@ -1443,7 +2202,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Swarm"
-    }
+    },
+    "levelBelowHighest": [
+     3,
+     2,
+     2,
+     2,
+     2,
+     null
+    ],
+    "trainerIds": [
+     201
+    ]
    }
   ]
  },
@@ -1462,6 +2232,16 @@ var TRAINER_ORDER = [
      "Whiscash (*Biker William)",
      "Salamence (*Biker William)",
      "Starmie (*Biker William)"
+    ],
+    "levelBelowHighest": [
+     3,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     206
     ]
    }
   ]
@@ -1481,6 +2261,16 @@ var TRAINER_ORDER = [
      "Porygon2 (*Bird Keeper Jacob)",
      "Raikou (*Bird Keeper Jacob)",
      "Nidoqueen (*Bird Keeper Jacob)"
+    ],
+    "levelBelowHighest": [
+     0,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     309
     ]
    }
   ]
@@ -1503,7 +2293,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Water Absorb"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     308
+    ]
    }
   ]
  },
@@ -1525,7 +2325,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Hyper Cutter"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     307
+    ]
    }
   ]
  },
@@ -1548,7 +2358,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Overgrow"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     57
+    ]
    }
   ]
  },
@@ -1571,9 +2392,24 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Pressure"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     56
+    ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Misty (Rematch)",
@@ -1594,9 +2430,24 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Intimidate"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     48
+    ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Lt. Surge (Rematch)",
@@ -1617,9 +2468,24 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Intimidate"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     51
+    ]
    }
-  ]
+  ],
+  "parallel": {
+   "gate": "Sabrina",
+   "capAfter": 68
+  }
  },
  {
   "name": "Erika (Rematch)",
@@ -1640,7 +2506,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Static"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     65
+    ]
    }
   ]
  },
@@ -1660,6 +2537,17 @@ var TRAINER_ORDER = [
      "Turtonator (*Juggler Kayden)",
      "Silvally (*Juggler Kayden)",
      "Volcanion (*Juggler Kayden)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     292
     ]
    }
   ]
@@ -1683,7 +2571,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Punk Rock"
-    }
+    },
+    "trainerIds": [
+     418
+    ]
    }
   ]
  },
@@ -1706,7 +2597,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Guts"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     66
+    ]
    }
   ]
  },
@@ -1729,9 +2631,73 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Ice Body"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     58
+    ]
+   },
+   {
+    "label": "Team Two",
+    "battleEffect": "Permanent snow",
+    "sets": [
+     "Sandslash-Alola (*Leader Pryce)",
+     "Reuniclus (*Leader Pryce)",
+     "Clefable (*Leader Pryce Set 2)",
+     "Kyurem-Black (*Leader Pryce)",
+     "Arctovish (*Leader Pryce)",
+     "Glalie-Mega (*Leader Pryce)"
+    ],
+    "preMega": {
+     "5": "Ice Body"
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     59
+    ]
+   },
+   {
+    "label": "Team Three",
+    "battleEffect": "Permanent snow",
+    "sets": [
+     "Jynx (*Leader Pryce)",
+     "Cloyster (*Leader Pryce)",
+     "Clefable (*Leader Pryce Set 1)",
+     "Kyurem-Black (*Leader Pryce)",
+     "Arctozolt (*Leader Pryce)",
+     "Glalie-Mega (*Leader Pryce)"
+    ],
+    "preMega": {
+     "5": "Ice Body"
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     60
+    ]
    }
-  ]
+  ],
+  "randomTeams": true
  },
  {
   "name": "May",
@@ -1752,7 +2718,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Speed Boost"
-    }
+    },
+    "trainerIds": [
+     61
+    ]
    }
   ]
  },
@@ -1775,7 +2744,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Sturdy"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     62
+    ]
    }
   ]
  },
@@ -1798,7 +2778,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "No Guard"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     1,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     335
+    ]
    }
   ]
  },
@@ -1821,7 +2812,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Limber"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     219
+    ]
    }
   ]
  },
@@ -1843,7 +2845,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Flash Fire"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     179
+    ]
    }
   ]
  },
@@ -1862,6 +2874,16 @@ var TRAINER_ORDER = [
      "Gliscor (*Ace Trainer Lucy)",
      "Raging Bolt (*Ace Trainer Lucy)",
      "Charizard (*Ace Trainer Lucy)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     215
     ]
    }
   ]
@@ -1884,7 +2906,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Intimidate"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     180
+    ]
    }
   ]
  },
@@ -1907,7 +2939,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Solar Power"
-    }
+    },
+    "trainerIds": [
+     419
+    ]
    }
   ]
  },
@@ -1930,7 +2965,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Gooey"
-    }
+    },
+    "levelBelowHighest": [
+     2,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     72
+    ]
    }
   ]
  },
@@ -1953,7 +2999,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Speed Boost"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     70
+    ]
    }
   ]
  },
@@ -1975,7 +3032,17 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Flash Fire"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     67
+    ]
    }
   ]
  },
@@ -1996,7 +3063,16 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Intimidate"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     68
+    ]
    }
   ]
  },
@@ -2019,7 +3095,10 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Unnerve"
-    }
+    },
+    "trainerIds": [
+     69
+    ]
    }
   ]
  },
@@ -2039,6 +3118,17 @@ var TRAINER_ORDER = [
      "Dragapult (*PkMn Trainer Ketchup)",
      "Urshifu-Rapid-Strike (*PkMn Trainer Ketchup Set 1)",
      "Urshifu (*PkMn Trainer Ketchup Set 1)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     20
     ]
    }
   ]
@@ -2059,6 +3149,9 @@ var TRAINER_ORDER = [
      "Necrozma-Ultra (Leader Clair)",
      "Eternatus (Leader Clair)",
      "Archaludon (Leader Clair)"
+    ],
+    "trainerIds": [
+     74
     ]
    }
   ]
@@ -2078,6 +3171,16 @@ var TRAINER_ORDER = [
      "Magcargo (*Burglar Max)",
      "Hydrapple (*Burglar Max)",
      "Fezandipiti (*Burglar Max)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     454
     ]
    }
   ]
@@ -2097,6 +3200,16 @@ var TRAINER_ORDER = [
      "Munkidori (*Burglar Anson)",
      "Scream Tail (*Burglar Anson)",
      "Persian (*Burglar Anson)"
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
+    ],
+    "trainerIds": [
+     455
     ]
    }
   ]
@@ -2120,7 +3233,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Rain Dish"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     435
+    ]
    },
    {
     "label": "Rival Has Bulbasaur",
@@ -2132,6 +3256,17 @@ var TRAINER_ORDER = [
      "Chandelure (*Rival Blue)",
      "Hydreigon (*Rival Blue)",
      "Venusaur-Mega (*Rival Blue Set 2)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     436
     ]
    },
    {
@@ -2144,6 +3279,17 @@ var TRAINER_ORDER = [
      "Zamazenta-Crowned (*Rival Blue)",
      "Gliscor (*Rival Blue)",
      "Latias (*Rival Blue)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     437
     ]
    }
   ]
@@ -2167,7 +3313,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Overgrow"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     26
+    ]
    }
   ]
  },
@@ -2190,7 +3347,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "3": "Super Luck"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     406
+    ]
    }
   ]
  },
@@ -2213,7 +3381,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "4": "Hyper Cutter"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     396
+    ]
    }
   ]
  },
@@ -2236,7 +3415,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Hyper Cutter"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     393
+    ]
    }
   ]
  },
@@ -2259,7 +3449,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "0": "Limber"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     403
+    ]
    }
   ]
  },
@@ -2282,7 +3483,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Clear Body"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     394
+    ]
    }
   ]
  },
@@ -2302,6 +3514,17 @@ var TRAINER_ORDER = [
      "Mienshao (*Ace Trainer Alexa)",
      "Iron Treads (*Ace Trainer Alexa)",
      "Infernape (*Ace Trainer Alexa)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     404
     ]
    }
   ]
@@ -2325,7 +3548,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Heavy Metal"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     485
+    ]
    }
   ]
  },
@@ -2345,6 +3579,9 @@ var TRAINER_ORDER = [
      "Shedinja (Dumbass Creator)",
      "Shedinja (Dumbass Creator)",
      "Shedinja (Dumbass Creator)"
+    ],
+    "trainerIds": [
+     24
     ]
    }
   ]
@@ -2368,7 +3605,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Damp"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     78
+    ]
    },
    {
     "label": "Snow Team",
@@ -2383,7 +3631,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Snow Warning"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     77
+    ]
    }
   ]
  },
@@ -2406,7 +3665,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Inner Focus"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     80
+    ]
    },
    {
     "label": "Team Two",
@@ -2421,7 +3691,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Pure Power"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     81
+    ]
    }
   ]
  },
@@ -2444,7 +3725,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Pressure"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     83
+    ]
    },
    {
     "label": "Team Two",
@@ -2459,7 +3751,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "2": "Pressure"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     84
+    ]
    }
   ]
  },
@@ -2482,7 +3785,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Air Lock"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     86
+    ]
    },
    {
     "label": "Team Two",
@@ -2497,7 +3811,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "5": "Air Lock"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     87
+    ]
    }
   ]
  },
@@ -2520,7 +3845,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Damp"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     438
+    ]
    },
    {
     "label": "Rival Has Charmander",
@@ -2532,6 +3868,17 @@ var TRAINER_ORDER = [
      "Arceus-Ground (*Champion Blue)",
      "Xerneas (*Champion Blue)",
      "Eternatus-Eternamax (*Champion Blue Set 1)"
+    ],
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     440
     ]
    },
    {
@@ -2547,7 +3894,18 @@ var TRAINER_ORDER = [
     ],
     "preMega": {
      "1": "Damp"
-    }
+    },
+    "levelBelowHighest": [
+     0,
+     0,
+     0,
+     0,
+     0,
+     0
+    ],
+    "trainerIds": [
+     439
+    ]
    }
   ]
  }

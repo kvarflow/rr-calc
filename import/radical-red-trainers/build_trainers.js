@@ -101,6 +101,16 @@ function sentenceCase(text, properNouns) {
 		.replace(/(^|[+.]\s*)([a-z])/g, (m, p, c) => p + c.toUpperCase());
 }
 
+// A level given relative to the player ("Highest Lv -3", "Highest Lv", "Player Max Level"): how many
+// levels below the player's highest-level party Pokémon, or null for a fixed level.
+function levelBelowHighest(level) {
+	if (typeof level === 'number') return null;
+	const text = String(level || '');
+	if (/player max level/i.test(text)) return 0;
+	const match = /highest\s*lv\.?\s*(?:-\s*(\d+))?/i.exec(text);
+	return match ? parseInt(match[1] || '0', 10) : null;
+}
+
 // Names that cannot be resolved keep the document's spelling (and show in the report).
 function documentedMon(mon) {
 	const species = resolveSpecies(mon.species);
@@ -115,6 +125,7 @@ function documentedMon(mon) {
 		species,
 		docSpecies: mon.species,
 		level: typeof mon.level === 'number' ? mon.level : null,
+		levelBelowHighest: levelBelowHighest(mon.level),
 		nature: calc.NATURES[mon.nature] ? mon.nature : '',
 		abilityLines,
 		abilities: abilityLines.map(a => a.name),
@@ -285,6 +296,7 @@ function matchDocument(documented, setdex) {
 			const label = titleCase(t.name) + (t.variants.length > 1 ? ' (' + variantLabel(v.note, vi) + ')' : '');
 			// The ability a trainer's Mega has before it Mega Evolves, by team slot.
 			const preMega = {};
+			const below = [];
 			const sets = team.map((m, slot) => {
 				const candidates = [];
 				formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
@@ -316,6 +328,7 @@ function matchDocument(documented, setdex) {
 				used[setId] = true;
 				if (!claims[setId]) claims[setId] = key;
 				reuse[m.species] = best;
+				below.push(m.levelBelowHighest);
 				m.species = best.species;
 				const set = setdex[best.species][best.name];
 				if (APPLY && compare(m, set).length) {
@@ -331,6 +344,7 @@ function matchDocument(documented, setdex) {
 			}).filter(Boolean);
 			const variant = {label: variantLabel(v.note, vi), battleEffect: v.battleEffect ? sentenceCase(v.battleEffect, properNouns) : null, sets};
 			if (Object.keys(preMega).length) variant.preMega = preMega;
+			if (below.some(n => n !== null)) variant.levelBelowHighest = below;
 			return variant;
 		})
 	}));
@@ -384,11 +398,211 @@ function addRivalTeams(order, setdex) {
 			});
 			// Each team can have its own battle effect (in Hardcore, the last Route 22 fight is
 			// rain, swamp or magma storm depending on his team); none unless the file gives one.
-			trainer.variants.push({label, battleEffect: (fight.battleEffects || {})[label] || null, sets});
+			const variant = {label, battleEffect: (fight.battleEffects || {})[label] || null, sets};
+			// Levels relative to the player, as in the documented team: by species, and the starter
+			// (the one species that differs) takes the documented starter's.
+			if (model.levelBelowHighest) {
+				const left = model.sets.map((id, k) => ({species: baseOf(id.slice(0, id.lastIndexOf(' ('))), below: model.levelBelowHighest[k]}));
+				const below = sets.map(id => {
+					const k = left.findIndex(x => x.species === baseOf(id.slice(0, id.lastIndexOf(' ('))));
+					return k === -1 ? undefined : left.splice(k, 1)[0].below;
+				});
+				variant.levelBelowHighest = below.map(n => n === undefined ? (left.length ? left.shift().below : null) : n);
+			}
+			trainer.variants.push(variant);
 			added++;
 		});
 	});
 	return added;
+}
+
+/*
+ * Teams the documents leave out, read from the game (rom_teams.json): Bugsy's Route 25 script
+ * checks the Thunder Badge and uses another team once you have it, and Pryce's and Jasmine's
+ * scripts pick one of three teams at random (only those that differ are listed). A documented
+ * team is recognised and kept; each other team gets the trainer's calc sets with the same
+ * moves, nature, item and ability, or new sets when there are none. Returns how many sets
+ * were added (the caller then writes the sets file).
+ */
+function addRomTeams(order, setdex) {
+	const entries = JSON.parse(fs.readFileSync(path.join(__dirname, 'rom_teams.json'), 'utf8'))[mode] || [];
+	const baseOf = sp => (SPECIES[sp] && SPECIES[sp].baseSpecies) || sp;
+	// The game stores a Mega's ability before it Mega Evolves, and the calc's IVs reproduce the
+	// documents' stats, so those two are not compared.
+	const fits = (set, m, species) => set.nature === m.nature && (set.item || '') === m.item &&
+		(/-Mega/.test(species) || set.ability === m.ability) &&
+		(set.moves || []).slice().sort().join() === m.moves.slice().sort().join() &&
+		JSON.stringify(set.evs || {}) === JSON.stringify(m.evs);
+	let setsAdded = 0;
+	entries.forEach(entry => {
+		const trainer = order.find(t => t.name === entry.trainer);
+		if (!trainer) throw new Error(`${mode}: no ${entry.trainer} fight`);
+		const model = trainer.variants[0];
+		const prefix = model.sets[0].slice(model.sets[0].lastIndexOf(' (') + 2, -1).replace(/ Set \d+$/, '');
+		// The calc species for a ROM species: the documented team's forme (Aggron-Mega), else the base.
+		const speciesFor = name => model.sets.map(id => id.slice(0, id.lastIndexOf(' ('))).find(sp => baseOf(sp) === baseOf(name)) || name;
+		const setsFor = team => team.map(m => {
+			const found = [];
+			formesOf(m.species).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
+				if (trainerOf(n) === trainerOf(prefix) && fits(setdex[sp][n], m, sp)) found.push(sp + ' (' + n + ')');
+			}));
+			return {mon: m, id: found[0] || null};
+		});
+		const isDocumented = team => {
+			const ids = setsFor(team).map(x => x.id);
+			return ids.every(Boolean) && trainer.variants.some(v => v.sets.slice().sort().join() === ids.slice().sort().join());
+		};
+		if (entry.choice === 'replace') {
+			// The document repeats another fight's team: the trainer's own calc sets (by species) instead.
+			const own = name => {
+				const found = [];
+				formesOf(name).forEach(sp => Object.keys(setdex[sp] || {}).forEach(n => {
+					if (toKey(trainerOf(n)) === toKey(entry.trainer)) found.push(sp + ' (' + n + ')');
+				}));
+				if (found.length !== 1) throw new Error(`${mode} ${entry.trainer}: ${found.length} sets for ${name}`);
+				return found[0];
+			};
+			model.sets = entry.teams[0].map(m => own(m.species));
+			model.trainerIds = entry.trainerIds;
+			delete model.preMega;
+			return;
+		}
+		const labels = entry.choice === 'thunderBadge' ? Object.keys(entry.teams) : entry.teams.map((t, k) => ['Team One', 'Team Two', 'Team Three'][k]);
+		const teams = entry.choice === 'thunderBadge' ? labels.map(l => entry.teams[l]) : entry.teams;
+		teams.forEach((team, k) => {
+			if (isDocumented(team)) {
+				if (entry.choice === 'thunderBadge') trainer.variants.find(v => v.label === labels[k]).thunderBadge = k === 1;
+				return;
+			}
+			if (trainer.variants.some(v => v.label === labels[k])) labels[k] += ' (game data)';
+			const sets = setsFor(team).map(x => {
+				if (x.id) return x.id;
+				const species = speciesFor(x.mon.species);
+				setdex[species] = setdex[species] || {};
+				let name = prefix;
+				for (let n = 2; setdex[species][name]; n++) name = prefix + ' Set ' + n;
+				const set = {nature: x.mon.nature, ability: x.mon.ability, level: setdex[model.sets[0].slice(0, model.sets[0].lastIndexOf(' ('))][model.sets[0].slice(model.sets[0].lastIndexOf(' (') + 2, -1)].level};
+				if (x.mon.item) set.item = x.mon.item;
+				set.moves = x.mon.moves;
+				if (Object.keys(x.mon.evs).length) set.evs = x.mon.evs;
+				const ivs = {};
+				Object.keys(x.mon.ivs || {}).forEach(stat => {
+					if (x.mon.ivs[stat] !== 31) ivs[stat] = x.mon.ivs[stat];
+				});
+				if (Object.keys(ivs).length) set.ivs = ivs;
+				setdex[species][name] = set;
+				setsAdded++;
+				return species + ' (' + name + ')';
+			});
+			const variant = {label: labels[k], battleEffect: model.battleEffect, sets};
+			// A Mega's ability before it Mega Evolves is the one the game stores.
+			const preMega = {};
+			sets.forEach((id, slot) => {
+				if (/-Mega/.test(id)) preMega[slot] = team[slot].ability;
+			});
+			if (Object.keys(preMega).length) variant.preMega = preMega;
+			if (entry.choice === 'thunderBadge') variant.thunderBadge = k === 1;
+			// Johto leaders' levels follow yours, like the documented team's.
+			if (model.levelBelowHighest) variant.levelBelowHighest = sets.map(() => model.levelBelowHighest[0]);
+			trainer.variants.push(variant);
+		});
+		if (entry.choice === 'random' && entry.teams.length > 1) trainer.randomTeams = true;
+	});
+	return setsAdded;
+}
+
+/*
+ * Fights you can do before or after a gym. The Hardcore document gives their cap as "before/after"
+ * ("28/36": Nugget Bridge, the Dig House and the S.S. Anne, before or after Misty). The gym is the
+ * last required fight with the first cap. Hardcore writes them to parallel_fights.json; both modes
+ * mark those fights (the Default document has no such caps) with the gym and the cap after it.
+ */
+const fightKey = t => [t.name, t.location].map(x => toKey(x).replace(/(.)\1+/g, '$1')).join('|');
+
+function writeParallelFights(documented) {
+	const fights = [];
+	documented.forEach(t => {
+		const caps = /^(\d+)\/(\d+)$/.exec(String(t.levelCap || ''));
+		if (!caps) return;
+		const gate = documented.filter(g => !g.optional && String(g.levelCap) === caps[1]).pop();
+		if (gate) fights.push({key: fightKey({name: titleCase(t.name), location: titleCase(t.location)}), gate: titleCase(gate.name)});
+	});
+	fs.writeFileSync(path.join(__dirname, 'parallel_fights.json'), JSON.stringify(fights, null, 1) + '\n');
+}
+
+function markParallelFights(order) {
+	const fights = JSON.parse(fs.readFileSync(path.join(__dirname, 'parallel_fights.json'), 'utf8'));
+	const cap = t => parseInt(t.levelCap, 10) || 0;
+	let marked = 0;
+	order.forEach(t => {
+		const fight = fights.find(f => f.key === fightKey(t));
+		if (!fight) return;
+		const at = order.map(g => g.name).lastIndexOf(fight.gate);
+		const gate = order[at];
+		if (!gate) throw new Error(`${mode}: no ${fight.gate} for ${t.name}`);
+		const after = order.slice(at + 1).find(g => !g.optional && cap(g) > cap(gate));
+		t.parallel = {gate: fight.gate, capAfter: after ? cap(after) : cap(gate)};
+		marked++;
+	});
+	return marked;
+}
+
+/*
+ * The game's trainer ids for each team (trainer_ids.json, matched against the ROM's trainer data
+ * by rr-rom's analysis/progression/trainer_ids.js), so a .sav's trainer flags say which fights
+ * you have won. A double battle has both trainers' ids.
+ */
+// The Default document repeats Bird Keeper Robert's block (no location, same team): kept so the
+// fights after it keep their place, but marked so navigation and progress skip it.
+function markDuplicates(order) {
+	let marked = 0;
+	order.forEach((t, i) => {
+		const prev = order[i - 1];
+		if (prev && !t.location && t.name === prev.name && JSON.stringify(t.variants.map(v => v.sets)) === JSON.stringify(prev.variants.map(v => v.sets))) {
+			t.duplicate = true;
+			marked++;
+		}
+	});
+	return marked;
+}
+
+function addTrainerIds(order) {
+	const ids = JSON.parse(fs.readFileSync(path.join(__dirname, 'trainer_ids.json'), 'utf8'))[mode] || [];
+	let added = 0;
+	order.forEach((t, i) => t.variants.forEach(v => {
+		const found = ids[i] && ids[i][v.label];
+		if (found) {
+			v.trainerIds = found;
+			added++;
+		}
+	}));
+	return added;
+}
+
+// Corrections checked against the game's trainer data (rom_teams.json "fixes"): a team Pokémon's
+// ability before it Mega Evolves, its level below your highest, or its set's EVs.
+function applyRomFixes(order, setdex) {
+	const fixes = (JSON.parse(fs.readFileSync(path.join(__dirname, 'rom_teams.json'), 'utf8')).fixes || {})[mode] || [];
+	let applied = 0;
+	fixes.forEach(fix => {
+		// The fight (two rival fights share Route 22) whose team has that Pokémon.
+		const variant = [].concat(...order.filter(t => t.name === fix.trainer && (!fix.location || t.location === fix.location))
+			.map(t => t.variants)).find(v => (!fix.label || v.label === fix.label) &&
+			(fix.species === '*' || v.sets.some(id => id.slice(0, id.lastIndexOf(' (')) === fix.species)));
+		if (!variant) throw new Error(`${mode}: no ${fix.trainer} ${fix.label || ''} with ${fix.species} to fix`);
+		variant.sets.forEach((id, slot) => {
+			const species = id.slice(0, id.lastIndexOf(' ('));
+			if (fix.species !== '*' && species !== fix.species) return;
+			if (fix.preMega) variant.preMega = Object.assign({}, variant.preMega, {[slot]: fix.preMega});
+			if (typeof fix.levelBelowHighest === 'number') {
+				variant.levelBelowHighest = variant.levelBelowHighest || variant.sets.map(() => null);
+				variant.levelBelowHighest[slot] = fix.levelBelowHighest;
+			}
+			if (fix.evs) setdex[species][id.slice(id.lastIndexOf(' (') + 2, -1)].evs = fix.evs;
+			applied++;
+		});
+	});
+	return applied;
 }
 
 function writeReport(setdex, report, stats, trainerCount, namesFixed) {
@@ -414,8 +628,14 @@ function build() {
 	const namesFixed = APPLY ? fixUnreadableNames(setdex) : 0;
 	const documented = JSON.parse(fs.readFileSync(docPath, 'utf8'));
 	const {order, report, stats} = matchDocument(documented, setdex);
-	if (APPLY) writeSetdex(setdex);
 	const rivalTeams = addRivalTeams(order, setdex);
+	const romSets = addRomTeams(order, setdex);
+	if (mode === 'hardcore') writeParallelFights(documented);
+	const parallel = markParallelFights(order);
+	const withIds = addTrainerIds(order);
+	const duplicates = markDuplicates(order);
+	const romFixes = applyRomFixes(order, setdex);
+	if (APPLY || romSets || romFixes) writeSetdex(setdex);
 
 	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
 	fs.mkdirSync(path.dirname(outFile), {recursive: true});
@@ -426,7 +646,7 @@ function build() {
 		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();

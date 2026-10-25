@@ -21,6 +21,15 @@ Damage calculator for all generations of Pokémon battling.
   boss documents; the trainer panel and Professor Oak reset button follow syl-rnb-calc. The
   rival's teams for each starter (`import/radical-red-trainers/rival_teams.json`) were read from
   the game's trainer data, and a `.sav` import reads the starter you chose so his teams match.
+  Pokémon the documents give a level relative to yours ("Highest Lv -3") take it from the
+  highest-level Pokémon in the party of the last `.sav` imported, and the level cap shown rises
+  with the save's badges (or the gym leaders you mark Defeated). Fights the Hardcore document gives
+  a "before/after" cap (Nugget Bridge to the S.S. Anne around Misty, and so on) can be skipped for
+  now and come up after the rest of their group. Teams the documents leave out come from the game's
+  scripts (`import/radical-red-trainers/rom_teams.json`): Bugsy's after Lt. Surge (the script checks
+  the Thunder Badge), and the three teams Pryce and Jasmine pick from at random. Each team carries the
+  game's trainer id(s) (`trainer_ids.json`), so a `.sav` import marks the fights its trainer flags say
+  you have won; a beaten fight keeps the levels it had then.
 - Crit chances, Range Compare, Export All, the Pokémon panel toggles, base stat overrides,
   "What's new" and the footer settings are also ported from syl-rnb-calc.
 - Ability descriptions (`src/js/data/ability_descriptions.js`, for the ? beside each ability) are
@@ -105,14 +114,59 @@ picks it. `src/js/trainer_ai.js` ports the move choice of Complete Fire Red Upgr
 - The highest score wins, ties at random. The AI's own rolls (a 50% crit, four random numbers it
   draws each turn, coin flips between equally strong moves, your predicted move when it is a tie)
   are enumerated exactly, so the percentages are exact for what the calculator knows.
+- The rules were checked against Radical Red's own AI, decompiled from the ROM with Ghidra. It is
+  CFRU's, and the KO and strongest-move scoring, the slower-KO table and the 93% damage roll
+  match; where it differs from CFRU's current code the port follows the game: Taunt, fighting
+  styles, the setup sweeper's status bonus, Recover at full HP, who moves first against a
+  higher-priority move, when it sets up (+2 going first, +3 going second, and on half the rolls not
+  into Haze, Roar or a priority 2HKO), Stealth Rock and Spikes (nothing against them with three or
+  fewer of your Pokémon left, −20 for Stealth Rock already up, a coin against a Rapid Spin or Defog
+  user), Protect (not while badly poisoned; King's Shield half the time in Blade Forme), Double Team
+  and Minimize (no bonus), and the coins Radical Red adds: Low Sweep's speed control, Smack Down and
+  Counter each only count half the time.
 - Each trainer's AI flags, and every move's effect, accuracy and secondary chance, come from the
   game (`import/radical-red-trainers/ai_flags.js` writes `src/js/data/trainer_ai.js` from the
-  ROM). Required trainers not found in the ROM's tables use the smart AI, optional ones the basic.
+  ROM: Radical Red's boss tables, then FireRed's trainer table for fights outside them, like the
+  early rival).
+
+### Switching
+
+Before it picks a move the AI may switch out, and under the foe's moves Battle shows how often
+("Switches 40% → Starmie", the reason in its tooltip) and who it sends out next if you KO the one
+out now ("After a KO → Starmie"). A move at 100% is 100% *of the turns it stays in*: when the
+switch line shows a chance, that's how often your move hits the Pokémon coming in instead.
+
+The port follows CFRU's `ai_switching.c` for single battles. The trainer's other Pokémon still
+standing (the ones you haven't marked KO'd) are scored against yours: +31 if it can KO you, +17 if
+none of your moves does much to it, +14 if it outspeeds you, +8 for a revenge kill (a priority KO,
+Moxie, a trapping ability), +2 if it walls you or can 2HKO you, minus a lot if you would KO it
+first. The best one comes in after a KO, and it's where the AI goes when one of these says to
+switch, checked in the game's order:
+
+- your predicted attack would be absorbed by a teammate's Volt Absorb, Water Absorb, Flash Fire,
+  Well-Baked Body, Lightning Rod, Motor Drive, Storm Drain, Dry Skin, Sap Sipper or Earth Eater;
+- your Wonder Guard, and nothing it has can touch it;
+- all its moves are bad here (none does a third of your HP) and a teammate does better;
+- Natural Cure with a status, or Regenerator at half HP or less when you would KO it;
+- it is asleep (half the time); it is seeded by Leech Seed (a quarter of the time);
+- you would KO it before it moves, and a teammate takes your hit well;
+- its attacking stat is at −3 or worse;
+- it is a sweeper that can't KO you, and a teammate can (or resists everything).
+
+With U-turn or Volt Switch that goes first it pivots out with the move instead. A Pokémon that
+just came in (after a KO or a switch; not the lead) waits a turn for most of these.
+
+Radical Red's switching was decompiled from the ROM as well: it is CFRU's (same checks, order and
+scores) except that on a random quarter of its turns the AI skips these checks altogether, Earth
+Eater and Well-Baked Body count as absorbing, a Phoenix Down Pokémon doesn't switch out to avoid a
+KO, and trainers never use items (the Full Restores in their data go unused).
 
 What it cannot know is assumed: no moves used yet this battle (no Protect last turn, no Choice
-lock), the foe's Pokémon has just come in when it is at full HP (Fake Out), the foe can switch
-while it has a Pokémon left, and no Substitutes. Switching and item use are not modelled. Set the
-field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
+lock), the foe's Pokémon has just come in when it is at full HP and isn't the trainer's lead
+(Fake Out, and it waits before switching again), its benched Pokémon are at full HP, and no
+Substitutes. Double battles show the moves but not switching.
+Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
+status as they are.
 
 ## Recent bug fixes
 
@@ -136,6 +190,10 @@ locked so they cannot drift from the game ("Edit anyway" unlocks them). Stat sta
 buttons, and nature (it can be changed in the game), item, status, current HP and moves stay
 editable. Matchup color coding is on
 unless you turn it off.
+
+A save from a new game (a new trainer ID, as after a lost Nuzlocke) starts a new run with
+Professor Oak before its Pokémon come in, so the last run goes into your run history and its box,
+KOs and encounters are cleared. Another save from the same game keeps the run.
 
 ## Planned features
 

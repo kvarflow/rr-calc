@@ -64,6 +64,33 @@ function getRunMon(setId, record) {
 	};
 }
 
+// A Pokémon from your save came back with a new personality value (its nature or ability was
+// changed): its KOs and fainting move to it. {old pid: new pid}
+function moveRunRecordPids(changed) {
+	var record = readRunRecord();
+	var moved = false;
+	Object.keys(changed).forEach(function (oldPid) {
+		var from = "pid:" + oldPid;
+		var to = "pid:" + changed[oldPid];
+		record.frags.forEach(function (frag) {
+			if (frag.mon === from) {
+				frag.mon = to;
+				moved = true;
+			}
+		});
+		if (record.mons[from]) {
+			record.mons[to] = $.extend(record.mons[to] || {}, record.mons[from]);
+			delete record.mons[from];
+			moved = true;
+		}
+	});
+	if (moved) writeRunRecord(record);
+}
+
+$(document).on("save:pidsChanged", function (event, changed) {
+	moveRunRecordPids(changed);
+});
+
 // Credits (or, on Undo KO, takes back) a trainer's Pokémon's KO to the Pokémon in Pokémon 1.
 function recordFrag(trainerIndex, slot, added) {
 	var record = readRunRecord();

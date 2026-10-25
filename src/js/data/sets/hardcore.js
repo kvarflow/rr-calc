@@ -11,7 +11,7 @@ var SETDEX_SV = {
     "Rival Blue": {"nature":"Bashful","ability":"Blaze","level":5,"moves":["Fire Spin","Flamethrower","Inferno","Slash"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}}
   },
   "Bulbasaur": {
-    "*Rival Blue": {"nature":"Timid","ability":"Overgrow","level":16,"item":"Oran Berry","moves":["Growth","Mega Drain","Sleep Powder","Sludge"]},
+    "*Rival Blue": {"nature":"Timid","ability":"Overgrow","level":16,"item":"Oran Berry","moves":["Growth","Mega Drain","Sleep Powder","Sludge"],"evs":{"hp":252,"at":252,"sd":4}},
     "Rival Blue": {"nature":"Bashful","ability":"Overgrow","level":5,"moves":["Double-Edge","Seed Bomb","Synthesis","Worry Seed"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}}
   },
   "Litleo": {
@@ -153,7 +153,7 @@ var SETDEX_SV = {
     "Channeler Angelica": {"nature":"Brave","ability":"Wonder Guard","level":37,"moves":["Grudge","Heal Block","Phantom Force","Pounce"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Friendly Teacher Set 1": {"nature":"Jolly","ability":"Wonder Guard","level":100,"item":"Focus Sash","moves":["Shadow Sneak","X-Scissor"]},
     "Friendly Teacher Set 2": {"nature":"Jolly","ability":"Wonder Guard","level":100,"item":"Heavy-Duty Boots","moves":["Shadow Sneak","X-Scissor"]},
-    "Dumbass Creator": {"nature":"Jolly","ability":"Wonder Guard","level":250,"item":"Focus Sash","moves":["Supercell Slam"]}
+    "Dumbass Creator": {"nature":"Jolly","ability":"Wonder Guard","level":250,"item":"Focus Sash","moves":["Supercell Slam"],"evs":{"at":252,"sp":252}}
   },
   "Flaaffy": {
     "Lass Robin": {"nature":"Relaxed","ability":"Static","level":14,"moves":["Discharge","Light Screen","Signal Beam","Thunder"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
@@ -386,7 +386,7 @@ var SETDEX_SV = {
     "*Rival Blue": {"nature":"Timid","ability":"Sage Power","level":27,"item":"Charcoal","moves":["Grass Knot","Hidden Power Rock","Incinerate","Sleep Talk"],"ivs":{"df":30,"sp":30,"sd":30}},
     "*Ace Trainer Caroline": {"nature":"Modest","ability":"Sage Power","level":85,"item":"Choice Scarf","moves":["Flamethrower","Focus Blast","Grass Knot","Hidden Power Ice"],"ivs":{"at":30,"df":30}},
     "*Lass Ann": {"nature":"Timid","ability":"Sage Power","level":28,"item":"Choice Scarf","moves":["Fire Pledge","Focus Blast","Grass Knot","Hidden Power Ice"],"ivs":{"at":30,"df":30}},
-    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Sage Power","level":73,"item":"Choice Scarf","moves":["Fire Blast","Focus Blast","Hidden Power Dark","Scorching Sands"]}
+    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Sage Power","level":73,"item":"Choice Scarf","moves":["Fire Blast","Focus Blast","Hidden Power Dark","Scorching Sands"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Wartortle": {
     "*Rival Blue": {"nature":"Modest","ability":"Torrent","level":28,"item":"Eviolite","moves":["Hidden Power Electric","Icy Wind","Shell Smash","Water Pulse"],"ivs":{"sa":30}}
@@ -1466,7 +1466,7 @@ var SETDEX_SV = {
   },
   "Ogerpon-Cornerstone": {
     "Leader Erika": {"nature":"Jolly","ability":"Sturdy","level":44,"item":"Cornerstone Mask","moves":["Ivy Cudgel","Knock Off","Power Whip","U-turn"]},
-    "*Dumbass Jojo Fan": {"nature":"Jolly","ability":"Sturdy","level":73,"item":"Cornerstone Mask","moves":["Horn Leech","Ivy Cudgel","Knock Off","U-turn"],"shiny":1}
+    "*Dumbass Jojo Fan": {"nature":"Jolly","ability":"Sturdy","level":73,"item":"Cornerstone Mask","moves":["Horn Leech","Ivy Cudgel","Knock Off","U-turn"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}}
   },
   "Hawlucha": {
     "*Leader Erika": {"nature":"Adamant","ability":"Unburden","level":68,"item":"Grassy Seed","moves":["Acrobatics","Close Combat","Stone Edge","Swords Dance"]},
@@ -1640,11 +1640,11 @@ var SETDEX_SV = {
   "Shiftry": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Wind Rider","level":47,"item":"Focus Sash","moves":["Ceaseless Edge","Leaf Blade","Low Kick","X-Scissor"]},
     "*Picnicker Susie": {"nature":"Adamant","ability":"Chlorophyll","level":66,"item":"Life Orb","moves":["Fake Out","Knock Off","Parting Shot","Solar Blade"]},
-    "*Burglar Anson": {"nature":"Jolly","ability":"Wind Rider","level":80,"item":"Focus Sash","moves":["Knock Off","Leaf Blade","Low Kick","Tailwind"],"ivs":{"at":30,"sa":30}}
+    "*Burglar Anson": {"nature":"Jolly","ability":"Wind Rider","level":80,"item":"Focus Sash","moves":["Knock Off","Leaf Blade","Low Kick","Tailwind"],"ivs":{"at":30,"sa":30},"evs":{"at":252,"df":4,"sp":252}}
   },
   "Okidogi": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Toxic Chain","level":47,"item":"Fighting Gem","moves":["Drain Punch","Knock Off","Mach Punch","Poison Jab"]},
-    "*Burglar Anson": {"nature":"Jolly","ability":"Defiant","level":80,"item":"Lum Berry","moves":["Drain Punch","Knock Off","Poison Jab","Psychic Fangs"],"shiny":1}
+    "*Burglar Anson": {"nature":"Jolly","ability":"Defiant","level":80,"item":"Lum Berry","moves":["Drain Punch","Knock Off","Poison Jab","Psychic Fangs"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}}
   },
   "Rotom-Wash": {
     "*Team Rocket Grunt": {"nature":"Timid","ability":"Levitate","level":47,"item":"Charti Berry","moves":["Hidden Power Ice","Hydro Pump","Shadow Ball","Thunderbolt"],"ivs":{"at":30,"df":30}}
@@ -2157,7 +2157,7 @@ var SETDEX_SV = {
   },
   "Gigalith": {
     "*Biker Ruben": {"nature":"Careful","ability":"Sand Force","level":66,"item":"Assault Vest","moves":["Body Press","Earthquake","Explosion","Stone Edge"]},
-    "Dumbass Creator": {"nature":"Adamant","ability":"Sand Stream","level":250,"item":"Smooth Rock","moves":["Explosion"]}
+    "Dumbass Creator": {"nature":"Adamant","ability":"Sand Stream","level":250,"item":"Smooth Rock","moves":["Explosion"],"evs":{"hp":252,"at":252,"df":4}}
   },
   "Lopunny-Mega": {
     "*Rocket Admin Ariana": {"nature":"Jolly","ability":"Scrappy","level":100,"item":"Lopunnite","moves":["Close Combat","Double-Edge","Fake Out","U-turn"]},
@@ -2454,7 +2454,7 @@ var SETDEX_SV = {
   },
   "Hoopa-Unbound": {
     "Leader Koga": {"nature":"Modest","ability":"Magician","level":68,"item":"Darkinium Z","moves":["Dark Pulse","Expanding Force","Focus Blast","Thunderbolt"]},
-    "*Dumbass Jojo Fan Set 1": {"nature":"Jolly","ability":"Magician","level":73,"item":"Focus Sash","moves":["Drain Punch","Fire Punch","Gunk Shot","Hyperspace Fury"]},
+    "*Dumbass Jojo Fan Set 1": {"nature":"Jolly","ability":"Magician","level":73,"item":"Focus Sash","moves":["Drain Punch","Fire Punch","Gunk Shot","Hyperspace Fury"],"evs":{"at":252,"df":4,"sp":252}},
     "*Dumbass Jojo Fan Set 2": {"nature":"Timid","ability":"Magician","level":100,"item":"Fightinium Z","moves":["Dark Pulse","Focus Blast","Nasty Plot","Psychic"]}
   },
   "Chi-Yu": {
@@ -2542,17 +2542,17 @@ var SETDEX_SV = {
   },
   "Aegislash-Blade": {
     "*Ace Trainer Runan": {"nature":"Quiet","ability":"Stance Change","level":100,"item":"Ghostium Z","moves":["Flash Cannon","King's Shield","Sacred Sword","Shadow Ball"]},
-    "*Dumbass Jojo Fan": {"nature":"Quiet","ability":"Stance Change","level":73,"item":"Leftovers","moves":["Flash Cannon","King's Shield","Shadow Ball","Shadow Sneak"]}
+    "*Dumbass Jojo Fan": {"nature":"Quiet","ability":"Stance Change","level":73,"item":"Leftovers","moves":["Flash Cannon","King's Shield","Shadow Ball","Shadow Sneak"],"evs":{"hp":252,"at":4,"sa":252}}
   },
   "Aegislash-Both": {
     "*Ace Trainer Runan": {"nature":"Quiet","ability":"Stance Change","level":100,"item":"Ghostium Z","moves":["Flash Cannon","King's Shield","Sacred Sword","Shadow Ball"]},
     "*Dumbass Jojo Fan": {"nature":"Quiet","ability":"Stance Change","level":73,"item":"Leftovers","moves":["Flash Cannon","King's Shield","Shadow Ball","Shadow Sneak"]}
   },
   "Celebi": {
-    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Natural Cure","level":73,"item":"Life Orb","moves":["Earth Power","Giga Drain","Nasty Plot","Psychic"],"ivs":{"at":30,"sa":30}}
+    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Natural Cure","level":73,"item":"Life Orb","moves":["Earth Power","Giga Drain","Nasty Plot","Psychic"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Machamp-Mega": {
-    "*Dumbass Jojo Fan Set 1": {"nature":"Adamant","ability":"ORAORAORAORA","level":73,"item":"Machampite","moves":["Bullet Punch","Drain Punch","Ice Punch","Power-Up Punch"],"shiny":1},
+    "*Dumbass Jojo Fan Set 1": {"nature":"Adamant","ability":"ORAORAORAORA","level":73,"item":"Machampite","moves":["Bullet Punch","Drain Punch","Ice Punch","Power-Up Punch"],"shiny":1,"evs":{"hp":252,"at":252,"df":4}},
     "*Dumbass Jojo Fan Set 2": {"nature":"Adamant","ability":"ORAORAORAORA","level":100,"item":"Machampite","moves":["Bullet Punch","Drain Punch","Ice Punch","Power-Up Punch"]}
   },
   "Azumarill": {
@@ -2813,25 +2813,25 @@ var SETDEX_SV = {
     "Leader Clair": {"nature":"Timid","ability":"Pressure","level":81,"item":"Power Herb","moves":["Dynamax Cannon","Flamethrower","Meteor Beam","Recover"]}
   },
   "Qwilfish-Hisui": {
-    "*Burglar Max": {"nature":"Jolly","ability":"Intimidate","level":80,"item":"Eviolite","moves":["Liquidation","Throat Chop","Thunder Wave","Toxic Spikes"]}
+    "*Burglar Max": {"nature":"Jolly","ability":"Intimidate","level":80,"item":"Eviolite","moves":["Liquidation","Throat Chop","Thunder Wave","Toxic Spikes"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Wugtrio": {
-    "*Burglar Max": {"nature":"Jolly","ability":"Arena Trap","level":80,"item":"Mystic Water","moves":["Aqua Jet","Earthquake","Ice Spinner","Triple Dive"]}
+    "*Burglar Max": {"nature":"Jolly","ability":"Arena Trap","level":80,"item":"Mystic Water","moves":["Aqua Jet","Earthquake","Ice Spinner","Triple Dive"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Magcargo": {
-    "*Burglar Max": {"nature":"Timid","ability":"Simple","level":80,"item":"Focus Sash","moves":["Earth Power","Fire Blast","No Retreat","Power Gem"]}
+    "*Burglar Max": {"nature":"Timid","ability":"Simple","level":80,"item":"Focus Sash","moves":["Earth Power","Fire Blast","No Retreat","Power Gem"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Hydrapple": {
-    "*Burglar Max": {"nature":"Modest","ability":"Regenerator","level":80,"item":"Assault Vest","moves":["Body Press","Earth Power","Fickle Beam","Giga Drain"]}
+    "*Burglar Max": {"nature":"Modest","ability":"Regenerator","level":80,"item":"Assault Vest","moves":["Body Press","Earth Power","Fickle Beam","Giga Drain"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Fezandipiti": {
-    "*Burglar Max": {"nature":"Timid","ability":"Technician","level":80,"item":"Life Orb","moves":["Draining Kiss","Heat Wave","Sludge Bomb","U-turn"]}
+    "*Burglar Max": {"nature":"Timid","ability":"Technician","level":80,"item":"Life Orb","moves":["Draining Kiss","Heat Wave","Sludge Bomb","U-turn"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Munkidori": {
-    "*Burglar Anson": {"nature":"Timid","ability":"Frisk","level":80,"item":"Air Balloon","moves":["Focus Blast","Nasty Plot","Psychic","Sludge Bomb"]}
+    "*Burglar Anson": {"nature":"Timid","ability":"Frisk","level":80,"item":"Air Balloon","moves":["Focus Blast","Nasty Plot","Psychic","Sludge Bomb"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Persian": {
-    "*Burglar Anson": {"nature":"Timid","ability":"Feline Prowess","level":80,"item":"Life Orb","moves":["Hyper Voice","Shadow Ball","Thunderbolt","U-turn"]},
+    "*Burglar Anson": {"nature":"Timid","ability":"Feline Prowess","level":80,"item":"Life Orb","moves":["Hyper Voice","Shadow Ball","Thunderbolt","U-turn"],"evs":{"df":4,"sp":252,"sa":252}},
     "Tamer Vincent": {"nature":"Modest","ability":"Limber","level":80,"moves":["Assurance","Captivate","Feint","Night Slash"]}
   },
   "Tyrantrum": {
@@ -3157,6 +3157,6 @@ var SETDEX_SV = {
     "*Ace Trainer Sharon": {"nature":"Timid","ability":"Illusion","level":100,"item":"Focus Sash","moves":["Dark Hole","Flamethrower","Nasty Plot","Sludge Bomb"]}
   },
   "Scream Tail": {
-    "*Burglar Anson": {"nature":"Bold","ability":"Protosynthesis","level":80,"item":"Leftovers","moves":["Moonblast","Psychic","Teleport","Thunder Wave"]}
+    "*Burglar Anson": {"nature":"Bold","ability":"Protosynthesis","level":80,"item":"Leftovers","moves":["Moonblast","Psychic","Teleport","Thunder Wave"],"evs":{"hp":252,"df":252}}
   }
 };

@@ -157,14 +157,203 @@ function setStarter(type, fromSave) {
 }
 
 $(document).on("save:imported", function (event, save) {
+	recordSaveProgress(save);
+	markBeatenFights(save.beatenTrainers);
 	if (save.starter) setStarter(save.starter, true);
+	else if ($("#trainer-starter").length) showTrainer(currentTrainerIndex);
 });
+
+/*
+ * Many trainers' Pokémon have no fixed level: the game sets it from your highest-level party
+ * Pokémon ("Highest Lv -3" in the boss documents, `levelBelowHighest` in the trainer data). Each
+ * .sav import records that level and your badges, so those levels follow your party, and the
+ * level cap shown is at least the one your badges give (fights you can do before a gym, like the
+ * ones around Cerulean, are listed under the earlier cap). Without a save the document's levels
+ * are kept.
+ */
+var PLAYER_HIGHEST_LEVEL_KEY = "playerHighestLevel";
+var SAVE_BADGES_KEY = "saveBadges";
+// The gyms in the order the boss documents raise the level cap (Sabrina before Koga; Clair leads
+// the Viridian gym).
+var LEVEL_CAP_LEADERS = ["Brock", "Misty", "Lt. Surge", "Erika", "Sabrina", "Koga", "Blaine", "Clair"];
+
+function recordSaveProgress(save) {
+	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), getHighestPartyLevel(save));
+	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), save.badges || 0);
+}
+
+function getPlayerHighestLevel() {
+	return parseInt(readSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode())) || 0;
+}
+
+$(document).on("run:new", function () {
+	writeSetting(PLAYER_HIGHEST_LEVEL_KEY + ":" + getPageMode(), "");
+	writeSetting(SAVE_BADGES_KEY + ":" + getPageMode(), "");
+	writeSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode(), "");
+});
+
+// Fights the save says you have won (the game's trainer flags) are marked Defeated, with the team
+// you beat: Bugsy's before or after Lt. Surge, Jasmine's or Pryce's random one, the rival's.
+function markBeatenFights(beaten) {
+	if (!beaten || !beaten.length || typeof readTrainerKOs !== "function") return;
+	var kos = readTrainerKOs();
+	var marked = false;
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		trainer.variants.forEach(function (variant) {
+			if (!variant.trainerIds || isVariantDefeated(index, variant, kos) || !variant.trainerIds.every(function (id) {
+				return beaten.indexOf(id) !== -1;
+			})) return;
+			kos[getVariantKey(index, variant)] = variant.sets.map(function (set, slot) {
+				return slot;
+			});
+			marked = true;
+		});
+	});
+	if (marked) writeTrainerKOs(kos);
+}
+
+// The level the team's Pokémon follow: your highest now, or, once beaten, what it was then.
+function getTeamHighestLevel(index, variant) {
+	if (typeof isVariantDefeated === "function" && isVariantDefeated(index, variant)) return getDefeatLevel(index, variant);
+	return getPlayerHighestLevel();
+}
+
+// Sets the level of each team Pokémon whose level follows yours; the others keep the document's.
+function applyRelativeLevels(index, variant) {
+	var highest = getTeamHighestLevel(index, variant);
+	variant.sets.forEach(function (setId, slot) {
+		var species = setId.substring(0, setId.indexOf(" ("));
+		var set = setdex[species] && setdex[species][setId.substring(setId.indexOf("(") + 1, setId.lastIndexOf(")"))];
+		if (!set) return;
+		if (set.documentLevel === undefined) set.documentLevel = set.level;
+		var below = variant.levelBelowHighest ? variant.levelBelowHighest[slot] : null;
+		set.level = highest && typeof below === "number" ? Math.max(1, Math.min(100, highest - below)) : set.documentLevel;
+	});
+}
+
+// A fight by its trainer's name (a gym leader's gym; rematches are named "Misty (Rematch)").
+function findFight(name) {
+	for (var i = 0; i < TRAINER_ORDER.length; i++) {
+		if (TRAINER_ORDER[i].name === name) return i;
+	}
+	return -1;
+}
+
+// How many gyms you have beaten, in LEVEL_CAP_LEADERS order: the save's badges, or as far as the
+// gym fights marked Defeated go.
+function countGymsBeaten() {
+	var gyms = parseInt(readSetting(SAVE_BADGES_KEY + ":" + getPageMode())) || 0;
+	if (typeof isTrainerDefeated === "function") {
+		LEVEL_CAP_LEADERS.forEach(function (name, k) {
+			var at = findFight(name);
+			if (at !== -1 && isTrainerDefeated(at)) gyms = Math.max(gyms, k + 1);
+		});
+	}
+	return Math.min(gyms, LEVEL_CAP_LEADERS.length);
+}
+
+function isGymBeaten(name) {
+	return countGymsBeaten() > LEVEL_CAP_LEADERS.indexOf(name);
+}
+
+// The cap after your last gym: the next higher cap of a required fight after it.
+function getProgressLevelCap() {
+	var gyms = countGymsBeaten();
+	var at = gyms ? findFight(LEVEL_CAP_LEADERS[gyms - 1]) : -1;
+	if (at === -1) return 0;
+	var cap = parseInt(TRAINER_ORDER[at].levelCap) || 0;
+	for (var i = at + 1; i < TRAINER_ORDER.length; i++) {
+		var next = parseInt(TRAINER_ORDER[i].levelCap) || 0;
+		if (!TRAINER_ORDER[i].optional && next > cap) return next;
+	}
+	return cap;
+}
+
+/*
+ * Fights you can do before or after a gym (`parallel`: Nugget Bridge, the Dig House and the S.S.
+ * Anne around Misty; Route 9 to the Celadon gym around Lt. Surge; the rematches around Sabrina).
+ * "Skip for now" moves one after the last fight of its group, so Previous / Next take you there
+ * later, and it shows the cap after the gym.
+ */
+var SKIPPED_FIGHTS_KEY = "skippedFights";
+
+function readSkippedFights() {
+	try {
+		return JSON.parse(readSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode())) || [];
+	} catch (e) {
+		return [];
+	}
+}
+
+function isFightSkipped(index) {
+	return !!TRAINER_ORDER[index].parallel && readSkippedFights().indexOf(index) !== -1;
+}
+
+function setFightSkipped(index, skipped) {
+	var list = readSkippedFights().filter(function (i) {
+		return i !== index;
+	});
+	if (skipped) list.push(index);
+	writeSetting(SKIPPED_FIGHTS_KEY + ":" + getPageMode(), JSON.stringify(list));
+	showTrainer(index);
+}
+
+// The last fight of each group: its gym or the last fight that can be done around it.
+function getParallelGroupEnds() {
+	var ends = {};
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (!trainer.parallel) return;
+		var gate = trainer.parallel.gate;
+		ends[gate] = Math.max(ends[gate] === undefined ? findFight(gate) : ends[gate], index);
+	});
+	return ends;
+}
+
+// The order Previous and Next follow: the document's, with skipped fights after their group.
+function getTrainerNavOrder() {
+	var ends = getParallelGroupEnds();
+	var waiting = {};
+	var order = [];
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (isFightSkipped(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
+		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
+		Object.keys(ends).forEach(function (gate) {
+			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
+		});
+	});
+	return order;
+}
+
+function stepTrainer(step) {
+	var order = getTrainerNavOrder();
+	var next = order[order.indexOf(currentTrainerIndex) + step];
+	if (next !== undefined) showTrainer(next);
+}
 
 function isRivalStarterVariant(variant) {
 	return /^Rival Has /.test(variant.label);
 }
 
+function isBadgeVariant(variant) {
+	return variant.thunderBadge !== undefined;
+}
+
 function getTrainerVariant(trainer) {
+	// A fight the game picks a team for (by badge or at random) shows the one you beat.
+	if ((trainer.randomTeams || trainer.variants.some(isBadgeVariant)) && typeof isVariantDefeated === "function") {
+		var index = TRAINER_ORDER.indexOf(trainer);
+		var beaten = trainer.variants.filter(function (variant) {
+			return isVariantDefeated(index, variant);
+		})[0];
+		if (beaten) return beaten;
+	}
+	// Bugsy's team follows the Thunder Badge (Lt. Surge beaten), as his script does.
+	if (trainer.variants.some(isBadgeVariant)) {
+		var afterSurge = isGymBeaten("Lt. Surge");
+		return trainer.variants.filter(function (variant) {
+			return variant.thunderBadge === afterSurge;
+		})[0] || trainer.variants[0];
+	}
 	var wanted = trainer.variants.some(isRivalStarterVariant) ?
 		RIVAL_TEAM_FOR_STARTER[getStarterType()] : readSetting(TRAINER_VARIANT_KEY);
 	return trainer.variants.filter(function (variant) {
@@ -173,11 +362,25 @@ function getTrainerVariant(trainer) {
 }
 
 function describeTrainer(trainer, index) {
-	return [
-		(index + 1) + " / " + TRAINER_ORDER.length,
+	// A fight you have beaten keeps the cap it is listed with.
+	var beatenFight = typeof isTrainerDefeated === "function" && isTrainerDefeated(index);
+	var progressCap = beatenFight ? 0 : getProgressLevelCap();
+	if (isFightSkipped(index) && !beatenFight) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
+	var listed = parseInt(trainer.levelCap) || 0;
+	var details = [
+		(getTrainerNavOrder().indexOf(index) + 1) + " / " + getTrainerNavOrder().length,
 		trainer.location,
-		"Level cap " + trainer.levelCap
-	].concat(trainer.optional ? ["Optional"] : []).join(" · ");
+		"Level cap " + (progressCap > listed ? progressCap : trainer.levelCap)
+	];
+	var variant = getTrainerVariant(trainer);
+	var highest = getTeamHighestLevel(index, variant);
+	var beaten = typeof isVariantDefeated === "function" && isVariantDefeated(index, variant);
+	if (highest && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
+		return typeof n === "number";
+	})) details.push((beaten ? "Levels from your Lv " + highest + " when beaten" : "Levels from your Lv " + highest));
+	if (variant.thunderBadge !== undefined) details.push(variant.thunderBadge ? "Team after Lt. Surge" : "Team before Lt. Surge");
+	if (trainer.randomTeams) details.push("Random team (1 in 3)");
+	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");
 }
 
 // The team slot loaded into Pokémon 2. A team can repeat a set (Creator's five Shedinja),
@@ -273,6 +476,7 @@ function showTrainer(index) {
 	writeSetting(getTrainerIndexKey(), currentTrainerIndex);
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	var variant = getTrainerVariant(trainer);
+	applyRelativeLevels(currentTrainerIndex, variant);
 
 	$("#trainer-name").text(trainer.name);
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
@@ -282,14 +486,21 @@ function showTrainer(index) {
 			return $("<option></option>").val(v.label).text(v.label);
 		}))
 		.val(variant.label)
-		// Rival teams follow the starter setting instead of a per-fight choice.
-		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant));
+		// Rival teams follow the starter setting, Bugsy's your badges, instead of a per-fight choice.
+		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant) && !isBadgeVariant(variant));
+	var ends = getParallelGroupEnds();
+	$("#trainer-skip-label").toggle(!!trainer.parallel)
+		.attr("title", trainer.parallel ? "You can do this fight before or after " + trainer.parallel.gate +
+			": Previous / Next bring it up after " + TRAINER_ORDER[ends[trainer.parallel.gate]].name + ", at the cap after the gym" : "");
+	$("#trainer-skip-where").text(trainer.parallel ? " (fight it after " + TRAINER_ORDER[ends[trainer.parallel.gate]].location + ")" : "");
+	$("#trainer-skip").prop("checked", isFightSkipped(currentTrainerIndex));
 	releaseBattleEffect();
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
-	$("#previous-trainer").prop("disabled", currentTrainerIndex === 0);
-	$("#next-trainer").prop("disabled", currentTrainerIndex === TRAINER_ORDER.length - 1);
+	var order = getTrainerNavOrder();
+	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
+	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
 	currentBattleEffect = variant.battleEffect || "";
 	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
@@ -310,18 +521,21 @@ function confirmNewRun() {
 			"and goes back to the first trainer. Your Fight Notes are kept. This cannot be undone.",
 		[{
 			label: "Yes, my run is over: wipe and start again",
-			action: function () {
-				$(document).trigger("run:end"); // run_record.js keeps how far it got
-				writeBoxLayout({});
-				clearCustomSets();
-				clearTrainerProgress();
-				// A new run picks a new starter.
-				writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
-				updateStarterSelect();
-				$(document).trigger("run:new");
-				showTrainer(0);
-			}
+			action: startNewRun
 		}]);
+}
+
+// Also run by a .sav import from a new game (save_import.js).
+function startNewRun() {
+	$(document).trigger("run:end"); // run_record.js keeps how far it got
+	writeBoxLayout({});
+	clearCustomSets();
+	clearTrainerProgress();
+	// A new run picks a new starter.
+	writeSetting(STARTER_FROM_SAVE_KEY + ":" + getPageMode(), false);
+	updateStarterSelect();
+	$(document).trigger("run:new");
+	showTrainer(0);
 }
 
 // Like "Team/Box above Pokémon 1": the trainer panel (and its progress bars) can sit above Pokémon 2.
@@ -339,6 +553,8 @@ function buildTrainerPanel() {
 		'<legend align="center">Opposing Trainer</legend>' +
 		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
+		'<label id="trainer-skip-label" class="trainer-skip"><input type="checkbox" id="trainer-skip" /> Skip for now' +
+		'<span id="trainer-skip-where"></span></label>' +
 		'<label class="trainer-starter">Your starter\u2019s type: <select id="trainer-starter"></select>' +
 		'<span id="trainer-starter-lock" class="trainer-starter-lock"> \uD83D\uDD12 from your save</span></label> ' +
 		'<select id="trainer-variant" aria-label="Which team this trainer uses"></select>' +
@@ -362,10 +578,13 @@ function buildTrainerPanel() {
 
 function bindTrainerEvents() {
 	$("#previous-trainer").click(function () {
-		showTrainer(currentTrainerIndex - 1);
+		stepTrainer(-1);
 	});
 	$("#next-trainer").click(function () {
-		showTrainer(currentTrainerIndex + 1);
+		stepTrainer(1);
+	});
+	$("#trainer-skip").change(function () {
+		setFightSkipped(currentTrainerIndex, this.checked);
 	});
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);
