@@ -9,19 +9,24 @@ function getProteanPanel(resultMove) {
 	return $(/^resultMoveL/.test(resultMove.id) ? "#p1" : "#p2");
 }
 
+// Shown for every Protean Pokémon, so it is clear how to change its type.
 function showProteanNote(panel) {
 	var original = panel.data("proteanTypes");
-	panel.find(".protean-note").toggle(!!original)
-		.find(".protean-note-text").text(original ? "Protean: now " + panel.find(".type1").val() + " type" : "");
+	var note = panel.find(".protean-note").toggle(panel.find(".ability").val() === "Protean");
+	note.find(".protean-note-text").text(original ? "Protean: now " + panel.find(".type1").val() + " type" :
+		"Protean: pick one of its moves in the results to make it that type");
+	note.find(".protean-reset").toggle(!!original);
 }
 
 function resetProtean(panel, recalculate) {
 	var original = panel.data("proteanTypes");
 	if (!original) return;
 	panel.removeData("proteanTypes");
-	panel.find(".type1").val(original[0]);
-	panel.find(".type2").val(original[1]);
 	showProteanNote(panel);
+	// Loading another Pokémon changes the ability before the set change is seen; it has its own types.
+	if (original.set !== panel.find("input.set-selector").val()) return;
+	panel.find(".type1").val(original.types[0]);
+	panel.find(".type2").val(original.types[1]);
 	if (recalculate) panel.find(".type1").change();
 }
 
@@ -41,6 +46,7 @@ $(document).ready(function () {
 		});
 		panel.find(".ability").change(function () {
 			if ($(this).val() !== "Protean") resetProtean(panel, true);
+			showProteanNote(panel);
 		});
 	});
 	// Only a click (the calculator also picks the likeliest move itself after every calculation).
@@ -50,10 +56,22 @@ $(document).ready(function () {
 		var slot = this.id.slice(-1);
 		var type = panel.find(".move" + slot + " .move-type").val();
 		if (!type || type === panel.find(".type1").val() && !panel.find(".type2").val()) return;
-		if (!panel.data("proteanTypes")) panel.data("proteanTypes", [panel.find(".type1").val(), panel.find(".type2").val()]);
+		if (!panel.data("proteanTypes")) {
+			panel.data("proteanTypes", {
+				types: [panel.find(".type1").val(), panel.find(".type2").val()],
+				set: panel.find("input.set-selector").val()
+			});
+		}
 		panel.find(".type1").val(type);
 		panel.find(".type2").val("");
 		showProteanNote(panel);
+		// The calculation after the change picks the likeliest move again; keep the one picked.
+		var move = $(this);
+		$(document).one("calc:done", function () {
+			if ($(".locked-move").length) return;
+			move.prop("checked", true).change();
+			stickyMoves.setSelectedMove(move.prop("id"));
+		});
 		panel.find(".type1").change();
 	});
 });
