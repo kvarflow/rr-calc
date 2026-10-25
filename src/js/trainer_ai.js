@@ -1730,6 +1730,60 @@ function scoreNegatives(turn, atk, def, i, score) {
 	return standardDamage();
 }
 
+// AnyUsefulStatIsRaised (Radical Red's older form, for phazing and Explosion): with Stored Power or
+// Power Trip any boost; otherwise Attack with a physical move, Defence when the foe has a physical
+// move or Body Press, Sp. Atk with a special move, Sp. Def when the foe has a special move, and
+// Speed, accuracy and evasion always.
+function anyUsefulStatRaised(side, foe) {
+	var up = function (stat) {
+		return stage(side, stat) > 6;
+	};
+	if (hasMoveNamed(side, ["Stored Power", "Power Trip"])) return ["atk", "def", "spa", "spd", "spe", "acc", "eva"].some(up);
+	return (up("atk") && hasPhysical(side)) || (up("def") && (hasPhysical(foe) || hasMoveNamed(foe, ["Body Press"]))) ||
+		(up("spa") && hasSpecial(side)) || (up("spd") && hasSpecial(foe)) || up("spe") || up("acc") || up("eva");
+}
+
+// CanBeFlinched and IsUsefulToFlinchTarget: the AI moves first, nothing stops the flinch, and the
+// foe would act (not asleep without Sleep Talk or Snore).
+function canFlinch(turn, atk, def, move) {
+	if (has(["Inner Focus", "Shield Dust"], defAbility(atk, def)) || def.item === "Covert Cloak") return false;
+	if (!hitsFirst(turn, atk, move, def)) return false;
+	return !isAsleep(def) || hasEffect(def, [E.SLEEP_TALK, E.SNORE]);
+}
+
+// ShouldTrap (stall styles): the foe can switch and won't knock the AI out before the trap pays.
+function shouldTrap(turn, atk, def, move) {
+	if (willFaintFromChip(atk, turn.battle.field) || !isGoodToTaunt(styleOf(turn, atk)) || def.monsLeft <= 1) return false;
+	return hitsFirst(turn, atk, move, def) ? !canKnockOut(turn, def, atk) : !canKnockOut(turn, def, atk) && !can2HKO(turn, def, atk);
+}
+
+// ResistsAllMovesAtFullHealth: none of the foe's moves takes a third of the AI's full HP.
+function resistsAllAtFullHealth(turn, def, atk) {
+	return def.moves.every(function (move, i) {
+		return !move || !isDamaging(move) || moveDamage(turn, def, atk, i) < Math.floor(atk.maxHP / 3);
+	});
+}
+
+// OffensiveSetupMoveInMoveset: a boosting move, or an attack likely to raise an offence.
+function hasOffensiveSetupMove(side) {
+	return hasMoveWhere(side, function (m) {
+		if (has([E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2, E.EVASION_UP_2,
+			E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM], m.effect)) return true;
+		if (has([E.ATTACK_UP_HIT, E.SPECIAL_ATTACK_UP_HIT, E.SPECIAL_DEFENSE_DOWN_HIT, E.SPECIAL_DEFENSE_DOWN_2_HIT, E.DEFENSE_DOWN_HIT], m.effect)) {
+			return chanceOf(side, m) >= 50 && m.effectiveness > 0;
+		}
+		return has([E.SUPERPOWER, E.OVERHEAT], m.effect) && side.ability === "Contrary" && m.effectiveness > 0;
+	});
+}
+
+// ShouldUseWishAromatherapy (Wish), singles: only a cleric, not as the last Pokémon about to fall,
+// and someone below 65% (the benched are taken to be at full HP).
+function shouldUseWish(turn, atk, def) {
+	if (styleOf(turn, atk) !== STYLE.CLERIC || willFaintFromChip(atk, turn.battle.field)) return false;
+	if (atk.monsLeft <= 1 && ((can2HKO(turn, def, atk) && !hasProtectMove(atk)) || canKnockOut(turn, atk, def))) return false;
+	return healthPercent(atk) < 65;
+}
+
 // CountUsefulStatChanges: raised (sign 1) or lowered (sign -1) stages of the stats the side uses.
 function usefulStatChanges(side, sign) {
 	var total = 0;
@@ -1764,8 +1818,29 @@ function scorePositives(turn, atk, def, i, score) {
 		up(statBonus(turn, atk, def, move, stat, limit, boost));
 		return true;
 	};
-	var substituteBlocks = false; // nobody is assumed to be behind a Substitute
-	var strongChance = move.chance >= 75 && !substituteBlocks;
+	// Secondary chances with Sheer Force and Serene Grace (nobody is assumed to be behind a Substitute).
+	var chance = chanceOf(atk, move);
+	var phazingPredicted = !!predicted && has([E.ROAR, E.HAZE, E.REMOVE_TARGET_STAT_CHANGES], predicted.effect);
+	// Recover's +8 for stallers and phazers, else STATUS(3) (RECOVER_INCREASE).
+	var recoverBonus = function () {
+		if (style === STYLE.STALL || style === STYLE.PHAZING) up(8);
+		else status(3);
+	};
+	// The Cosmic Power logic (Defend Order, Stockpile, Contrary Shell Smash): Defence (its "1"
+	// raises Attack, as in the game), else Sp. Def.
+	var cosmicPower = function () {
+		var defense = goodIdeaToRaise(turn, atk, def, "def");
+		if (defense === 1) up(statBonus(turn, atk, def, move, "atk", 10, 2));
+		else if (defense === 2) up(statBonus(turn, atk, def, move, "def", 8, 1));
+		else if (goodIdeaToRaise(turn, atk, def, "spd")) up(statBonus(turn, atk, def, move, "spd", 10, 1));
+	};
+	var lowerStat = {};
+	lowerStat[E.ATTACK_DOWN_HIT] = "atk";
+	lowerStat[E.DEFENSE_DOWN_HIT] = "def";
+	lowerStat[E.SPECIAL_ATTACK_DOWN_HIT] = "spa";
+	lowerStat[E.SPECIAL_DEFENSE_DOWN_HIT] = "spd";
+	lowerStat[E.ACCURACY_DOWN_HIT] = "acc";
+	lowerStat[E.EVASION_DOWN_HIT] = "eva";
 
 	switch (effect) {
 	case E.SLEEP:
@@ -1774,35 +1849,46 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.PARALYZE:
 	case E.PARALYZE_HIT:
-		if (effect === E.PARALYZE_HIT && !strongChance) break;
+		if (effect === E.PARALYZE_HIT && chance < 75) break;
 		if (!canBeParalyzed(atk, def, field) || badIdeaToStatus(atk, def, "par", field)) break;
-		status((def.speed >= atk.speed && def.speed / 2 < atk.speed) || hasMoveNamed(atk, HEX_MOVES) ||
+		status((def.speed >= atk.speed && def.speed / 2 < atk.speed) || hasDoubleDamageMove(atk) ||
 			hasEffect(atk, [E.FLINCH_HIT]) ? 2 : 1);
 		break;
 	case E.WILL_O_WISP:
 	case E.BURN_HIT:
-		if (effect === E.BURN_HIT && !strongChance) break;
+		if (effect === E.BURN_HIT && chance < 75) break;
 		if (!canBeBurned(atk, def, field) || badIdeaToStatus(atk, def, "brn", field)) break;
 		if (predicted && predicted.split === SPLIT_PHYSICAL && knocksOut(turn, def, atk, def.moves.indexOf(predicted), 1)) status(3);
-		else status(hasMoveNamed(atk, HEX_MOVES) || hasPhysical(def) ? 2 : 1);
+		else status(hasDoubleDamageMove(atk) || hasMoveNamed(atk, ["Infernal Parade"]) || hasPhysical(def) ? 2 : 1);
 		break;
 	case E.POISON:
 	case E.TOXIC:
 	case E.POISON_HIT:
 	case E.BAD_POISON_HIT:
-		if ((effect === E.POISON_HIT || effect === E.BAD_POISON_HIT) && !strongChance) break;
+		if ((effect === E.POISON_HIT || effect === E.BAD_POISON_HIT) && chance < 75) break;
 		if (!canBePoisoned(atk, def, field) || badIdeaToStatus(atk, def, "psn", field)) break;
-		status(hasMoveNamed(atk, ["Venoshock", "Barb Barrage", "Venom Drench"]) || atk.ability === "Merciless" ? 2 : 1);
+		// Radical Red: Venoshock, Barb Barrage or Merciless (no Venom Drench); or Hex with Will-O-Wisp
+		// when burning is no better.
+		if (hasMoveNamed(atk, ["Venoshock", "Barb Barrage"]) || atk.ability === "Merciless") status(2);
+		else if (hasDoubleDamageMove(atk) && hasEffect(atk, [E.WILL_O_WISP]) &&
+			(!hasPhysical(def) || badIdeaToStatus(atk, def, "brn", field) || defAbility(atk, def) === "Flash Fire")) status(2);
+		else status(1);
 		break;
 	case E.CONFUSE:
 	case E.CONFUSE_HIT:
-		if (effect === E.CONFUSE_HIT && !strongChance) break;
-		if (canBeConfused(atk, def, field)) status(def.status === "par" ? 2 : 1);
+		// A confusing attack only when it can't miss (No Guard, a never-miss move).
+		if (effect === E.CONFUSE_HIT && (chance < 75 || !moveWillHit(atk, def, move, field))) break;
+		if (canBeConfused(atk, def, field)) {
+			status(def.status === "par" || (atk.ability === "Serene Grace" && hasEffect(atk, [E.FLINCH_HIT])) ? 2 : 1);
+		}
 		break;
 	case E.SWAGGER:
 	case E.FLATTER:
-		if (hasMoveNamed(atk, ["Foul Play", "Psych Up"])) status(2);
-		else if (canBeConfused(atk, def, field)) status(def.status === "par" ? 2 : 1);
+		// Flatter goes with Psych Up only; Swagger with Foul Play too.
+		if (hasEffect(atk, [E.PSYCH_UP]) || (effect === E.SWAGGER && hasMoveNamed(atk, ["Foul Play"]))) status(2);
+		else if (canBeConfused(atk, def, field)) {
+			status(def.status === "par" || (atk.ability === "Serene Grace" && hasEffect(atk, [E.FLINCH_HIT])) ? 2 : 1);
+		}
 		break;
 	case E.ATTACK_UP:
 	case E.ATTACK_UP_2:
@@ -1820,6 +1906,13 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.SPECIAL_ATTACK_UP:
 	case E.SPECIAL_ATTACK_UP_2:
+		// Radical Red: Growth and Work Up raise Attack for a physical attacker, else Sp. Atk (no
+		// Contrary check).
+		if (move.name === "Growth" || move.name === "Work Up") {
+			if (goodIdeaToRaise(turn, atk, def, "atk")) up(statBonus(turn, atk, def, move, "atk", 8, 2));
+			else if (goodIdeaToRaise(turn, atk, def, "spa")) up(statBonus(turn, atk, def, move, "spa", 8, 2));
+			break;
+		}
 		raise("spa", 8, 2);
 		break;
 	case E.SPECIAL_DEFENSE_UP:
@@ -1839,52 +1932,109 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.EVASION_UP_2:
 	case E.MINIMIZE:
 		break;
-	case E.ATK_SPATK_UP:
-		if (!(hasPhysical(atk) && raise("atk", 8, 2))) raise("spa", 8, 2);
-		break;
-	case E.ATK_ACC_UP:
-		if (!raise("atk", 8, 2)) raise("acc", 12, 2);
-		break;
-	case E.DEF_SPD_UP:
+	// Radical Red: no bonus for ATK_SPATK_UP (Fickle Beam), ATK_ACC_UP or DEF_SPD_UP.
 	case E.COSMIC_POWER:
-		if (!raise("def", 8, 1)) raise("spd", 8, 1);
+		if (atk.ability !== "Contrary") cosmicPower();
+		break;
+	case E.STOCKPILE:
+		if (hasMoveNamed(atk, ["Swallow", "Spit Up"])) status(2);
+		else if (atk.ability !== "Contrary") cosmicPower();
+		break;
+	case E.CHARGE:
+		if (hasMoveWhere(atk, function (m) {
+			return isDamaging(m) && m.type === "Electric" && m.effectiveness > 0;
+		})) status(2);
+		else raise("spd", 10, 1);
 		break;
 	case E.BULK_UP:
 		if (!(hasPhysical(atk) && raise("atk", 8, 2))) raise("def", 8, 1);
 		break;
 	case E.CALM_MIND:
-		if (move.name === "Quiver Dance" && raise("spe", 8, 3)) break;
+		// Quiver Dance not into a Dancer; Geomancy only with Power Herb or a foe that can't act, and
+		// no phazing move to undo it.
+		if (move.name === "Quiver Dance" && def.ability === "Dancer") break;
+		if (move.name === "Geomancy" && (!(atk.item === "Power Herb" || isIncapacitated(def)) ||
+			hasEffect(def, [E.ROAR, E.HAZE, E.REMOVE_TARGET_STAT_CHANGES]))) break;
+		if ((move.name === "Quiver Dance" || move.name === "Geomancy") && raise("spe", 8, 3)) break;
 		if (!raise("spa", 8, 2)) raise("spd", 8, 1);
 		break;
 	case E.DRAGON_DANCE:
+		// Shell Smash with Contrary raises the defences: the Cosmic Power logic.
+		if (move.name === "Shell Smash" && atk.ability === "Contrary") {
+			cosmicPower();
+			break;
+		}
 		if (raise("spe", 8, 3)) break;
 		if (!raise("atk", 8, 2) && move.name === "Shell Smash") raise("spa", 8, 2);
 		break;
 	case E.EXTREME_EVOBOOST:
-		if (predicted && predicted.effect === E.ROAR) break;
-		if (!raise("atk", 8, 2) && !raise("spa", 8, 2)) raise("spe", 8, 3);
+		if (phazingPredicted || atk.ability === "Contrary") break;
+		if (move.name === "Clangorous Soul" && predicted) {
+			var hit = def.moves.indexOf(predicted);
+			if (knocksOut(turn, def, atk, hit, 1) || (knocksOut(turn, def, atk, hit, 3) && !knocksOut(turn, def, atk, hit, 2))) break;
+		}
+		// Attack with a physical move, else Sp. Atk with a special one, else Speed: the next only if
+		// the last gave nothing.
+		var evoBefore = score;
+		if (hasRealPhysical(atk)) up(statBonus(turn, atk, def, move, "atk", 8, 2));
+		if (score === evoBefore && hasSpecial(atk)) up(statBonus(turn, atk, def, move, "spa", 8, 2));
+		if (score === evoBefore) up(statBonus(turn, atk, def, move, "spe", 8, 3));
 		break;
 	case E.BELLY_DRUM:
-		if (hasPhysical(atk) && atk.ability !== "Contrary" && !badIdeaToRaiseStat(turn, atk, def, "atk")) {
+		if (hasRealPhysical(atk) && atk.ability !== "Contrary" && !badIdeaToRaiseStat(turn, atk, def, "atk")) {
 			up(statBonus(turn, atk, def, move, "atk", 8, 2));
 		}
 		break;
 	case E.CURSE:
-		if (atk.types.indexOf("Ghost") !== -1) status(1);
-		else if (atk.ability !== "Contrary" && atk.ability !== "Magic Guard" && !(predicted && predicted.effect === E.ROAR)) {
+		// A Ghost's Curse is worth more against a trapped foe; the other kind checks the foe's Magic
+		// Guard (as Radical Red's code does), not the AI's.
+		if (atk.types.indexOf("Ghost") !== -1) status(isTrappedBy(def, atk, field) ? 3 : 1);
+		else if (atk.ability !== "Contrary" && defAbility(atk, def) !== "Magic Guard" && !phazingPredicted) {
 			if (hasMoveNamed(atk, ["Gyro Ball"])) up(statBonus(turn, atk, def, move, "atk", 12, 4));
 			else if (stage(atk, "spe") >= 3) {
 				if (stage(atk, "atk") < 8) up(statBonus(turn, atk, def, move, "atk", 8, 2));
-				else if (stage(atk, "def") < 8) up(statBonus(turn, atk, def, move, "def", 8, 1));
+				else if (stage(atk, "def") <= 7) up(statBonus(turn, atk, def, move, "def", 8, 1));
 			}
 		}
 		break;
+	// Radical Red: SPECIAL_ATTACK_UP_HIT (Charge Beam, Fiery Dance) gets nothing.
 	case E.ATTACK_UP_HIT:
-	case E.SPECIAL_ATTACK_UP_HIT:
-		if (move.chance >= 75) raise(effect === E.ATTACK_UP_HIT ? "atk" : "spa", 8, 2);
+		if (atk.ability === "Contrary") break;
+		if (move.name === "Fell Stinger" && stage(atk, "atk") < 12 && knocksOut(turn, atk, def, i, 1)) {
+			up(hitsFirst(turn, atk, move, def) ? 9 : 3);
+			break;
+		}
+		if (atk.ability === "Parental Bond" && goodIdeaToRaise(turn, atk, def, "atk")) up(statBonus(turn, atk, def, move, "atk", 8, 2));
+		else if (chance >= 75) raise("atk", 8, 2);
 		break;
 	case E.SPEED_UP_1_HIT:
-		if (move.chance >= 75) raise("spe", 8, 3);
+		if (chance >= 75) raise("spe", 8, 3);
+		break;
+	case E.ATTACK_DOWN_HIT:
+	case E.DEFENSE_DOWN_HIT:
+	case E.SPECIAL_ATTACK_DOWN_HIT:
+	case E.SPECIAL_DEFENSE_DOWN_HIT:
+	case E.ACCURACY_DOWN_HIT:
+	case E.EVASION_DOWN_HIT:
+		// Not for damage dealers; a 50% or better drop it's a good idea to land (Snarl, Lunge).
+		if (!isDamager(style) && chance >= 50 && goodIdeaToLower(turn, def, atk, move, lowerStat[effect])) status(effect === E.EVASION_DOWN_HIT ? 2 : 1);
+		break;
+	case E.FLINCH_HIT:
+		if (!canFlinch(turn, atk, def, move)) break;
+		// With Serene Grace or a foe already slowed (paralysed), a likely flinch or one that buys a
+		// turn the AI needs; Radical Red also always likes Double Iron Bash.
+		if (atk.ability === "Serene Grace" || def.status === "par") {
+			if (chance >= 60 || !can2HKO(turn, atk, def)) status(3);
+		} else if (move.name === "Double Iron Bash") status(3);
+		break;
+	case E.MULTI_HIT:
+	case E.DOUBLE_HIT:
+	case E.TRIPLE_KICK:
+		// A sweeper's King's Rock flinches, or Scale Shot's Speed.
+		var strongest = atk.moves[strongestMove(turn, atk, def)];
+		if (isSweeper(style) && !isStrongest(turn, atk, def, i) && strongest && !isMultiHit(strongest) &&
+			has(["King's Rock", "Razor Fang"], atk.item)) up(3);
+		else if (move.name === "Scale Shot") raise("spe", 8, 3);
 		break;
 	case E.ATTACK_DOWN:
 	case E.ATTACK_DOWN_2:
@@ -1900,23 +2050,27 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.SPECIAL_ATTACK_DOWN:
 	case E.SPECIAL_ATTACK_DOWN_2:
+		if (goodIdeaToLower(turn, def, atk, move, "spa")) status(1);
+		break;
 	case E.SPECIAL_DEFENSE_DOWN:
 	case E.SPECIAL_DEFENSE_DOWN_2:
+		if (goodIdeaToLower(turn, def, atk, move, "spd")) status(1);
+		break;
 	case E.ACCURACY_DOWN:
 	case E.ACCURACY_DOWN_2:
-	case E.PLAY_NICE:
-	case E.VENOM_DRENCH:
+		if (goodIdeaToLower(turn, def, atk, move, "acc")) status(1);
+		break;
 	case E.TICKLE:
-		status(1);
+		if (goodIdeaToLower(turn, def, atk, move, "atk") || goodIdeaToLower(turn, def, atk, move, "def")) status(1);
 		break;
 	case E.EVASION_DOWN:
 	case E.EVASION_DOWN_2:
-		status(2);
+		if (goodIdeaToLower(turn, def, atk, move, "eva")) status(2);
 		break;
 	// Radical Red: a speed-lowering attack (Low Sweep, Icy Wind) and grounding a foe in the air (Smack
 	// Down) only get their "past the strongest move" +3 on half the rolls; CFRU master always gives it.
 	case E.SPEED_DOWN_HIT:
-		if (move.chance >= 50 && goodIdeaToLower(turn, def, atk, move, "spe") && turn.coin("speedDrop" + turn.phase + atk.key + i, 0.5)) up(3);
+		if (chance >= 50 && goodIdeaToLower(turn, def, atk, move, "spe") && turn.coin("speedDrop" + turn.phase + atk.key + i, 0.5)) up(3);
 		break;
 	case E.SMACK_DOWN:
 		if (!isGrounded(def, field) && turn.coin("smackDown" + turn.phase + atk.key + i, 0.5)) up(3);
@@ -1924,7 +2078,8 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.REFLECT:
 	case E.LIGHT_SCREEN:
 		if (shouldSetUpScreens(turn, atk, def, move)) {
-			if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(move.name === "Aurora Veil" ? 8 : 7);
+			// Radical Red: +15 for Reflect and Light Screen (CFRU master +7).
+			if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(move.name === "Aurora Veil" ? 8 : 15);
 			else status(2);
 		}
 		break;
@@ -1955,8 +2110,10 @@ function scorePositives(turn, atk, def, i, score) {
 		}))) status(2);
 		break;
 	case E.HAIL:
-		if (hasMoveNamed(atk, ["Aurora Veil"]) && (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS)) up(8);
-		else if (has(["Snow Cloak", "Ice Body", "Forecast", "Slush Rush", "Magic Guard", "Overcoat"], atk.ability) ||
+		// With Aurora Veil to follow, only a screen setter gets anything.
+		if (hasMoveNamed(atk, ["Aurora Veil"])) {
+			if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(8);
+		} else if (has(["Ice Body", "Forecast", "Slush Rush", "Magic Guard", "Overcoat"], atk.ability) ||
 			hasMoveNamed(atk, ["Blizzard", "Aurora Veil", "Weather Ball"]) || atk.item === "Icy Rock" || hasEffect(def, [E.MORNING_SUN])) status(2);
 		break;
 	case E.SET_TERRAIN:
@@ -1965,28 +2122,30 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.RESTORE_HP:
 	case E.MORNING_SUN:
 	case E.SWALLOW:
-		if (shouldRecover(turn, atk, def, move)) {
-			if (style === STYLE.STALL || style === STYLE.PHAZING) up(8);
-			else status(3);
-		}
+		if (shouldRecover(turn, atk, def, move)) recoverBonus();
+		else if (move.name === "Jungle Healing" && atk.status) status(3);
 		break;
 	case E.ABSORB:
-		if (shouldRecover(turn, atk, def, move)) {
-			if (style === STYLE.STALL) status(2);
-			else up(3);
-		}
+	case E.DREAM_EATER:
+		// Radical Red: draining moves only help a staller in singles (CFRU master: +3 for anyone).
+		if (shouldRecover(turn, atk, def, move) && style === STYLE.STALL) status(2);
 		break;
 	case E.WISH:
-		if (shouldRecover(turn, atk, def, move)) status(3);
+		if (shouldUseWish(turn, atk, def)) up(8);
+		else if (shouldRecover(turn, atk, def, move)) recoverBonus();
 		break;
 	case E.REST:
-		if (atk.item === "Chesto Berry" || atk.item === "Lum Berry" || hasEffect(atk, [E.SLEEP_TALK, E.SNORE]) ||
-			has(["Shed Skin", "Early Bird"], atk.ability) || (atk.ability === "Hydration" && /Rain/.test(field.weather || ""))) {
-			if (shouldRecover(turn, atk, def, move)) status(3);
-		} else if (secondaryDamage(def, field) > 0 && style === STYLE.STALL) {
-			up(8);
-		} else if (atk.status && turn.coin("rest", 0.5) && shouldRecover(turn, atk, def, move)) {
-			status(3);
+		var foeChipped = secondaryDamage(def, field) > 0;
+		if (resistsAllAtFullHealth(turn, def, atk) && !hasOffensiveSetupMove(def)) {
+			if ((atk.hp < atk.maxHP && foeChipped) || shouldRecover(turn, atk, def, move)) recoverBonus();
+		} else if (atk.item === "Chesto Berry" || atk.item === "Lum Berry" || hasEffect(atk, [E.SLEEP_TALK, E.SNORE]) ||
+			has(["Shed Skin", "Early Bird"], atk.ability) || (atk.ability === "Hydration" && /Rain/.test(field.weather || "") &&
+			atk.item !== "Utility Umbrella")) {
+			if (shouldRecover(turn, atk, def, move)) recoverBonus();
+		} else if (foeChipped && style === STYLE.STALL) {
+			recoverBonus();
+		} else if (atk.status && turn.coin("rest" + turn.phase + atk.key, 0.5) && shouldRecover(turn, atk, def, move)) {
+			recoverBonus();
 		}
 		break;
 	case E.PROTECT:
@@ -2035,12 +2194,18 @@ function scorePositives(turn, atk, def, i, score) {
 		}
 		break;
 	case E.FAKE_OUT:
-		if (shouldUseFakeOut(turn, atk, def, move)) up(8);
+		// Radical Red: only Fake Out itself (not First Impression).
+		if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) up(8);
 		break;
 	case E.BATON_PASS:
 	case E.TELEPORT:
 		if (move.name === "Baton Pass") {
 			if (style === STYLE.BATON_PASS) up(3);
+			break;
+		}
+		// Radical Red: Shed Tail +3 with someone to pass to.
+		if (move.name === "Shed Tail") {
+			if (atk.monsLeft > 1) up(3);
 			break;
 		}
 		var pivot = shouldPivot(turn, atk, def, i);
@@ -2050,13 +2215,25 @@ function scorePositives(turn, atk, def, i, score) {
 			score = Math.max(0, score - 9);
 			if (isStrongest(turn, atk, def, i)) recalcStrongestIgnoring(turn, atk, def, i);
 		}
+		// Radical Red: a Zero Form Palafin always wants to switch out (+18).
+		if (atk.name === "Palafin") up(18);
 		break;
 	case E.EXPLOSION:
-		if (predicted && predicted.effect !== E.PROTECT) {
-			if (!anotherMoveKnocksOut(turn, atk, def, i) && (atk.speed >= def.speed ?
-				can2HKO(turn, atk, def) && !canKnockOut(turn, def, atk) : can2HKO(turn, atk, def) && !can2HKO(turn, def, atk))) break;
+		if (!predicted || predicted.effect === E.PROTECT) break;
+		// Radical Red: +4 with a Gem of its type or a Custap Berry in the red; when another move
+		// already knocks out, only against useful boosts.
+		if (atk.item === move.type + " Gem" || (atk.item === "Custap Berry" && healthPercent(atk) <= 25)) {
 			up(4);
+			break;
 		}
+		if (!isIncapacitated(atk) && atk.moves.some(function (m, j) {
+			return j !== i && m && m.effect !== E.FUTURE_SIGHT && isUsable(atk, j, field) && knocksOut(turn, atk, def, j, 1);
+		})) {
+			if (anyUsefulStatRaised(def, atk)) up(4);
+			break;
+		}
+		if (atk.speed >= def.speed ? can2HKO(turn, atk, def) && !canKnockOut(turn, def, atk) : can2HKO(turn, atk, def) && !can2HKO(turn, def, atk)) break;
+		up(4);
 		break;
 	case E.LEECH_SEED:
 		if (def.types.indexOf("Grass") === -1 && !def.seeded && !hasMoveNamed(def, ["Rapid Spin"]) &&
@@ -2081,15 +2258,17 @@ function scorePositives(turn, atk, def, i, score) {
 		}
 		break;
 	case E.KNOCK_OFF:
-		if (def.item && !has(["Iron Ball", "Lagging Tail", "Sticky Barb"], def.item) && def.ability !== "Sticky Hold" &&
-			!/ite$/.test(def.item) && !hasMoveNamed(atk, ["Poltergeist"]) && !anotherMoveKnocksOut(turn, atk, def, -1)) up(3);
+		// Not an item the foe is glad to lose or that can't be knocked off (Mega Stones); Radical Red
+		// has no Sticky Hold check here, and only another move knocking out (not Knock Off) cancels it.
+		if (!def.item || has(["Iron Ball", "Lagging Tail", "Sticky Barb"], def.item) || /ite( [XY])?$/.test(def.item) ||
+			/ium Z$/.test(def.item) || hasMoveNamed(atk, ["Poltergeist"])) break;
+		if (move.name === "Corrosive Gas") status(2);
+		else if (!anotherMoveKnocksOut(turn, atk, def, i)) up(3);
 		break;
 	case E.FOCUS_ENERGY:
 		status(has(["Super Luck", "Sniper"], atk.ability) || atk.item === "Scope Lens" ? 2 : 1);
 		break;
-	case E.MEMENTO:
-		if (move.name !== "Final Gambit") score = Math.max(0, score - 5);
-		break;
+	// Radical Red: no change for Memento, Healing Wish or Final Gambit (CFRU master: Memento -5).
 	case E.BRICK_BREAK:
 		if (def.sideState.reflect || def.sideState.lightScreen || def.sideState.auroraVeil) {
 			if (isSweeper(style)) up(3);
@@ -2102,6 +2281,8 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	}
 	if (isDamaging(move)) score = damageMoveBonus(turn, atk, def, i, score);
+	// Radical Red: a frozen AI wants a move that thaws it (Scald, Flare Blitz...), +10.
+	if (atk.status === "frz" && has(UNFREEZE_MOVES, move.name)) score += 10;
 	return Math.min(score, 255);
 }
 
@@ -2371,8 +2552,9 @@ function recalcStrongestIgnoring(turn, atk, def, ignore) {
 
 function shouldPhaze(turn, atk, def, i) {
 	if (anotherMoveKnocksOut(turn, atk, def, i) || canKnockOut(turn, atk, def)) return false;
-	if (atk.moves[i].effect === E.ROAR && styleOf(turn, atk) === STYLE.PHAZING && (def.sideState.sr || def.sideState.spikes)) return true;
-	return usefulStatChanges(def, 1) > 0;
+	if (atk.moves[i].effect === E.ROAR && styleOf(turn, atk) === STYLE.PHAZING &&
+		(def.sideState.sr || def.sideState.spikes || def.sideState.toxicSpikes)) return true;
+	return anyUsefulStatRaised(def, atk);
 }
 
 // DamageMoveViabilityIncrease (singles): the KO, desperation and strongest-move bonuses.
