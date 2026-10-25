@@ -98,6 +98,8 @@ var CHANGELOG = [
 			"released still makes its family a dupe until Professor Oak starts a new run",
 		"Echoed Voice, Fury Cutter, Rollout and Ice Ball: pick which use in a row it is (and Defense Curl) " +
 			"and the base power follows, as in Radical Red",
+		"Upright phones: your Box (and Box 2) under your team on the Battle tab, tap one to load it; the " +
+			"trainer card's buttons no longer run off the screen",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
