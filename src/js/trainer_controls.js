@@ -163,6 +163,14 @@ $(document).on("save:imported", function (event, save) {
 	else if ($("#trainer-starter").length) showTrainer(currentTrainerIndex);
 });
 
+// Marking fights KO'd or Defeated can change the cap and levels shown for the current fight.
+$(document).on("trainer:progress", function () {
+	if (!$("#trainer-details").length) return;
+	var trainer = TRAINER_ORDER[currentTrainerIndex];
+	applyRelativeLevels(currentTrainerIndex, getTrainerVariant(trainer));
+	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
+});
+
 /*
  * Many trainers' Pokémon have no fixed level: the game sets it from your highest-level party
  * Pokémon ("Highest Lv -3" in the boss documents, `levelBelowHighest` in the trainer data). Each
@@ -212,10 +220,31 @@ function markBeatenFights(beaten) {
 	if (marked) writeTrainerKOs(kos);
 }
 
-// The level the team's Pokémon follow: your highest now, or, once beaten, what it was then.
+/*
+ * The level a team's Pokémon follow (the game takes your highest-level party Pokémon when you
+ * fight) and where it comes from: once beaten, what it was then ("beaten"); a fight still ahead of
+ * your progress, its own cap, since you will be at it by then ("cap"); otherwise your save's
+ * highest ("save") or, without a save, the cap you are at now from your badges or the gyms marked
+ * Defeated ("cap"). So a fight left for later (Bugsy after Lt. Surge) comes at the higher level.
+ */
+function getTeamLevelBasis(index, variant) {
+	if (typeof isVariantDefeated === "function" && isVariantDefeated(index, variant)) {
+		return {level: getDefeatLevel(index, variant), from: "beaten"};
+	}
+	var trainer = TRAINER_ORDER[index];
+	var arcCaps = typeof getArcCaps === "function" ? getArcCaps() : [];
+	var listed = parseInt(trainer.levelCap) || arcCaps[index] || 0;
+	// The cap you are at: your badges' (or gyms marked Defeated), raised by your save's highest level
+	// (story fights raise it between gyms too, 22 to 27 around Mt. Moon).
+	var highest = getPlayerHighestLevel();
+	var current = Math.max(getProgressLevelCap() || arcCaps[0] || 0, highest);
+	if (isFightSkipped(index)) current = Math.max(current, trainer.parallel.capAfter);
+	if (listed > current) return {level: listed, from: "cap"};
+	return highest ? {level: highest, from: "save"} : {level: current, from: "cap"};
+}
+
 function getTeamHighestLevel(index, variant) {
-	if (typeof isVariantDefeated === "function" && isVariantDefeated(index, variant)) return getDefeatLevel(index, variant);
-	return getPlayerHighestLevel();
+	return getTeamLevelBasis(index, variant).level;
 }
 
 // Sets the level of each team Pokémon whose level follows yours; the others keep the document's.
@@ -361,23 +390,34 @@ function getTrainerVariant(trainer) {
 	})[0] || trainer.variants[0];
 }
 
-function describeTrainer(trainer, index) {
-	// A fight you have beaten keeps the cap it is listed with.
-	var beatenFight = typeof isTrainerDefeated === "function" && isTrainerDefeated(index);
-	var progressCap = beatenFight ? 0 : getProgressLevelCap();
-	if (isFightSkipped(index) && !beatenFight) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
+// The cap a fight is at: the one you are at now (badges, gyms marked Defeated, the cap after the gym
+// for a skipped fight) when that is higher than its own; a beaten fight, the cap it was beaten at.
+function getShownLevelCap(index) {
+	var trainer = TRAINER_ORDER[index];
 	var listed = parseInt(trainer.levelCap) || 0;
+	if (typeof isTrainerDefeated === "function" && isTrainerDefeated(index)) {
+		var then = getDefeatCap(index, getTrainerVariant(trainer));
+		return then > listed ? then : trainer.levelCap;
+	}
+	var progressCap = getProgressLevelCap();
+	if (isFightSkipped(index)) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
+	return progressCap > listed ? progressCap : trainer.levelCap;
+}
+
+function describeTrainer(trainer, index) {
 	var details = [
 		(getTrainerNavOrder().indexOf(index) + 1) + " / " + getTrainerNavOrder().length,
 		trainer.location,
-		"Level cap " + (progressCap > listed ? progressCap : trainer.levelCap)
+		"Level cap " + getShownLevelCap(index)
 	];
 	var variant = getTrainerVariant(trainer);
-	var highest = getTeamHighestLevel(index, variant);
-	var beaten = typeof isVariantDefeated === "function" && isVariantDefeated(index, variant);
-	if (highest && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
+	var basis = getTeamLevelBasis(index, variant);
+	if (basis.level && variant.levelBelowHighest && variant.levelBelowHighest.some(function (n) {
 		return typeof n === "number";
-	})) details.push((beaten ? "Levels from your Lv " + highest + " when beaten" : "Levels from your Lv " + highest));
+	})) {
+		details.push(basis.from === "beaten" ? "Levels from your Lv " + basis.level + " when beaten" :
+			basis.from === "save" ? "Levels from your Lv " + basis.level : "Levels for Lv " + basis.level + " (the cap)");
+	}
 	if (variant.thunderBadge !== undefined) details.push(variant.thunderBadge ? "Team after Lt. Surge" : "Team before Lt. Surge");
 	if (trainer.randomTeams) details.push("Random team (1 in 3)");
 	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");

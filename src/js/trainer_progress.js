@@ -59,8 +59,8 @@ function isVariantDefeated(index, variant, kos) {
 }
 
 /*
- * A beaten team keeps the levels it had: the highest level of your party when you marked it
- * defeated (its Pokémon followed that). A fight a save marks won (trainer_controls.js) has none
+ * A beaten team keeps the levels it had: the level it followed when you marked it defeated (your
+ * save's highest, or the cap you were at). A fight a save marks won (trainer_controls.js) has none
  * recorded and shows the document's levels.
  */
 function getDefeatLevelsKey() {
@@ -77,14 +77,26 @@ function readDefeatLevels() {
 
 function recordDefeatLevel(index, defeated) {
 	var levels = readDefeatLevels();
-	var highest = typeof getPlayerHighestLevel === "function" ? getPlayerHighestLevel() : 0;
-	if (defeated && highest) levels[getTeamKey(index)] = highest;
+	// The level the team followed just before (getTeamLevelBasis: your save's, or the cap's).
+	var highest = typeof getTeamHighestLevel === "function" ? getTeamHighestLevel(index, getTrainerVariant(TRAINER_ORDER[index])) : 0;
+	var cap = typeof getShownLevelCap === "function" ? parseInt(getShownLevelCap(index)) || 0 : 0;
+	if (defeated && (highest || cap)) levels[getTeamKey(index)] = {level: highest, cap: cap};
 	else delete levels[getTeamKey(index)];
 	writeSetting(getDefeatLevelsKey(), JSON.stringify(levels));
 }
 
+// Recorded as {level, cap}; older records are just the level.
+function getDefeatRecord(index, variant) {
+	var record = readDefeatLevels()[getVariantKey(index, variant)];
+	return typeof record === "number" ? {level: record, cap: 0} : record || {level: 0, cap: 0};
+}
+
 function getDefeatLevel(index, variant) {
-	return readDefeatLevels()[getVariantKey(index, variant)] || 0;
+	return getDefeatRecord(index, variant).level || 0;
+}
+
+function getDefeatCap(index, variant) {
+	return getDefeatRecord(index, variant).cap || 0;
 }
 
 function getTeamSize(index) {

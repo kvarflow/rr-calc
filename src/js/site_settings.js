@@ -88,7 +88,9 @@ var CHANGELOG = [
 		"Teams the documents leave out, read from the game: Bugsy's after Lt. Surge (picked by your Thunder " +
 			"Badge), and the three teams Jasmine (Default) and Pryce (Hardcore) pick from at random"
 	], fixes: [
-		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability"
+		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability",
+		"Without a save, levels that follow yours now follow your progress: a fight you left for later (Bugsy " +
+			"after Lt. Surge) comes at the cap you are at, a beaten one keeps the cap it was beaten at"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
