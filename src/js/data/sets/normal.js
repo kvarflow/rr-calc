@@ -1645,7 +1645,8 @@ var SETDEX_SV = {
   },
   "Darmanitan": {
     "*Rival Blue Set 1": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Rival Blue Set 2": {"nature":"Jolly","ability":"Sheer Force","level":80,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}}
+    "*Rival Blue Set 2": {"nature":"Jolly","ability":"Sheer Force","level":80,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}},
+    "*Rival Blue Set 3": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Blastoise-Mega": {
     "*Professor Oak": {"nature":"Timid","ability":"Mega Launcher","level":100,"item":"Blastoisinite","moves":["Aura Sphere","Dark Pulse","Shell Smash","Water Pulse"],"evs":{"df":4,"sp":252,"sa":252}},

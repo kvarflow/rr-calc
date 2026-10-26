@@ -2573,7 +2573,7 @@ var TRAINER_ORDER = [
     "sets": [
      "Staraptor (*Rival Blue Set 1)",
      "Kingambit (*Rival Blue Set 2)",
-     "Darmanitan (*Rival Blue Set 1)",
+     "Darmanitan (*Rival Blue Set 3)",
      "Iron Bundle (*Rival Blue)",
      "Sneasler (*Rival Blue)",
      "Venusaur-Mega (*Rival Blue Set 2)"
