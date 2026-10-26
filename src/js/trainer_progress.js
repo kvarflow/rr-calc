@@ -79,7 +79,12 @@ function recordDefeatLevel(index, defeated) {
 	// The level the team followed just before (getTeamLevelBasis: your save's, or the cap's).
 	var highest = typeof getTeamHighestLevel === "function" ? getTeamHighestLevel(index, getTrainerVariant(TRAINER_ORDER[index])) : 0;
 	var cap = typeof getShownLevelCap === "function" ? parseInt(getShownLevelCap(index)) || 0 : 0;
-	if (defeated && (highest || cap)) levels[getTeamKey(index)] = {level: highest, cap: cap};
+	// The arc you are in as you beat it (this fight left out, so a gym leader counts in its own).
+	var kos = readTrainerKOs();
+	delete kos[getTeamKey(index)];
+	var arcs = getArcs();
+	var arcCap = arcs[getProgressArc(arcs, kos)].cap;
+	if (defeated) levels[getTeamKey(index)] = {level: highest, cap: cap, arcCap: arcCap};
 	else delete levels[getTeamKey(index)];
 	writeSetting(getDefeatLevelsKey(), JSON.stringify(levels));
 }
@@ -181,17 +186,17 @@ function getArcs() {
 }
 
 // The arc a trainer counts in, by arc number. A defeated one: the arc you were in when you beat
-// it (from the level cap then; a .sav's fights have none, so the arc it is listed in). One still
-// to fight: its own arc, or the one you are in if that is later (it was left for later).
+// it (recorded then; a .sav's fights and older records have none, so the arc it is listed in). One
+// still to fight: its own arc, or the one you are in if that is later (it was left for later).
 function getCountedArc(index, arcs, current, kos) {
 	var listed = 0;
 	while (listed < arcs.length - 1 && index > arcs[listed].last) listed++;
 	if (!isTrainerDefeated(index, kos)) return Math.max(listed, current);
-	var cap = getDefeatCap(index, getTrainerVariant(TRAINER_ORDER[index]));
-	if (!cap) return listed;
-	var arc = 0;
-	while (arc < arcs.length - 1 && arcs[arc + 1].cap <= cap) arc++;
-	return arc;
+	var arcCap = getDefeatRecord(index, getTrainerVariant(TRAINER_ORDER[index])).arcCap;
+	for (var arc = 0; arc < arcs.length; arc++) {
+		if (arcs[arc].cap === arcCap) return arc;
+	}
+	return listed;
 }
 
 /*
