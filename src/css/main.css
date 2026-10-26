@@ -1499,13 +1499,15 @@ html.small-screen .ss-result {
     position: relative;
     cursor: pointer;
 }
+/* One line: the move, its KO chance as a chip, and its damage at the right. */
 .ss-result-top {
     display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 8px;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 3px;
 }
 .ss-result-move {
+    min-width: 0;
     font-size: 15px;
     font-weight: 700;
     white-space: nowrap;
@@ -1513,24 +1515,20 @@ html.small-screen .ss-result {
     text-overflow: ellipsis;
 }
 .ss-result-pct {
+    margin-left: auto;
     font-size: 15px;
     font-weight: 700;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
 }
-.ss-result-ko {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin: 4px 0 6px;
-    font-size: 12px;
-}
 .ss-result-ko-text {
-    padding: 1px 8px;
+    flex: none;
+    padding: 1px 7px;
     border-radius: 999px;
     background: var(--ss-btn, #f3f5f9);
+    font-size: 11px;
     font-weight: 600;
+    white-space: nowrap;
 }
 .ss-result-ko-text.ss-ko-1 {
     background: var(--ss-danger, #c0392b);
@@ -1541,7 +1539,8 @@ html.small-screen .ss-result {
     color: #1d2330;
 }
 .ss-result-hp {
-    color: var(--ss-muted, #667085);
+    color: var(--ss-text, #1d2330);
+    font-weight: 600;
     font-variant-numeric: tabular-nums;
 }
 .ss-result-who,

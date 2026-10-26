@@ -483,12 +483,12 @@ function renderResultSummary() {
 	summary.append(
 		$('<div class="ss-result-top"></div>').append(
 			$('<span class="ss-result-move"></span>').text(moveName),
-			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
-		$('<div class="ss-result-ko"></div>').append(
 			ko ? $('<span class="ss-result-ko-text"></span>').text(ko)
 				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
-			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7])),
-		$('<div class="ss-result-who"></div>').text(attacker + " vs. " + parts[2]),
+			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
+		$('<div class="ss-result-who"></div>').append(
+			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7]),
+			document.createTextNode(" \u00B7 " + attacker + " vs. " + parts[2])),
 		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 
