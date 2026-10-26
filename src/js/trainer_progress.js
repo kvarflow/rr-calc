@@ -2,9 +2,8 @@
  * Run progress for the trainer panel. "KO'd" marks the Pokémon 2 Pokémon as fainted (its
  * sprite greys out) and moves on to the next one; "Defeated" marks or clears the whole team.
  * A trainer counts as defeated once every Pokémon of the team you face is KO'd. Two bars
- * under the panel count defeated trainers: in the current level-cap arc (every trainer,
- * optional ones too, up to the last one with this fight's level cap, named after its last
- * required fight) and in the whole game. KOs are saved per mode.
+ * under the panel count defeated trainers: in the level-cap arc you are in (getProgressArc) and
+ * in the whole game. KOs are saved per mode.
  */
 
 function getTrainerKOKey() {
@@ -168,7 +167,44 @@ function getArc(index) {
 	for (i = last; i >= first && boss === -1; i--) {
 		if (!TRAINER_ORDER[i].optional) boss = i;
 	}
-	return {first: first, last: last, name: TRAINER_ORDER[boss === -1 ? last : boss].name};
+	return {first: first, last: last, boss: boss === -1 ? last : boss, cap: caps[index],
+		name: TRAINER_ORDER[boss === -1 ? last : boss].name};
+}
+
+// Every arc in game order.
+function getArcs() {
+	var arcs = [];
+	for (var index = 0; index < TRAINER_ORDER.length; index = arcs[arcs.length - 1].last + 1) {
+		arcs.push(getArc(index));
+	}
+	return arcs;
+}
+
+// The arc a trainer counts in, by arc number. A defeated one: the arc you were in when you beat
+// it (from the level cap then; a .sav's fights have none, so the arc it is listed in). One still
+// to fight: its own arc, or the one you are in if that is later (it was left for later).
+function getCountedArc(index, arcs, current, kos) {
+	var listed = 0;
+	while (listed < arcs.length - 1 && index > arcs[listed].last) listed++;
+	if (!isTrainerDefeated(index, kos)) return Math.max(listed, current);
+	var cap = getDefeatCap(index, getTrainerVariant(TRAINER_ORDER[index]));
+	if (!cap) return listed;
+	var arc = 0;
+	while (arc < arcs.length - 1 && arcs[arc + 1].cap <= cap) arc++;
+	return arc;
+}
+
+/*
+ * The arc you are in, by your progress rather than the trainer you look at: the one after the last
+ * arc whose boss (its gym leader, or the fight that raises the cap) you have beaten. So beating
+ * Misty moves you on to Lt. Surge's arc, which takes the fights you left for later with it.
+ */
+function getProgressArc(arcs, kos) {
+	var current = 0;
+	arcs.forEach(function (arc, i) {
+		if (isTrainerDefeated(arc.boss, kos)) current = Math.min(i + 1, arcs.length - 1);
+	});
+	return current;
 }
 
 function drawProgressBar(bar, done, total) {
@@ -182,7 +218,9 @@ function drawProgressBar(bar, done, total) {
 function renderTrainerProgress() {
 	if (!$("#run-progress").length) return;
 	var kos = readTrainerKOs();
-	var arc = getArc(currentTrainerIndex);
+	var arcs = getArcs();
+	var current = getProgressArc(arcs, kos);
+	var arc = arcs[current];
 	var arcTotal = 0;
 	var arcDefeated = 0;
 	var total = 0;
@@ -190,7 +228,7 @@ function renderTrainerProgress() {
 	// A fight the documents list twice (marked duplicate) counts once.
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.duplicate) return;
-		var inArc = index >= arc.first && index <= arc.last;
+		var inArc = getCountedArc(index, arcs, current, kos) === current;
 		total++;
 		if (inArc) arcTotal++;
 		if (!isTrainerDefeated(index, kos)) return;
