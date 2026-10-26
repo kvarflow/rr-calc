@@ -103,13 +103,17 @@ function buildTrainerCard() {
 			});
 	};
 	card.addClass("ss-quick-trainer").toggleClass("ss-quick-defeated", defeated);
-	card.find(".ss-quick-head").prepend(step("Previous trainer", "#previous-trainer", "\u25C0")).append(
+	card.find(".ss-quick-head").append(
 		defeated ? '<span class="ss-quick-badge">Defeated \u2713</span>' : "",
-		step("Next trainer", "#next-trainer", "\u25B6").toggleClass("ss-quick-next", defeated),
 		$('<button type="button" class="ss-quick-ko-btn"></button>')
 			.text($("#trainer-ko").text() === "Undo KO" ? "Undo KO" : "KO")
 			.attr("title", "Mark the Pokémon you face as KO'd and load his next one")
 			.click(toggleActiveKO));
+	// Previous / Next trainer, spelled out, at the bottom of the card.
+	$('<div class="ss-quick-foot"></div>').append(
+		step("Previous trainer", "#previous-trainer", "\u25C0 Previous trainer"),
+		step("Next trainer", "#next-trainer", "Next trainer \u25B6").toggleClass("ss-quick-next", defeated)
+	).appendTo(card);
 	return card;
 }
 

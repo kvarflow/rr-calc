@@ -1670,9 +1670,25 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     font-weight: 700;
     cursor: pointer;
 }
-.ss-quick-step {
-    width: 26px;
-    padding: 0;
+/* The trainer's card: Previous / Next trainer side by side at its bottom. */
+.ss-quick-side.ss-quick-trainer {
+    display: flex;
+    flex-direction: column;
+}
+.ss-quick-foot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+.ss-quick-foot .ss-quick-step {
+    height: auto;
+    min-height: 30px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    line-height: 1.2;
+    white-space: normal;
 }
 .ss-quick-step:disabled {
     opacity: 0.35;
