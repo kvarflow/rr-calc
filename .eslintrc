@@ -68,6 +68,7 @@
         "toggleYourFaint": false,
         "getRunKey": false,
         "ABILITY_DESCRIPTIONS": false,
+        "ITEM_DESCRIPTIONS": false,
         "battleSpeedMultiplier": false,
         "getBattleSpeed": false,
         "lastAutoWeather": false,

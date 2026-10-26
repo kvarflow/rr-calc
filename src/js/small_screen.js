@@ -479,21 +479,21 @@ function renderResultSummary() {
 	var ko = (parts[8] || "").replace(/^./, function (first) {
 		return first.toUpperCase();
 	});
-	var hp = parts[3] === parts[4] ? parts[3] : parts[3] + "\u2013" + parts[4];
-	var chip = ko ? $('<span class="ss-result-ko-text"></span>').text(ko).attr("title", ko)
-		.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "";
-	// A short KO chance ("Guaranteed 3HKO") sits beside the move; a long one ("64.5% chance to
-	// 2HKO after Stealth Rock") starts the next line.
-	var longKO = ko.length > 18;
+	// The KO chance stays on the move's line: "64.5% chance to 2HKO after Stealth Rock" shows as
+	// "64.5% to 2HKO", and what it is after starts the line under it.
+	var after = ko.indexOf(" after ");
+	var koShort = (after === -1 ? ko : ko.slice(0, after)).replace(" chance to ", " to ");
+	var koAfter = after === -1 ? "" : ko.slice(after + 1).replace(/^./, function (first) {
+		return first.toUpperCase();
+	});
+	var who = [koAfter, parts[7].replace(/^[;,\s]+/, ""), attacker + " vs. " + parts[2]].filter(Boolean);
 	summary.append(
 		$('<div class="ss-result-top"></div>').append(
 			$('<span class="ss-result-move"></span>').text(moveName),
-			longKO ? "" : chip,
+			koShort ? $('<span class="ss-result-ko-text"></span>').text(koShort).attr("title", ko)
+				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
 			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
-		$('<div class="ss-result-who"></div>').append(
-			longKO ? chip.addClass("ss-result-ko-long") : "",
-			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7]),
-			document.createTextNode(" \u00B7 " + attacker + " vs. " + parts[2])),
+		$('<div class="ss-result-who"></div>').text(who.join(" \u00B7 ")),
 		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 
@@ -635,6 +635,8 @@ $(document).ready(function () {
 		if (isSmallScreenOn()) compactPokemonPanel(panel, toggle);
 	});
 	if (isSmallScreenOn()) {
+		// Advanced: your progress first, then the trainer you face.
+		$("#run-progress").insertBefore("#trainer-nav");
 		compactFieldPanel($(".field-info"));
 		bindDoubleTapCrit();
 		bindKeptMove();

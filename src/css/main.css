@@ -1021,7 +1021,8 @@ body.hide-range-compare .rc-add {
     border-color: #3a6fd8;
     color: #3a6fd8;
 }
-.ability-info {
+.ability-info,
+.item-info {
     margin: 2px 0 6px;
     padding: 6px 8px;
     border-radius: 6px;
@@ -1558,21 +1559,6 @@ html.small-screen .ss-result {
     background: #f5a623;
     color: #1d2330;
 }
-.ss-result-ko-text.ss-result-ko-long {
-    display: inline-block;
-    max-width: 100%;
-    margin: 0 6px 2px 0;
-    vertical-align: middle;
-    color: var(--ss-text, #1d2330);
-}
-.ss-result-ko-text.ss-result-ko-long.ss-ko-1 {
-    color: #fff;
-}
-.ss-result-hp {
-    color: var(--ss-text, #1d2330);
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-}
 .ss-result-who,
 .ss-result-rolls {
     font-size: 11px;
@@ -1832,6 +1818,48 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
 }
 .run-record-group p {
     margin: 0;
+}
+/* Top fraggers and the fainted: a grid of sprites, each named with its KOs or who it fell to. */
+.run-record-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 6px;
+}
+.run-record-mon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 4px 2px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 10px;
+    text-align: center;
+}
+.run-record-sprite {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.run-record-fainted .run-record-sprite {
+    filter: grayscale(1);
+    opacity: 0.7;
+}
+.run-record-name,
+.run-record-note {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.run-record-name {
+    font-size: 12px;
+    font-weight: 600;
+}
+.run-record-note {
+    min-height: 1.3em;
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
 }
 .run-record-empty {
     color: var(--ss-muted, #667085);
@@ -2220,7 +2248,8 @@ html.small-screen .ability-help {
     border-color: var(--ss-line);
     color: var(--ss-text);
 }
-html.small-screen .ability-info {
+html.small-screen .ability-info,
+html.small-screen .item-info {
     grid-column: 1 / -1;
     background: var(--ss-accent-soft);
 }
