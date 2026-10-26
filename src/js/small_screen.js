@@ -78,7 +78,7 @@ function buildTeamCard(label, originals, activeIndex) {
 			.toggleClass("ss-quick-active", i === activeIndex)
 			.toggleClass("ss-quick-ko", original.hasClass("trainer-pokemon-ko"))
 			.attr({title: original.attr("data-set-id"), "data-set-id": original.attr("data-set-id")})
-			.append(original.find("img").first().clone().attr("draggable", "false"))
+			.append(original.find("img").first().clone().attr("draggable", "false"), original.find(".box-rank-value").clone())
 			.click(function () {
 				if (dragJustEnded) return; // the tap that ended a drag
 				original.click();
@@ -662,7 +662,7 @@ $(document).ready(function () {
 	$(document).on("calc:done", function (event, p1, p2) {
 		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
-	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered run:changed", renderQuickStrips);
+	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered box:ranked run:changed", renderQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
 	// The page may have calculated before this script was ready (One vs One does).

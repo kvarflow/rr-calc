@@ -1845,6 +1845,33 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     font-size: 11px;
     color: var(--ss-muted, #667085);
 }
+/* Box ranking (box_ranking.js): the control under the box's heading and each Pokémon's figure. */
+.box-rank {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    margin: 2px 0 6px;
+    font-size: 0.9em;
+}
+.box-pokemon,
+.ss-quick-mon {
+    position: relative;
+}
+.box-rank-value {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    padding: 0 3px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 12px;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+}
 .run-record-empty {
     color: var(--ss-muted, #667085);
 }
