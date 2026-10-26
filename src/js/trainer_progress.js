@@ -18,6 +18,17 @@ function readTrainerKOs() {
 	}
 }
 
+// The KOs as last read, for the many read-only checks (isTrainerDefeated for every trainer); it is
+// parsed again only when the saved text changes. Never changed in place: readTrainerKOs gives a copy
+// to change.
+var sharedTrainerKOs = {text: null, kos: {}};
+
+function readSharedTrainerKOs() {
+	var text = readSetting(getTrainerKOKey());
+	if (text !== sharedTrainerKOs.text) sharedTrainerKOs = {text: text, kos: readTrainerKOs()};
+	return sharedTrainerKOs.kos;
+}
+
 function writeTrainerKOs(kos) {
 	writeSetting(getTrainerKOKey(), JSON.stringify(kos));
 	renderTrainerProgress();
@@ -36,7 +47,7 @@ function getTeamKey(index) {
 }
 
 function getKOSlots(index, kos) {
-	return (kos || readTrainerKOs())[getTeamKey(index)] || [];
+	return (kos || readSharedTrainerKOs())[getTeamKey(index)] || [];
 }
 
 function setKOSlots(index, slots) {
@@ -53,7 +64,7 @@ function getVariantKey(index, variant) {
 
 // Whether that team of a fight is beaten (a fight with several teams can be beaten with any).
 function isVariantDefeated(index, variant, kos) {
-	var slots = (kos || readTrainerKOs())[getVariantKey(index, variant)] || [];
+	var slots = (kos || readSharedTrainerKOs())[getVariantKey(index, variant)] || [];
 	return variant.sets.length > 0 && slots.length >= variant.sets.length;
 }
 

@@ -8,8 +8,13 @@ var LEGACY_CUSTOM_SETS_KEY = "customsets";
 
 // The mode this page was served as. Read from the HTML attribute rather than the live
 // `checked` property, which changes as soon as the user clicks another mode.
+// The page's mode, from its markup (the checked attribute never changes), so read once: the trainer
+// progress asks for it for every trainer.
+var pageMode;
+
 function getPageMode() {
-	return $("input.mode[checked]").attr("id");
+	if (!pageMode) pageMode = $("input.mode[checked]").attr("id");
+	return pageMode;
 }
 
 function getCustomSetsKey(mode) {

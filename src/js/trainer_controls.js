@@ -219,9 +219,9 @@ function markBeatenFights(beaten) {
 	var marked = false;
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		trainer.variants.forEach(function (variant) {
-			if (!variant.trainerIds || isVariantDefeated(index, variant, kos) || !variant.trainerIds.every(function (id) {
+			if (!variant.trainerIds || !variant.trainerIds.every(function (id) {
 				return beaten.indexOf(id) !== -1;
-			})) return;
+			}) || isVariantDefeated(index, variant, kos)) return;
 			kos[getVariantKey(index, variant)] = variant.sets.map(function (set, slot) {
 				return slot;
 			});
@@ -399,6 +399,7 @@ function getTrainerNavOrder(all) {
 	var order = [];
 	var routes = {};
 	var showRoutes = all || areRouteTrainersShown();
+	var skipped = readSkippedFights();
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (!trainer.route || !(showRoutes || index === currentTrainerIndex)) return;
 		var before = trainer.route.before === null ? "end" : trainer.route.before;
@@ -407,7 +408,7 @@ function getTrainerNavOrder(all) {
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
 		if (routes[index]) order = order.concat(routes[index]);
-		if (isFightSkipped(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
+		if (trainer.parallel && skipped.indexOf(index) !== -1) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
 		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
 		Object.keys(ends).forEach(function (gate) {
 			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
@@ -470,8 +471,9 @@ function getShownLevelCap(index) {
 }
 
 function describeTrainer(trainer, index) {
+	var order = getTrainerNavOrder();
 	var details = [
-		(getTrainerNavOrder().indexOf(index) + 1) + " / " + getTrainerNavOrder().length,
+		(order.indexOf(index) + 1) + " / " + order.length,
 		trainer.location,
 		"Level cap " + getShownLevelCap(index)
 	];
