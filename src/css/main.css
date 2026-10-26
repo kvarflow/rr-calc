@@ -1021,7 +1021,8 @@ body.hide-range-compare .rc-add {
     border-color: #3a6fd8;
     color: #3a6fd8;
 }
-.ability-info {
+.ability-info,
+.item-info {
     margin: 2px 0 6px;
     padding: 6px 8px;
     border-radius: 6px;
@@ -1082,6 +1083,20 @@ select.boost-select {
 .poke-info .save-lock-text {
     display: inline;
     width: auto;
+}
+/* Protean: the type its last move gave it (protean.js). */
+.protean-note {
+    margin: 4px 0;
+    font-size: 0.85em;
+}
+.poke-info .protean-note-text {
+    display: inline;
+    width: auto;
+}
+.protean-reset {
+    margin-left: 4px;
+    font-size: 0.95em;
+    cursor: pointer;
 }
 .save-lock-toggle {
     margin-left: 4px;
@@ -1369,22 +1384,37 @@ html.small-screen .move-result-subgroup .btn.ss-threat {
 html.small-screen .move-result-subgroup .btn.ss-threat-ko::before {
     content: "KO";
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 6px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 800;
     line-height: 11px;
     letter-spacing: 0.04em;
     color: var(--ss-danger, #c0392b);
 }
-html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""])::after {
+/* The chance and KO have their own room at the ends, so the move's name never sits under them. */
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"]),
+html.small-screen .move-result-subgroup .btn.ss-crit {
+    padding-right: 24px;
+}
+html.small-screen .move-result-subgroup .btn.ss-threat-ko {
+    padding-left: 18px;
+}
+/* A move the AI will not pick: no 0%, just greyed. */
+html.small-screen .move-result-subgroup .btn[data-ai="0%"] {
+    color: var(--ss-muted, #888);
+}
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"])::after {
     content: attr(data-ai);
     position: absolute;
-    top: 0;
+    top: 50%;
     right: 4px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 700;
     line-height: 11px;
+    font-variant-numeric: tabular-nums;
     color: var(--ss-muted, #888);
 }
 html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
@@ -1433,8 +1463,9 @@ html.small-screen .move-result-subgroup .btn.ss-crit {
 html.small-screen .move-result-subgroup .btn.ss-crit::after {
     content: "CRIT";
     position: absolute;
-    top: 0;
-    right: 4px;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 800;
     line-height: 11px;
@@ -1467,6 +1498,90 @@ html.small-screen .main-result-group .big-text {
     font-size: 13px;
     font-weight: 600;
 }
+/* The card (small_screen.js renderResultSummary) shows the result; the calculator's own text stays
+   in the page, hidden, for copying. */
+html.small-screen .main-result-group.ss-summarized > .big-text,
+html.small-screen .main-result-group.ss-summarized > .small-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+.ss-result {
+    display: none;
+}
+html.small-screen .ss-result {
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+/* One line: the move, its KO chance as a chip, and its damage at the right. */
+.ss-result-top {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 3px;
+}
+.ss-result-move {
+    min-width: 0;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ss-result-pct {
+    flex: none;
+    margin-left: auto;
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.ss-result-ko-text {
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 1px 7px;
+    border-radius: 999px;
+    background: var(--ss-btn, #f3f5f9);
+    font-size: 11px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+.ss-result-ko-text.ss-ko-1 {
+    background: var(--ss-danger, #c0392b);
+    color: #fff;
+}
+.ss-result-ko-text.ss-ko-2 {
+    background: #f5a623;
+    color: #1d2330;
+}
+.ss-result-who,
+.ss-result-rolls {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ss-muted, #667085);
+    word-break: break-word;
+}
+.ss-result-rolls {
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+}
+.ss-result[data-copied]::after {
+    content: attr(data-copied);
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--ss-accent, #3a6fd8);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+}
 html.small-screen .main-result-group .small-text {
     font-size: 11px;
     color: var(--ss-muted);
@@ -1475,11 +1590,17 @@ html.small-screen .main-result-group .small-text {
 /* Teams: yours on the left, the trainer's on the right; tap one to load it. */
 html.small-screen[data-ss-tab="results"] .ss-quick {
     display: flex !important;
+    flex-wrap: wrap;
     gap: 8px;
     margin-top: 8px;
 }
+/* The Box under the teams: only on upright phones (below), where there is room for it. */
+.ss-quick-side.ss-quick-box {
+    display: none;
+    flex-basis: 100%;
+}
 .ss-quick-side {
-    flex: 1 1 50%;
+    flex: 1 1 calc(50% - 4px);
     min-width: 0;
     padding: 8px;
     box-sizing: border-box;
@@ -1564,9 +1685,28 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     font-weight: 700;
     cursor: pointer;
 }
-.ss-quick-step {
-    width: 26px;
-    padding: 0;
+/* The trainer's card: Previous / Next trainer side by side at its bottom. */
+.ss-quick-side.ss-quick-trainer {
+    display: flex;
+    flex-direction: column;
+}
+.ss-quick-foot {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    margin-top: auto;
+    padding-top: 6px;
+}
+.ss-quick-foot .ss-quick-step {
+    min-width: 0;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    line-height: 22px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ss-quick-step:disabled {
     opacity: 0.35;
@@ -1678,6 +1818,75 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
 }
 .run-record-group p {
     margin: 0;
+}
+/* Top fraggers and the fainted: a grid of sprites, each named with its KOs or who it fell to. */
+.run-record-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+    gap: 6px;
+}
+.run-record-mon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 4px 2px;
+    border: 1px solid var(--ss-line, #dde2ea);
+    border-radius: 10px;
+    text-align: center;
+}
+.run-record-sprite {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.run-record-fainted .run-record-sprite {
+    filter: grayscale(1);
+    opacity: 0.7;
+}
+.run-record-name,
+.run-record-note {
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.run-record-name {
+    font-size: 12px;
+    font-weight: 600;
+}
+.run-record-note {
+    min-height: 1.3em;
+    font-size: 11px;
+    color: var(--ss-muted, #667085);
+}
+/* Box ranking (box_ranking.js): the control under the box's heading and each Pokémon's figure. */
+.box-rank {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 12px;
+    margin: 2px 0 6px;
+    font-size: 0.9em;
+}
+.box-pokemon,
+.ss-quick-mon {
+    position: relative;
+}
+.box-rank-value {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    padding: 0 3px;
+    border-radius: 4px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 12px;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
 }
 .run-record-empty {
     color: var(--ss-muted, #667085);
@@ -2034,7 +2243,8 @@ html.small-screen .poke-info > div[class^="move"] > .move-selector {
 }
 html.small-screen .poke-info .move-hits,
 html.small-screen .poke-info .stat-drops,
-html.small-screen .poke-info .metronome {
+html.small-screen .poke-info .metronome,
+html.small-screen .poke-info .move-uses {
     width: 4.4em;
 }
 html.small-screen .poke-info .move-bp {
@@ -2065,7 +2275,8 @@ html.small-screen .ability-help {
     border-color: var(--ss-line);
     color: var(--ss-text);
 }
-html.small-screen .ability-info {
+html.small-screen .ability-info,
+html.small-screen .item-info {
     grid-column: 1 / -1;
     background: var(--ss-accent-soft);
 }
@@ -2109,6 +2320,29 @@ html.small-screen #importedSetsOptions {
 /* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
    You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
 @media (max-width: 500px) and (orientation: portrait) {
+    html.small-screen .ss-quick-side.ss-quick-box {
+        display: block;
+    }
+    html.small-screen .ss-quick-box .ss-quick-grid {
+        grid-template-columns: repeat(6, 1fr);
+    }
+    /* A half-width card: the trainer's buttons wrap rather than run off the screen and his name has
+       a line of its own. */
+    html.small-screen .ss-quick-head {
+        flex-wrap: wrap;
+    }
+    html.small-screen .ss-quick-trainer .ss-quick-head .ss-quick-label {
+        flex-basis: 100%;
+    }
+    /* Each label on one line in half a card: no arrows, a little smaller. */
+    html.small-screen .ss-quick-foot .ss-quick-step {
+        padding: 0 2px;
+        font-size: 9.5px;
+        letter-spacing: -0.01em;
+    }
+    html.small-screen .ss-quick-foot .ss-step-arrow {
+        display: none;
+    }
     html.small-screen .ss-tabs {
         position: fixed;
         top: auto;

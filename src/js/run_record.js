@@ -218,14 +218,26 @@ function renderRunRecord() {
 				return $("<li></li>").text(item);
 			})) : $('<p class="run-record-empty"></p>').text("None yet"));
 	};
+	// Your Pokémon as a grid of sprites, each with its name and a note under it.
+	var grid = function (title, mons, className) {
+		return $('<div class="run-record-group"></div>').addClass(className || "").append($("<h4></h4>").text(title),
+			mons.length ? $('<div class="run-record-grid"></div>').append(mons.map(function (mon) {
+				return $('<div class="run-record-mon"></div>').attr("title", mon.name + (mon.note ? " — " + mon.note : "")).append(
+					createSpriteImage(mon.name, function () {
+						$(this).remove();
+					}).addClass("run-record-sprite"),
+					$('<span class="run-record-name"></span>').text(mon.name),
+					$('<span class="run-record-note"></span>').text(mon.note));
+			})) : $('<p class="run-record-empty"></p>').text("None yet"));
+	};
 	panel.find(".run-record-body").empty().append(
 		$('<p class="run-record-now"></p>').text(describeRun(run) + " (of " + run.teamSize + ") · since " + formatRunDate(run.started)),
-		list("Top fraggers", run.topFraggers.slice(0, 6).map(function (mon) {
-			return mon.name + " — " + mon.frags + " KO" + (mon.frags === 1 ? "" : "s");
+		grid("Top fraggers", run.topFraggers.slice(0, 6).map(function (mon) {
+			return {name: mon.name, note: mon.frags + " KO" + (mon.frags === 1 ? "" : "s")};
 		})),
-		list("Fainted", run.fainted.map(function (mon) {
-			return mon.name + (mon.by ? " — to " + mon.by : "");
-		})),
+		grid("Fainted", run.fainted.map(function (mon) {
+			return {name: mon.name, note: mon.by ? "to " + mon.by : ""};
+		}), "run-record-fainted"),
 		$('<div class="run-record-group run-record-best"></div>').append($("<h4></h4>").text("Personal best"),
 			$("<p></p>").text(best ? describeRun(best) + " (" + formatRunDate(best.ended) + ")" : "Finish a run with Professor Oak to set one")),
 		history.length ? list("Past runs", history.slice(-5).reverse().map(function (past) {

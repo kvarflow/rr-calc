@@ -1228,6 +1228,18 @@
     "trainer": "Picnicker Alma",
     "species": "*",
     "levelBelowHighest": 5
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Bulbasaur",
+    "species": "Darmanitan",
+    "evs": {
+     "at": 252,
+     "sp": 252,
+     "sd": 4
+    },
+    "note": "the Silph Co. rivals share this set with 4 Def EVs; the Route 22 one has 4 Sp. Def"
    }
   ],
   "hardcore": [

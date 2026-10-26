@@ -89,6 +89,43 @@ var CHANGELOG = [
 			"Badge), and the three teams Jasmine (Default) and Pryce (Hardcore) pick from at random"
 	], fixes: [
 		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability"
+	]},
+	{version: "1.6", notes: [
+		"Protean: picking a Protean Pok\u00e9mon's move turns it into that move's type, so the other side's moves " +
+			"hit it as that type (Misty's Frogadier); Reset type brings its own back. Its own damage already has " +
+			"STAB on every move",
+		"Nuzlocke dupes last the whole run: a Pok\u00e9mon that fainted, went to the Trash, was deleted or was " +
+			"released still makes its family a dupe until Professor Oak starts a new run",
+		"Echoed Voice, Fury Cutter, Rollout and Ice Ball: pick which use in a row it is (and Defense Curl) " +
+			"and the base power follows, as in Radical Red",
+		"Upright phones: your Box (and Box 2) under your team on the Battle tab, tap one to load it; the " +
+			"trainer card's buttons no longer run off the screen",
+		"Small screens: a neater result card (the move and its damage, the KO chance, then who is fighting " +
+			"and the rolls in small print) and damage ranges with one decimal on both ends",
+		"Battle: Previous trainer and Next trainer spelled out at the bottom of the trainer card",
+		"The arc bar follows your progress: beating Misty moves you on to Lt. Surge's arc, fights you left for " +
+			"later move on with you, and a fight counts in the arc you beat it in (Bugsy after Misty: Lt. Surge's)",
+		"A ? beside the item says what it does, from Radical Red's own item text",
+		"Result card: the KO chance stays on the move's line and the HP range is gone (the rolls show it)",
+		"This run: top fraggers and the fainted as a grid of sprites; on small screens your progress sits above the trainer",
+		"Rank the box against the foe: by damage dealt, damage taken or Speed, each Pok\u00e9mon's figure on its " +
+			"sprite (an idea from hzla's Dynamic Calc), optionally as if your box were at the level cap",
+		"Normal: the Route 22 rival's Darmanitan has its 4 EVs in Sp. Def, as in the game",
+		"Loaded Dice: multi-hit moves count 5 hits (Radical Red's Loaded Dice hits 5 times two times in three, " +
+			"4 otherwise); it was 4. The box colors and the trainer AI count it too",
+		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
+			"cap you are at",
+		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
+			"Giovanni, Silph Co.), not just badges",
+		"Levels that follow yours follow your progress too: a fight you left for later (Bugsy after Lt. Surge) " +
+			"comes at the cap you are at, a fight ahead at its own cap, a beaten one keeps the level and cap it was " +
+			"beaten at"
+	]},
+	{version: "1.7", notes: [
+		"Trainer AI: the last part of Radical Red's move scoring, checked against the game's code: Reflect and " +
+			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
+			"Shed Tail, burns, paralysis and poison (with Hex and Venoshock), Sheer Force and Serene Grace chances, " +
+			"draining moves, Rest and Wish, trapping moves and Salt Cure, Defog and Rapid Spin, and many more"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

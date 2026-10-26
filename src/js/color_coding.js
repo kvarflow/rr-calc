@@ -19,9 +19,9 @@ var MATCHUP_CLASSES = [
 	"cc-wall", "cc-hard-counter"
 ].join(" ");
 
-// Best-case and worst-case OHKO information for one side's four moves.
+// Best-case and worst-case OHKO information for one side's four moves, and its best move.
 function summarizeDamage(results, defender) {
-	var summary = {alwaysOHKO: false, mightOHKO: false, bestMaxPercent: 0};
+	var summary = {alwaysOHKO: false, mightOHKO: false, bestMaxPercent: 0, bestMinPercent: 0, bestMove: ""};
 	results.forEach(function (result) {
 		// For multi-hit moves the range already adds up every hit.
 		var range = result.range();
@@ -29,12 +29,17 @@ function summarizeDamage(results, defender) {
 		var maxPercent = range[1] / defender.stats.hp * 100;
 		summary.alwaysOHKO = summary.alwaysOHKO || minPercent >= 100;
 		summary.mightOHKO = summary.mightOHKO || maxPercent >= 100;
-		summary.bestMaxPercent = Math.max(summary.bestMaxPercent, maxPercent);
+		if (maxPercent > summary.bestMaxPercent) {
+			summary.bestMaxPercent = maxPercent;
+			summary.bestMinPercent = minPercent;
+			summary.bestMove = result.move.name;
+		}
 	});
 	return summary;
 }
 
-// Returns {speed: class, damage: [classes]} for `pokemon` against `opponent`.
+// Returns {speed: class, damage: [classes], metrics} for `pokemon` against `opponent`; the
+// metrics (each side's best move and its damage, and both Speeds) rank the box (box_ranking.js).
 function getMatchupClasses(pokemon, opponent) {
 	var field = createField();
 	// calculateAllMoves comes from index_randoms_controls.js. It applies the "+1 all stats"
@@ -51,19 +56,21 @@ function getMatchupClasses(pokemon, opponent) {
 
 	var dealt = summarizeDamage(results[0], opponent);
 	var taken = summarizeDamage(results[1], pokemon);
+	var metrics = {dealt: dealt, taken: taken, speed: ownSpeed, opponentSpeed: opponentSpeed, movesFirst: movesFirst};
 	if (taken.bestMaxPercent * 3 < 100 && dealt.bestMaxPercent > taken.bestMaxPercent) {
-		return {speed: speed, damage: [dealt.bestMaxPercent > 100 ? "cc-hard-counter" : "cc-wall"]};
+		return {speed: speed, damage: [dealt.bestMaxPercent > 100 ? "cc-hard-counter" : "cc-wall"], metrics: metrics};
 	}
 	var damage = [];
 	if (dealt.alwaysOHKO) damage.push("cc-deal-always");
 	else if (dealt.mightOHKO) damage.push("cc-deal-might");
 	if (taken.alwaysOHKO) damage.push("cc-take-always");
 	else if (taken.mightOHKO) damage.push("cc-take-might");
-	return {speed: speed, damage: damage};
+	return {speed: speed, damage: damage, metrics: metrics};
 }
 
+// The colors go on only while color coding is shown; the matchup is kept on the element either way.
 function applyMatchupClasses(element, pokemon, opponent) {
-	element.removeClass(MATCHUP_CLASSES);
+	element.removeClass(MATCHUP_CLASSES).removeData("matchup");
 	var classes;
 	try {
 		classes = getMatchupClasses(pokemon, opponent);
@@ -71,8 +78,28 @@ function applyMatchupClasses(element, pokemon, opponent) {
 		// A set the calc cannot handle (e.g. an unknown move) is left uncolored.
 		return;
 	}
+	element.data("matchup", classes.metrics);
+	if (!isColorCodingShown()) return;
 	if ($("#cc-speed-border").prop("checked")) element.addClass(classes.speed);
 	if ($("#cc-ohko-color").prop("checked")) element.addClass(classes.damage.join(" "));
+}
+
+// Whether the box is ranked (box_ranking.js), which needs the matchups even with no colors shown.
+function isBoxRanked() {
+	return typeof isBoxRankingActive === "function" && isBoxRankingActive();
+}
+
+// A box Pokémon as the matchups take it: at your level cap when the ranking asks for that.
+function getBoxMatchupPokemon(setId) {
+	var pokemon = createPokemon(setId);
+	var cap = typeof getBoxRankLevel === "function" ? getBoxRankLevel() : 0;
+	if (!cap || pokemon.level === cap) return pokemon;
+	return new calc.Pokemon(gen, pokemon.name, {
+		level: cap, ability: pokemon.ability, abilityOn: pokemon.abilityOn, item: pokemon.item,
+		gender: pokemon.gender, nature: pokemon.nature, ivs: pokemon.ivs, evs: pokemon.evs,
+		boosts: pokemon.boosts, status: pokemon.status, teraType: pokemon.teraType,
+		moves: pokemon.moves.slice(), overrides: pokemon.species
+	});
 }
 
 function isColorCodingShown() {
@@ -80,10 +107,10 @@ function isColorCodingShown() {
 }
 
 function colorCodeBox() {
-	if (!isColorCodingShown()) return;
+	if (!isColorCodingShown() && !isBoxRanked()) return;
 	var opponent = createPokemon($("#p2"));
 	$("#box-panel .box-pokemon").each(function () {
-		applyMatchupClasses($(this), createPokemon($(this).attr("data-set-id")), opponent.clone());
+		applyMatchupClasses($(this), getBoxMatchupPokemon($(this).attr("data-set-id")), opponent.clone());
 	});
 	$(document).trigger("colorcoding:changed");
 }
@@ -119,7 +146,7 @@ function scheduleColorRefresh() {
 	colorRefreshPending = true;
 	setTimeout(function () {
 		colorRefreshPending = false;
-		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
+		if ($("#cc-auto-refresh").prop("checked") || isBoxRanked()) colorCodeBox();
 		colorCodeHeader();
 	}, 0);
 }
@@ -209,7 +236,7 @@ function bindColorCodingEvents() {
 	$(document).on("change keyup input", ".calc-trigger", scheduleColorRefresh);
 	$("#p1 input.set-selector").change(updatePokemon1HeaderSprite);
 	$(document).on("box:rendered", function () {
-		if ($("#cc-auto-refresh").prop("checked")) colorCodeBox();
+		if ($("#cc-auto-refresh").prop("checked") || isBoxRanked()) colorCodeBox();
 	});
 }
 

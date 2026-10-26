@@ -78,7 +78,7 @@ function buildTeamCard(label, originals, activeIndex) {
 			.toggleClass("ss-quick-active", i === activeIndex)
 			.toggleClass("ss-quick-ko", original.hasClass("trainer-pokemon-ko"))
 			.attr({title: original.attr("data-set-id"), "data-set-id": original.attr("data-set-id")})
-			.append(original.find("img").first().clone().attr("draggable", "false"))
+			.append(original.find("img").first().clone().attr("draggable", "false"), original.find(".box-rank-value").clone())
 			.click(function () {
 				if (dragJustEnded) return; // the tap that ended a drag
 				original.click();
@@ -95,21 +95,25 @@ function buildTrainerCard() {
 	var card = buildTeamCard($("#trainer-name").text() || "Trainer", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1);
 	if (typeof toggleActiveKO !== "function") return card;
 	var defeated = isTrainerDefeated(currentTrainerIndex);
-	var step = function (label, original, text) {
-		return $('<button type="button" class="ss-quick-step"></button>').attr("aria-label", label).text(text)
+	var step = function (label, original, html) {
+		return $('<button type="button" class="ss-quick-step"></button>').attr("aria-label", label).html(html)
 			.prop("disabled", $(original).prop("disabled"))
 			.click(function () {
 				$(original).click();
 			});
 	};
 	card.addClass("ss-quick-trainer").toggleClass("ss-quick-defeated", defeated);
-	card.find(".ss-quick-head").prepend(step("Previous trainer", "#previous-trainer", "\u25C0")).append(
+	card.find(".ss-quick-head").append(
 		defeated ? '<span class="ss-quick-badge">Defeated \u2713</span>' : "",
-		step("Next trainer", "#next-trainer", "\u25B6").toggleClass("ss-quick-next", defeated),
 		$('<button type="button" class="ss-quick-ko-btn"></button>')
 			.text($("#trainer-ko").text() === "Undo KO" ? "Undo KO" : "KO")
 			.attr("title", "Mark the Pokémon you face as KO'd and load his next one")
 			.click(toggleActiveKO));
+	// Previous / Next trainer, spelled out, at the bottom of the card.
+	$('<div class="ss-quick-foot"></div>').append(
+		step("Previous trainer", "#previous-trainer", '<span class="ss-step-arrow">\u25C0 </span>Previous trainer'),
+		step("Next trainer", "#next-trainer", 'Next trainer<span class="ss-step-arrow"> \u25B6</span>').toggleClass("ss-quick-next", defeated)
+	).appendTo(card);
 	return card;
 }
 
@@ -367,15 +371,19 @@ function buildSettingsCard() {
 	segmentedSelector(target);
 }
 
-// The run record (run_record.js) on your team: KOs each one has made, the fainted greyed out, and
-// Fainted / Revive for the one in Pokémon 1.
-function markRunOnTeam(card, p1Set) {
+// The run record (run_record.js) on a card of your Pokémon: KOs each one has made, the fainted greyed out.
+function markRunOnMons(card) {
 	card.find(".ss-quick-mon").each(function () {
 		var mon = getRunMon($(this).attr("data-set-id"));
 		$(this).toggleClass("ss-quick-fainted", mon.fainted);
 		if (mon.frags) $(this).append($('<span class="ss-quick-frags"></span>').text("\u2694" + mon.frags));
 		if (mon.fainted) $(this).attr("title", $(this).attr("title") + " \u2014 fainted" + (mon.faintedBy ? " to " + mon.faintedBy : ""));
 	});
+}
+
+// The same on your team, and Fainted / Revive for the one in Pokémon 1.
+function markRunOnTeam(card, p1Set) {
+	markRunOnMons(card);
 	if (!getRunKey(p1Set)) return;
 	var fainted = getRunMon(p1Set).fainted;
 	card.find(".ss-quick-head").append($('<button type="button" class="ss-quick-faint-btn"></button>')
@@ -399,6 +407,35 @@ function renderQuickStrips() {
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
+	// Upright phones have room under the teams for the Box (and Box 2) too; the CSS shows them only there.
+	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
+		var mons = $('.box-dropzone[data-section="' + box.section + '"] .box-pokemon');
+		if (!mons.length) return;
+		var card = buildTeamCard(box.label, mons, mons.map(function () {
+			return $(this).attr("data-set-id");
+		}).get().indexOf(p1Set)).addClass("ss-quick-box");
+		if (typeof getRunMon === "function") markRunOnMons(card);
+		quick.append(card);
+	});
+}
+
+// The result card follows every change to the calculator's result text, whoever writes it.
+function bindResultSummary() {
+	var summary = $('<div id="ss-result" class="ss-result" title="Tap to copy"></div>').prependTo(".main-result-group");
+	$(".main-result-group").addClass("ss-summarized");
+	summary.on("click", function (event) {
+		var rolls = $(event.target).closest(".ss-result-rolls").length;
+		$(rolls ? "#damageValues" : "#mainResult").click();
+		summary.attr("data-copied", rolls ? "Rolls copied" : "Copied");
+		setTimeout(function () {
+			summary.removeAttr("data-copied");
+		}, 1500);
+	});
+	var observer = new MutationObserver(renderResultSummary);
+	["mainResult", "damageValues"].forEach(function (id) {
+		observer.observe(document.getElementById(id), {childList: true, characterData: true, subtree: true});
+	});
+	renderResultSummary();
 }
 
 // Shorter results text that fits beside each move.
@@ -406,10 +443,58 @@ function compactResults(p1Name, p2Name) {
 	// Just the names: "(select one to show detailed results)" does not fit.
 	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name));
 	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name));
-	// Just the damage range, as "21.2–27.2%"; recoil and recovery are in the detailed result below.
+	// Just the damage range, as "21.2–27.0%"; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
-		return text.replace(/ \(.*$/, "").replace(" - ", "\u2013");
+		return formatDamageRange(text.replace(/ \(.*$/, ""));
 	});
+}
+
+// "12.9 - 15%" as "12.9–15.0%" (one decimal each, so the column lines up), "0 - 0%" as "0%" and
+// one amount (a fixed-damage move) once.
+function formatDamageRange(text) {
+	var range = /^([\d.]+) - ([\d.]+)%$/.exec(text);
+	if (!range) return text.replace(" - ", "\u2013");
+	var low = +range[1];
+	var high = +range[2];
+	if (!high) return "0%";
+	return low === high ? low.toFixed(1) + "%" : low.toFixed(1) + "\u2013" + high.toFixed(1) + "%";
+}
+
+// The detailed result as a card: the move and its damage, the KO chance, then who is fighting and
+// the rolls in small print (the calculator's own sentence is kept, hidden, for copying).
+function renderResultSummary() {
+	var summary = $("#ss-result");
+	var desc = $("#mainResult").text();
+	var parts = /^(.*) vs\. (.*?): (\d+)-(\d+) \(([\d.]+) - ([\d.]+)%\)(.*?)(?: -- (.*))?$/.exec(desc);
+	var rolls = $("#damageValues").text().replace(/^Possible damage amounts: \((.*)\)$/, "$1");
+	summary.empty();
+	if (!parts) {
+		summary.append($('<div class="ss-result-who"></div>').text(desc));
+		return;
+	}
+	var moveName = $(".result-move:checked").next("label").text().trim();
+	var attacker = parts[1];
+	if (moveName && attacker.slice(-moveName.length) === moveName) attacker = attacker.slice(0, -moveName.length).trim();
+	else moveName = "";
+	var ko = (parts[8] || "").replace(/^./, function (first) {
+		return first.toUpperCase();
+	});
+	// The KO chance stays on the move's line: "64.5% chance to 2HKO after Stealth Rock" shows as
+	// "64.5% to 2HKO", and what it is after starts the line under it.
+	var after = ko.indexOf(" after ");
+	var koShort = (after === -1 ? ko : ko.slice(0, after)).replace(" chance to ", " to ");
+	var koAfter = after === -1 ? "" : ko.slice(after + 1).replace(/^./, function (first) {
+		return first.toUpperCase();
+	});
+	var who = [koAfter, parts[7].replace(/^[;,\s]+/, ""), attacker + " vs. " + parts[2]].filter(Boolean);
+	summary.append(
+		$('<div class="ss-result-top"></div>').append(
+			$('<span class="ss-result-move"></span>').text(moveName),
+			koShort ? $('<span class="ss-result-ko-text"></span>').text(koShort).attr("title", ko)
+				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
+			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
+		$('<div class="ss-result-who"></div>').text(who.join(" \u00B7 ")),
+		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 
 // Battle: double-tap a move to make it a crit (again to undo), to see its damage at once. The move
@@ -550,6 +635,8 @@ $(document).ready(function () {
 		if (isSmallScreenOn()) compactPokemonPanel(panel, toggle);
 	});
 	if (isSmallScreenOn()) {
+		// Advanced: your progress first, then the trainer you face.
+		$("#run-progress").insertBefore("#trainer-nav");
 		compactFieldPanel($(".field-info"));
 		bindDoubleTapCrit();
 		bindKeptMove();
@@ -558,6 +645,7 @@ $(document).ready(function () {
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
 	bindTeamDrag($('<div id="ss-quick" class="ss-quick" data-ss-part="results"></div>').insertAfter(".main-result-group"));
+	if (isSmallScreenOn()) bindResultSummary();
 
 	var layout = $('<label class="ss-layout-setting">Layout <select id="ss-layout">' +
 		'<option value="auto">Automatic</option><option value="on">Small screen</option><option value="off">Desktop</option>' +
@@ -574,7 +662,7 @@ $(document).ready(function () {
 	$(document).on("calc:done", function (event, p1, p2) {
 		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
-	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered run:changed", renderQuickStrips);
+	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered box:ranked run:changed", renderQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
 	// The page may have calculated before this script was ready (One vs One does).

@@ -2,9 +2,8 @@
  * Run progress for the trainer panel. "KO'd" marks the Pokémon 2 Pokémon as fainted (its
  * sprite greys out) and moves on to the next one; "Defeated" marks or clears the whole team.
  * A trainer counts as defeated once every Pokémon of the team you face is KO'd. Two bars
- * under the panel count defeated trainers: in the current level-cap arc (every trainer,
- * optional ones too, up to the last one with this fight's level cap, named after its last
- * required fight) and in the whole game. KOs are saved per mode.
+ * under the panel count defeated trainers: in the level-cap arc you are in (getProgressArc) and
+ * in the whole game. KOs are saved per mode.
  */
 
 function getTrainerKOKey() {
@@ -59,8 +58,8 @@ function isVariantDefeated(index, variant, kos) {
 }
 
 /*
- * A beaten team keeps the levels it had: the highest level of your party when you marked it
- * defeated (its Pokémon followed that). A fight a save marks won (trainer_controls.js) has none
+ * A beaten team keeps the levels it had: the level it followed when you marked it defeated (your
+ * save's highest, or the cap you were at). A fight a save marks won (trainer_controls.js) has none
  * recorded and shows the document's levels.
  */
 function getDefeatLevelsKey() {
@@ -77,14 +76,31 @@ function readDefeatLevels() {
 
 function recordDefeatLevel(index, defeated) {
 	var levels = readDefeatLevels();
-	var highest = typeof getPlayerHighestLevel === "function" ? getPlayerHighestLevel() : 0;
-	if (defeated && highest) levels[getTeamKey(index)] = highest;
+	// The level the team followed just before (getTeamLevelBasis: your save's, or the cap's).
+	var highest = typeof getTeamHighestLevel === "function" ? getTeamHighestLevel(index, getTrainerVariant(TRAINER_ORDER[index])) : 0;
+	var cap = typeof getShownLevelCap === "function" ? parseInt(getShownLevelCap(index)) || 0 : 0;
+	// The arc you are in as you beat it (this fight left out, so a gym leader counts in its own).
+	var kos = readTrainerKOs();
+	delete kos[getTeamKey(index)];
+	var arcs = getArcs();
+	var arcCap = arcs[getProgressArc(arcs, kos)].cap;
+	if (defeated) levels[getTeamKey(index)] = {level: highest, cap: cap, arcCap: arcCap};
 	else delete levels[getTeamKey(index)];
 	writeSetting(getDefeatLevelsKey(), JSON.stringify(levels));
 }
 
+// Recorded as {level, cap}; older records are just the level.
+function getDefeatRecord(index, variant) {
+	var record = readDefeatLevels()[getVariantKey(index, variant)];
+	return typeof record === "number" ? {level: record, cap: 0} : record || {level: 0, cap: 0};
+}
+
 function getDefeatLevel(index, variant) {
-	return readDefeatLevels()[getVariantKey(index, variant)] || 0;
+	return getDefeatRecord(index, variant).level || 0;
+}
+
+function getDefeatCap(index, variant) {
+	return getDefeatRecord(index, variant).cap || 0;
 }
 
 function getTeamSize(index) {
@@ -156,7 +172,44 @@ function getArc(index) {
 	for (i = last; i >= first && boss === -1; i--) {
 		if (!TRAINER_ORDER[i].optional) boss = i;
 	}
-	return {first: first, last: last, name: TRAINER_ORDER[boss === -1 ? last : boss].name};
+	return {first: first, last: last, boss: boss === -1 ? last : boss, cap: caps[index],
+		name: TRAINER_ORDER[boss === -1 ? last : boss].name};
+}
+
+// Every arc in game order.
+function getArcs() {
+	var arcs = [];
+	for (var index = 0; index < TRAINER_ORDER.length; index = arcs[arcs.length - 1].last + 1) {
+		arcs.push(getArc(index));
+	}
+	return arcs;
+}
+
+// The arc a trainer counts in, by arc number. A defeated one: the arc you were in when you beat
+// it (recorded then; a .sav's fights and older records have none, so the arc it is listed in). One
+// still to fight: its own arc, or the one you are in if that is later (it was left for later).
+function getCountedArc(index, arcs, current, kos) {
+	var listed = 0;
+	while (listed < arcs.length - 1 && index > arcs[listed].last) listed++;
+	if (!isTrainerDefeated(index, kos)) return Math.max(listed, current);
+	var arcCap = getDefeatRecord(index, getTrainerVariant(TRAINER_ORDER[index])).arcCap;
+	for (var arc = 0; arc < arcs.length; arc++) {
+		if (arcs[arc].cap === arcCap) return arc;
+	}
+	return listed;
+}
+
+/*
+ * The arc you are in, by your progress rather than the trainer you look at: the one after the last
+ * arc whose boss (its gym leader, or the fight that raises the cap) you have beaten. So beating
+ * Misty moves you on to Lt. Surge's arc, which takes the fights you left for later with it.
+ */
+function getProgressArc(arcs, kos) {
+	var current = 0;
+	arcs.forEach(function (arc, i) {
+		if (isTrainerDefeated(arc.boss, kos)) current = Math.min(i + 1, arcs.length - 1);
+	});
+	return current;
 }
 
 function drawProgressBar(bar, done, total) {
@@ -170,7 +223,9 @@ function drawProgressBar(bar, done, total) {
 function renderTrainerProgress() {
 	if (!$("#run-progress").length) return;
 	var kos = readTrainerKOs();
-	var arc = getArc(currentTrainerIndex);
+	var arcs = getArcs();
+	var current = getProgressArc(arcs, kos);
+	var arc = arcs[current];
 	var arcTotal = 0;
 	var arcDefeated = 0;
 	var total = 0;
@@ -178,7 +233,7 @@ function renderTrainerProgress() {
 	// A fight the documents list twice (marked duplicate) counts once.
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.duplicate) return;
-		var inArc = index >= arc.first && index <= arc.last;
+		var inArc = getCountedArc(index, arcs, current, kos) === current;
 		total++;
 		if (inArc) arcTotal++;
 		if (!isTrainerDefeated(index, kos)) return;

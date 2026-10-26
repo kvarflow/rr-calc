@@ -580,7 +580,8 @@ function addTrainerIds(order) {
 }
 
 // Corrections checked against the game's trainer data (rom_teams.json "fixes"): a team Pokémon's
-// ability before it Mega Evolves, its level below your highest, or its set's EVs.
+// ability before it Mega Evolves, its level below your highest, or its set's EVs (on a copy of
+// the set when other fights share it).
 function applyRomFixes(order, setdex) {
 	const fixes = (JSON.parse(fs.readFileSync(path.join(__dirname, 'rom_teams.json'), 'utf8')).fixes || {})[mode] || [];
 	let applied = 0;
@@ -598,7 +599,20 @@ function applyRomFixes(order, setdex) {
 				variant.levelBelowHighest = variant.levelBelowHighest || variant.sets.map(() => null);
 				variant.levelBelowHighest[slot] = fix.levelBelowHighest;
 			}
-			if (fix.evs) setdex[species][id.slice(id.lastIndexOf(' (') + 2, -1)].evs = fix.evs;
+			if (fix.evs) {
+				let setName = id.slice(id.lastIndexOf(' (') + 2, -1);
+				// A set other fights share gets a copy of its own, so only this fight changes.
+				const shared = order.some(t => t.variants.some(v => v !== variant && v.sets.indexOf(id) !== -1));
+				if (shared) {
+					const base = setName.replace(/ Set \d+$/, '');
+					let n = 1;
+					while (setdex[species][base + ' Set ' + n]) n++;
+					setdex[species][base + ' Set ' + n] = JSON.parse(JSON.stringify(setdex[species][setName]));
+					setName = base + ' Set ' + n;
+					variant.sets[slot] = species + ' (' + setName + ')';
+				}
+				setdex[species][setName].evs = fix.evs;
+			}
 			applied++;
 		});
 	});
