@@ -1481,6 +1481,92 @@ html.small-screen .main-result-group .big-text {
     font-size: 13px;
     font-weight: 600;
 }
+/* The card (small_screen.js renderResultSummary) shows the result; the calculator's own text stays
+   in the page, hidden, for copying. */
+html.small-screen .main-result-group.ss-summarized > .big-text,
+html.small-screen .main-result-group.ss-summarized > .small-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+}
+.ss-result {
+    display: none;
+}
+html.small-screen .ss-result {
+    display: block;
+    position: relative;
+    cursor: pointer;
+}
+.ss-result-top {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+.ss-result-move {
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ss-result-pct {
+    font-size: 15px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+.ss-result-ko {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 4px 0 6px;
+    font-size: 12px;
+}
+.ss-result-ko-text {
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--ss-btn, #f3f5f9);
+    font-weight: 600;
+}
+.ss-result-ko-text.ss-ko-1 {
+    background: var(--ss-danger, #c0392b);
+    color: #fff;
+}
+.ss-result-ko-text.ss-ko-2 {
+    background: #f5a623;
+    color: #1d2330;
+}
+.ss-result-hp {
+    color: var(--ss-muted, #667085);
+    font-variant-numeric: tabular-nums;
+}
+.ss-result-who,
+.ss-result-rolls {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ss-muted, #667085);
+    word-break: break-word;
+}
+.ss-result-rolls {
+    margin-top: 2px;
+    font-variant-numeric: tabular-nums;
+}
+.ss-result[data-copied]::after {
+    content: attr(data-copied);
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1px 8px;
+    border-radius: 999px;
+    background: var(--ss-accent, #3a6fd8);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+}
 html.small-screen .main-result-group .small-text {
     font-size: 11px;
     color: var(--ss-muted);
