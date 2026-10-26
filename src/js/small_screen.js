@@ -480,13 +480,18 @@ function renderResultSummary() {
 		return first.toUpperCase();
 	});
 	var hp = parts[3] === parts[4] ? parts[3] : parts[3] + "\u2013" + parts[4];
+	var chip = ko ? $('<span class="ss-result-ko-text"></span>').text(ko).attr("title", ko)
+		.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "";
+	// A short KO chance ("Guaranteed 3HKO") sits beside the move; a long one ("64.5% chance to
+	// 2HKO after Stealth Rock") starts the next line.
+	var longKO = ko.length > 18;
 	summary.append(
 		$('<div class="ss-result-top"></div>').append(
 			$('<span class="ss-result-move"></span>').text(moveName),
-			ko ? $('<span class="ss-result-ko-text"></span>').text(ko)
-				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
+			longKO ? "" : chip,
 			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
 		$('<div class="ss-result-who"></div>').append(
+			longKO ? chip.addClass("ss-result-ko-long") : "",
 			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7]),
 			document.createTextNode(" \u00B7 " + attacker + " vs. " + parts[2])),
 		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");

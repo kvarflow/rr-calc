@@ -1531,6 +1531,7 @@ html.small-screen .ss-result {
     text-overflow: ellipsis;
 }
 .ss-result-pct {
+    flex: none;
     margin-left: auto;
     font-size: 15px;
     font-weight: 700;
@@ -1538,7 +1539,10 @@ html.small-screen .ss-result {
     white-space: nowrap;
 }
 .ss-result-ko-text {
-    flex: none;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 1px 7px;
     border-radius: 999px;
     background: var(--ss-btn, #f3f5f9);
@@ -1553,6 +1557,16 @@ html.small-screen .ss-result {
 .ss-result-ko-text.ss-ko-2 {
     background: #f5a623;
     color: #1d2330;
+}
+.ss-result-ko-text.ss-result-ko-long {
+    display: inline-block;
+    max-width: 100%;
+    margin: 0 6px 2px 0;
+    vertical-align: middle;
+    color: var(--ss-text, #1d2330);
+}
+.ss-result-ko-text.ss-result-ko-long.ss-ko-1 {
+    color: #fff;
 }
 .ss-result-hp {
     color: var(--ss-text, #1d2330);
