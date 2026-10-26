@@ -102,6 +102,7 @@ var CHANGELOG = [
 			"trainer card's buttons no longer run off the screen",
 		"Small screens: a neater result card (the move and its damage, the KO chance, then who is fighting " +
 			"and the rolls in small print) and damage ranges with one decimal on both ends",
+		"Battle: Previous trainer and Next trainer spelled out at the bottom of the trainer card",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
