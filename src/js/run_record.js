@@ -126,11 +126,11 @@ function summarizeRun() {
 	var record = readRunRecord();
 	var defeated = 0;
 	var furthest = -1;
-	TRAINER_ORDER.forEach(function (trainer, index) {
-		if (isTrainerDefeated(index)) {
-			defeated++;
-			furthest = index;
-		}
+	// Boss fights beaten, and the furthest trainer beaten in the order you meet them.
+	getTrainerNavOrder(true).forEach(function (index) {
+		if (!isTrainerDefeated(index)) return;
+		if (!TRAINER_ORDER[index].route) defeated++;
+		furthest = index;
 	});
 	var team = resolveBoxLayout(readCustomSets(), readBoxLayout()).team;
 	var standing = team.filter(function (setId) {

@@ -126,6 +126,14 @@ var CHANGELOG = [
 			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
 			"Shed Tail, burns, paralysis and poison (with Hex and Venoshock), Sheer Force and Serene Grace chances, " +
 			"draining moves, Rest and Wish, trapping moves and Salt Cure, Defog and Rapid Spin, and many more"
+	]},
+	{version: "1.8", notes: [
+		"Route trainers: every other trainer in the game (over 300 in each mode), with the team the game gives " +
+			"them: their level, the last four moves they learn by then (Hardcore leaves out setup moves, hazards and " +
+			"Protect, as the game does), their class's IVs, and the nature and ability the game works out from their " +
+			"name. Previous / Next take you through them before the boss fight they lead up to (Cerulean City's " +
+			"trainers before Misty), at that fight's level cap; untick \u201cRoute trainers in Previous / Next\u201d " +
+			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

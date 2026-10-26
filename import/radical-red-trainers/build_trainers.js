@@ -604,10 +604,12 @@ function applyRomFixes(order, setdex) {
 				// A set other fights share gets a copy of its own, so only this fight changes.
 				const shared = order.some(t => t.variants.some(v => v !== variant && v.sets.indexOf(id) !== -1));
 				if (shared) {
+					// The copy an earlier build made, or a new one.
 					const base = setName.replace(/ Set \d+$/, '');
+					const copy = Object.assign(JSON.parse(JSON.stringify(setdex[species][setName])), {evs: fix.evs});
 					let n = 1;
-					while (setdex[species][base + ' Set ' + n]) n++;
-					setdex[species][base + ' Set ' + n] = JSON.parse(JSON.stringify(setdex[species][setName]));
+					while (setdex[species][base + ' Set ' + n] && JSON.stringify(setdex[species][base + ' Set ' + n]) !== JSON.stringify(copy)) n++;
+					setdex[species][base + ' Set ' + n] = copy;
 					setName = base + ' Set ' + n;
 					variant.sets[slot] = species + ' (' + setName + ')';
 				}
@@ -617,6 +619,99 @@ function applyRomFixes(order, setdex) {
 		});
 	});
 	return applied;
+}
+
+/*
+ * Every other trainer in the game (route_trainers.json, from rr-rom's route_trainers.js, which builds
+ * their teams as the game does: the last four level-up moves, IVs by trainer class, nature and
+ * ability from the name hash, Hardcore leaving setup moves out). They go at the end of the order so
+ * the fights already there keep their places (saved KOs are kept by place), each with the boss fight
+ * it comes before in Previous / Next (route.before): the gym leader where it stands (its gym), else
+ * the first boss there (a Silph Co. floor, Victory Road), else the first boss past where it stands
+ * in the game's order of places. Trainers with custom moves (the game's
+ * pseudo-bosses, whose sets come from its EV spreads) are not added yet.
+ */
+// Kanto and the Sevii Islands in the order the game takes you through them (FireRed's), the
+// Sevii Islands past Three Island after the Elite Four.
+const LOCATION_ORDER = ['Pallet Town', 'Route 1', 'Viridian City', 'Route 22', 'Route 2', 'Viridian Forest',
+	'Pewter City', 'Route 3', 'Mt. Moon', 'Route 4', 'Cerulean City', 'Route 24', 'Route 25', 'Route 5',
+	'Underground Path', 'Route 6', 'Vermilion City', 'S.S. Anne', 'Route 11', 'Diglett\'s Cave', 'Route 9',
+	'Route 10', 'Rock Tunnel', 'Lavender Town', 'Route 8', 'Route 7', 'Celadon City', 'Celadon Dept.',
+	'Rocket Hideout', 'Pokémon Tower', 'Saffron City', 'Silph Co.', 'Route 12', 'Route 13', 'Route 14',
+	'Route 15', 'Route 16', 'Route 17', 'Route 18', 'Fuchsia City', 'Safari Zone', 'Power Plant',
+	'Seafoam Islands', 'Route 19', 'Route 20', 'Cinnabar Island', 'One Island',
+	'Kindle Road', 'Treasure Beach', 'Mt. Ember', 'Two Island', 'Cape Brink', 'Three Island', 'Bond Bridge',
+	'Berry Forest', 'Three Isle Port', 'Cerulean Cave', 'Pokémon Mansion', 'Route 21', 'Route 23', 'Victory Road',
+	'Indigo Plateau', 'Pokémon League', 'Four Island', 'Icefall Cave', 'Five Island', 'Five Isle Meadow',
+	'Memorial Pillar', 'Water Labyrinth', 'Resort Gorgeous', 'Lost Cave', 'Rocket Warehouse', 'Six Island',
+	'Water Path', 'Ruin Valley', 'Green Path', 'Outcast Island', 'Pattern Bush', 'Altering Cave',
+	'Dotted Hole', 'Seven Island', 'Trainer Tower', 'Canyon Entrance', 'Sevault Canyon', 'Tanoby Ruins'];
+// The boss documents' names for places, where they are not the game's.
+const LOCATION_ALIASES = {
+	'Nugget Bridge': 'Route 24', 'Vermillion City': 'Vermilion City', 'Dig House': 'Cerulean City',
+	'Game Corner': 'Celadon City', 'Celadon City Hotel': 'Celadon City', 'Pokemon Tower': 'Pokémon Tower',
+	'Pokemon Mansion 4f': 'Pokémon Mansion', 'Cinnabar Island Lab': 'Cinnabar Island',
+	'Cinnabar Island Gym': 'Cinnabar Island', 'Elite Four': 'Pokémon League', 'Champion': 'Pokémon League',
+	'Indigo Plateau': 'Pokémon League',
+};
+// Kanto's gym leaders: a trainer where one stands is in the gym (the Johto leaders stand elsewhere:
+// Jasmine in the Cinnabar lab, Chuck in Saffron City).
+const GYM_LEADERS = ['Brock', 'Misty', 'Lt. Surge', 'Erika', 'Koga', 'Sabrina', 'Blaine', 'Clair'];
+// The calc's spelling of a few class names (the game's own text has "RUIN MAMOAC").
+const CLASS_NAMES = {'Ruin Mamoac': 'Ruin Maniac', 'Pokémaniac': 'Pokemaniac'};
+
+function addRouteTrainers(order, setdex) {
+	const all = JSON.parse(fs.readFileSync(path.join(__dirname, 'route_trainers.json'), 'utf8'));
+	const byId = new Map(all.map(t => [t.id, t]));
+	const inOrder = new Set();
+	const usedSets = new Set();
+	order.forEach(t => t.variants.forEach(v => {
+		(v.trainerIds || []).forEach(id => inOrder.add(id));
+		v.sets.forEach(id => usedSets.add(id));
+	}));
+	const place = name => LOCATION_ALIASES[name] || name;
+	const rank = name => LOCATION_ORDER.indexOf(place(name));
+	// Where each boss fight is (its trainer's map, else the document's place) and how far into the
+	// game it is (never going back).
+	const bossPlaces = order.map(t => {
+		const mapped = [].concat(...t.variants.map(v => v.trainerIds || [])).map(id => byId.get(id))
+			.find(r => r && r.locations.length);
+		return mapped ? mapped.locations[0].location : place(t.location);
+	});
+	let running = -1;
+	const progress = bossPlaces.map(where => {
+		running = Math.max(running, rank(where));
+		return running;
+	});
+	const named = {};
+	let added = 0;
+	all.forEach(trainer => {
+		if (inOrder.has(trainer.id) || trainer.flags & 1 || !trainer.locations.length || !trainer.team.length) return;
+		const where = trainer.locations[0].location;
+		let before = order.findIndex((t, i) => bossPlaces[i] === where && GYM_LEADERS.indexOf(t.name) !== -1);
+		if (before === -1) before = bossPlaces.indexOf(where);
+		if (before === -1 && rank(where) !== -1) before = progress.findIndex(p => p >= rank(where));
+		const name = (CLASS_NAMES[trainer.className] || trainer.className) + ' ' + trainer.name;
+		const sets = trainer.team.filter(mon => SPECIES[mon.species]).map(mon => {
+			setdex[mon.species] = setdex[mon.species] || {};
+			// Its own set name; a fight already in the order keeps the set it uses.
+			let setName = name;
+			for (let n = 2; usedSets.has(mon.species + ' (' + setName + ')') || (named[mon.species] || []).indexOf(setName) !== -1; n++) {
+				setName = name + ' Set ' + n;
+			}
+			(named[mon.species] = named[mon.species] || []).push(setName);
+			const set = {level: mon.level, nature: mon.nature, ability: mon.ability,
+				moves: mode === 'hardcore' && mon.hardcoreMoves ? mon.hardcoreMoves : mon.moves};
+			if (mon.item) set.item = mon.item;
+			if (trainer.classIV < 31) set.ivs = Object.fromEntries(STATS.map(stat => [stat, trainer.classIV]));
+			setdex[mon.species][setName] = set;
+			return mon.species + ' (' + setName + ')';
+		});
+		order.push({name, location: where, levelCap: null, optional: true, route: {before: before === -1 ? null : before},
+			variants: [{label: 'Team 1', battleEffect: trainer.doubleBattle ? 'Doubles' : null, sets, trainerIds: [trainer.id]}]});
+		added++;
+	});
+	return added;
 }
 
 function writeReport(setdex, report, stats, trainerCount, namesFixed) {
@@ -649,7 +744,8 @@ function build() {
 	const withIds = addTrainerIds(order);
 	const duplicates = markDuplicates(order);
 	const romFixes = applyRomFixes(order, setdex);
-	if (APPLY || romSets || romFixes) writeSetdex(setdex);
+	const routeTrainers = addRouteTrainers(order, setdex);
+	if (APPLY || romSets || romFixes || routeTrainers) writeSetdex(setdex);
 
 	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
 	fs.mkdirSync(path.dirname(outFile), {recursive: true});
@@ -660,7 +756,7 @@ function build() {
 		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked; ${routeTrainers} route trainers added` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 build();

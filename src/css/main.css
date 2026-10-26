@@ -963,7 +963,8 @@ legend:has(> .header-sprite)::before {
 .rc-unlikely { color: #c99a00; }
 .rc-never { color: #d33; }
 
-.trainer-on-top {
+.trainer-on-top,
+.trainer-routes {
     display: block;
     margin-top: 6px;
     font-size: 0.85em;

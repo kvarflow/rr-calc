@@ -68,6 +68,7 @@
         "colorCodeBox": false,
         "isBoxRankingActive": false,
         "getBoxRankLevel": false,
+        "getTrainerNavOrder": false,
         "getRunMon": false,
         "toggleYourFaint": false,
         "getRunKey": false,

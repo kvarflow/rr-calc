@@ -8,7 +8,8 @@ var SETDEX_SV = {
   },
   "Bulbasaur": {
     "Rival Blue Set 1": {"nature":"Timid","ability":"Overgrow","level":9,"moves":["Tackle","Growl","Leech Seed","Magical Leaf"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}},
-    "Rival Blue Set 2": {"nature":"Bashful","ability":"Overgrow","level":5,"moves":["Double-Edge","Seed Bomb","Synthesis","Worry Seed"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}}
+    "Rival Blue Set 2": {"nature":"Bashful","ability":"Overgrow","level":5,"moves":["Double-Edge","Seed Bomb","Synthesis","Worry Seed"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}},
+    "Aroma Lady Violet": {"level":36,"nature":"Modest","ability":"Overgrow","moves":["Growth","Double-Edge","Worry Seed","Synthesis"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Squirtle": {
     "Rival Blue Set 1": {"nature":"Relaxed","ability":"Torrent","level":9,"moves":["Tackle","False Swipe","Tail Whip","Bubble"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}},
@@ -24,74 +25,84 @@ var SETDEX_SV = {
     "Leader Falkner": {"nature":"Bold","ability":"Speed Boost","level":14,"item":"Eviolite","moves":["Calm Mind","Disarming Voice","Psybeam","Roost"]}
   },
   "Geodude-Alola": {
-    "Hiker Franklin": {"nature":"Modest","ability":"Rock Head","level":19,"moves":["Discharge","Double-Edge","Explosion","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Hiker Franklin": {"level":19,"nature":"Docile","ability":"Rock Head","moves":["Rollout","Spark","Rock Throw","Smack Down"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Leader Brock": {"nature":"Adamant","ability":"Sturdy","level":13,"item":"Custap Berry","moves":["Bulldoze","Rock Tomb","Self-Destruct","Spark"],"ivs":{"sa":0}}
   },
   "Varoom": {
     "Leader Brock": {"nature":"Brave","ability":"Filter","level":13,"item":"Air Balloon","moves":["Bulldoze","Gyro Ball","Protect","Toxic"],"ivs":{"sp":0}},
-    "Gambler Darian": {"nature":"Mild","ability":"Overcoat","level":25,"moves":["Gunk Shot","Poison Jab","Spin Out","Uproar"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Gambler Darian": {"level":25,"nature":"Relaxed","ability":"Overcoat","moves":["Sludge","Gyro Ball","Headbutt","Screech"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Onix": {
-    "Leader Brock": {"nature":"Bashful","ability":"Sturdy","level":14,"item":"Berry Juice","moves":["Bulldoze","Rock Tomb","Sleep Talk"]}
+    "Leader Brock": {"nature":"Bashful","ability":"Sturdy","level":14,"item":"Berry Juice","moves":["Bulldoze","Rock Tomb","Sleep Talk"]},
+    "Ruin Maniac Stanly": {"level":48,"nature":"Jolly","ability":"Rock Head","moves":["Sand Tomb","Iron Tail","Dig","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Hiker Earl": {"level":49,"nature":"Quiet","ability":"Rock Head","moves":["Iron Tail","Dig","Stone Edge","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Brandon": {"level":50,"nature":"Serious","ability":"Sturdy","moves":["Iron Tail","Dig","Stone Edge","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Lawson": {"level":47,"nature":"Lonely","ability":"Rock Head","moves":["Sand Tomb","Iron Tail","Dig","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Layton": {"level":48,"nature":"Mild","ability":"Rock Head","moves":["Sand Tomb","Iron Tail","Dig","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Archen": {
     "Leader Brock": {"nature":"Jolly","ability":"Defeatist","level":12,"item":"Berry Juice","moves":["Bulldoze","Facade","Pluck","Rock Tomb"]}
   },
   "Growlithe-Hisui": {
     "Camper Liam": {"nature":"Bashful","ability":"Intimidate","level":11,"item":"Oran Berry","moves":["Bite","Ember","Rock Throw"]},
-    "Picnicker Nancy": {"nature":"Bold","ability":"Intimidate","level":23,"moves":["Flare Blitz","Head Smash","Heat Wave","Outrage"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Nancy": {"level":23,"nature":"Modest","ability":"Flash Fire","moves":["Flame Wheel","Rock Tomb","Fire Fang","Take Down"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Nacli": {
     "Camper Liam": {"nature":"Bashful","ability":"Purifying Salt","level":11,"item":"Hard Stone","moves":["Bulldoze","Recover","Rock Tomb"]}
   },
   "Caterpie": {
-    "Bug Catcher Robby": {"nature":"Careful","ability":"Shield Dust","level":12,"moves":["Bug Bite","String Shot","Tackle"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
-    "Bug Catcher Rick": {"nature":"Lax","ability":"Shield Dust","level":6,"moves":["Bug Bite","String Shot","Tackle"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Robby": {"level":12,"nature":"Impish","ability":"Shield Dust","moves":["Tackle","String Shot","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Rick": {"level":6,"nature":"Hardy","ability":"Shield Dust","moves":["Tackle","String Shot"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Tarountula": {
-    "Bug Catcher Rick": {"nature":"Lax","ability":"Insomnia","level":7,"moves":["Circle Throw","Gastro Acid","Skitter Smack","Throat Chop"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Rick": {"level":7,"nature":"Hardy","ability":"Insomnia","moves":["Tackle","String Shot","Struggle Bug"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Kakuna": {
-    "Bug Catcher Doug": {"nature":"Bashful","ability":"Shed Skin","level":7,"moves":["Bug Bite","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Doug": {"level":7,"nature":"Lax","ability":"Shed Skin","moves":["Harden","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Spinarak": {
-    "Bug Catcher Doug": {"nature":"Hasty","ability":"Swarm","level":7,"moves":["Cross Poison","Poison Jab","Sticky Web","Toxic Thread"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Doug": {"level":7,"nature":"Brave","ability":"Swarm","moves":["Poison Sting","String Shot","Constrict","Absorb"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Ledyba": {
-    "Bug Catcher Doug": {"nature":"Calm","ability":"Swarm","level":7,"moves":["Agility","Bug Buzz","Comet Punch","Double-Edge"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
-    "Bug Catcher James": {"nature":"Brave","ability":"Swarm","level":13,"moves":["Agility","Bug Buzz","Comet Punch","Double-Edge"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Doug": {"level":7,"nature":"Calm","ability":"Swarm","moves":["Tackle","Supersonic"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher James": {"level":13,"nature":"Serious","ability":"Early Bird","moves":["Swift","Light Screen","Reflect","Safeguard"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Grubbin": {
-    "Bug Catcher Sammy": {"nature":"Docile","ability":"Swarm","level":9,"moves":["Acrobatics","Crunch","Dig","X-Scissor"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Sammy": {"level":9,"nature":"Mild","ability":"Swarm","moves":["Vise Grip","String Shot","Mud-Slap"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Cascoon": {
-    "Bug Catcher Anthony": {"nature":"Modest","ability":"Shed Skin","level":7,"moves":["Bug Bite","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Anthony": {"level":7,"nature":"Hardy","ability":"Shed Skin","moves":["Harden","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Surskit": {
-    "Bug Catcher James": {"nature":"Calm","ability":"Swift Swim","level":13,"moves":["Aqua Jet","Haze","Mist","Sticky Web"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
-    "Bug Catcher Anthony": {"nature":"Gentle","ability":"Swift Swim","level":7,"moves":["Aqua Jet","Haze","Mist","Sticky Web"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher James": {"level":13,"nature":"Naughty","ability":"Swift Swim","moves":["Bubble","Signal Beam","Quick Attack","Sweet Scent"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Anthony": {"level":7,"nature":"Bold","ability":"Swift Swim","moves":["Bubble","Signal Beam","Quick Attack"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Rellor": {
-    "Bug Catcher Charlie": {"nature":"Relaxed","ability":"Shed Skin","level":8,"moves":["Dig","Leech Life","Lunge","Take Down"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Charlie": {"level":8,"nature":"Quiet","ability":"Compound Eyes","moves":["Confusion","Defense Curl","Sand Attack","Struggle Bug"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Spewpa": {
-    "Bug Catcher Colton": {"nature":"Rash","ability":"Shed Skin","level":10,"moves":["Detect","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
-    "Bug Catcher Charlie": {"nature":"Careful","ability":"Shed Skin","level":9,"moves":["Detect","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Colton": {"level":10,"nature":"Timid","ability":"Shed Skin","moves":["Detect","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Charlie": {"level":9,"nature":"Relaxed","ability":"Shed Skin","moves":["Detect","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Metapod": {
-    "Bug Catcher Charlie": {"nature":"Careful","ability":"Shed Skin","level":8,"moves":["Bug Bite","Harden"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Charlie": {"level":8,"nature":"Quirky","ability":"Shed Skin","moves":["Harden","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Stufful": {
     "*Lass Anne": {"nature":"Bashful","ability":"Fluffy","level":12,"item":"Oran Berry","moves":["Aerial Ace","Low Sweep","Tackle"]}
   },
   "Clefairy": {
     "*Lass Anne": {"nature":"Bashful","ability":"Magic Guard","level":10,"item":"Life Orb","moves":["Metronome"]},
-    "Lass Julia": {"nature":"Docile","ability":"Cute Charm","level":35,"moves":["After You","Gravity","Healing Wish","Meteor Mash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Julia": {"level":35,"nature":"Mild","ability":"Magic Guard","moves":["Wish","Stored Power","Metronome","Cosmic Power"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "PkMn Breeder Alize": {"level":48,"nature":"Hardy","ability":"Magic Guard","moves":["Lucky Chant","Body Slam","Soft-Boiled","Moonblast"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Twins Joy & Meg": {"level":37,"nature":"Sassy","ability":"Magic Guard","moves":["Stored Power","Metronome","Cosmic Power","Lucky Chant"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Twins Joy & Meg Set 2": {"level":37,"nature":"Docile","ability":"Magic Guard","moves":["Stored Power","Metronome","Cosmic Power","Lucky Chant"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "PkMn Breeder Allison": {"level":48,"nature":"Hasty","ability":"Magic Guard","moves":["Lucky Chant","Body Slam","Soft-Boiled","Moonblast"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "PkMn Breeder Allison Set 2": {"level":48,"nature":"Calm","ability":"Magic Guard","moves":["Lucky Chant","Body Slam","Soft-Boiled","Moonblast"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Audino": {
     "*Lass Anne": {"nature":"Bashful","ability":"Regenerator","level":12,"moves":["Protect","Swagger","Wish","Yawn"],"ivs":{"hp":0,"df":0,"sd":0}},
-    "Lass Haley": {"nature":"Bold","ability":"Regenerator","level":18,"moves":["Double-Edge","Moonblast","Simple Beam","Wish"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Lass Miriam": {"nature":"Adamant","ability":"Regenerator","level":15,"moves":["Double-Edge","Moonblast","Simple Beam","Wish"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Haley": {"level":18,"nature":"Docile","ability":"Regenerator","moves":["Baby-Doll Eyes","Refresh","Disarming Voice","Double Slap"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Lass Miriam": {"level":15,"nature":"Rash","ability":"Regenerator","moves":["Helping Hand","Baby-Doll Eyes","Refresh","Disarming Voice"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Corphish": {
     "PkMn Trainer Brendan": {"nature":"Rash","ability":"Battle Armor","level":7,"moves":["Bubble","Harden","Vise Grip","Leer"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
@@ -106,98 +117,100 @@ var SETDEX_SV = {
     "*Ace Trainer Nelle": {"nature":"Bashful","ability":"Gluttony","level":12,"item":"Iapapa Berry","moves":["Belch","Bullet Seed","Sleep Talk","Sludge"]}
   },
   "Shedinja": {
-    "Team Rocket Grunt": {"nature":"Naive","ability":"Wonder Guard","level":48,"moves":["Grudge","Heal Block","Phantom Force","Pounce"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":48,"nature":"Timid","ability":"Wonder Guard","moves":["Pounce","Grudge","Heal Block","Phantom Force"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Ace Trainer Naomi": {"nature":"Adamant","ability":"Wonder Guard","level":81,"item":"Focus Sash","moves":["Poltergeist","Shadow Sneak","Will-O-Wisp","X-Scissor"],"evs":{"at":252,"df":4,"sp":252}},
-    "Channeler Angelica": {"nature":"Brave","ability":"Wonder Guard","level":37,"moves":["Grudge","Heal Block","Phantom Force","Pounce"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Channeler Angelica": {"level":37,"nature":"Brave","ability":"Wonder Guard","moves":["Confuse Ray","Shadow Ball","Pounce","Grudge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Friendly Teacher Set 1": {"nature":"Jolly","ability":"Wonder Guard","level":100,"item":"Focus Sash","moves":["Shadow Sneak","X-Scissor"]},
     "Friendly Teacher Set 2": {"nature":"Jolly","ability":"Wonder Guard","level":100,"item":"Heavy-Duty Boots","moves":["Shadow Sneak","X-Scissor"]},
     "Dumbass Creator": {"nature":"Jolly","ability":"Wonder Guard","level":250,"item":"Focus Sash","moves":["Supercell Slam"],"evs":{"at":252,"sp":252}}
   },
   "Flaaffy": {
-    "Lass Robin": {"nature":"Relaxed","ability":"Static","level":14,"moves":["Discharge","Light Screen","Signal Beam","Thunder"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Robin": {"level":14,"nature":"Quiet","ability":"Illuminate","moves":["Cotton Guard","Thunder Wave","Flash","Cotton Spore"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Lady Gillian": {"level":49,"nature":"Brave","ability":"Illuminate","moves":["Discharge","Signal Beam","Light Screen","Thunder"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Pawmi": {
-    "Lass Sally": {"nature":"Lax","ability":"Static","level":12,"moves":["Agility","Discharge","Entrainment","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Sally": {"level":12,"nature":"Rash","ability":"Natural Cure","moves":["Spark","Quick Attack","Charge","Nuzzle"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Nincada": {
-    "Bug Catcher Greg": {"nature":"Brave","ability":"Compound Eyes","level":11,"moves":["Bide","Dig","False Swipe","Mind Reader"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Greg": {"level":11,"nature":"Bashful","ability":"Compound Eyes","moves":["Scratch","Harden","Absorb"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Sizzlipede": {
-    "Bug Catcher Greg": {"nature":"Docile","ability":"Flash Fire","level":11,"moves":["Burn Up","Crunch","Fire Lash","Lunge"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Greg": {"level":11,"nature":"Sassy","ability":"Flash Fire","moves":["Ember","Bug Bite","Wrap","Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Dustox": {
-    "Bug Catcher Greg": {"nature":"Naughty","ability":"Shield Dust","level":10,"moves":["Bug Buzz","Detect","Quiver Dance","Sludge Bomb"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Greg": {"level":10,"nature":"Naughty","ability":"Shield Dust","moves":["Gust"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Joltik": {
-    "Bug Catcher Greg": {"nature":"Gentle","ability":"Compound Eyes","level":11,"moves":["Agility","Bug Buzz","Discharge","Sucker Punch"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Greg": {"level":11,"nature":"Serious","ability":"Compound Eyes","moves":["Mega Drain","Spider Web","Thunder Wave","Screech"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Zigzagoon-Galar": {
-    "Youngster Calvin": {"nature":"Bold","ability":"Pickup","level":15,"moves":["Counter","Double-Edge","Scary Face","Taunt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Calvin": {"level":15,"nature":"Gentle","ability":"Pickup","moves":["Lick","Snarl","Headbutt","Baby-Doll Eyes"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Fidough": {
-    "Lass Janice": {"nature":"Sassy","ability":"Own Tempo","level":10,"moves":["Charm","Crunch","Double-Edge","Last Resort"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Janice": {"level":10,"nature":"Jolly","ability":"Own Tempo","moves":["Growl","Lick","Tail Whip","Covet"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Nidoran-F": {
-    "Lass Paige": {"nature":"Serious","ability":"Poison Touch","level":37,"moves":["Captivate","Crunch","Flatter","Poison Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Lass Janice": {"nature":"Modest","ability":"Poison Touch","level":11,"moves":["Captivate","Crunch","Flatter","Poison Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Paige": {"level":37,"nature":"Sassy","ability":"Rivalry","moves":["Helping Hand","Toxic Spikes","Flatter","Crunch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Lass Janice": {"level":11,"nature":"Docile","ability":"Poison Touch","moves":["Growl","Scratch","Tail Whip","Double Kick"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Dottler": {
-    "Bug Catcher Colton": {"nature":"Jolly","ability":"Swarm","level":11,"moves":["Light Screen","Reflect","Signal Beam","Struggle Bug"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Colton": {"level":11,"nature":"Naughty","ability":"Swarm","moves":["Struggle Bug","Psybeam","Reflect","Light Screen"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Snom": {
-    "Bug Catcher Colton": {"nature":"Quiet","ability":"Shield Dust","level":11,"moves":["Powder Snow","Struggle Bug"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Colton": {"level":11,"nature":"Quiet","ability":"Shield Dust","moves":["Powder Snow","Struggle Bug"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Rattata": {
-    "Youngster Yasu": {"nature":"Hasty","ability":"Run Away","level":25,"moves":["Double-Edge","Endeavor","Return","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Youngster Ben": {"nature":"Impish","ability":"Run Away","level":11,"moves":["Double-Edge","Endeavor","Return","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Team Rocket Grunt": {"nature":"Impish","ability":"Run Away","level":15,"moves":["Double-Edge","Endeavor","Return","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Youngster Yasu": {"level":25,"nature":"Brave","ability":"Run Away","moves":["Pursuit","Assurance","Crunch","Sucker Punch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Ben": {"level":11,"nature":"Bashful","ability":"Guts","moves":["Tail Whip","Quick Attack","Focus Energy","Hyper Fang"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Team Rocket Grunt": {"level":15,"nature":"Naughty","ability":"Run Away","moves":["Quick Attack","Focus Energy","Hyper Fang","Pursuit"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Naughty","ability":"Run Away","moves":["Return","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Maschiff": {
-    "Youngster Ben": {"nature":"Bold","ability":"Run Away","level":12,"moves":["Double-Edge","Jaw Lock","Reversal","Swagger"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Ben": {"level":12,"nature":"Naive","ability":"Run Away","moves":["Scary Face","Lick","Snarl","Hone Claws"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Tinkatink": {
-    "Lass Iris": {"nature":"Relaxed","ability":"Mold Breaker","level":16,"moves":["Fake Out","Flatter","Knock Off","Skitter Smack"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Iris": {"level":16,"nature":"Careful","ability":"Mold Breaker","moves":["Baby-Doll Eyes","Metal Claw","Covet","Rock Smash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Nymble": {
-    "Bug Catcher Robby": {"nature":"Brave","ability":"Tinted Lens","level":12,"moves":["Agility","Feint","First Impression","Sucker Punch"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Robby": {"level":12,"nature":"Hasty","ability":"Tinted Lens","moves":["Struggle Bug","Astonish","Assurance","Double Kick"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Butterfree": {
-    "Bug Catcher Robby": {"nature":"Hasty","ability":"Compound Eyes","level":10,"moves":["Air Slash","Captivate","Quiver Dance","Tailwind"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
+    "Bug Catcher Robby": {"level":10,"nature":"Serious","ability":"Compound Eyes","moves":["Gust","Confusion","Pounce"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
     "*Bug Catcher Cale": {"nature":"Timid","ability":"Compound Eyes","level":23,"item":"Sitrus Berry","moves":["Air Cutter","Mega Drain","Ominous Wind","Sleep Powder"]}
   },
   "Magnemite": {
-    "Engineer Bernie": {"nature":"Lax","ability":"Magnet Pull","level":25,"moves":["Gyro Ball","Lock-On","Magnet Rise","Zap Cannon"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Super Nerd Jovan": {"nature":"Bold","ability":"Magnet Pull","level":13,"moves":["Gyro Ball","Lock-On","Magnet Rise","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Engineer Bernie": {"level":25,"nature":"Hardy","ability":"Magnet Pull","moves":["Sonic Boom","Spark","Mirror Shot","Metal Sound"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Super Nerd Jovan": {"level":13,"nature":"Modest","ability":"Sturdy","moves":["Shock Wave","Thunder Wave","Magnet Bomb","Light Screen"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gimmighoul": {
-    "Super Nerd Jovan": {"nature":"Bold","ability":"Clear Body","level":14,"moves":["Astonish","Tackle"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Jovan": {"level":14,"nature":"Naive","ability":"Clear Body","moves":["Astonish","Tackle"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Applin": {
-    "Lass Miriam": {"nature":"Naive","ability":"Ripen","level":14,"moves":["Astonish","Dragon Breath","Mega Drain","Withdraw"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Miriam": {"level":14,"nature":"Bold","ability":"Ripen","moves":["Astonish","Withdraw","Mega Drain","Dragon Breath"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Weedle": {
-    "Bug Catcher Kent": {"nature":"Docile","ability":"Shield Dust","level":13,"moves":["Bug Bite","Poison Sting","String Shot"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Kent": {"level":13,"nature":"Sassy","ability":"Shield Dust","moves":["Poison Sting","String Shot","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Kricketune": {
-    "Bug Catcher Kent": {"nature":"Naughty","ability":"Technician","level":12,"moves":["Bug Buzz","Night Slash","Perish Song","Sticky Web"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Kent": {"level":12,"nature":"Calm","ability":"Technician","moves":["Growl","Bide","Struggle Bug","Rock Tomb"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Wooloo": {
-    "Youngster Josh": {"nature":"Naive","ability":"Fluffy","level":13,"moves":["Cotton Guard","Double-Edge","Guard Swap","Reversal"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Josh": {"level":13,"nature":"Bold","ability":"Fluffy","moves":["Tackle","Defense Curl","Copycat","Guard Split"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Rockruff": {
-    "Youngster Josh": {"nature":"Mild","ability":"Frisk","level":15,"moves":["Crunch","Rock Climb","Scary Face","Stone Edge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Josh": {"level":15,"nature":"Relaxed","ability":"Frisk","moves":["Leer","Bite","Howl","Rock Throw"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Lechonk": {
-    "Youngster Josh": {"nature":"Mild","ability":"Aroma Veil","level":16,"moves":["Double-Edge","Take Down","Uproar","Work Up"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Josh": {"level":16,"nature":"Mild","ability":"Aroma Veil","moves":["Disarming Voice","Echoed Voice","Mud Shot","Covet"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Geodude": {
-    "Hiker Marcos": {"nature":"Bold","ability":"Rock Head","level":14,"moves":["Double-Edge","Earthquake","Explosion","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Marcos": {"level":14,"nature":"Gentle","ability":"Rock Head","moves":["Mud Sport","Rock Polish","Rollout","Magnitude"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Drilbur": {
-    "Hiker Marcos": {"nature":"Sassy","ability":"Sand Rush","level":16,"moves":["Drill Run","Earthquake","Rock Slide","Sandstorm"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Marcos": {"level":16,"nature":"Jolly","ability":"Sand Rush","moves":["Rapid Spin","Mud-Slap","Fury Swipes","Metal Claw"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Nosepass": {
-    "Hiker Marcos": {"nature":"Bold","ability":"Sturdy","level":15,"moves":["Earthquake","Lock-On","Stone Edge","Zap Cannon"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Marcos": {"level":15,"nature":"Bold","ability":"Sturdy","moves":["Harden","Block","Bulldoze","Thunder Wave"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Thwackey": {
     "*Super Nerd Miguel": {"nature":"Adamant","ability":"Grassy Surge","level":17,"item":"Eviolite","moves":["Fake Out","Knock Off","Razor Leaf","U-turn"]}
@@ -207,75 +220,84 @@ var SETDEX_SV = {
   },
   "Bibarel": {
     "*Super Nerd Miguel": {"nature":"Careful","ability":"Simple","level":17,"item":"Grassy Seed","moves":["Aqua Jet","Curse","Quick Attack","Rock Smash"]},
-    "Sailor Huey": {"nature":"Timid","ability":"Simple","level":28,"moves":["Amnesia","Curse","Superpower","Swords Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Huey": {"level":28,"nature":"Lonely","ability":"Simple","moves":["Headbutt","Hyper Fang","Yawn","Crunch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Sableye": {
     "*Super Nerd Miguel": {"nature":"Careful","ability":"Prankster","level":17,"item":"Sitrus Berry","moves":["Foul Play","Protect","Recover","Will-O-Wisp"]}
   },
   "Rattata-Alola": {
     "Team Rocket Grunt Set 1": {"nature":"Impish","ability":"Gluttony","level":16,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Naive","ability":"Hustle","level":15,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":16,"nature":"Naughty","ability":"Gluttony","moves":["Quick Attack","Focus Energy","Hyper Fang","Pursuit"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":15,"nature":"Lax","ability":"Gluttony","moves":["Quick Attack","Focus Energy","Hyper Fang","Pursuit"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Capsakid": {
-    "Team Rocket Grunt": {"nature":"Sassy","ability":"Insomnia","level":17,"moves":["Crunch","Seed Bomb","Solar Beam","Zen Headbutt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":17,"nature":"Quiet","ability":"Chlorophyll","moves":["Growth","Razor Leaf","Sunny Day","Mega Drain"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Zubat": {
     "Team Rocket Grunt Set 1": {"nature":"Quiet","ability":"Sniper","level":15,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Gentle","ability":"Infiltrator","level":16,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":16,"nature":"Quiet","ability":"Infiltrator","moves":["Supersonic","Astonish","Bite","Wing Attack"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":15,"nature":"Serious","ability":"Infiltrator","moves":["Supersonic","Astonish","Bite","Wing Attack"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Stunky": {
-    "Camper Drew": {"nature":"Brave","ability":"Stench","level":28,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Camper Drew": {"level":28,"nature":"Brave","ability":"Stench","moves":["Acid Spray","Bite","Slash","Toxic"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "Team Rocket Grunt Set 1": {"nature":"Timid","ability":"Stench","level":14,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Bashful","ability":"Aftermath","level":42,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":42,"nature":"Jolly","ability":"Stench","moves":["Night Slash","Poison Jab","Venom Drench","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":14,"nature":"Docile","ability":"Stench","moves":["Focus Energy","Poison Gas","Screech","Poison Tail"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Nickit": {
-    "Team Rocket Grunt": {"nature":"Quiet","ability":"Unburden","level":14,"moves":["Dark Pulse","Foul Play","Night Slash","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":14,"nature":"Serious","ability":"Run Away","moves":["Tail Whip","Beat Up","Hone Claws","Snarl"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Shroodle": {
-    "Team Rocket Grunt": {"nature":"Calm","ability":"Unburden","level":15,"moves":["Gunk Shot","Knock Off","Substitute","Taunt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":15,"nature":"Mild","ability":"Unburden","moves":["Bite","Fury Swipes","Switcheroo","Poison Fang"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Glimmet": {
-    "Hiker Oliver": {"nature":"Timid","ability":"Toxic Debris","level":34,"moves":["Acid Armor","Power Gem","Rock Slide","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Hiker Oliver": {"level":34,"nature":"Lonely","ability":"Toxic Debris","moves":["Venoshock","Sandstorm","Self-Destruct","Rock Slide"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Rocket Admin Archer": {"nature":"Timid","ability":"Toxic Debris","level":18,"item":"Shuca Berry","moves":["Ancient Power","Mud Shot","Protect","Venoshock"]}
   },
   "Houndour": {
-    "Gambler Rich": {"nature":"Hardy","ability":"Early Bird","level":35,"moves":["Crunch","Flamethrower","Inferno","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Rocket Admin Archer": {"nature":"Timid","ability":"Unnerve","level":19,"item":"Wise Glasses","moves":["Hidden Power Grass","Incinerate","Protect","Snarl"],"ivs":{"at":30,"sa":30}}
+    "Gambler Rich": {"level":35,"nature":"Mild","ability":"Early Bird","moves":["Beat Up","Dark Pulse","Scorching Sands","Embargo"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Rocket Admin Archer": {"nature":"Timid","ability":"Unnerve","level":19,"item":"Wise Glasses","moves":["Hidden Power Grass","Incinerate","Protect","Snarl"],"ivs":{"at":30,"sa":30}},
+    "Team Rocket Grunt": {"level":49,"nature":"Hasty","ability":"Early Bird","moves":["Comeuppance","Foul Play","Flamethrower","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":49,"nature":"Hasty","ability":"Early Bird","moves":["Comeuppance","Foul Play","Flamethrower","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Mightyena": {
     "Rocket Admin Archer": {"nature":"Jolly","ability":"Strong Jaw","level":21,"item":"Berry Juice","moves":["Bite","Fire Fang","Howl","Ice Fang"]},
-    "Pokemaniac Cooprt": {"nature":"Jolly","ability":"Intimidate","level":34,"moves":["Embargo","Jaw Lock","Play Rough","Yawn"],"evs":{"hp":4,"sp":252,"sd":252}},
+    "Pokemaniac Cooprt": {"level":34,"nature":"Rash","ability":"Intimidate","moves":["Poison Fang","Assurance","Scary Face","Crunch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt Set 1": {"nature":"Quiet","ability":"Strong Jaw","level":42,"moves":["Embargo","Jaw Lock","Play Rough","Yawn"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Hardy","ability":"Intimidate","level":46,"moves":["Crunch","Fire Fang","Ice Fang","Smokescreen"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"nature":"Hardy","ability":"Intimidate","level":46,"moves":["Crunch","Fire Fang","Ice Fang","Smokescreen"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":42,"nature":"Serious","ability":"Intimidate","moves":["Scary Face","Crunch","Taunt","Embargo"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Persian-Alola": {
     "*Team Rocket Grunt": {"nature":"Timid","ability":"Feline Prowess","level":23,"item":"Black Glasses","moves":["Parting Shot","Shock Wave","Snarl","Water Pulse"]},
-    "Camper Drew": {"nature":"Gentle","ability":"Fur Coat","level":28,"moves":["Captivate","Dark Pulse","Feint","Night Slash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Drew": {"level":28,"nature":"Serious","ability":"Fur Coat","moves":["Fury Swipes","Screech","Feint Attack","Taunt"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Claire": {"level":85,"nature":"Timid","ability":"Fur Coat","moves":["Captivate","Night Slash","Feint","Dark Pulse"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Golbat": {
     "*Team Rocket Grunt": {"nature":"Naive","ability":"Sniper","level":24,"item":"Eviolite","moves":["Air Cutter","Cross Poison","Hidden Power Fire","Mega Drain"],"ivs":{"at":30,"sp":30,"sa":30}},
     "Team Rocket Grunt Set 1": {"nature":"Quiet","ability":"Infiltrator","level":41,"moves":["Bite","Confuse Ray","Dual Wingbeat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Quiet","ability":"Infiltrator","level":46,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 3": {"nature":"Adamant","ability":"Sniper","level":48,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 4": {"nature":"Naive","ability":"Sniper","level":48,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 5": {"nature":"Quiet","ability":"Infiltrator","level":45,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 6": {"nature":"Quiet","ability":"Infiltrator","level":42,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 7": {"nature":"Quiet","ability":"Infiltrator","level":75,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":42,"nature":"Jolly","ability":"Infiltrator","moves":["Poison Fang","Leech Life","Dual Wingbeat","Haze"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 3": {"level":46,"nature":"Jolly","ability":"Infiltrator","moves":["Leech Life","Dual Wingbeat","Haze","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 4": {"level":48,"nature":"Careful","ability":"Infiltrator","moves":["Dual Wingbeat","Haze","Venoshock","Air Slash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 5": {"level":48,"nature":"Lax","ability":"Infiltrator","moves":["Dual Wingbeat","Haze","Venoshock","Air Slash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 6": {"level":45,"nature":"Jolly","ability":"Infiltrator","moves":["Leech Life","Dual Wingbeat","Haze","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 7": {"level":48,"nature":"Brave","ability":"Infiltrator","moves":["Dual Wingbeat","Haze","Venoshock","Air Slash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":75,"nature":"Jolly","ability":"Infiltrator","moves":["Haze","Venoshock","Air Slash","Quick Guard"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Oinkologne-F": {
     "*Team Rocket Grunt": {"nature":"Impish","ability":"Gluttony","level":22,"item":"Figy Berry","moves":["Body Press","Bullet Seed","Headbutt","Stockpile"]}
   },
   "Octillery": {
     "*Team Rocket Grunt": {"nature":"Rash","ability":"Skill Link","level":24,"item":"Rindo Berry","moves":["Bullet Seed","Icy Wind","Rock Blast","Water Pulse"]},
-    "*SwimmerF Abigail": {"nature":"Modest","ability":"Mega Launcher","level":99,"item":"Sitrus Berry","moves":["Aura Sphere","Flamethrower","Ice Beam","Snipe Shot"],"evs":{"df":4,"sp":252,"sa":252}}
+    "*SwimmerF Abigail": {"nature":"Modest","ability":"Mega Launcher","level":99,"item":"Sitrus Berry","moves":["Aura Sphere","Flamethrower","Ice Beam","Snipe Shot"],"evs":{"df":4,"sp":252,"sa":252}},
+    "Fisherman Tommy": {"level":87,"nature":"Mild","ability":"Sniper","moves":["Bullet Seed","Hydro Pump","Snipe Shot","Soak"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Kirlia": {
-    "Lass Dawn": {"nature":"Rash","ability":"Synchronize","level":27,"moves":["Calm Mind","Charm","Dream Eater","Hypnosis"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Lass Dawn": {"level":27,"nature":"Timid","ability":"Synchronize","moves":["Lucky Chant","Magical Leaf","Heal Pulse","Draining Kiss"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Rival Blue": {"nature":"Modest","ability":"Trace","level":24,"item":"Sitrus Berry","moves":["Draining Kiss","Magical Leaf","Psybeam"]},
-    "Lass Megan": {"nature":"Bold","ability":"Synchronize","level":35,"moves":["Calm Mind","Charm","Dream Eater","Hypnosis"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Megan": {"level":35,"nature":"Modest","ability":"Trace","moves":["Heal Pulse","Draining Kiss","Psychic","Imprison"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Staravia": {
-    "Bird Keeper Beck": {"nature":"Impish","ability":"Intimidate","level":56,"moves":["Agility","Brave Bird","Final Gambit","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Bird Keeper Beck": {"level":56,"nature":"Quirky","ability":"Intimidate","moves":["Take Down","Agility","Brave Bird","Final Gambit"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Rival Blue": {"nature":"Adamant","ability":"Intimidate","level":23,"item":"Muscle Band","moves":["Pluck","Quick Attack","Sleep Talk","U-turn"]}
   },
   "Pawniard": {
@@ -286,15 +308,18 @@ var SETDEX_SV = {
   },
   "Ivysaur": {
     "*Rival Blue": {"nature":"Modest","ability":"Overgrow","level":24,"item":"Eviolite","moves":["Leech Seed","Mega Drain","Protect","Sludge"]},
-    "Picnicker Martha": {"nature":"Calm","ability":"Overgrow","level":33,"moves":["Double-Edge","Sludge Bomb","Solar Beam","Synthesis"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Martha": {"level":33,"nature":"Hasty","ability":"Overgrow","moves":["Mega Drain","Take Down","Growth","Double-Edge"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Aroma Lady Violet": {"level":36,"nature":"Brave","ability":"Overgrow","moves":["Take Down","Growth","Double-Edge","Sludge Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Aroma Lady Violet Set 2": {"level":36,"nature":"Careful","ability":"Overgrow","moves":["Take Down","Growth","Double-Edge","Sludge Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Wartortle": {
-    "*Rival Blue": {"nature":"Modest","ability":"Torrent","level":24,"item":"Eviolite","moves":["Counter","Icy Wind","Seismic Toss","Water Pulse"]}
+    "*Rival Blue": {"nature":"Modest","ability":"Torrent","level":24,"item":"Eviolite","moves":["Counter","Icy Wind","Seismic Toss","Water Pulse"]},
+    "SwimmerM Mymo": {"level":49,"nature":"Lax","ability":"Torrent","moves":["Skull Bash","Iron Defense","Rain Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Growlithe": {
     "*Team Rocket Grunt": {"nature":"Careful","ability":"Intimidate","level":25,"item":"Eviolite","moves":["Bulldoze","Dragon Rage","Fire Fang","Thunder Fang"]},
-    "Gentleman Thomas": {"nature":"Brave","ability":"Intimidate","level":26,"moves":["Crunch","Flare Blitz","Heat Wave","Outrage"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Gambler Darian": {"nature":"Adamant","ability":"Intimidate","level":25,"moves":["Crunch","Flare Blitz","Heat Wave","Outrage"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Gentleman Thomas": {"level":26,"nature":"Bashful","ability":"Intimidate","moves":["Flame Wheel","Reversal","Fire Fang","Take Down"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Gambler Darian": {"level":25,"nature":"Rash","ability":"Intimidate","moves":["Flame Wheel","Reversal","Fire Fang","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Gabite": {
     "*Team Rocket Grunt": {"nature":"Impish","ability":"Rough Skin","level":23,"item":"Eviolite","moves":["Body Slam","Bulldoze","Dual Chop","Rock Slide"]}
@@ -307,38 +332,38 @@ var SETDEX_SV = {
     "Ace Trainer Alexa": {"nature":"Adamant","ability":"Comatose","level":83,"item":"Choice Band","moves":["Earthquake","Frustration","Knock Off","U-turn"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Mabosstiff": {
-    "Gentleman Arthur": {"nature":"Quiet","ability":"Intimidate","level":26,"moves":["Double-Edge","Jaw Lock","Reversal","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Gentleman Arthur": {"level":26,"nature":"Impish","ability":"Intimidate","moves":["Bite","Roar","Headbutt","Payback"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Camper Ethan": {"nature":"Adamant","ability":"Intimidate","level":24,"item":"Black Glasses","moves":["Bite","Fire Fang","Ice Fang","Trailblaze"]}
   },
   "Salandit": {
     "*Camper Ethan": {"nature":"Timid","ability":"Corrosion","level":25,"item":"Black Sludge","moves":["Incinerate","Protect","Substitute","Toxic"]}
   },
   "Misdreavus": {
-    "Channeler Laurel": {"nature":"Lonely","ability":"Levitate","level":37,"moves":["Grudge","Perish Song","Power Gem","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Channeler Laurel": {"level":37,"nature":"Quiet","ability":"Levitate","moves":["Hex","Psybeam","Pain Split","Payback"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Camper Ethan": {"nature":"Bold","ability":"Levitate","level":24,"item":"Eviolite","moves":["Hex","Icy Wind","Shock Wave","Will-O-Wisp"]}
   },
   "Greedent": {
-    "Youngster Yasu": {"nature":"Brave","ability":"Cheek Pouch","level":25,"moves":["Belch","Counter","Recycle","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Youngster Yasu": {"level":25,"nature":"Bashful","ability":"Cheek Pouch","moves":["Swallow","Spit Up","Body Slam","Crunch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Lass Reli": {"nature":"Bashful","ability":"Cheek Pouch","level":23,"item":"Sitrus Berry","moves":["Facade","Seed Bomb","Stomping Tantrum","Thunder Fang"]}
   },
   "Togetic": {
-    "Picnicker Martha": {"nature":"Modest","ability":"Hustle","level":32,"moves":["After You","Double-Edge","Last Resort","Moonblast"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Picnicker Martha": {"level":32,"nature":"Docile","ability":"Hustle","moves":["Follow Me","Bestow","Air Slash","Wish"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Lass Reli": {"nature":"Bashful","ability":"Serene Grace","level":22,"item":"Sitrus Berry","moves":["Air Slash","Draining Kiss","Magical Leaf","Thunder Wave"]}
   },
   "Clamperl": {
-    "Sailor Dylan": {"nature":"Bashful","ability":"Shell Armor","level":27,"moves":["Aurora Beam","Iron Defense","Shell Smash","Whirlpool"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Ned": {"nature":"Hardy","ability":"Shell Armor","level":35,"moves":["Aurora Beam","Iron Defense","Shell Smash","Whirlpool"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Sailor Dylan": {"level":27,"nature":"Brave","ability":"Shell Armor","moves":["Bubble","Whirlpool","Iron Defense","Aurora Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Ned": {"level":35,"nature":"Lonely","ability":"Shell Armor","moves":["Bubble","Whirlpool","Iron Defense","Aurora Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Lass Reli": {"nature":"Modest","ability":"Shell Armor","level":23,"item":"Deep Sea Tooth","moves":["Icy Wind","Rest","Sleep Talk","Water Pulse"]}
   },
   "Plusle": {
     "*Youngster Timmy": {"nature":"Timid","ability":"Plus","level":23,"item":"Shuca Berry","moves":["Charge Beam","Electroweb","Grass Knot","Signal Beam"]},
     "*Twins Joy & Meg": {"nature":"Timid","ability":"Transistor","level":100,"item":"Focus Sash","moves":["Hidden Power Grass","Surf","Thunderbolt","Volt Switch"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}},
-    "Sailor Dwayne": {"nature":"Calm","ability":"Plus","level":28,"moves":["Entrainment","Last Resort","Nasty Plot","Thunder"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Dwayne": {"level":28,"nature":"Hasty","ability":"Plus","moves":["Electro Ball","Copycat","Charm","Charge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Electrike": {
     "*Youngster Timmy": {"nature":"Timid","ability":"Minus","level":23,"item":"Magnet","moves":["Flame Burst","Round","Shock Wave","Signal Beam"]},
-    "Camper Jeff": {"nature":"Modest","ability":"Static","level":24,"moves":["Charge","Roar","Thunder","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Gambler Dirk": {"nature":"Lax","ability":"Static","level":26,"moves":["Charge","Roar","Thunder","Wild Charge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Camper Jeff": {"level":24,"nature":"Docile","ability":"Static","moves":["Spark","Odor Sleuth","Thunder Fang","Bite"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Gambler Dirk": {"level":26,"nature":"Hardy","ability":"Static","moves":["Spark","Odor Sleuth","Thunder Fang","Bite"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Snover": {
     "*Youngster Timmy": {"nature":"Bashful","ability":"Ice Body","level":23,"item":"Occa Berry","moves":["Ice Shard","Icy Wind","Mega Drain","Water Pulse"]}
@@ -353,89 +378,96 @@ var SETDEX_SV = {
     "*Lass Ali": {"nature":"Bashful","ability":"Liquid Voice","level":23,"item":"Sitrus Berry","moves":["Aqua Jet","Draining Kiss","Icy Wind","Round"]}
   },
   "Vivillon": {
-    "Bug Catcher Brent": {"nature":"Naughty","ability":"Compound Eyes","level":29,"moves":["Bug Buzz","Hurricane","Quiver Dance","Safeguard"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
+    "Bug Catcher Brent": {"level":29,"nature":"Jolly","ability":"Compound Eyes","moves":["Psybeam","Air Slash","Draining Kiss","Signal Beam"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
     "*Bug Catcher Cale": {"nature":"Bashful","ability":"Friend Guard","level":22,"item":"Charti Berry","moves":["Air Cutter","Draining Kiss","Electroweb","Struggle Bug"]}
   },
   "Wormadam-Sandy": {
     "*Bug Catcher Cale": {"nature":"Careful","ability":"Overcoat","level":23,"item":"Rocky Helmet","moves":["Bug Bite","Bulldoze","Rock Tomb","Sucker Punch"]}
   },
   "Bramblin": {
-    "Camper Shane": {"nature":"Sassy","ability":"Infiltrator","level":18,"moves":["Curse","Pain Split","Poltergeist","Power Whip"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Shane": {"level":18,"nature":"Relaxed","ability":"Infiltrator","moves":["Rapid Spin","Shadow Sneak","Bullet Seed","Infestation"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Yamper": {
-    "Engineer Braxton": {"nature":"Careful","ability":"Pickup","level":26,"moves":["Charge","Crunch","Play Rough","Wild Charge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Camper Shane": {"nature":"Adamant","ability":"Pickup","level":20,"moves":["Charge","Crunch","Play Rough","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Engineer Braxton": {"level":26,"nature":"Impish","ability":"Pickup","moves":["Bite","Roar","Spark","Charm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Camper Shane": {"level":20,"nature":"Serious","ability":"Pickup","moves":["Nuzzle","Bite","Roar","Spark"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Timburr": {
-    "Hiker Franklin": {"nature":"Gentle","ability":"Guts","level":18,"moves":["Focus Punch","Hammer Arm","Stone Edge","Superpower"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Hiker Franklin": {"level":18,"nature":"Serious","ability":"Guts","moves":["Focus Energy","Bide","Low Kick","Rock Throw"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Friendly PkMnManiac": {"nature":"Timid","ability":"Sheer Force","level":5,"item":"Choice Scarf","moves":["Ice Punch"],"ivs":{"at":0,"df":15}}
   },
   "Raticate": {
-    "Youngster Joey": {"nature":"Bashful","ability":"Run Away","level":18,"moves":["Double-Edge","Endeavor","Return","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Team Rocket Grunt": {"nature":"Docile","ability":"Run Away","level":40,"moves":["Double-Edge","Endeavor","Return","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Youngster Joey": {"level":18,"nature":"Lax","ability":"Run Away","moves":["Bite","Focus Energy","Hyper Fang","Pursuit"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Team Rocket Grunt": {"level":40,"nature":"Brave","ability":"Run Away","moves":["Crunch","Return","Super Fang","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Bashful","ability":"Run Away","moves":["Return","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Camper Bryce": {"level":85,"nature":"Rash","ability":"Guts","moves":["Return","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Destin": {"level":48,"nature":"Lonely","ability":"Run Away","moves":["Return","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Raticate-Alola": {
-    "Youngster Yasu": {"nature":"Serious","ability":"Gluttony","level":24,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Youngster Joey": {"nature":"Serious","ability":"Gluttony","level":18,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Youngster Yasu": {"level":24,"nature":"Serious","ability":"Gluttony","moves":["Pursuit","Zen Headbutt","Swords Dance","Crunch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Joey": {"level":18,"nature":"Adamant","ability":"Gluttony","moves":["Quick Attack","Focus Energy","Hyper Fang","Pursuit"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "Team Rocket Grunt Set 1": {"nature":"Careful","ability":"Hustle","level":40,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Rash","ability":"Hustle","level":47,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 3": {"nature":"Bold","ability":"Gluttony","level":49,"moves":["Double-Edge","Endeavor","Sucker Punch","Super Fang"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":47,"nature":"Naive","ability":"Gluttony","moves":["Sucker Punch","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 3": {"level":49,"nature":"Lonely","ability":"Gluttony","moves":["Sucker Punch","Super Fang","Double-Edge","Endeavor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":40,"nature":"Bashful","ability":"Gluttony","moves":["Crunch","Sucker Punch","Super Fang","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Naclstack": {
-    "Hiker Wayne": {"nature":"Careful","ability":"Sturdy","level":20,"moves":["Earthquake","Heavy Slam","Stealth Rock","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Wayne": {"level":20,"nature":"Impish","ability":"Purifying Salt","moves":["Smack Down","Rock Polish","Headbutt","Iron Defense"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Slowpoke": {
-    "Youngster Dan": {"nature":"Adamant","ability":"Oblivious","level":21,"moves":["Heal Pulse","Psych Up","Psychic","Rain Dance"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Dan": {"level":21,"nature":"Jolly","ability":"Own Tempo","moves":["Thunder Wave","Psybeam","Disable","Icy Wind"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Nidorino": {
-    "Picnicker Kelsey": {"nature":"Sassy","ability":"Poison Touch","level":18,"moves":["Captivate","Flatter","Poison Jab","Toxic Spikes"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Youngster Dave": {"nature":"Docile","ability":"Poison Touch","level":25,"moves":["Captivate","Flatter","Poison Jab","Toxic Spikes"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Kelsey": {"level":18,"nature":"Jolly","ability":"Poison Touch","moves":["Peck","Focus Energy","Double Kick","Poison Sting"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Dave": {"level":25,"nature":"Sassy","ability":"Poison Touch","moves":["Double Kick","Poison Sting","Fury Attack","Horn Attack"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Dolliv": {
-    "Picnicker Kelsey": {"nature":"Bold","ability":"Early Bird","level":19,"moves":["Earth Power","Energy Ball","Leech Seed","Terrain Pulse"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Kelsey": {"level":19,"nature":"Gentle","ability":"Early Bird","moves":["Growth","Razor Leaf","Helping Hand","Flail"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Phanpy": {
-    "Youngster Dillon": {"nature":"Naughty","ability":"Pickup","level":25,"moves":["Charm","Double-Edge","Head Smash","Last Resort"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Hiker Nob": {"nature":"Modest","ability":"Pickup","level":18,"moves":["Charm","Double-Edge","Head Smash","Last Resort"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Youngster Dillon": {"level":25,"nature":"Calm","ability":"Pickup","moves":["Rollout","Magnitude","Endure","Slam"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Hiker Nob": {"level":18,"nature":"Hardy","ability":"Pickup","moves":["Flail","Ice Shard","Rollout","Magnitude"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Sandile": {
-    "Hiker Nob": {"nature":"Rash","ability":"Moxie","level":18,"moves":["Earthquake","Foul Play","Sandstorm","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Nob": {"level":18,"nature":"Adamant","ability":"Moxie","moves":["Rock Throw","Torment","Sand Tomb","Bulldoze"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Machop": {
-    "Hiker Jeremy": {"nature":"Calm","ability":"Guts","level":30,"moves":["Bulk Up","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Hiker Nob": {"nature":"Lonely","ability":"Guts","level":19,"moves":["Bulk Up","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Jeremy": {"level":30,"nature":"Hasty","ability":"Guts","moves":["Revenge","Knock Off","Vital Throw","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Hiker Nob": {"level":19,"nature":"Brave","ability":"No Guard","moves":["Rock Tomb","Low Sweep","Seismic Toss","Revenge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Black Belt Takashi": {"level":38,"nature":"Sassy","ability":"No Guard","moves":["Wake-Up Slap","Dual Chop","Submission","Bulk Up"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":48,"nature":"Relaxed","ability":"Guts","moves":["Bulk Up","Cross Chop","Scary Face","Dynamic Punch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Adamant","ability":"Guts","moves":["Bulk Up","Cross Chop","Scary Face","Dynamic Punch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Makuhita": {
-    "Hiker Nob": {"nature":"Sassy","ability":"Guts","level":19,"moves":["Close Combat","Endure","Heavy Slam","Reversal"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Nob": {"level":19,"nature":"Docile","ability":"Guts","moves":["Fake Out","Force Palm","Whirlwind","Knock Off"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Farfetch’d-Galar": {
-    "Pokemaniac Ashton": {"nature":"Jolly","ability":"Steadfast","level":32,"moves":["Brave Bird","Final Gambit","Leaf Blade","Slam"],"evs":{"hp":4,"sp":252,"sd":252}},
-    "Camper Flint": {"nature":"Impish","ability":"Steadfast","level":18,"moves":["Brave Bird","Final Gambit","Leaf Blade","Slam"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Bird Keeper Edwin": {"nature":"Modest","ability":"Steadfast","level":59,"moves":["Brave Bird","Final Gambit","Leaf Blade","Slam"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Pokemaniac Ashton": {"level":32,"nature":"Naughty","ability":"Steadfast","moves":["Rock Smash","Brutal Swing","Detect","Knock Off"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Camper Flint": {"level":18,"nature":"Bashful","ability":"Steadfast","moves":["Peck","Leer","Fury Cutter","Rock Smash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Bird Keeper Edwin": {"level":59,"nature":"Quirky","ability":"Steadfast","moves":["Brick Break","Swords Dance","Slam","Leaf Blade"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Skwovet": {
-    "Camper Flint": {"nature":"Quiet","ability":"Cheek Pouch","level":20,"moves":["Belch","Counter","Rest","Super Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Flint": {"level":20,"nature":"Lonely","ability":"Cheek Pouch","moves":["Swallow","Spit Up","Tail Slap","Body Slam"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Volbeat": {
     "*Twins Joy & Meg": {"nature":"Timid","ability":"Illuminate","level":100,"item":"Electrium Z","moves":["Bug Buzz","Tail Glow","Thunder","Water Pulse"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Youngster Chad": {"nature":"Serious","ability":"Prankster","level":19,"moves":["Bug Buzz","Double-Edge","Encore","Infestation"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Chad": {"level":19,"nature":"Adamant","ability":"Prankster","moves":["Confuse Ray","Quick Attack","Struggle Bug","Moonlight"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Shroomish": {
-    "Youngster Chad": {"nature":"Lonely","ability":"Effect Spore","level":21,"moves":["Growth","Seed Bomb","Spore","Toxic"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Chad": {"level":21,"nature":"Quiet","ability":"Effect Spore","moves":["Leech Seed","Mega Drain","Headbutt","Poison Powder"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Illumise": {
     "*Twins Joy & Meg": {"nature":"Jolly","ability":"Tinted Lens","level":100,"item":"Life Orb","moves":["Brick Break","Lunge","Play Rough","Thunder Punch"],"evs":{"at":252,"df":4,"sp":252}},
-    "Lass Haley": {"nature":"Calm","ability":"Oblivious","level":19,"moves":["Double-Edge","Infestation","Play Rough","Zen Headbutt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Haley": {"level":19,"nature":"Bold","ability":"Tinted Lens","moves":["Charm","Quick Attack","Bug Bite","Moonlight"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Tandemaus": {
-    "Lass Haley": {"nature":"Hasty","ability":"Pickup","level":19,"moves":["Beat Up","Copycat","Population Bomb","Tidy Up"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Haley": {"level":19,"nature":"Calm","ability":"Pickup","moves":["Helping Hand","Super Fang","Double Hit","Bullet Seed"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Lokix": {
     "*Leader Bugsy Set 1": {"nature":"Jolly","ability":"Tinted Lens","level":25,"item":"Silver Powder","moves":["First Impression","Knock Off","Leech Life","U-turn"]},
     "*Leader Bugsy Set 2": {"nature":"Jolly","ability":"Tinted Lens","level":42,"item":"Silver Powder","moves":["First Impression","Knock Off","Sucker Punch","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Ledian": {
-    "Bug Catcher Keigo": {"nature":"Sassy","ability":"Swarm","level":22,"moves":["Close Combat","Drain Punch","First Impression","Victory Dance"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}},
+    "Bug Catcher Keigo": {"level":22,"nature":"Relaxed","ability":"Iron Fist","moves":["Reflect","Safeguard","Mach Punch","Bug Bite"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
     "*Leader Bugsy": {"nature":"Jolly","ability":"Iron Fist","level":25,"item":"Focus Sash","moves":["Drain Punch","Ice Punch","Mach Punch","Thunder Punch"]}
   },
   "Scyther": {
@@ -448,82 +480,89 @@ var SETDEX_SV = {
     "*Leader Bugsy": {"nature":"Careful","ability":"Technician","level":25,"item":"Sitrus Berry","moves":["Aerial Ace","Bullet Punch","Rock Smash","U-turn"]}
   },
   "Mothim": {
-    "Bug Catcher Keigo": {"nature":"Adamant","ability":"Swarm","level":22,"moves":["Bug Buzz","Camouflage","Hurricane","Psychic"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Keigo": {"level":22,"nature":"Serious","ability":"Swarm","moves":["Air Cutter","Detect","Bug Bite","Air Slash"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Karrablast": {
-    "Bug Catcher Keigo": {"nature":"Calm","ability":"Swarm","level":23,"moves":["Double-Edge","Flail","Swords Dance","X-Scissor"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Keigo": {"level":23,"nature":"Gentle","ability":"Shed Skin","moves":["Pounce","Fury Cutter","Bug Bite","Headbutt"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Squawkabilly-White": {
-    "Camper Ricky": {"nature":"Rash","ability":"Intimidate","level":24,"moves":["Brave Bird","Reversal","Roost","Swagger"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Ricky": {"level":24,"nature":"Naughty","ability":"Hustle","moves":["Aerial Ace","Fury Attack","Taunt","Uproar"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Vulpix-Alola": {
-    "Picnicker Nancy": {"nature":"Brave","ability":"Serene Grace","level":22,"moves":["Blizzard","Captivate","Grudge","Imprison"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Nancy": {"level":22,"nature":"Hasty","ability":"Serene Grace","moves":["Confuse Ray","Icy Wind","Dazzling Gleam","Mist"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Masquerain": {
     "PkMn Trainer Brendan": {"nature":"Modest","ability":"Intimidate","level":55,"item":"Iapapa Berry","moves":["Bug Buzz","Giga Drain","Scald","Stun Spore"],"evs":{"hp":252,"sp":6,"sa":252}},
-    "Bug Catcher Elijah": {"nature":"Rash","ability":"Intimidate","level":24,"moves":["Bug Buzz","Hurricane","Hydro Pump","Quiver Dance"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Elijah": {"level":24,"nature":"Timid","ability":"Intimidate","moves":["Water Sport","Air Cutter","Scary Face","Air Slash"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Sinistea": {
-    "Picnicker Isabelle": {"nature":"Bashful","ability":"Weak Armor","level":23,"moves":["Memento","Nasty Plot","Shadow Ball","Shell Smash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Isabelle": {"level":23,"nature":"Lax","ability":"Weak Armor","moves":["Aromatic Mist","Mega Drain","Will-O-Wisp","Detect"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Swadloon": {
-    "Picnicker Isabelle": {"nature":"Mild","ability":"Leaf Guard","level":23,"moves":["Bug Bite","Razor Leaf","String Shot","Tackle"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Isabelle": {"level":23,"nature":"Relaxed","ability":"Leaf Guard","moves":["Tackle","String Shot","Bug Bite","Razor Leaf"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Lombre": {
-    "Picnicker Isabelle": {"nature":"Quiet","ability":"Swift Swim","level":24,"moves":["Hydro Pump","Knock Off","Uproar","Zen Headbutt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Sailor Duncan": {"nature":"Timid","ability":"Swift Swim","level":27,"moves":["Hydro Pump","Knock Off","Uproar","Zen Headbutt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Ace Trainer Mary": {"nature":"Modest","ability":"Own Tempo","level":38,"moves":["Hydro Pump","Knock Off","Uproar","Zen Headbutt"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Picnicker Isabelle": {"level":24,"nature":"Quiet","ability":"Swift Swim","moves":["Aurora Beam","Fake Out","Water Sport","Bubble Beam"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Sailor Duncan": {"level":27,"nature":"Lonely","ability":"Swift Swim","moves":["Aurora Beam","Fake Out","Water Sport","Bubble Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ace Trainer Mary": {"level":38,"nature":"Brave","ability":"Swift Swim","moves":["Bubble Beam","Nature Power","Uproar","Knock Off"],"ivs":{"hp":25,"at":25,"df":25,"sa":25,"sd":25,"sp":25}}
   },
   "Doduo": {
-    "Bird Keeper Chester": {"nature":"Quirky","ability":"Early Bird","level":57,"moves":["Drill Peck","Endeavor","Jump Kick","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Camper Jeff": {"nature":"Lonely","ability":"Run Away","level":24,"moves":["Drill Peck","Endeavor","Jump Kick","Thrash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Picnicker Leah": {"nature":"Calm","ability":"Run Away","level":34,"moves":["Drill Peck","Endeavor","Jump Kick","Thrash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Bird Keeper Chester": {"level":57,"nature":"Impish","ability":"Early Bird","moves":["Jump Kick","Drill Peck","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Camper Jeff": {"level":24,"nature":"Quiet","ability":"Run Away","moves":["Fury Attack","Pursuit","Pluck","Double Hit"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Leah": {"level":34,"nature":"Hasty","ability":"Run Away","moves":["Pluck","Double Hit","Agility","Uproar"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Arbok": {
-    "Youngster Johnson": {"nature":"Gentle","ability":"Intimidate","level":71,"moves":["Belch","Gunk Shot","Haze","Shed Tail"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Tamer Edgar": {"nature":"Modest","ability":"Intimidate","level":62,"moves":["Belch","Gunk Shot","Haze","Shed Tail"],"evs":{"hp":6,"sa":252,"sd":252}},
-    "Youngster Eddie": {"nature":"Quiet","ability":"Intimidate","level":26,"moves":["Belch","Gunk Shot","Haze","Shed Tail"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Team Rocket Grunt": {"nature":"Calm","ability":"Intimidate","level":47,"moves":["Belch","Gunk Shot","Haze","Shed Tail"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Youngster Johnson": {"level":71,"nature":"Docile","ability":"Shed Skin","moves":["Belch","Haze","Gunk Shot","Shed Tail"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tamer Edgar": {"level":62,"nature":"Hardy","ability":"Shed Skin","moves":["Coil","Jaw Lock","Belch","Haze"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Youngster Eddie": {"level":26,"nature":"Brave","ability":"Shed Skin","moves":["Glare","Poison Tail","Screech","Sucker Punch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Team Rocket Grunt": {"level":47,"nature":"Mild","ability":"Intimidate","moves":["Spit Up","Poison Fang","Coil","Jaw Lock"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Tamer Cole": {"level":39,"nature":"Bashful","ability":"Intimidate","moves":["Swallow","Spit Up","Poison Fang","Coil"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Poliwhirl": {
-    "SwimmerF Shirley": {"nature":"Impish","ability":"Water Absorb","level":64,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Ned": {"nature":"Adamant","ability":"Damp","level":34,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Roland": {"nature":"Timid","ability":"Water Absorb","level":63,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Matthew": {"nature":"Naughty","ability":"Water Absorb","level":63,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Gambler Stan": {"nature":"Naughty","ability":"Water Absorb","level":35,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Gambler Hugo": {"nature":"Hasty","ability":"Water Absorb","level":25,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Leah": {"nature":"Relaxed","ability":"Water Absorb","level":35,"moves":["Belly Drum","Hydro Pump","Mud Bomb","Wake-Up Slap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "SwimmerF Shirley": {"level":64,"nature":"Lax","ability":"Damp","moves":["Belly Drum","Wake-Up Slap","Hydro Pump","Mud Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Ned": {"level":34,"nature":"Serious","ability":"Damp","moves":["Rain Dance","Body Slam","Bubble Beam","Mud Shot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Roland": {"level":63,"nature":"Lonely","ability":"Water Absorb","moves":["Belly Drum","Wake-Up Slap","Hydro Pump","Mud Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Matthew": {"level":63,"nature":"Naive","ability":"Damp","moves":["Belly Drum","Wake-Up Slap","Hydro Pump","Mud Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gambler Stan": {"level":35,"nature":"Calm","ability":"Water Absorb","moves":["Rain Dance","Body Slam","Bubble Beam","Mud Shot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gambler Hugo": {"level":25,"nature":"Brave","ability":"Water Absorb","moves":["Bubble","Double Slap","Rain Dance","Body Slam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Picnicker Leah": {"level":35,"nature":"Careful","ability":"Water Absorb","moves":["Rain Dance","Body Slam","Bubble Beam","Mud Shot"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tuber Amira": {"level":35,"nature":"Relaxed","ability":"Damp","moves":["Rain Dance","Body Slam","Bubble Beam","Mud Shot"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "SwimmerM Toby": {"level":48,"nature":"Bashful","ability":"Water Absorb","moves":["Mud Shot","Belly Drum","Wake-Up Slap","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Sis And Bro Ava & Geb": {"level":50,"nature":"Bold","ability":"Damp","moves":["Mud Shot","Belly Drum","Wake-Up Slap","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Falinks": {
-    "Gambler Hugo": {"nature":"Naughty","ability":"Battle Armor","level":26,"moves":["Close Combat","Counter","Lunge","Megahorn"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Gambler Hugo": {"level":26,"nature":"Calm","ability":"Battle Armor","moves":["Focus Energy","Headbutt","Bulk Up","Endure"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Woobat": {
-    "Youngster Dillon": {"nature":"Impish","ability":"Unaware","level":26,"moves":["Calm Mind","Endeavor","Heat Wave","Psychic"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Dillon": {"level":26,"nature":"Quirky","ability":"Unaware","moves":["Heart Stamp","Imprison","Air Cutter","Attract"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Greavard": {
-    "Youngster Dave": {"nature":"Docile","ability":"Pickup","level":25,"moves":["Charm","Double-Edge","Helping Hand","Phantom Force"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Dave": {"level":25,"nature":"Sassy","ability":"Pickup","moves":["Shadow Sneak","Dig","Rest","Crunch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Weepinbell": {
-    "Picnicker Valerie": {"nature":"Naughty","ability":"Chlorophyll","level":56,"moves":["Poison Jab","Razor Leaf","Slam","Wring Out"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Gambler Jasper": {"nature":"Careful","ability":"Chlorophyll","level":24,"moves":["Poison Jab","Razor Leaf","Slam","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Yazmin": {"nature":"Serious","ability":"Chlorophyll","level":57,"moves":["Poison Jab","Razor Leaf","Slam","Wring Out"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Valerie": {"level":56,"nature":"Naive","ability":"Chlorophyll","moves":["Gastro Acid","Razor Leaf","Poison Jab","Slam"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Gambler Jasper": {"level":24,"nature":"Naive","ability":"Chlorophyll","moves":["Sleep Powder","Poison Powder","Stun Spore","Sludge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Picnicker Yazmin": {"level":57,"nature":"Adamant","ability":"Chlorophyll","moves":["Gastro Acid","Razor Leaf","Poison Jab","Slam"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Aroma Lady Nikki": {"level":37,"nature":"Quiet","ability":"Chlorophyll","moves":["Stun Spore","Sludge","Mega Drain","Knock Off"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Youngster Nash": {"level":47,"nature":"Docile","ability":"Chlorophyll","moves":["Knock Off","Gastro Acid","Razor Leaf","Poison Jab"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Nash Set 2": {"level":47,"nature":"Sassy","ability":"Chlorophyll","moves":["Knock Off","Gastro Acid","Razor Leaf","Poison Jab"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Flamigo": {
-    "Black Belt Mike": {"nature":"Modest","ability":"Scrappy","level":47,"item":"Black Belt","moves":["Brave Bird","Mega Kick","Throat Chop","Wide Guard"],"evs":{"hp":6,"sa":252,"sd":252}},
-    "Gambler Jasper": {"nature":"Naive","ability":"Scrappy","level":26,"moves":["Brave Bird","Mega Kick","Throat Chop","Wide Guard"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Black Belt Mike": {"level":47,"nature":"Bold","ability":"Scrappy","moves":["Mega Kick","Wide Guard","Throat Chop","Brave Bird"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Gambler Jasper": {"level":26,"nature":"Bold","ability":"Scrappy","moves":["Focus Energy","Low Kick","Feint","Payback"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Voltorb": {
     "Super Nerd Aidan": {"nature":"Modest","ability":"Soundproof","level":35,"moves":["Screech","Sonic Boom","Spark"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Engineer Baily": {"nature":"Timid","ability":"Soundproof","level":28,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Gambler Dirk": {"nature":"Bold","ability":"Soundproof","level":25,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Engineer Baily": {"level":28,"nature":"Calm","ability":"Static","moves":["Charge Beam","Swift","Electro Ball","Self-Destruct"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gambler Dirk": {"level":25,"nature":"Gentle","ability":"Soundproof","moves":["Screech","Charge Beam","Swift","Electro Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Electabuzz": {
-    "Engineer Bernie": {"nature":"Bashful","ability":"Static","level":24,"moves":["Discharge","Screech","Thunder","Thunderbolt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Gentleman Tucker": {"nature":"Timid","ability":"Static","level":29,"moves":["Discharge","Screech","Thunder","Thunderbolt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Engineer Bernie": {"level":24,"nature":"Lax","ability":"Static","moves":["Swift","Shock Wave","Thunder Wave","Electro Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gentleman Tucker": {"level":29,"nature":"Lonely","ability":"Static","moves":["Shock Wave","Thunder Wave","Electro Ball","Light Screen"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Scientist Beau": {"nature":"Mild","ability":"Static","level":41,"moves":["Fire Punch","Ice Punch","Thunderbolt","Volt Switch"],"evs":{"hp":6,"at":128,"sp":252,"sa":128}}
   },
   "Tadbulb": {
-    "Engineer Bernie": {"nature":"Relaxed","ability":"Own Tempo","level":24,"moves":["Electric Terrain","Parabolic Charge","Sucker Punch","Zap Cannon"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Engineer Bernie": {"level":24,"nature":"Relaxed","ability":"Own Tempo","moves":["Charge","Spark","Mud Shot","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Tinkaton": {
     "*Leader Whitney": {"nature":"Jolly","ability":"Mold Breaker","level":25,"item":"Sitrus Berry","moves":["Encore","Gigaton Hammer","Knock Off","Play Rough"],"evs":{"at":252,"df":4,"sp":252}}
@@ -551,7 +590,7 @@ var SETDEX_SV = {
   },
   "Dartrix": {
     "*Gentleman Brooks": {"nature":"Modest","ability":"Tinted Lens","level":23,"item":"Miracle Seed","moves":["Air Slash","Grass Pledge","Hidden Power Fire","Shadow Sneak"],"ivs":{"at":30,"sp":30,"sa":30}},
-    "Bird Keeper Mitch": {"nature":"Relaxed","ability":"Overgrow","level":55,"moves":["Brave Bird","Feather Dance","Leaf Blade","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Mitch": {"level":55,"nature":"Mild","ability":"Overgrow","moves":["Leaf Blade","Feather Dance","Brave Bird","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Simisage": {
     "*Gentleman Brooks": {"nature":"Timid","ability":"Gluttony","level":23,"item":"Miracle Seed","moves":["Focus Blast","Grass Pledge","Hidden Power Fire","Power Gem"],"ivs":{"at":30,"sp":30,"sa":30}}
@@ -559,12 +598,12 @@ var SETDEX_SV = {
   "Wigglytuff": {
     "Ace Trainer Alexa": {"nature":"Bashful","ability":"Competitive","level":83,"item":"Life Orb","moves":["Moonblast","Thunderbolt","Flamethrower","Hyper Voice"],"evs":{"hp":4,"sp":40}},
     "*Gentleman Brooks": {"nature":"Modest","ability":"Sheer Force","level":23,"item":"Life Orb","moves":["Draining Kiss","Incinerate","Round","Shock Wave"]},
-    "Beauty Grace": {"nature":"Impish","ability":"Competitive","level":58,"moves":["Alluring Voice","Covet","Lovely Kiss","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Beauty Grace": {"level":58,"nature":"Quiet","ability":"Competitive","moves":["Covet","Alluring Voice","Moonblast","Lovely Kiss"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Cramorant": {
     "*Bird Keeper Jacob": {"nature":"Timid","ability":"Gulp Missile","level":66,"item":"Focus Sash","moves":["Hurricane","Ice Beam","Roost","Surf"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Fisherman Nolan": {"nature":"Modest","ability":"Gulp Missile","level":64,"moves":["Amnesia","Drill Peck","Hydro Pump","Surf"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Bird Keeper Carter": {"nature":"Mild","ability":"Gulp Missile","level":56,"moves":["Amnesia","Drill Peck","Hydro Pump","Surf"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Nolan": {"level":64,"nature":"Hardy","ability":"Gulp Missile","moves":["Drill Peck","Amnesia","Surf","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Bird Keeper Carter": {"level":56,"nature":"Relaxed","ability":"Gulp Missile","moves":["Drill Peck","Amnesia","Surf","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Sailor Trevor": {"nature":"Timid","ability":"Gulp Missile","level":23,"item":"Focus Sash","moves":["Air Slash","Safeguard","Surf","U-turn"]}
   },
   "Cramorant-Gulping": {
@@ -581,22 +620,22 @@ var SETDEX_SV = {
   },
   "Nidoqueen": {
     "*Rocker Luca": {"nature":"Timid","ability":"Sheer Force","level":63,"item":"Life Orb","moves":["Blizzard","Earth Power","Fire Blast","Thunderbolt"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Team Rocket Grunt": {"nature":"Lonely","ability":"Rivalry","level":47,"moves":["Body Slam","Chip Away","Earth Power","Sludge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":47,"nature":"Gentle","ability":"Poison Touch","moves":["Sludge","Chip Away","Body Slam","Earth Power"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Sailor Trevor": {"nature":"Timid","ability":"Sheer Force","level":23,"moves":["Reflect","Scorching Sands","Sludge","Surf"]},
     "Cool Couple Ray & Tyra": {"nature":"Modest","ability":"Sheer Force","level":85,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Bomb"],"evs":{"hp":252,"sp":6,"sa":252}},
     "*Bird Keeper Jacob": {"nature":"Timid","ability":"Sheer Force","level":63,"item":"Life Orb","moves":["Bubble Beam","Earth Power","Sludge Wave","Thunder"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Lileep": {
-    "Hiker Lenny": {"nature":"Brave","ability":"Suction Cups","level":31,"moves":["Spit Up","Stockpile","Swallow","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Hiker Lenny": {"level":31,"nature":"Hasty","ability":"Suction Cups","moves":["Ancient Power","Brine","Giga Drain","Gastro Acid"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Sailor Edmond": {"nature":"Modest","ability":"Storm Drain","level":25,"item":"Eviolite","moves":["Ancient Power","Earth Power","Giga Drain","Hidden Power Fire"],"ivs":{"at":30,"sp":30,"sa":30}}
   },
   "Lumineon": {
     "*Sailor Edmond": {"nature":"Timid","ability":"Storm Drain","level":23,"moves":["Flip Turn","Hidden Power Grass","Ice Beam","Scald"],"ivs":{"at":30,"sa":30}},
-    "SwimmerM Douglas": {"nature":"Jolly","ability":"Storm Drain","level":63,"moves":["Bounce","Hurricane","Tail Glow","U-turn"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Douglas": {"level":63,"nature":"Sassy","ability":"Storm Drain","moves":["Tailwind","U-turn","Bounce","Tail Glow"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Tatsugiri": {
     "*Sailor Edmond": {"nature":"Modest","ability":"Storm Drain","level":22,"item":"Sitrus Berry","moves":["Dragon Pulse","Icy Wind","Rapid Spin","Scald"]},
-    "Fisherman Nolan": {"nature":"Quiet","ability":"Storm Drain","level":63,"moves":["Dragon Pulse","Mirror Coat","Muddy Water","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Nolan": {"level":63,"nature":"Lonely","ability":"Storm Drain","moves":["Muddy Water","Nasty Plot","Mirror Coat","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Loudred": {
     "*PkMn Trainer Brendan": {"nature":"Naive","ability":"Punk Rock","level":25,"item":"Chople Berry","moves":["Brick Break","Hyper Voice","Ice Beam","Shadow Ball"],"evs":{"hp":6,"at":128,"sp":252,"sa":128}}
@@ -608,81 +647,83 @@ var SETDEX_SV = {
     "*Tuber Amira": {"nature":"Jolly","ability":"Adaptability","level":100,"item":"Focus Sash","moves":["Close Combat","Crabhammer","Dragon Dance","Knock Off"],"evs":{"at":252,"sp":252,"sd":4}},
     "*PkMn Trainer Brendan Set 1": {"nature":"Adamant","ability":"Adaptability","level":25,"item":"Focus Sash","moves":["Aqua Jet","Knock Off","Waterfall","X-Scissor"],"evs":{"at":8,"sp":252,"sa":8}},
     "*PkMn Trainer Brendan Set 2": {"nature":"Adamant","ability":"Adaptability","level":66,"item":"Choice Band","moves":["Aqua Jet","Crunch","Liquidation","Superpower"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Sis And Bro Lil & Ian": {"nature":"Relaxed","ability":"Hyper Cutter","level":64,"moves":["Crabhammer","Crunch","Dragon Dance","Slash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Sis And Bro Lil & Ian": {"level":64,"nature":"Quiet","ability":"Shell Armor","moves":["Crunch","Crabhammer","Slash","Dragon Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt": {"nature":"Gentle","ability":"Hyper Cutter","level":47,"moves":["Aqua Jet","Crabhammer","Crunch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Grovyle": {
     "*PkMn Trainer Brendan": {"nature":"Adamant","ability":"Overgrow","level":25,"item":"Sitrus Berry","moves":["Aerial Ace","Leaf Blade","Power-Up Punch","Rock Tomb"],"evs":{"hp":4,"at":100,"sp":252,"sa":16}}
   },
   "Tentacool": {
-    "Fisherman Dale": {"nature":"Timid","ability":"Clear Body","level":27,"moves":["Hex","Hydro Pump","Sludge Wave","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Barny": {"nature":"Lonely","ability":"Clear Body","level":25,"moves":["Hex","Hydro Pump","Sludge Wave","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Axle": {"nature":"Bold","ability":"Clear Body","level":64,"moves":["Hex","Hydro Pump","Sludge Wave","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Dale": {"level":27,"nature":"Lonely","ability":"Clear Body","moves":["Water Pulse","Acid Spray","Sludge","Bubble Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Barny": {"level":25,"nature":"Hasty","ability":"Liquid Ooze","moves":["Water Pulse","Acid Spray","Sludge","Bubble Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Axle": {"level":64,"nature":"Gentle","ability":"Clear Body","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Toby": {"level":48,"nature":"Rash","ability":"Clear Body","moves":["Screech","Hex","Sludge Wave","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Clobbopus": {
-    "Fisherman Dale": {"nature":"Gentle","ability":"Limber","level":27,"moves":["Brutal Swing","Reversal","Superpower","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Dana": {"nature":"Modest","ability":"Limber","level":35,"moves":["Brutal Swing","Reversal","Superpower","Taunt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Fisherman Dale": {"level":27,"nature":"Serious","ability":"Limber","moves":["Bind","Detect","Low Sweep","Bulk Up"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Picnicker Dana": {"level":35,"nature":"Docile","ability":"Limber","moves":["Low Sweep","Bulk Up","Submission","Taunt"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Finizen": {
-    "Fisherman Dale": {"nature":"Docile","ability":"Water Veil","level":27,"moves":["Encore","Flip Turn","Hydro Pump","Mist"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Dale": {"level":27,"nature":"Docile","ability":"Water Veil","moves":["Aqua Jet","Double Hit","Dive","Charm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Ponyta": {
-    "Gentleman Lamar": {"nature":"Hasty","ability":"Run Away","level":27,"moves":["Agility","Bounce","Fire Blast","Flare Blitz"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Gambler Stan": {"nature":"Relaxed","ability":"Run Away","level":36,"moves":["Agility","Bounce","Fire Blast","Flare Blitz"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Camper Chris": {"nature":"Impish","ability":"Run Away","level":29,"moves":["Agility","Bounce","Fire Blast","Flare Blitz"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Gentleman Lamar": {"level":27,"nature":"Gentle","ability":"Flash Fire","moves":["Low Kick","Will-O-Wisp","Flame Charge","Fire Spin"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Gambler Stan": {"level":36,"nature":"Careful","ability":"Run Away","moves":["Flame Charge","Fire Spin","Take Down","Inferno"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Camper Chris": {"level":29,"nature":"Bashful","ability":"Flash Fire","moves":["Will-O-Wisp","Flame Charge","Fire Spin","Take Down"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Herdier": {
-    "Gentleman Lamar": {"nature":"Hasty","ability":"Sand Rush","level":26,"moves":["Giga Impact","Last Resort","Play Rough","Reversal"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Gentleman Lamar": {"level":26,"nature":"Calm","ability":"Sand Rush","moves":["Take Down","Work Up","Retaliate","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Morpeko": {
-    "Lass Dawn": {"nature":"Lax","ability":"Hunger Switch","level":28,"moves":["Aura Wheel","Crunch","Thrash","Zippy Zap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Dawn": {"level":28,"nature":"Hardy","ability":"Hunger Switch","moves":["Power Trip","Quick Attack","Flatter","Bite"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Morpeko-Hangry": {
     "Lass Dawn": {"nature":"Lax","ability":"Hunger Switch","level":28,"moves":["Aura Wheel","Crunch","Thrash","Zippy Zap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
   },
   "Arrokuda": {
-    "Fisherman Barny": {"nature":"Calm","ability":"Swift Swim","level":27,"moves":["Crunch","Double-Edge","Laser Focus","Liquidation"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Barny": {"level":27,"nature":"Naughty","ability":"Swift Swim","moves":["Fury Attack","Bite","Agility","Dive"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Mantyke": {
-    "Fisherman Barny": {"nature":"Modest","ability":"Swift Swim","level":26,"moves":["Air Slash","Aqua Ring","Bounce","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Barny": {"level":26,"nature":"Mild","ability":"Water Absorb","moves":["Wing Attack","Headbutt","Water Pulse","Wide Guard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Meditite": {
-    "Sailor Phillip": {"nature":"Serious","ability":"Pure Power","level":29,"moves":["Counter","Power Trick","Recover","Reversal"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Phillip": {"level":29,"nature":"Sassy","ability":"Pure Power","moves":["Bullet Punch","Calm Mind","Mind Reader","High Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Croconaw": {
-    "Sailor Huey": {"nature":"Relaxed","ability":"Sheer Force","level":28,"moves":["Aqua Tail","Hydro Pump","Superpower","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Huey": {"level":28,"nature":"Careful","ability":"Sheer Force","moves":["Scary Face","Roar","Flail","Crunch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Horsea": {
-    "Sailor Dylan": {"nature":"Brave","ability":"Swift Swim","level":28,"moves":["Agility","Dragon Dance","Dragon Pulse","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Dylan": {"level":28,"nature":"Serious","ability":"Sniper","moves":["Water Gun","Twister","Bubble Beam","Focus Energy"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Ducklett": {
-    "Sailor Dylan": {"nature":"Adamant","ability":"Frisk","level":29,"moves":["Hurricane","Hydro Pump","Rain Dance","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Dylan": {"level":29,"nature":"Naughty","ability":"Frisk","moves":["Feather Dance","Icy Wind","Aqua Ring","Air Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Simipour": {
-    "Sailor Duncan": {"nature":"Bashful","ability":"Gluttony","level":26,"moves":["Fury Swipes","Leer","Lick","Scald"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Jerome": {"nature":"Jolly","ability":"Gluttony","level":63,"moves":["Fury Swipes","Leer","Lick","Scald"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Duncan": {"level":26,"nature":"Lax","ability":"Gluttony","moves":["Scald","Leer","Lick","Fury Swipes"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Jerome": {"level":63,"nature":"Naughty","ability":"Gluttony","moves":["Scald","Leer","Lick","Fury Swipes"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Carvanha": {
-    "Sailor Duncan": {"nature":"Naive","ability":"Rough Skin","level":28,"moves":["Agility","Crunch","Poison Fang","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Duncan": {"level":28,"nature":"Naive","ability":"Rough Skin","moves":["Swagger","Brine","Ice Fang","Poison Fang"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Corsola": {
-    "Sailor Leonard": {"nature":"Hardy","ability":"Hustle","level":28,"moves":["Earth Power","Flail","Mirror Coat","Power Gem"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Leonard": {"level":28,"nature":"Timid","ability":"Regenerator","moves":["Ancient Power","Spike Cannon","Lucky Chant","Brine"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Tommy": {"level":86,"nature":"Modest","ability":"Regenerator","moves":["Power Gem","Mirror Coat","Earth Power","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Eiscue": {
-    "Youngster Tyler": {"nature":"Sassy","ability":"Ice Face","level":27,"moves":["Aurora Veil","Blizzard","Ice Shard","Surf"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Youngster Tyler": {"level":27,"nature":"Relaxed","ability":"Ice Face","moves":["Mist","Weather Ball","Icy Wind","Headbutt"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Eiscue-Noice": {
     "Youngster Tyler": {"nature":"Sassy","ability":"Ice Face","level":27,"moves":["Aurora Veil","Blizzard","Ice Shard","Surf"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
   },
   "Zangoose": {
-    "Gentleman Arthur": {"nature":"Mild","ability":"Tough Claws","level":25,"moves":["Agility","Close Combat","Swords Dance","Taunt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Gentleman Arthur": {"level":25,"nature":"Relaxed","ability":"Tough Claws","moves":["Pursuit","Hone Claws","Slash","Revenge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Leader Whitney": {"nature":"Jolly","ability":"Toxic Boost","level":100,"item":"Toxic Orb","moves":["Close Combat","Facade","Fake Out","Quick Attack"],"evs":{"at":252,"df":4,"sp":252}},
-    "Cue Ball Isaiah": {"nature":"Mild","ability":"Tough Claws","level":55,"moves":["Agility","Close Combat","Swords Dance","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Isaiah": {"level":55,"nature":"Relaxed","ability":"Tough Claws","moves":["Taunt","Agility","Swords Dance","Close Combat"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt": {"nature":"Jolly","ability":"Tough Claws","level":47,"moves":["Close Combat","Facade","Glare","Quick Attack"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Litleo": {
-    "Gambler Rich": {"nature":"Quirky","ability":"Rivalry","level":35,"moves":["Crunch","Hyper Voice","Incinerate","Overheat"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Gentleman Thomas": {"nature":"Careful","ability":"Rivalry","level":26,"moves":["Crunch","Hyper Voice","Incinerate","Overheat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Gambler Rich": {"level":35,"nature":"Modest","ability":"Rivalry","moves":["Take Down","Fire Fang","Endeavor","Echoed Voice"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gentleman Thomas": {"level":26,"nature":"Naive","ability":"Rivalry","moves":["Headbutt","Noble Roar","Take Down","Fire Fang"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Overqwil": {
     "*SwimmerM Finn": {"nature":"Jolly","ability":"Intimidate","level":100,"item":"Custap Berry","moves":["Destiny Bond","Poison Jab","Throat Chop","Toxic Spikes"],"ivs":{"sa":30},"evs":{"at":252,"df":4,"sp":252}},
@@ -717,39 +758,42 @@ var SETDEX_SV = {
     "*Leader Bugsy": {"nature":"Jolly","ability":"Sharpness","level":42,"item":"Focus Sash","moves":["Night Slash","Stone Axe","U-turn","X-Scissor"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Shellder": {
-    "SwimmerM Barry": {"nature":"Gentle","ability":"Shell Armor","level":63,"moves":["Hydro Pump","Ice Beam","Iron Defense","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Ronald": {"nature":"Hasty","ability":"Shell Armor","level":64,"moves":["Hydro Pump","Ice Beam","Iron Defense","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Luis": {"nature":"Modest","ability":"Shell Armor","level":19,"moves":["Hydro Pump","Ice Beam","Iron Defense","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Barry": {"level":63,"nature":"Docile","ability":"Skill Link","moves":["Iron Defense","Ice Beam","Hydro Pump","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Ronald": {"level":64,"nature":"Brave","ability":"Shell Armor","moves":["Iron Defense","Ice Beam","Hydro Pump","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Luis": {"level":19,"nature":"Docile","ability":"Shell Armor","moves":["Withdraw","Supersonic","Icicle Spear","Protect"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Tirtouga": {
-    "SwimmerM Luis": {"nature":"Quirky","ability":"Solid Rock","level":20,"moves":["Aqua Tail","Hydro Pump","Rain Dance","Rock Slide"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Luis": {"level":20,"nature":"Modest","ability":"Solid Rock","moves":["Bite","Detect","Aqua Jet","Ancient Power"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Drednaw": {
-    "Picnicker Diana": {"nature":"Bold","ability":"Strong Jaw","level":22,"moves":["Aqua Fang","Body Slam","Head Smash","Liquidation"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Diana": {"level":22,"nature":"Modest","ability":"Shell Armor","moves":["Aqua Jet","Rock Throw","Protect","Headbutt"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Frogadier": {
     "Leader Misty": {"nature":"Lonely","ability":"Protean","level":25,"item":"Eviolite","moves":["Flip Turn","Grass Knot","Ice Punch","Rock Tomb"],"evs":{"hp":100,"at":40,"sa":40}}
   },
   "Floatzel": {
     "SwimmerF Connie Set 1": {"nature":"Naive","ability":"Water Veil","level":63,"moves":["Aqua Tail","Hydro Pump","Surging Strikes","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Connie Set 2": {"nature":"Brave","ability":"Water Veil","level":62,"moves":["Aqua Tail","Hydro Pump","Surging Strikes","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Connie Set 3": {"nature":"Modest","ability":"Water Veil","level":63,"moves":["Aqua Tail","Hydro Pump","Surging Strikes","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerF Connie Set 2": {"level":62,"nature":"Bashful","ability":"Water Veil","moves":["Whirlpool","Aqua Tail","Hydro Pump","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Connie Set 3": {"level":63,"nature":"Modest","ability":"Water Veil","moves":["Whirlpool","Aqua Tail","Hydro Pump","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Leader Misty": {"nature":"Timid","ability":"Technician","level":25,"item":"Mystic Water","moves":["Flip Turn","Hidden Power Grass","Icy Wind","Water Pulse"],"ivs":{"at":30,"sa":30}},
     "*Camper Bryce": {"nature":"Naive","ability":"Technician","level":98,"item":"Mystic Water","moves":["Fake Out","Icy Wind","Rock Smash","Surging Strikes"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Leader Misty": {"nature":"Jolly","ability":"Technician","level":100,"item":"Focus Sash","moves":["Fake Out","Flip Turn","Pursuit","Surging Strikes"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Leader Misty": {"nature":"Jolly","ability":"Technician","level":100,"item":"Focus Sash","moves":["Fake Out","Flip Turn","Pursuit","Surging Strikes"],"evs":{"at":252,"df":4,"sp":252}},
+    "SwimmerF Connie": {"level":63,"nature":"Bold","ability":"Water Veil","moves":["Whirlpool","Aqua Tail","Hydro Pump","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Starmie": {
     "*SwimmerF Maria": {"nature":"Timid","ability":"Illuminate","level":99,"item":"Life Orb","moves":["Blizzard","Hydro Pump","Psyshock","Thunder"],"evs":{"df":4,"sp":252,"sa":252}},
     "*Biker William": {"nature":"Timid","ability":"Analytic","level":63,"item":"Life Orb","moves":["Flip Turn","Hydro Pump","Psychic","Thunder"],"evs":{"df":4,"sp":252,"sa":252}},
     "Leader Misty": {"nature":"Timid","ability":"Analytic","level":27,"item":"Sitrus Berry","moves":["Aurora Beam","Psyshock","Recover","Water Pulse"]},
-    "SwimmerM Reece": {"nature":"Jolly","ability":"Natural Cure","level":58,"moves":["Confuse Ray","Meteor Beam","Psybeam","Recover"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Reece": {"level":58,"nature":"Naive","ability":"Illuminate","moves":["Rapid Spin","Recover","Psybeam","Confuse Ray"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*PkMn Trainer Haley": {"nature":"Timid","ability":"Analytic","level":66,"item":"Power Herb","moves":["Ice Beam","Meteor Beam","Psyshock","Surf"],"evs":{"hp":6,"sp":252,"sa":252}},
-    "SwimmerM Jack": {"nature":"Naive","ability":"Natural Cure","level":65,"moves":["Confuse Ray","Meteor Beam","Psybeam","Recover"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Axle": {"nature":"Calm","ability":"Natural Cure","level":62,"moves":["Confuse Ray","Meteor Beam","Psybeam","Recover"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Jack": {"level":65,"nature":"Bold","ability":"Natural Cure","moves":["Recover","Psybeam","Confuse Ray","Meteor Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Axle": {"level":62,"nature":"Hasty","ability":"Natural Cure","moves":["Recover","Psybeam","Confuse Ray","Meteor Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Finn": {"level":88,"nature":"Jolly","ability":"Natural Cure","moves":["Recover","Psybeam","Confuse Ray","Meteor Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Sis And Bro Ava & Geb": {"level":50,"nature":"Docile","ability":"Illuminate","moves":["Rapid Spin","Recover","Psybeam","Confuse Ray"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Clodsire": {
     "Leader Misty": {"nature":"Bold","ability":"Water Absorb","level":26,"item":"Iapapa Berry","moves":["Bulldoze","Poison Jab","Recover","Rock Tomb"]},
-    "Picnicker Missy": {"nature":"Lax","ability":"Poison Touch","level":64,"moves":["Earthquake","Megahorn","Sludge Wave","Toxic"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Missy": {"level":64,"nature":"Rash","ability":"Water Absorb","moves":["Sludge Wave","Megahorn","Toxic","Earthquake"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Aron": {
     "Biker Hideo": {"nature":"Bashful","ability":"Sturdy","level":1,"item":"Shell Bell","moves":["Endeavor"],"ivs":{"hp":0}},
@@ -768,65 +812,69 @@ var SETDEX_SV = {
     "Friendly PkMnManiac": {"nature":"Bashful","ability":"Flame Body","level":5,"item":"Rocky Helmet","moves":["Flare Blitz","Morning Sun","U-turn","Will-O-Wisp"],"ivs":{"sp":15}}
   },
   "Seaking": {
-    "Fisherman Ronald": {"nature":"Bold","ability":"Lightning Rod","level":64,"moves":["Agility","Fishious Rend","Soak","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Ronald": {"level":64,"nature":"Gentle","ability":"Lightning Rod","moves":["Waterfall","Soak","Megahorn","Fishious Rend"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Dumbass Kid": {"nature":"Adamant","ability":"Rain Dish","level":57,"item":"Choice Band","moves":["Fishious Rend","Flip Turn","Megahorn"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Fisherman Ned": {"nature":"Bold","ability":"Lightning Rod","level":35,"moves":["Agility","Fishious Rend","Soak","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Reece": {"nature":"Naughty","ability":"Lightning Rod","level":58,"moves":["Agility","Fishious Rend","Soak","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Anya": {"nature":"Lonely","ability":"Lightning Rod","level":61,"moves":["Agility","Fishious Rend","Soak","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Ned": {"level":35,"nature":"Modest","ability":"Water Veil","moves":["Aqua Jet","Aqua Ring","Agility","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Reece": {"level":58,"nature":"Naive","ability":"Water Veil","moves":["Agility","Waterfall","Soak","Megahorn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Anya": {"level":61,"nature":"Quiet","ability":"Lightning Rod","moves":["Waterfall","Soak","Megahorn","Fishious Rend"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Tommy": {"level":86,"nature":"Naive","ability":"Water Veil","moves":["Waterfall","Soak","Megahorn","Fishious Rend"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Tentacruel": {
-    "Juggler Nate": {"nature":"Relaxed","ability":"Clear Body","level":63,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Spencer": {"nature":"Hasty","ability":"Liquid Ooze","level":64,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Ace Trainer Mary": {"nature":"Modest","ability":"Rain Dish","level":37,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"evs":{"hp":6,"sa":252,"sd":252}},
-    "Picnicker Irene": {"nature":"Adamant","ability":"Clear Body","level":62,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Fisherman Chip": {"nature":"Hardy","ability":"Clear Body","level":35,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Douglas": {"nature":"Timid","ability":"Liquid Ooze","level":61,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Axle": {"nature":"Quiet","ability":"Clear Body","level":63,"moves":["Hex","Hydro Pump","Screech","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Juggler Nate": {"level":63,"nature":"Careful","ability":"Clear Body","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Spencer": {"level":64,"nature":"Calm","ability":"Liquid Ooze","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ace Trainer Mary": {"level":37,"nature":"Serious","ability":"Clear Body","moves":["Bubble Beam","Barrier","Poison Jab","Scald"],"ivs":{"hp":25,"at":25,"df":25,"sa":25,"sd":25,"sp":25}},
+    "Picnicker Irene": {"level":62,"nature":"Jolly","ability":"Liquid Ooze","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Fisherman Chip": {"level":35,"nature":"Mild","ability":"Clear Body","moves":["Bubble Beam","Barrier","Poison Jab","Scald"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Douglas": {"level":61,"nature":"Rash","ability":"Liquid Ooze","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Axle": {"level":63,"nature":"Impish","ability":"Clear Body","moves":["Hex","Sludge Wave","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Toby": {"level":48,"nature":"Timid","ability":"Clear Body","moves":["Scald","Screech","Hex","Sludge Wave"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Barraskewda": {
     "*Ace Trainer Janny": {"nature":"Adamant","ability":"Swift Swim","level":100,"item":"Waterium Z","moves":["Aqua Jet","Close Combat","Flip Turn","Liquidation"],"evs":{"at":252,"df":4,"sp":252}},
     "*SwimmerM Finn": {"nature":"Jolly","ability":"Swift Swim","level":98,"item":"Mystic Water","moves":["Close Combat","Flip Turn","Psychic Fangs","Waterfall"],"evs":{"at":252,"df":4,"sp":252}},
-    "SwimmerM Darrin": {"nature":"Lax","ability":"Swift Swim","level":62,"moves":["Crunch","Double-Edge","Laser Focus","Liquidation"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Chip": {"nature":"Sassy","ability":"Swift Swim","level":35,"moves":["Crunch","Double-Edge","Laser Focus","Liquidation"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Darrin": {"level":62,"nature":"Hardy","ability":"Swift Swim","moves":["Laser Focus","Crunch","Liquidation","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Chip": {"level":35,"nature":"Jolly","ability":"Swift Swim","moves":["Bite","Agility","Dive","Laser Focus"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Veluza": {
     "*Ace Trainer Naomi": {"nature":"Jolly","ability":"Sharpness","level":81,"item":"Sitrus Berry","moves":["Aqua Cutter","Aqua Jet","Fillet Away","Psycho Cut"],"evs":{"at":252,"df":4,"sp":252}},
-    "Fisherman Hank": {"nature":"Impish","ability":"Mold Breaker","level":36,"moves":["Aqua Cutter","Fillet Away","Final Gambit","Night Slash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Anya": {"nature":"Naive","ability":"Mold Breaker","level":62,"moves":["Aqua Cutter","Fillet Away","Final Gambit","Night Slash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Hank": {"level":36,"nature":"Quirky","ability":"Mold Breaker","moves":["Slash","Crunch","Liquidation","Psycho Cut"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Anya": {"level":62,"nature":"Bold","ability":"Mold Breaker","moves":["Aqua Cutter","Night Slash","Final Gambit","Fillet Away"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Boss Giovanni": {"nature":"Jolly","ability":"Sharpness","level":46,"item":"Sitrus Berry","moves":["Aqua Cutter","Aqua Jet","Fillet Away","Psycho Cut"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Whiscash": {
     "*Biker William": {"nature":"Jolly","ability":"Cash Splash","level":63,"item":"Rindo Berry","moves":["Bounce","Dragon Dance","Earthquake","Waterfall"],"evs":{"at":252,"df":4,"sp":252}},
-    "Fisherman Elliot": {"nature":"Hardy","ability":"Hydration","level":35,"moves":["Dragon Dance","Future Sight","Muddy Water","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Elliot": {"level":35,"nature":"Mild","ability":"Hydration","moves":["Rest","Snore","Water Pulse","Earthquake"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Tuber Amira": {"nature":"Jolly","ability":"Cash Splash","level":100,"item":"Rindo Berry","moves":["Dragon Dance","Earthquake","Waterfall","Zen Headbutt"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Luvdisc": {
     "*PkMn Trainer Sam": {"nature":"Timid","ability":"Soul-Heart","level":57,"item":"Focus Sash","moves":["Dazzling Gleam","Hydro Pump","Ice Beam","Lovely Kiss"],"evs":{"hp":6,"sp":252,"sa":252}},
-    "Fisherman Elliot": {"nature":"Brave","ability":"Swift Swim","level":36,"moves":["Hydro Pump","Moonblast","Safeguard","Soak"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Wade": {"nature":"Modest","ability":"Swift Swim","level":65,"moves":["Hydro Pump","Moonblast","Safeguard","Soak"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Elliot": {"level":36,"nature":"Bashful","ability":"Swift Swim","moves":["Heart Stamp","Flail","Sweet Kiss","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Wade": {"level":65,"nature":"Modest","ability":"Swift Swim","moves":["Soak","Hydro Pump","Safeguard","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Garrett": {"level":86,"nature":"Naughty","ability":"Swift Swim","moves":["Soak","Hydro Pump","Safeguard","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Dondozo": {
-    "SwimmerM Richard": {"nature":"Serious","ability":"Unaware","level":57,"moves":["Double-Edge","Heavy Slam","Sleep Talk","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Elliot": {"nature":"Sassy","ability":"Unaware","level":37,"moves":["Double-Edge","Heavy Slam","Sleep Talk","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Richard": {"level":57,"nature":"Sassy","ability":"Oblivious","moves":["Rest","Sleep Talk","Heavy Slam","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Elliot": {"level":37,"nature":"Sassy","ability":"Unaware","moves":["Dive","Noble Roar","Soak","Body Slam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Seadra": {
-    "SwimmerM Tony": {"nature":"Naive","ability":"Poison Touch","level":61,"moves":["Agility","Brine","Dragon Dance","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Tony": {"level":61,"nature":"Bold","ability":"Poison Touch","moves":["Agility","Dragon Pulse","Dragon Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "SwimmerM Darrin Set 1": {"nature":"Hardy","ability":"Poison Touch","level":62,"moves":["Agility","Brine","Dragon Dance","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Darrin Set 2": {"nature":"Hardy","ability":"Poison Touch","level":64,"moves":["Agility","Brine","Dragon Dance","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Nora": {"nature":"Quirky","ability":"Poison Touch","level":65,"moves":["Agility","Brine","Dragon Dance","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Elliot": {"nature":"Hardy","ability":"Poison Touch","level":35,"moves":["Agility","Brine","Dragon Dance","Dragon Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Darrin Set 2": {"level":64,"nature":"Mild","ability":"Poison Touch","moves":["Agility","Dragon Pulse","Dragon Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Nora": {"level":65,"nature":"Quirky","ability":"Poison Touch","moves":["Agility","Dragon Pulse","Dragon Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Elliot": {"level":35,"nature":"Mild","ability":"Poison Touch","moves":["Twister","Bubble Beam","Focus Energy","Brine"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Darrin": {"level":62,"nature":"Mild","ability":"Poison Touch","moves":["Agility","Dragon Pulse","Dragon Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Toxtricity": {
-    "Young Couple Gia & Jes": {"nature":"Mild","ability":"Punk Rock","level":38,"moves":["Boomburst","Overdrive","Poison Jab","Shift Gear"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Young Couple Gia & Jes": {"level":38,"nature":"Lonely","ability":"Plus","moves":["Screech","Swagger","Toxic","Discharge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Toxtricity-Low-Key": {
-    "Young Couple Gia & Jes": {"nature":"Bold","ability":"Minus","level":38,"moves":["Boomburst","Magnetic Flux","Overdrive","Poison Jab"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Young Couple Gia & Jes": {"level":38,"nature":"Naive","ability":"Minus","moves":["Screech","Swagger","Toxic","Discharge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Mime Jr.": {
-    "Picnicker Carol": {"nature":"Naughty","ability":"Soundproof","level":35,"moves":["Psychic","Role Play","Safeguard","Taunt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Carol": {"level":35,"nature":"Naive","ability":"Filter","moves":["Reflect","Psybeam","Substitute","Recycle"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Bombirdier": {
-    "Picnicker Carol": {"nature":"Serious","ability":"Rocky Payload","level":34,"moves":["Dual Wingbeat","Knock Off","Parting Shot","Rock Slide"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Carol": {"level":34,"nature":"Gentle","ability":"Rocky Payload","moves":["Pluck","Torment","Rock Tomb","Sucker Punch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Boldore": {
     "Hiker Clark": {"nature":"Jolly","ability":"Sturdy","level":36,"moves":["Magnitude","Rock Throw","Smack Down","Stealth Rock"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
@@ -835,43 +883,52 @@ var SETDEX_SV = {
     "Hiker Clark": {"nature":"Quiet","ability":"Intimidate","level":35,"moves":["Feint Attack","Harden","Sweet Scent","Vise Grip"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Lickitung": {
-    "Pokemaniac Herman": {"nature":"Jolly","ability":"Own Tempo","level":34,"moves":["Power Whip","Refresh","Screech","Wring Out"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Herman": {"level":34,"nature":"Hardy","ability":"Own Tempo","moves":["Stomp","Disable","Slam","Rollout"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Tamer Evan": {"level":48,"nature":"Timid","ability":"Own Tempo","moves":["Rollout","Chip Away","Me First","Refresh"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Crocalor": {
-    "Pokemaniac Herman": {"nature":"Jolly","ability":"Blaze","level":35,"moves":["Fire Blast","Flamethrower","Hyper Voice","Will-O-Wisp"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Herman": {"level":35,"nature":"Timid","ability":"Blaze","moves":["Snarl","Roar","Flamethrower","Hyper Voice"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Rhyhorn": {
-    "Hiker Trent": {"nature":"Modest","ability":"Lightning Rod","level":34,"moves":["Earthquake","Megahorn","Stone Edge","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Trent": {"level":34,"nature":"Hardy","ability":"Rock Head","moves":["Bulldoze","Chip Away","Rock Blast","Drill Run"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Tamer Jason": {"level":43,"nature":"Quiet","ability":"Rock Head","moves":["Rock Blast","Drill Run","Take Down","Stone Edge"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Pokemaniac Hector": {"level":49,"nature":"Mild","ability":"Lightning Rod","moves":["Take Down","Stone Edge","Earthquake","Megahorn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Quagsire": {
-    "SwimmerF Anya": {"nature":"Naughty","ability":"Damp","level":62,"moves":["Haze","Mist","Muddy Water","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Hiker Trent": {"nature":"Lax","ability":"Water Absorb","level":35,"moves":["Haze","Mist","Muddy Water","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerF Anya": {"level":62,"nature":"Calm","ability":"Damp","moves":["Rain Dance","Mist","Haze","Muddy Water"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Hiker Trent": {"level":35,"nature":"Bashful","ability":"Water Absorb","moves":["Slam","Mud Bomb","Amnesia","Yawn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Pikachu": {
-    "Picnicker Heidi": {"nature":"Mild","ability":"Static","level":30,"moves":["Light Screen","Thunder","Wild Charge","Zippy Zap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Heidi": {"level":30,"nature":"Lonely","ability":"Static","moves":["Thunder Wave","Feint","Spark","Nuzzle"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "PkMn Breeder Alize": {"level":48,"nature":"Lax","ability":"Static","moves":["Discharge","Extreme Speed","Thunderbolt","Agility"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Twins Miu & Mia": {"level":50,"nature":"Hasty","ability":"Static","moves":["Extreme Speed","Thunderbolt","Agility","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Twins Miu & Mia Set 2": {"level":50,"nature":"Lax","ability":"Static","moves":["Extreme Speed","Thunderbolt","Agility","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Clefable": {
     "Ace Trainer Alexa": {"nature":"Modest","ability":"Magic Guard","level":83,"item":"Life Orb","moves":["Fire Blast","Moonblast","Stealth Rock","Thunderbolt"],"evs":{"hp":252,"sp":6,"sa":252}},
     "Dumbass Gambler": {"nature":"Quiet","ability":"Magic Guard","level":100,"item":"Life Orb","moves":["Metronome"]},
-    "Beauty Grace": {"nature":"Rash","ability":"Cute Charm","level":58,"moves":["Double Slap","Metronome","Moonblast","Teleport"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Heidi": {"nature":"Brave","ability":"Magic Guard","level":29,"moves":["Double Slap","Metronome","Moonblast","Teleport"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Beauty Grace": {"level":58,"nature":"Naughty","ability":"Magic Guard","moves":["Double Slap","Metronome","Teleport","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Picnicker Heidi": {"level":29,"nature":"Hasty","ability":"Magic Guard","moves":["Sing","Double Slap","Metronome","Teleport"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Claire": {"level":85,"nature":"Hasty","ability":"Cute Charm","moves":["Double Slap","Metronome","Teleport","Moonblast"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "PkMn Breeder Allison": {"level":48,"nature":"Sassy","ability":"Magic Guard","moves":["Sing","Double Slap","Metronome","Teleport"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Oddish": {
-    "Picnicker Alicia": {"nature":"Quiet","ability":"Chlorophyll","level":28,"moves":["Grassy Terrain","Moonblast","Petal Dance","Strength Sap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Beauty Bridget": {"nature":"Timid","ability":"Chlorophyll","level":37,"moves":["Grassy Terrain","Moonblast","Petal Dance","Strength Sap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Picnicker Alicia": {"level":28,"nature":"Impish","ability":"Chlorophyll","moves":["Sleep Powder","Mega Drain","Sludge","Moonlight"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Beauty Bridget": {"level":37,"nature":"Calm","ability":"Chlorophyll","moves":["Sludge","Moonlight","Giga Drain","Toxic"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Bellsprout": {
-    "Picnicker Alicia": {"nature":"Relaxed","ability":"Chlorophyll","level":28,"moves":["Poison Jab","Razor Leaf","Slam","Wring Out"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Beauty Bridget": {"nature":"Adamant","ability":"Chlorophyll","level":37,"moves":["Poison Jab","Razor Leaf","Slam","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Picnicker Alicia": {"level":28,"nature":"Careful","ability":"Chlorophyll","moves":["Poison Powder","Stun Spore","Sludge","Mega Drain"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Beauty Bridget": {"level":37,"nature":"Serious","ability":"Chlorophyll","moves":["Sludge","Mega Drain","Knock Off","Gastro Acid"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Aroma Lady Nikki": {"level":37,"nature":"Relaxed","ability":"Chlorophyll","moves":["Sludge","Mega Drain","Knock Off","Gastro Acid"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Sewaddle": {
-    "Picnicker Alicia": {"nature":"Lonely","ability":"Swarm","level":28,"moves":["Bug Buzz","Endure","Flail","Sticky Web"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Alicia": {"level":28,"nature":"Lonely","ability":"Swarm","moves":["String Shot","Bug Bite","Razor Leaf","Struggle Bug"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Morelull": {
-    "Picnicker Alicia": {"nature":"Bold","ability":"Effect Spore","level":28,"moves":["Dream Eater","Moonblast","Spore","Spotlight"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Alicia": {"level":28,"nature":"Gentle","ability":"Effect Spore","moves":["Mega Drain","Sleep Powder","Ingrain","Confuse Ray"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Stunfisk": {
-    "Hiker Jeremy": {"nature":"Hasty","ability":"Static","level":30,"moves":["Bounce","Earth Power","Muddy Water","Thunderbolt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Hiker Jeremy": {"level":30,"nature":"Brave","ability":"Static","moves":["Camouflage","Mud Bomb","Discharge","Endure"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Biker Hideo": {"nature":"Calm","ability":"Sand Veil","level":64,"item":"Focus Sash","moves":["Earth Power","Stealth Rock","Thunder Wave","Volt Switch"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Larvitar": {
@@ -881,31 +938,34 @@ var SETDEX_SV = {
     "Hiker Alan": {"nature":"Hasty","ability":"Steam Engine","level":32,"moves":["Flame Charge","Harden","Rock Tomb"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Pignite": {
-    "Camper Chris": {"nature":"Impish","ability":"Blaze","level":31,"moves":["Flamethrower","Flare Blitz","Head Smash","Roar"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Chris": {"level":31,"nature":"Quiet","ability":"Blaze","moves":["Sucker Punch","Rollout","Take Down","Heat Crash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Orbeetle": {
-    "Bug Catcher Brent": {"nature":"Timid","ability":"Swarm","level":28,"moves":["After You","Calm Mind","Iron Defense","Psychic Terrain"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Brent": {"level":28,"nature":"Calm","ability":"Frisk","moves":["Psybeam","Hypnosis","Skill Swap","Bug Buzz"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Heracross": {
     "*Black Belt Hugh": {"nature":"Jolly","ability":"Moxie","level":100,"item":"Choice Scarf","moves":["Close Combat","Earthquake","Megahorn","Stone Edge"],"evs":{"at":252,"df":4,"sp":252}},
-    "Bug Catcher Conner": {"nature":"Rash","ability":"Swarm","level":28,"moves":["Close Combat","First Impression","Megahorn","Reversal"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Conner": {"level":28,"nature":"Timid","ability":"Swarm","moves":["Chip Away","Counter","Fury Attack","Brick Break"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Garret": {"level":49,"nature":"Timid","ability":"Swarm","moves":["Take Down","Megahorn","Close Combat","Reversal"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Camper Riley": {"level":50,"nature":"Hardy","ability":"Guts","moves":["Take Down","Megahorn","Close Combat","Reversal"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Vibrava": {
-    "Bird Keeper Carter": {"nature":"Modest","ability":"Levitate","level":57,"moves":["Boomburst","Hyper Beam","Sandstorm","Wing Attack"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Bug Catcher Conner": {"nature":"Relaxed","ability":"Levitate","level":28,"moves":["Boomburst","Hyper Beam","Sandstorm","Wing Attack"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bird Keeper Carter": {"level":57,"nature":"Docile","ability":"Levitate","moves":["Sandstorm","Wing Attack","Hyper Beam","Boomburst"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Bug Catcher Conner": {"level":28,"nature":"Careful","ability":"Levitate","moves":["Rock Slide","Supersonic","Screech","Earth Power"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Venonat": {
-    "Bug Catcher Conner": {"nature":"Mild","ability":"Compound Eyes","level":29,"moves":["Leech Life","Poison Fang","Psychic","Zen Headbutt"],"ivs":{"hp":1,"at":1,"df":1,"sp":1,"sa":1,"sd":1}}
+    "Bug Catcher Conner": {"level":29,"nature":"Mild","ability":"Compound Eyes","moves":["Psybeam","Stun Spore","Signal Beam","Sleep Powder"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Vance": {"level":48,"nature":"Bashful","ability":"Tinted Lens","moves":["Leech Life","Zen Headbutt","Poison Fang","Psychic"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Klawf": {
-    "Hiker Brice": {"nature":"Jolly","ability":"Anger Shell","level":30,"moves":["High Horsepower","Iron Defense","Rock Slide","Swords Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Brice": {"level":30,"nature":"Careful","ability":"Shell Armor","moves":["Detect","Rock Blast","X-Scissor","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Carbink": {
-    "Hiker Brice": {"nature":"Hasty","ability":"Clear Body","level":30,"moves":["Light Screen","Moonblast","Recover","Safeguard"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Sofia": {"nature":"Modest","ability":"Clear Body","level":35,"moves":["Light Screen","Moonblast","Recover","Safeguard"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Hiker Brice": {"level":30,"nature":"Calm","ability":"Clear Body","moves":["Smack Down","Reflect","Stealth Rock","Guard Split"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Picnicker Sofia": {"level":35,"nature":"Hardy","ability":"Clear Body","moves":["Stealth Rock","Guard Split","Ancient Power","Flail"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Minior-Meteor": {
-    "Hiker Brice": {"nature":"Bold","ability":"Shields Down","level":30,"moves":["Double-Edge","Explosion","Power Gem","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Brice": {"level":30,"nature":"Docile","ability":"Shields Down","moves":["Ancient Power","Self-Destruct","Stealth Rock","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Minior": {
     "Hiker Brice": {"nature":"Bold","ability":"Shields Down","level":30,"moves":["Double-Edge","Explosion","Power Gem","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
@@ -914,7 +974,7 @@ var SETDEX_SV = {
     "*Picnicker Caitlin": {"nature":"Jolly","ability":"Own Tempo","level":32,"item":"Choice Scarf","moves":["Close Combat","Dragon Ascent","Trick","V-create"]}
   },
   "Spinda": {
-    "Camper Drew": {"nature":"Jolly","ability":"Own Tempo","level":28,"moves":["Double-Edge","Flail","Psych Up","Thrash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Camper Drew": {"level":28,"nature":"Naughty","ability":"Own Tempo","moves":["Psybeam","Hypnosis","Dizzy Punch","Sucker Punch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Picnicker Caitlin": {"nature":"Jolly","ability":"Contrary","level":32,"moves":["Assist"]}
   },
   "Sneasel-Hisui": {
@@ -922,31 +982,36 @@ var SETDEX_SV = {
   },
   "Liepard": {
     "*Picnicker Caitlin": {"nature":"Bashful","ability":"Prankster","level":30,"item":"Focus Sash","moves":["Assist"]},
-    "Team Rocket Grunt": {"nature":"Quiet","ability":"Unburden","level":46,"moves":["Nasty Plot","Night Slash","Play Rough","Snatch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Serious","ability":"Moxie","moves":["Assurance","Slash","Taunt","Night Slash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Palpitoad": {
-    "Camper Drew": {"nature":"Lax","ability":"Swift Swim","level":27,"moves":["Echoed Voice","Flail","Hydro Pump","Hyper Voice"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Camper Drew": {"level":27,"nature":"Hardy","ability":"Swift Swim","moves":["Bubble Beam","Mud Shot","Aqua Ring","Uproar"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Zorua": {
-    "Picnicker Dana": {"nature":"Mild","ability":"Illusion","level":34,"moves":["Imprison","Nasty Plot","Night Daze","Punishment"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Dana": {"level":34,"nature":"Relaxed","ability":"Illusion","moves":["Scary Face","Taunt","Foul Play","Torment"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Golduck": {
-    "Picnicker Dana": {"nature":"Adamant","ability":"Swift Swim","level":35,"moves":["Hydro Pump","Nasty Plot","Psych Up","Wonder Room"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Picnicker Dana": {"level":35,"nature":"Adamant","ability":"Swift Swim","moves":["Zen Headbutt","Aqua Tail","Soak","Psychic"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*SwimmerF Tisha": {"nature":"Timid","ability":"Swift Swim","level":100,"item":"Psychium Z","moves":["Hydro Pump","Ice Beam","Nasty Plot","Synchronoise"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Tamer Vincent": {"nature":"Modest","ability":"Swift Swim","level":81,"moves":["Hydro Pump","Nasty Plot","Psych Up","Wonder Room"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Tamer Vincent": {"level":81,"nature":"Bashful","ability":"Cloud Nine","moves":["Psych Up","Nasty Plot","Hydro Pump","Wonder Room"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "SwimmerF Abigail": {"level":85,"nature":"Relaxed","ability":"Cloud Nine","moves":["Psych Up","Nasty Plot","Hydro Pump","Wonder Room"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Young Couple Eve & Jon": {"level":50,"nature":"Modest","ability":"Cloud Nine","moves":["Psychic","Psych Up","Nasty Plot","Hydro Pump"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Gentleman Clifford": {"level":49,"nature":"Calm","ability":"Swift Swim","moves":["Psychic","Psych Up","Nasty Plot","Hydro Pump"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gloom": {
-    "Picnicker Ariana": {"nature":"Quiet","ability":"Chlorophyll","level":33,"moves":["Apple Acid","Grassy Terrain","Petal Dance","Strength Sap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Ariana": {"level":33,"nature":"Impish","ability":"Chlorophyll","moves":["Sleep Powder","Mega Drain","Sludge","Moonlight"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Team Rocket Grunt": {"level":48,"nature":"Lax","ability":"Chlorophyll","moves":["Moonlight","Giga Drain","Toxic","Natural Gift"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Rash","ability":"Chlorophyll","moves":["Moonlight","Giga Drain","Toxic","Natural Gift"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Chatot": {
-    "Picnicker Ariana": {"nature":"Timid","ability":"Punk Rock","level":33,"moves":["Boomburst","Feather Dance","Hyper Voice","Synchronoise"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Ariana": {"level":33,"nature":"Lonely","ability":"Punk Rock","moves":["Round","Taunt","Chatter","Mimic"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Luxio": {
-    "Picnicker Ariana": {"nature":"Modest","ability":"Rivalry","level":31,"moves":["Crunch","Discharge","Scary Face","Wild Charge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Ariana": {"level":31,"nature":"Modest","ability":"Rivalry","moves":["Bite","Spark","Roar","Swagger"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Roselia": {
-    "Picnicker Ariana": {"nature":"Brave","ability":"Natural Cure","level":35,"moves":["Aromatherapy","Leaf Storm","Petal Dance","Synthesis"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Beauty Bridget": {"nature":"Calm","ability":"Poison Touch","level":38,"moves":["Aromatherapy","Leaf Storm","Petal Dance","Synthesis"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Picnicker Ariana": {"level":35,"nature":"Bashful","ability":"Natural Cure","moves":["Giga Drain","Toxic Spikes","Sleep Powder","Ingrain"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Beauty Bridget": {"level":38,"nature":"Naughty","ability":"Poison Touch","moves":["Toxic Spikes","Sleep Powder","Ingrain","Petal Blizzard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Honedge": {
     "Hiker Lucas": {"nature":"Lonely","ability":"Sharpness","level":35,"moves":["Gyro Ball","Magnitude","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
@@ -955,88 +1020,90 @@ var SETDEX_SV = {
     "Hiker Lucas": {"nature":"Modest","ability":"Quick Feet","level":35,"moves":["Fake Tears","Feint Attack","Fury Swipes","Magnitude"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Shuckle": {
-    "Hiker Oliver": {"nature":"Rash","ability":"Sturdy","level":35,"moves":["Guard Split","Power Split","Sticky Web","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Oliver": {"level":35,"nature":"Timid","ability":"Sturdy","moves":["Rock Throw","Gastro Acid","Power Trick","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Baltoy": {
-    "Hiker Oliver": {"nature":"Relaxed","ability":"Levitate","level":35,"moves":["Earth Power","Explosion","Imprison","Sandstorm"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Oliver": {"level":35,"nature":"Relaxed","ability":"Levitate","moves":["Self-Destruct","Extrasensory","Guard Split","Power Split"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Anorith": {
-    "Hiker Lenny": {"nature":"Sassy","ability":"Battle Armor","level":32,"moves":["Crush Claw","Detect","Rock Blast","X-Scissor"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Lenny": {"level":32,"nature":"Relaxed","ability":"Skill Link","moves":["Metal Claw","Ancient Power","Bug Bite","Brine"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Cranidos": {
-    "Hiker Lenny": {"nature":"Bashful","ability":"Mold Breaker","level":31,"moves":["Ancient Power","Head Smash","Screech","Zen Headbutt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Lenny": {"level":31,"nature":"Rash","ability":"Mold Breaker","moves":["Take Down","Scary Face","Assurance","Chip Away"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Shieldon": {
-    "Hiker Lenny": {"nature":"Naughty","ability":"Sturdy","level":32,"moves":["Heavy Slam","Iron Head","Metal Burst","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Lenny": {"level":32,"nature":"Jolly","ability":"Sturdy","moves":["Take Down","Iron Defense","Swagger","Ancient Power"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Arctibax": {
-    "Pokemaniac Ashton": {"nature":"Jolly","ability":"Thermal Exchange","level":32,"moves":["Crunch","Dragon Claw","Icicle Crash","Take Down"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Ashton": {"level":32,"nature":"Bashful","ability":"Thermal Exchange","moves":["Focus Energy","Bite","Ice Fang","Dragon Claw"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Flareon": {
     "*Professor Oak": {"nature":"Jolly","ability":"Toxic Boost","level":100,"item":"Eevium Z","moves":["Last Resort","Sacred Fire","Superpower","Wild Charge"],"evs":{"at":252,"sp":252}},
-    "Pokemaniac Cooprt": {"nature":"Jolly","ability":"Flash Fire","level":33,"moves":["Flare Blitz","Last Resort","Lava Plume","Sacred Fire"],"evs":{"hp":4,"sp":252,"sd":252}},
-    "Pokemaniac Dawson": {"nature":"Jolly","ability":"Flash Fire","level":80,"moves":["Flare Blitz","Last Resort","Lava Plume","Sacred Fire"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Cooprt": {"level":33,"nature":"Mild","ability":"Flash Fire","moves":["Fire Fang","Fire Spin","Scary Face","Smog"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Pokemaniac Dawson": {"level":80,"nature":"Serious","ability":"Flash Fire","moves":["Lava Plume","Last Resort","Flare Blitz","Sacred Fire"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Porygon": {
-    "Scientist Jerry": {"nature":"Gentle","ability":"Trace","level":48,"moves":["Lock-On","Magic Coat","Tri Attack","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Pokemaniac Cooprt": {"nature":"Jolly","ability":"Trace","level":35,"moves":["Lock-On","Magic Coat","Tri Attack","Zap Cannon"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Scientist Jerry": {"level":48,"nature":"Sassy","ability":"Download","moves":["Signal Beam","Recycle","Discharge","Lock-On"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Pokemaniac Cooprt": {"level":35,"nature":"Docile","ability":"Trace","moves":["Recover","Magnet Rise","Signal Beam","Recycle"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lairon": {
     "Hiker Dudley": {"nature":"Bashful","ability":"Sturdy","level":34,"moves":["Iron Defense","Magnitude","Metal Claw","Roar"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Ferroseed": {
-    "Ace Trainer Mary": {"nature":"Modest","ability":"Iron Barbs","level":36,"moves":["Explosion","Flash Cannon","Iron Head","Payback"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Ace Trainer Mary": {"level":36,"nature":"Rash","ability":"Iron Barbs","moves":["Gyro Ball","Iron Defense","Mirror Shot","Ingrain"],"ivs":{"hp":25,"at":25,"df":25,"sa":25,"sd":25,"sp":25}},
     "Hiker Dudley": {"nature":"Relaxed","ability":"Iron Barbs","level":34,"moves":["Bullet Seed","Gyro Ball","Magnitude","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Dwebble": {
     "Hiker Dudley": {"nature":"Hardy","ability":"Sturdy","level":35,"moves":["Bug Bite","Magnitude","Rock Slide"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Snorunt": {
-    "Picnicker Sofia": {"nature":"Rash","ability":"Ice Body","level":34,"moves":["Blizzard","Crunch","Frost Breath","Snowscape"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Sofia": {"level":34,"nature":"Adamant","ability":"Ice Body","moves":["Bite","Ice Fang","Headbutt","Protect"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Swinub": {
-    "Twins Eli & Anne": {"nature":"Modest","ability":"Oblivious","level":36,"moves":["Amnesia","Earthquake","Flail","Icicle Crash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Picnicker Sofia": {"nature":"Lonely","ability":"Oblivious","level":35,"moves":["Amnesia","Earthquake","Flail","Icicle Crash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Twins Eli & Anne": {"level":36,"nature":"Docile","ability":"Oblivious","moves":["Icy Wind","Ice Fang","Take Down","Mist"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Sofia": {"level":35,"nature":"Brave","ability":"Oblivious","moves":["Icy Wind","Ice Fang","Take Down","Mist"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Golett": {
-    "Channeler Janae": {"nature":"Bold","ability":"Iron Fist","level":38,"moves":["Curse","Earthquake","Focus Punch","Hammer Arm"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Channeler Janae": {"level":38,"nature":"Modest","ability":"Iron Fist","moves":["Mega Punch","Magnitude","Dynamic Punch","Shadow Sneak"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Hiker Allen": {"nature":"Impish","ability":"Iron Fist","level":35,"moves":["Magnitude","Shadow Punch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Revavroom": {
     "*Cue Ball Camron": {"nature":"Jolly","ability":"Filter","level":63,"item":"Air Balloon","moves":["Gunk Shot","High Horsepower","Iron Head","Shift Gear"],"evs":{"at":252,"df":4,"sp":252}},
-    "Scientist Ivan": {"nature":"Careful","ability":"Overcoat","level":71,"moves":["Gunk Shot","Poison Jab","Shift Gear","Uproar"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Hiker Eric": {"nature":"Relaxed","ability":"Overcoat","level":34,"moves":["Gunk Shot","Poison Jab","Shift Gear","Uproar"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Scientist Ivan": {"level":71,"nature":"Naive","ability":"Overcoat","moves":["Uproar","Spin Out","Gunk Shot","Shift Gear"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Hiker Eric": {"level":34,"nature":"Careful","ability":"Overcoat","moves":["Headbutt","Screech","Iron Head","Swagger"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Gligar": {
-    "Hiker Eric": {"nature":"Quirky","ability":"Hyper Cutter","level":34,"moves":["Earthquake","Sky Uppercut","U-turn","X-Scissor"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Hiker Eric": {"level":34,"nature":"Modest","ability":"Hyper Cutter","moves":["Feint Attack","Acrobatics","Slash","U-turn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Braixen": {
-    "Pokemaniac Steve": {"nature":"Jolly","ability":"Blaze","level":33,"moves":["Fire Blast","Magic Room","Psychic","Sunny Day"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Steve": {"level":33,"nature":"Mild","ability":"Blaze","moves":["Psybeam","Fire Spin","Lucky Chant","Light Screen"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Cubone": {
-    "Pokemaniac Steve": {"nature":"Jolly","ability":"Rock Head","level":34,"moves":["Bone Rush","Double-Edge","Endeavor","Retaliate"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Steve": {"level":34,"nature":"Relaxed","ability":"Battle Armor","moves":["Rage","False Swipe","Thrash","Fling"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Magneton": {
-    "Scientist Jerry": {"nature":"Naughty","ability":"Magnet Pull","level":46,"moves":["Discharge","Gyro Ball","Lock-On","Magnet Rise"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Scientist Braydon": {"nature":"Bashful","ability":"Magnet Pull","level":69,"moves":["Discharge","Gyro Ball","Lock-On","Magnet Rise"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Pokemaniac Winston": {"nature":"Jolly","ability":"Magnet Pull","level":34,"moves":["Discharge","Gyro Ball","Lock-On","Magnet Rise"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Scientist Jerry": {"level":46,"nature":"Naive","ability":"Sturdy","moves":["Electro Ball","Flash Cannon","Screech","Discharge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Scientist Braydon": {"level":69,"nature":"Adamant","ability":"Sturdy","moves":["Lock-On","Magnet Rise","Gyro Ball","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Pokemaniac Winston": {"level":34,"nature":"Jolly","ability":"Sturdy","moves":["Mirror Shot","Metal Sound","Electro Ball","Flash Cannon"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Munna": {
-    "Lass Julia": {"nature":"Hasty","ability":"Synchronize","level":34,"moves":["Calm Mind","Dream Eater","Psychic","Stored Power"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Julia": {"level":34,"nature":"Calm","ability":"Synchronize","moves":["Zen Headbutt","Synchronoise","Nightmare","Future Sight"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Grimer": {
-    "Super Nerd Glenn": {"nature":"Brave","ability":"Stench","level":35,"moves":["Acid Armor","Belch","Gunk Shot","Memento"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Glenn": {"level":35,"nature":"Serious","ability":"Sticky Hold","moves":["Mud Bomb","Poison Fang","Fling","Sludge Bomb"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":48,"nature":"Lax","ability":"Stench","moves":["Gunk Shot","Acid Armor","Belch","Memento"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Grimer-Alola": {
-    "Super Nerd Glenn": {"nature":"Modest","ability":"Gluttony","level":36,"moves":["Acid Armor","Belch","Gunk Shot","Memento"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Glenn": {"level":36,"nature":"Quirky","ability":"Gluttony","moves":["Poison Fang","Fling","Knock Off","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Muk-Alola": {
-    "Super Nerd Glenn": {"nature":"Timid","ability":"Poison Touch","level":34,"moves":["Acid Armor","Belch","Memento","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Super Nerd Glenn": {"level":34,"nature":"Hasty","ability":"Gluttony","moves":["Poison Fang","Fling","Knock Off","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Scientist Connor": {"nature":"Adamant","ability":"Poison Touch","level":45,"moves":["Crunch","Poison Jab","Shadow Sneak"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Team Rocket Grunt": {"nature":"Naughty","ability":"Poison Touch","level":40,"moves":["Disable","Harden","Minimize","Sludge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"nature":"Naughty","ability":"Poison Touch","level":40,"moves":["Disable","Harden","Minimize","Sludge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "PkMn Ranger Beth": {"level":87,"nature":"Docile","ability":"Poison Touch","moves":["Acid Armor","Belch","Memento","Sucker Punch"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}}
   },
   "Lopunny": {
-    "Lass Paige": {"nature":"Calm","ability":"Cute Charm","level":36,"moves":["Charm","Double-Edge","Entrainment","High Jump Kick"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Paige": {"level":36,"nature":"Naughty","ability":"Cute Charm","moves":["Jump Kick","Mach Punch","Agility","Dizzy Punch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Weezing": {
     "Biker Ricardo": {"nature":"Bold","ability":"Levitate","level":35,"moves":["Explosion","Poison Gas","Sludge","Tackle"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
@@ -1048,31 +1115,32 @@ var SETDEX_SV = {
     "Biker Ernest Set 2": {"nature":"Naive","ability":"Levitate","level":57,"moves":["Flamethrower","Sludge Bomb","Smokescreen","Will-O-Wisp"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Biker Ernest Set 3": {"nature":"Impish","ability":"Levitate","level":57,"moves":["Sludge Bomb","Smokescreen","Thunderbolt","Toxic"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Biker Lukas": {"nature":"Naughty","ability":"Neutralizing Gas","level":57,"moves":["Explosion","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Scientist Connor": {"nature":"Modest","ability":"Levitate","level":45,"moves":["Explosion","Flamethrower","Sludge Bomb"],"evs":{"hp":6,"sp":252,"sa":252}}
+    "Scientist Connor": {"nature":"Modest","ability":"Levitate","level":45,"moves":["Explosion","Flamethrower","Sludge Bomb"],"evs":{"hp":6,"sp":252,"sa":252}},
+    "Team Rocket Grunt": {"level":38,"nature":"Brave","ability":"Levitate","moves":["Self-Destruct","Haze","Gyro Ball","Sludge Bomb"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Meowth": {
-    "Lass Andrea": {"nature":"Modest","ability":"Pickup","level":36,"moves":["Assurance","Captivate","Feint","Night Slash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Andrea": {"level":36,"nature":"Docile","ability":"Pickup","moves":["Taunt","Shock Wave","Pay Day","Slash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Meowth-Alola": {
-    "Lass Andrea": {"nature":"Naughty","ability":"Pickup","level":36,"moves":["Captivate","Dark Pulse","Feint","Night Slash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Andrea": {"level":36,"nature":"Calm","ability":"Pickup","moves":["Feint Attack","Taunt","Pay Day","Slash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Cutiefly": {
-    "Lass Andrea": {"nature":"Naive","ability":"Swarm","level":37,"moves":["Aromatherapy","Bug Buzz","Dazzling Gleam","Quiver Dance"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Andrea": {"level":37,"nature":"Naive","ability":"Swarm","moves":["Sweet Scent","Bug Buzz","Dazzling Gleam","Aromatherapy"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Magby": {
-    "Lass Megan": {"nature":"Lonely","ability":"Flame Body","level":35,"moves":["Fire Blast","Flamethrower","Lava Plume","Sunny Day"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Megan": {"level":35,"nature":"Hasty","ability":"Magma Armor","moves":["Flame Burst","Confuse Ray","Fire Punch","Lava Plume"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Smoochum": {
-    "Lass Megan": {"nature":"Impish","ability":"Oblivious","level":35,"moves":["Blizzard","Copycat","Perish Song","Psychic"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Megan": {"level":35,"nature":"Quiet","ability":"Oblivious","moves":["Mean Look","Fake Tears","Lucky Chant","Avalanche"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Comfey": {
-    "Lass Megan": {"nature":"Naughty","ability":"Triage","level":35,"moves":["Aromatherapy","Grassy Terrain","Play Rough","Sparkly Swirl"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Megan": {"level":35,"nature":"Bold","ability":"Triage","moves":["Petal Blizzard","Synthesis","Sweet Scent","Grass Knot"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Elekid": {
-    "Lass Megan": {"nature":"Lonely","ability":"Vital Spirit","level":36,"moves":["Discharge","Screech","Thunder","Thunderbolt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Megan": {"level":36,"nature":"Timid","ability":"Vital Spirit","moves":["Light Screen","Thunder Punch","Discharge","Screech"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Numel": {
-    "Gambler Stan": {"nature":"Relaxed","ability":"Oblivious","level":37,"moves":["Double-Edge","Earthquake","Flamethrower","Yawn"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Gambler Stan": {"level":37,"nature":"Relaxed","ability":"Oblivious","moves":["Earth Power","Curse","Take Down","Yawn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Koffing": {
     "Super Nerd Aidan": {"nature":"Hardy","ability":"Neutralizing Gas","level":35,"moves":["Self-Destruct","Sludge","Smog"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
@@ -1084,7 +1152,7 @@ var SETDEX_SV = {
     "Super Nerd Aidan": {"nature":"Brave","ability":"Synchronize","level":37,"moves":["Headbutt","Psybeam","Sonic Boom"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Espurr": {
-    "Twins Eli & Anne": {"nature":"Calm","ability":"Frisk","level":37,"moves":["Disarming Voice","Fake Out","Psybeam","Psyshock"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Twins Eli & Anne": {"level":37,"nature":"Hasty","ability":"Frisk","moves":["Psybeam","Fake Out","Disarming Voice","Psyshock"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Weezing-Galar": {
     "*Team Rocket Grunt": {"nature":"Bold","ability":"Neutralizing Gas","level":43,"item":"Shuca Berry","moves":["Flamethrower","Sludge Bomb","Strange Steam","Will-O-Wisp"],"evs":{"hp":252,"df":252,"sa":4}},
@@ -1094,69 +1162,72 @@ var SETDEX_SV = {
   },
   "Salazzle": {
     "Biker Ernest": {"nature":"Brave","ability":"Corrosion","level":57,"moves":["Flamethrower","Nasty Plot","Sludge Bomb","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Juggler Kayden": {"nature":"Rash","ability":"Corrosion","level":64,"moves":["Dragon Pulse","Flamethrower","Nasty Plot","Venom Drench"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Juggler Kayden": {"level":64,"nature":"Timid","ability":"Corrosion","moves":["Flamethrower","Venom Drench","Dragon Pulse","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Biker Ricardo": {"nature":"Docile","ability":"Corrosion","level":34,"moves":["Disable","Flame Burst","Minimize","Sludge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Burglar Ramon": {"nature":"Quiet","ability":"Corrosion","level":74,"moves":["Dragon Pulse","Flamethrower","Nasty Plot","Venom Drench"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Burglar Ramon": {"level":74,"nature":"Brave","ability":"Corrosion","moves":["Flamethrower","Venom Drench","Dragon Pulse","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Muk": {
-    "Scientist Joshua": {"nature":"Timid","ability":"Regenerator","level":46,"moves":["Acid Armor","Belch","Gunk Shot","Memento"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Biker Jaren": {"nature":"Serious","ability":"Regenerator","level":35,"moves":["Acid Armor","Belch","Gunk Shot","Memento"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Relaxed","ability":"Sticky Hold","level":41,"moves":["Screech","Sludge","Sludge Bomb","Smog"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Scientist Joshua": {"level":46,"nature":"Lonely","ability":"Regenerator","moves":["Poison Fang","Screech","Gunk Shot","Acid Armor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Biker Jaren": {"level":35,"nature":"Sassy","ability":"Sticky Hold","moves":["Mud Bomb","Fling","Sludge Bomb","Poison Fang"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":48,"nature":"Hardy","ability":"Regenerator","moves":["Poison Fang","Screech","Gunk Shot","Acid Armor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Careful","ability":"Regenerator","moves":["Poison Fang","Screech","Gunk Shot","Acid Armor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Garbodor": {
     "Biker Isaac": {"nature":"Quiet","ability":"Gooey","level":57,"moves":["Screech","Sludge Bomb","Spikes","Toxic Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Biker Jaren": {"nature":"Bold","ability":"Weak Armor","level":35,"moves":["Amnesia","Belch","Explosion","Gunk Shot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Gentle","ability":"Weak Armor","level":74,"moves":["Amnesia","Belch","Explosion","Gunk Shot"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Biker Jaren": {"level":35,"nature":"Naive","ability":"Weak Armor","moves":["Swallow","Body Slam","Sludge Bomb","Clear Smog"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":74,"nature":"Mild","ability":"Gooey","moves":["Amnesia","Belch","Gunk Shot","Explosion"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Rapidash": {
-    "Cue Ball Jamal": {"nature":"Modest","ability":"Flash Fire","level":55,"moves":["Bounce","Fire Blast","Flare Blitz","Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Jamal": {"level":55,"nature":"Quirky","ability":"Flash Fire","moves":["Fire Blast","Bounce","Flare Blitz","Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Bird Keeper Perry": {"nature":"Jolly","ability":"Blazing Soul","level":63,"item":"Charcoal","moves":["Fire Lash","High Horsepower","Jump Kick","Solar Blade"],"evs":{"at":252,"df":4,"sp":252}},
-    "Burglar Lewis": {"nature":"Lonely","ability":"Flash Fire","level":69,"moves":["Bounce","Fire Blast","Flare Blitz","Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Young Couple Lea & Jed": {"nature":"Mild","ability":"Reckless","level":40,"moves":["Bounce","Fire Blast","Flare Blitz","Jump Kick"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Super Nerd Erik": {"nature":"Mild","ability":"Reckless","level":73,"moves":["Bounce","Fire Blast","Flare Blitz","Jump Kick"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Burglar Lewis": {"level":69,"nature":"Timid","ability":"Flash Fire","moves":["Fire Blast","Bounce","Flare Blitz","Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Young Couple Lea & Jed": {"level":40,"nature":"Lonely","ability":"Flash Fire","moves":["Fire Spin","Take Down","Inferno","Agility"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Super Nerd Erik": {"level":73,"nature":"Relaxed","ability":"Reckless","moves":["Fire Blast","Bounce","Flare Blitz","Jump Kick"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Ninetales": {
-    "Super Nerd Erik": {"nature":"Hardy","ability":"Flash Fire","level":72,"moves":["Confuse Ray","Healing Wish","Quick Attack","Safeguard"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Young Couple Lea & Jed": {"nature":"Modest","ability":"Flash Fire","level":40,"moves":["Confuse Ray","Healing Wish","Quick Attack","Safeguard"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Erik": {"level":72,"nature":"Mild","ability":"Flash Fire","moves":["Quick Attack","Confuse Ray","Safeguard","Healing Wish"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Young Couple Lea & Jed": {"level":40,"nature":"Quirky","ability":"Flash Fire","moves":["Flamethrower","Quick Attack","Confuse Ray","Safeguard"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Sawk": {
-    "Black Belt Hitoshi": {"nature":"Modest","ability":"Contrary","level":45,"item":"Black Belt","moves":["Bulk Up","Close Combat","Hammer Arm","Reversal"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Black Belt Hitoshi": {"level":45,"nature":"Lax","ability":"Inner Focus","moves":["Retaliate","Endure","Quick Guard","Reversal"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Throh": {
-    "Black Belt Hitoshi": {"nature":"Modest","ability":"Mold Breaker","level":46,"item":"Black Belt","moves":["Bulk Up","Reversal","Superpower","Wide Guard"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Black Belt Hitoshi": {"level":46,"nature":"Adamant","ability":"Technician","moves":["Assurance","Wide Guard","Superpower","Reversal"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Annihilape": {
-    "Black Belt Hitoshi": {"nature":"Modest","ability":"Defiant","level":45,"item":"Black Belt","moves":["Close Combat","Cross Chop","Outrage","Rage Fist"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Black Belt Hitoshi": {"level":45,"nature":"Bashful","ability":"Inner Focus","moves":["Punishment","Shadow Punch","Screech","Stomping Tantrum"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Conkeldurr": {
     "*Camper Justin": {"nature":"Careful","ability":"Iron Fist","level":63,"item":"Assault Vest","moves":["Drain Punch","Knock Off","Mach Punch","Thunder Punch"],"evs":{"hp":252,"at":4,"sd":252}},
-    "Black Belt Hideki": {"nature":"Modest","ability":"Iron Fist","level":45,"item":"Black Belt","moves":["Focus Punch","Hammer Arm","Stone Edge","Superpower"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Black Belt Hideki": {"level":45,"nature":"Lax","ability":"Guts","moves":["Rock Slide","Dynamic Punch","Scary Face","Hammer Arm"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Black Belt Shea": {"nature":"Adamant","ability":"Guts","level":100,"item":"Flame Orb","moves":["Drain Punch","Facade","Knock Off","Mach Punch"],"evs":{"hp":252,"at":252,"sp":4}},
-    "Team Rocket Grunt": {"nature":"Naive","ability":"Guts","level":47,"moves":["Focus Punch","Hammer Arm","Stone Edge","Superpower"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Black Belt Daisuke": {"nature":"Adamant","ability":"Sheer Force","level":80,"item":"Black Belt","moves":["Focus Punch","Hammer Arm","Stone Edge","Superpower"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Timid","ability":"Guts","moves":["Rock Slide","Dynamic Punch","Scary Face","Hammer Arm"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Daisuke": {"level":80,"nature":"Serious","ability":"Sheer Force","moves":["Hammer Arm","Stone Edge","Focus Punch","Superpower"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Crush Kin Mik & Kia": {"level":86,"nature":"Quiet","ability":"Sheer Force","moves":["Hammer Arm","Stone Edge","Focus Punch","Superpower"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Breloom": {
     "PkMn Trainer May": {"nature":"Jolly","ability":"Poison Heal","level":71,"item":"Toxic Orb","moves":["Focus Punch","Rock Slide","Spore","Substitute"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Black Belt Hideki": {"nature":"Modest","ability":"Technician","level":45,"item":"Black Belt","moves":["Dynamic Punch","Seed Bomb","Sky Uppercut","Spore"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Black Belt Hideki": {"level":45,"nature":"Naive","ability":"Effect Spore","moves":["Force Palm","Mind Reader","Sky Uppercut","Seed Bomb"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Biker Gerald": {"nature":"Serious","ability":"Effect Spore","level":57,"moves":["Drain Punch","Mach Punch","Smokescreen","Spore"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Picnicker Tina": {"nature":"Careful","ability":"Effect Spore","level":37,"moves":["Dynamic Punch","Seed Bomb","Sky Uppercut","Spore"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Picnicker Tina": {"level":37,"nature":"Naive","ability":"Effect Spore","moves":["Feint","Counter","Force Palm","Mind Reader"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Leader Chuck": {"nature":"Jolly","ability":"Poison Heal","level":32,"item":"Toxic Orb","moves":["Focus Punch","Rock Slide","Spore","Substitute"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Sirfetch’d": {
-    "Crush Kin Ron & Mya": {"nature":"Naive","ability":"Sharpness","level":58,"item":"Black Belt","moves":["Brave Bird","Final Gambit","Meteor Assault","Sacred Sword"],"evs":{"at":128,"sp":252,"sa":132}},
-    "Black Belt Aaron": {"nature":"Modest","ability":"Scrappy","level":46,"item":"Black Belt","moves":["Brave Bird","Final Gambit","Meteor Assault","Sacred Sword"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Crush Kin Ron & Mya": {"level":58,"nature":"Naive","ability":"Sharpness","moves":["Brick Break","Swords Dance","Slam","Leaf Blade"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Aaron": {"level":46,"nature":"Sassy","ability":"Sharpness","moves":["Knock Off","Defog","Brick Break","Swords Dance"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Hariyama": {
-    "Black Belt Mike": {"nature":"Modest","ability":"Sheer Force","level":46,"item":"Black Belt","moves":["Close Combat","Endure","Heavy Slam","Reversal"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Black Belt Mike": {"level":46,"nature":"Lonely","ability":"Thick Fat","moves":["Seismic Toss","Wake-Up Slap","Endure","Close Combat"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Cue Ball Luke": {"nature":"Careful","ability":"Thick Fat","level":63,"item":"Assault Vest","moves":["Drain Punch","Fake Out","Heavy Slam","Knock Off"],"evs":{"hp":252,"at":252,"sd":4}}
   },
   "Poliwrath": {
-    "Black Belt Mike": {"nature":"Modest","ability":"Swift Swim","level":46,"item":"Black Belt","moves":["Double Slap","Dynamic Punch","Jet Punch","Surging Strikes"],"evs":{"hp":6,"sa":252,"sd":252}},
-    "SwimmerF Shirley": {"nature":"Modest","ability":"Water Absorb","level":64,"moves":["Double Slap","Dynamic Punch","Jet Punch","Surging Strikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Cue Ball Raul": {"nature":"Quiet","ability":"Water Absorb","level":55,"moves":["Double Slap","Dynamic Punch","Jet Punch","Surging Strikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Black Belt Mike": {"level":46,"nature":"Timid","ability":"Water Absorb","moves":["Bubble Beam","Hypnosis","Double Slap","Dynamic Punch"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "SwimmerF Shirley": {"level":64,"nature":"Hardy","ability":"Damp","moves":["Double Slap","Dynamic Punch","Circle Throw","Jet Punch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Cue Ball Raul": {"level":55,"nature":"Impish","ability":"Water Absorb","moves":["Hypnosis","Double Slap","Dynamic Punch","Circle Throw"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Hitmontop": {
-    "*Leader Chuck": {"nature":"Jolly","ability":"Technician","level":32,"item":"Focus Sash","moves":["Brutal Swing","Fake Out","Triple Axel","Triple Kick"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Leader Chuck": {"nature":"Jolly","ability":"Technician","level":32,"item":"Focus Sash","moves":["Brutal Swing","Fake Out","Triple Axel","Triple Kick"],"evs":{"at":252,"df":4,"sp":252}},
+    "Crush Girl Cyndy": {"level":48,"nature":"Hardy","ability":"Technician","moves":["Agility","Spin Out","Wide Guard","Quick Guard"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Sneasler": {
     "*Rival Blue": {"nature":"Jolly","ability":"Unburden","level":80,"item":"Focus Sash","moves":["Close Combat","Dire Claw","Fire Punch","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
@@ -1176,46 +1247,48 @@ var SETDEX_SV = {
     "*Leader Chuck": {"nature":"Jolly","ability":"Sharpness","level":32,"item":"Galladite","moves":["Bulk Up","Night Slash","Psycho Cut","Sacred Sword"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Haunter": {
-    "Channeler Laurel": {"nature":"Hasty","ability":"Levitate","level":36,"moves":["Dark Pulse","Destiny Bond","Hex","Nightmare"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Channeler Angelica": {"nature":"Naive","ability":"Levitate","level":37,"moves":["Dark Pulse","Destiny Bond","Hex","Nightmare"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Channeler Patricia": {"nature":"Naive","ability":"Levitate","level":35,"moves":["Dark Pulse","Destiny Bond","Hex","Nightmare"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Laurel": {"level":36,"nature":"Brave","ability":"Levitate","moves":["Night Shade","Confuse Ray","Sucker Punch","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Channeler Angelica": {"level":37,"nature":"Bold","ability":"Levitate","moves":["Night Shade","Confuse Ray","Sucker Punch","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Channeler Patricia": {"level":35,"nature":"Bold","ability":"Levitate","moves":["Night Shade","Confuse Ray","Sucker Punch","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Ceruledge": {
     "*Leader Morty": {"nature":"Jolly","ability":"Sharpness","level":32,"item":"Focus Sash","moves":["Bitter Blade","Close Combat","Shadow Sneak","Swords Dance"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}},
-    "Channeler Carly": {"nature":"Calm","ability":"Flash Fire","level":39,"moves":["Bitter Blade","Flare Blitz","Psycho Cut","Swords Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Carly": {"level":39,"nature":"Bold","ability":"Weak Armor","moves":["Flame Wheel","Incinerate","Lava Plume","Flamethrower"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Banette": {
-    "Channeler Hope": {"nature":"Calm","ability":"Insomnia","level":36,"moves":["Double-Edge","Grudge","Poltergeist","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Hope": {"level":36,"nature":"Hasty","ability":"Insomnia","moves":["Hex","Curse","Shadow Ball","Embargo"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Dusclops": {
-    "Channeler Amanda": {"nature":"Bold","ability":"Pressure","level":54,"moves":["Hex","Mean Look","Payback","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Channeler Jody": {"nature":"Naughty","ability":"Pressure","level":37,"moves":["Hex","Mean Look","Payback","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Amanda": {"level":54,"nature":"Gentle","ability":"Pressure","moves":["Curse","Hex","Shadow Ball","Mean Look"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Channeler Jody": {"level":37,"nature":"Calm","ability":"Pressure","moves":["Pursuit","Will-O-Wisp","Confuse Ray","Curse"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Brambleghast": {
-    "Channeler Paula": {"nature":"Lax","ability":"Infiltrator","level":36,"moves":["Curse","Pain Split","Poltergeist","Power Whip"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Paula": {"level":36,"nature":"Rash","ability":"Infiltrator","moves":["Hex","Mega Drain","Disable","Phantom Force"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Doublade": {
-    "Channeler Ruth": {"nature":"Serious","ability":"Sharpness","level":38,"moves":["Iron Head","Night Slash","Power Trick","Sacred Sword"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Ruth": {"level":38,"nature":"Adamant","ability":"Sharpness","moves":["Retaliate","Slash","Iron Defense","Night Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Mimikyu": {
     "*Leader Morty Set 1": {"nature":"Jolly","ability":"Disguise","level":32,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
     "*Leader Morty Set 2": {"nature":"Jolly","ability":"Disguise","level":100,"item":"Ghostium Z","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
-    "Channeler Tammy": {"nature":"Bold","ability":"Disguise","level":36,"moves":["Hone Claws","Pain Split","Play Rough","Wood Hammer"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Rocket Admin Archer": {"nature":"Jolly","ability":"Disguise","level":79,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}}
+    "Channeler Tammy": {"level":36,"nature":"Modest","ability":"Disguise","moves":["Feint Attack","Charm","Shadow Sneak","Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Rocket Admin Archer": {"nature":"Jolly","ability":"Disguise","level":79,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
+    "Crush Girl Jocelyn": {"level":88,"nature":"Hardy","ability":"Disguise","moves":["Hone Claws","Play Rough","Pain Split","Wood Hammer"],"item":"Spell Tag","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Jellicent": {
-    "Channeler Karina": {"nature":"Impish","ability":"Water Absorb","level":37,"moves":["Brine","Hex","Hydro Pump","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Anya": {"nature":"Jolly","ability":"Water Absorb","level":63,"moves":["Brine","Hex","Hydro Pump","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Karina": {"level":37,"nature":"Quirky","ability":"Water Absorb","moves":["Water Pulse","Ominous Wind","Brine","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Anya": {"level":63,"nature":"Naughty","ability":"Water Absorb","moves":["Rain Dance","Hex","Hydro Pump","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lampent": {
-    "Channeler Angelica": {"nature":"Bold","ability":"Flash Fire","level":39,"moves":["Curse","Overheat","Pain Split","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Angelica": {"level":39,"nature":"Gentle","ability":"Flash Fire","moves":["Imprison","Hex","Memento","Inferno"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Chimecho": {
-    "Channeler Jennifer": {"nature":"Sassy","ability":"Levitate","level":39,"moves":["Double-Edge","Forbidden Spell","Heal Pulse","Safeguard"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Jennifer": {"level":39,"nature":"Jolly","ability":"Levitate","moves":["Extrasensory","Heal Bell","Uproar","Safeguard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Xatu": {
-    "Channeler Tasha": {"nature":"Adamant","ability":"Early Bird","level":54,"moves":["Future Sight","Guard Swap","Me First","Power Swap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Channeler Emilia": {"nature":"Quirky","ability":"Synchronize","level":37,"moves":["Future Sight","Guard Swap","Me First","Power Swap"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Tasha": {"level":54,"nature":"Serious","ability":"Early Bird","moves":["Psycho Shift","Future Sight","Power Swap","Guard Swap"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Channeler Emilia": {"level":37,"nature":"Modest","ability":"Synchronize","moves":["Ominous Wind","Confuse Ray","Wish","Psychic"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Psychic Laura": {"level":49,"nature":"Gentle","ability":"Early Bird","moves":["Psychic","Esper Wing","Psycho Shift","Future Sight"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Dusknoir": {
     "*Leader Morty": {"nature":"Adamant","ability":"Hustle","level":32,"item":"Reaper Cloth","moves":["Dynamic Punch","Shadow Punch","Shadow Sneak","Will-O-Wisp"],"evs":{"hp":252,"at":252,"df":4}},
@@ -1246,7 +1319,7 @@ var SETDEX_SV = {
   "Bellibolt": {
     "Leader Lt. Surge": {"nature":"Bold","ability":"Electromorphosis","level":33,"item":"Shuca Berry","moves":["Hidden Power Grass","Muddy Water","Parabolic Charge","Thunder Wave"],"ivs":{"at":30,"sa":30},"evs":{"hp":100}},
     "*Leader Lt. Surge": {"nature":"Modest","ability":"Electromorphosis","level":66,"item":"Leftovers","moves":["Hidden Power Grass","Muddy Water","Parabolic Charge","Volt Switch"],"ivs":{"at":30,"sa":30},"evs":{"hp":252,"df":4,"sa":252}},
-    "Scientist Braydon": {"nature":"Docile","ability":"Electromorphosis","level":70,"moves":["Muddy Water","Parabolic Charge","Sucker Punch","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Scientist Braydon": {"level":70,"nature":"Relaxed","ability":"Static","moves":["Sucker Punch","Zap Cannon","Muddy Water","Parabolic Charge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Pawmot": {
     "Leader Lt. Surge": {"nature":"Jolly","ability":"Iron Fist","level":33,"item":"Focus Sash","moves":["Drain Punch","Ice Punch","Mach Punch","Thunder Punch"]},
@@ -1258,11 +1331,11 @@ var SETDEX_SV = {
     "*PkMn Ranger Beth": {"nature":"Timid","ability":"Intimidate","level":100,"item":"Manectite","moves":["Flamethrower","Hidden Power Grass","Thunderbolt","Volt Switch"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Emolga": {
-    "Engineer Baily": {"nature":"Adamant","ability":"Motor Drive","level":27,"moves":["Agility","Discharge","Encore","Volt Switch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Engineer Baily": {"level":27,"nature":"Serious","ability":"Motor Drive","moves":["Pursuit","Air Cutter","Shock Wave","Electro Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Minun": {
     "*Twins Joy & Meg": {"nature":"Jolly","ability":"Galvanize","level":100,"item":"Magnet","moves":["Extreme Speed","Facade","Knock Off","Volt Switch"],"evs":{"at":252,"df":4,"sp":252}},
-    "Sailor Dwayne": {"nature":"Impish","ability":"Minus","level":28,"moves":["Entrainment","Extreme Speed","Fake Out","Nasty Plot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sailor Dwayne": {"level":28,"nature":"Quirky","ability":"Minus","moves":["Electro Ball","Copycat","Fake Tears","Charge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Scizor-Mega": {
     "*Cue Ball Camron": {"nature":"Adamant","ability":"Technician","level":63,"item":"Scizorite","moves":["Bullet Punch","Knock Off","Rock Smash","U-turn"],"evs":{"hp":252,"at":252,"df":4}},
@@ -1272,35 +1345,35 @@ var SETDEX_SV = {
     "*Leader Bugsy": {"nature":"Impish","ability":"Water Bubble","level":42,"item":"Leftovers","moves":["Liquidation","Protect","Toxic","X-Scissor"],"evs":{"hp":252,"at":4,"df":252}}
   },
   "Nuzleaf": {
-    "Lass Kay": {"nature":"Adamant","ability":"Chlorophyll","level":38,"moves":["Extrasensory","Leaf Blade","Night Slash","Swagger"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Kay": {"level":38,"nature":"Jolly","ability":"Early Bird","moves":["Night Slash","Leaf Blade","Swagger","Extrasensory"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Pumpkaboo-Small": {
-    "Lass Kay": {"nature":"Jolly","ability":"Frisk","level":38,"moves":["Giga Drain","Hex","Pain Split","Shadow Ball"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Kay": {"level":38,"nature":"Sassy","ability":"Frisk","moves":["Trick-or-Treat","Magical Leaf","Shadow Ball","Hex"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Cherubi": {
-    "Beauty Bridget": {"nature":"Lax","ability":"Chlorophyll","level":37,"moves":["Double-Edge","Grav Apple","Lucky Chant","Petal Blizzard"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Beauty Bridget": {"level":37,"nature":"Timid","ability":"Chlorophyll","moves":["Sunny Day","Worry Seed","Take Down","Solar Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Quilladin": {
-    "Picnicker Tina": {"nature":"Bold","ability":"Bulletproof","level":35,"moves":["Body Slam","Bulk Up","Pain Split","Wood Hammer"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Tina": {"level":35,"nature":"Gentle","ability":"Bulletproof","moves":["Leech Seed","Pin Missile","Take Down","Seed Bomb"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Scovillain": {
-    "Beauty Tamia": {"nature":"Bashful","ability":"Chlorophyll","level":35,"moves":["Crunch","Overheat","Seed Bomb","Solar Beam"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Beauty Tamia": {"level":35,"nature":"Adamant","ability":"Insomnia","moves":["Headbutt","Zen Headbutt","Crunch","Seed Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Leavanny": {
-    "Lass Crissy": {"nature":"Mild","ability":"Swarm","level":59,"moves":["Leaf Storm","Sacred Sword","Swords Dance","Victory Dance"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Beauty Tamia": {"nature":"Gentle","ability":"Chlorophyll","level":35,"moves":["Leaf Storm","Sacred Sword","Swords Dance","Victory Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Lass Crissy": {"level":59,"nature":"Mild","ability":"Swarm","moves":["Entrainment","Swords Dance","Leaf Storm","Sacred Sword"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Beauty Tamia": {"level":35,"nature":"Bold","ability":"Chlorophyll","moves":["Razor Leaf","Struggle Bug","Fell Stinger","Helping Hand"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Biker Jared": {"nature":"Adamant","ability":"Chlorophyll","level":63,"item":"Focus Sash","moves":["Sacred Sword","Solar Blade","Swords Dance","X-Scissor"],"evs":{"at":252,"df":4,"sp":252}},
-    "Picnicker Yazmin": {"nature":"Hardy","ability":"Swarm","level":57,"moves":["Leaf Storm","Sacred Sword","Swords Dance","Victory Dance"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Yazmin": {"level":57,"nature":"Mild","ability":"Swarm","moves":["Entrainment","Swords Dance","Leaf Storm","Sacred Sword"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Exeggutor-Alola": {
-    "Beauty Lori": {"nature":"Naughty","ability":"Chlorophyll","level":36,"moves":["Chloroblast","Fickle Beam","Leaf Storm","Wood Hammer"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Beauty Lori": {"level":36,"nature":"Calm","ability":"Chlorophyll","moves":["Hypnosis","Confusion","Psyshock","Egg Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Ace Trainer George": {"nature":"Modest","ability":"Chlorophyll","level":83,"item":"Miracle Seed","moves":["Dragon Pulse","Flamethrower","Giga Drain","Sleep Powder"],"evs":{"hp":252,"sp":6,"sa":252}}
   },
   "Arboliva": {
-    "Lass Lisa": {"nature":"Brave","ability":"Seed Sower","level":39,"moves":["Encore","Leech Seed","Petal Dance","Terrain Pulse"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Lisa": {"level":39,"nature":"Bashful","ability":"Seed Sower","moves":["Grassy Terrain","Seed Bomb","Energy Ball","Earth Power"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Tangela": {
-    "Lass Lisa": {"nature":"Jolly","ability":"Chlorophyll","level":38,"moves":["Grassy Terrain","Power Whip","Tickle","Wring Out"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Lisa": {"level":38,"nature":"Naughty","ability":"Chlorophyll","moves":["Stun Spore","Natural Gift","Giga Drain","Ancient Power"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Rillaboom": {
     "Leader Erika": {"nature":"Jolly","ability":"Grassy Surge","level":43,"item":"Terrain Extender","moves":["Drain Punch","Grassy Glide","High Horsepower","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
@@ -1324,14 +1397,17 @@ var SETDEX_SV = {
     "Leader Erika": {"nature":"Naive","ability":"Reckless","level":44,"item":"Life Orb","moves":["Chloroblast","Explosion","Hidden Power Ice","Thunderbolt"],"ivs":{"at":30,"df":30},"evs":{"at":4,"sp":252,"sa":252}}
   },
   "Grotle": {
-    "Ace Trainer Mary": {"nature":"Modest","ability":"Rock Head","level":35,"moves":["Crunch","Giga Drain","Leaf Storm","Synthesis"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Ace Trainer Mary": {"level":35,"nature":"Brave","ability":"Overgrow","moves":["Curse","Bite","Seed Bomb","Leech Seed"],"ivs":{"hp":25,"at":25,"df":25,"sa":25,"sd":25,"sp":25}}
   },
   "Graveler": {
-    "Ace Trainer Mary": {"nature":"Modest","ability":"Sand Veil","level":35,"moves":["Double-Edge","Earthquake","Explosion","Stone Edge"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Ace Trainer Mary": {"level":35,"nature":"Quirky","ability":"Rock Head","moves":["Bulldoze","Self-Destruct","Stealth Rock","Rock Blast"],"ivs":{"hp":25,"at":25,"df":25,"sa":25,"sd":25,"sp":25}},
+    "Ruin Maniac Stanly": {"level":48,"nature":"Serious","ability":"Rock Head","moves":["Stealth Rock","Rock Blast","Earthquake","Explosion"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Stanly Set 2": {"level":48,"nature":"Quiet","ability":"Rock Head","moves":["Stealth Rock","Rock Blast","Earthquake","Explosion"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Lawson": {"level":48,"nature":"Naughty","ability":"Rock Head","moves":["Stealth Rock","Rock Blast","Earthquake","Explosion"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Ludicolo": {
     "Dumbass Gambler": {"nature":"Bashful","ability":"Own Tempo","level":100,"item":"Leppa Berry","moves":["Metronome"]},
-    "SwimmerM Roland": {"nature":"Hasty","ability":"Swift Swim","level":64,"moves":["Aqua Step","Growl","Mega Drain","Nature Power"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Roland": {"level":64,"nature":"Brave","ability":"Swift Swim","moves":["Growl","Mega Drain","Nature Power","Aqua Step"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Medicham-Mega": {
     "Dumbass Gambler": {"nature":"Jolly","ability":"Pure Power","level":100,"item":"Medichamite","moves":["Metronome"]},
@@ -1348,12 +1424,15 @@ var SETDEX_SV = {
   },
   "Hypno": {
     "*Team Rocket Grunt": {"nature":"Calm","ability":"Bad Dreams","level":44,"item":"Colbur Berry","moves":["Dark Void","Psychic","Knock Off","Shadow Ball"],"evs":{"hp":252,"df":4,"sd":252}},
-    "Juggler Shawn": {"nature":"Naughty","ability":"Bad Dreams","level":63,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Juggler Nelson": {"nature":"Careful","ability":"Insomnia","level":80,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Juggler Shawn": {"level":63,"nature":"Jolly","ability":"Bad Dreams","moves":["Psychic","Swagger","Future Sight","Dark Void"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Juggler Nelson": {"level":80,"nature":"Naive","ability":"Insomnia","moves":["Psychic","Swagger","Future Sight","Dark Void"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt Set 1": {"nature":"Hasty","ability":"Bad Dreams","level":45,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Gentle","ability":"Insomnia","level":48,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 3": {"nature":"Bashful","ability":"Insomnia","level":46,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 4": {"nature":"Hasty","ability":"Bad Dreams","level":43,"moves":["Dark Void","Future Sight","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":45,"nature":"Docile","ability":"Insomnia","moves":["Psych Up","Synchronoise","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 3": {"level":48,"nature":"Quiet","ability":"Insomnia","moves":["Psych Up","Synchronoise","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 4": {"level":46,"nature":"Naive","ability":"Insomnia","moves":["Psych Up","Synchronoise","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":43,"nature":"Docile","ability":"Insomnia","moves":["Wake-Up Slap","Psych Up","Synchronoise","Psychic"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 5": {"level":49,"nature":"Quiet","ability":"Insomnia","moves":["Psych Up","Synchronoise","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 6": {"level":49,"nature":"Careful","ability":"Insomnia","moves":["Psych Up","Synchronoise","Psychic","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Aerodactyl": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Unnerve","level":44,"item":"Focus Sash","moves":["Aqua Tail","Dual Wingbeat","Iron Head","Rock Slide"],"evs":{"at":252,"df":4,"sp":252}},
@@ -1364,75 +1443,96 @@ var SETDEX_SV = {
   "Granbull": {
     "*Team Rocket Grunt": {"nature":"Adamant","ability":"Intimidate","level":43,"item":"Lum Berry","moves":["Drain Punch","Play Rough","Psychic Fangs","Temper Flare"],"evs":{"hp":252,"at":252,"df":4}},
     "*Twins Joy & Meg": {"nature":"Jolly","ability":"Intimidate","level":99,"item":"Assault Vest","moves":["Close Combat","Flare Blitz","Play Rough","Thunder Punch"],"evs":{"hp":252,"at":252,"sd":4}},
-    "*PkMn Trainer Shelly": {"nature":"Adamant","ability":"Intimidate","level":57,"item":"Leftovers","moves":["Close Combat","Fire Punch","Play Rough","Thunder Wave"],"evs":{"hp":252,"at":252,"sp":6}}
+    "*PkMn Trainer Shelly": {"nature":"Adamant","ability":"Intimidate","level":57,"item":"Leftovers","moves":["Close Combat","Fire Punch","Play Rough","Thunder Wave"],"evs":{"hp":252,"at":252,"sp":6}},
+    "Black Belt Shea": {"level":85,"nature":"Serious","ability":"Intimidate","moves":["Payback","Hammer Arm","Crunch","Outrage"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Obstagoon": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Guts","level":43,"item":"Flame Orb","moves":["Facade","Ice Punch","Knock Off","Sucker Punch"],"evs":{"at":252,"df":4,"sp":252}},
-    "Cue Ball Jamal": {"nature":"Bold","ability":"Reckless","level":56,"moves":["Counter","Double-Edge","Sucker Punch","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Jamal": {"level":56,"nature":"Docile","ability":"Guts","moves":["Scary Face","Counter","Taunt","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt Set 1": {"nature":"Impish","ability":"Guts","level":43,"moves":["Counter","Double-Edge","Sucker Punch","Taunt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Lax","ability":"Guts","level":75,"moves":["Counter","Double-Edge","Sucker Punch","Taunt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":43,"nature":"Adamant","ability":"Reckless","moves":["Parting Shot","Take Down","Scary Face","Counter"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":75,"nature":"Naughty","ability":"Reckless","moves":["Counter","Taunt","Double-Edge","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "PkMn Ranger Beth": {"level":88,"nature":"Sassy","ability":"Reckless","moves":["Counter","Taunt","Double-Edge","Sucker Punch"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}}
   },
   "Drowzee": {
-    "Team Rocket Grunt": {"nature":"Careful","ability":"Insomnia","level":40,"moves":["Future Sight","Nasty Plot","Psychic","Psyshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":40,"nature":"Rash","ability":"Insomnia","moves":["Psybeam","Wake-Up Slap","Psych Up","Synchronoise"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gurdurr": {
-    "Team Rocket Grunt": {"nature":"Careful","ability":"Sheer Force","level":41,"moves":["Focus Punch","Hammer Arm","Stone Edge","Superpower"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":41,"nature":"Bashful","ability":"Guts","moves":["Bulk Up","Rock Slide","Dynamic Punch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Krokorok": {
-    "Team Rocket Grunt": {"nature":"Adamant","ability":"Intimidate","level":41,"moves":["Earthquake","Foul Play","Sandstorm","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":41,"nature":"Quirky","ability":"Intimidate","moves":["Crunch","Dig","Scary Face","Foul Play"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gumshoos": {
-    "Biker Billy": {"nature":"Lonely","ability":"Stakeout","level":55,"moves":["Hyper Fang","Rest","Thrash","Yawn"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Biker Billy": {"level":55,"nature":"Hasty","ability":"Strong Jaw","moves":["Hyper Fang","Yawn","Thrash","Rest"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt Set 1": {"nature":"Sassy","ability":"Stakeout","level":38,"moves":["Hyper Fang","Rest","Thrash","Yawn"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Bashful","ability":"Strong Jaw","level":43,"moves":["Hyper Fang","Rest","Thrash","Yawn"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":43,"nature":"Jolly","ability":"Stakeout","moves":["Take Down","Scary Face","Crunch","Hyper Fang"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":38,"nature":"Bashful","ability":"Stakeout","moves":["Ice Fang","Super Fang","Take Down","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Ariados": {
-    "Juggler Kirk": {"nature":"Quiet","ability":"Swarm","level":63,"moves":["Gunk Shot","Megahorn","Poison Jab","Toxic Thread"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Juggler Kirk": {"level":63,"nature":"Impish","ability":"Swarm","moves":["Gunk Shot","Megahorn","Sticky Web","Toxic Thread"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt": {"nature":"Quirky","ability":"Swarm","level":40,"moves":["Fury Swipes","Leech Life","Night Shade","Poison Jab"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Centiskorch": {
     "Team Rocket Grunt Set 1": {"nature":"Lax","ability":"Flash Fire","level":40,"moves":["Fire Lash","Flame Charge","Lunge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Quiet","ability":"White Smoke","level":75,"moves":["Burn Up","Crunch","Fire Lash","Lunge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"nature":"Quiet","ability":"White Smoke","level":75,"moves":["Burn Up","Crunch","Fire Lash","Lunge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":75,"nature":"Serious","ability":"Flash Fire","moves":["Crunch","Fire Lash","Lunge","Burn Up"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Cacturne": {
     "*Cue Ball Camron": {"nature":"Jolly","ability":"Sand Rush","level":63,"item":"Life Orb","moves":["Knock Off","Needle Arm","Sucker Punch","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
     "Team Rocket Grunt Set 1": {"nature":"Calm","ability":"Sand Veil","level":40,"moves":["Feint Attack","Giga Drain","Pin Missile","Sludge"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Naughty","ability":"Sand Veil","level":46,"moves":["Cotton Spore","Lunge","Needle Arm","Sandstorm"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"nature":"Naughty","ability":"Sand Veil","level":46,"moves":["Cotton Spore","Lunge","Needle Arm","Sandstorm"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":46,"nature":"Hardy","ability":"Sand Veil","moves":["Sucker Punch","Pin Missile","Needle Arm","Lunge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Bisharp": {
     "*Camper Bryce": {"nature":"Jolly","ability":"Defiant","level":99,"item":"Focus Sash","moves":["Iron Head","Psycho Cut","Sucker Punch","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
     "*Channeler Rachel": {"nature":"Jolly","ability":"Defiant","level":100,"item":"Eviolite","moves":["Iron Head","Knock Off","Stone Edge","Sucker Punch"],"evs":{"hp":4,"at":252,"sp":252}},
     "Team Rocket Grunt Set 1": {"nature":"Mild","ability":"Inner Focus","level":40,"moves":["Bite","Iron Head","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Bold","ability":"Defiant","level":45,"moves":["Embargo","Iron Defense","Night Slash","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"nature":"Bold","ability":"Defiant","level":45,"moves":["Embargo","Iron Defense","Night Slash","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Team Rocket Grunt": {"level":45,"nature":"Lonely","ability":"Defiant","moves":["Assurance","Slash","Metal Sound","Embargo"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Vullaby": {
     "Team Rocket Grunt": {"nature":"Quiet","ability":"Frisk","level":40,"moves":["Foul Play","Hyper Fang","Pluck","Roost"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Machoke": {
-    "Black Belt Daisuke": {"nature":"Rash","ability":"Guts","level":80,"item":"Black Belt","moves":["Bulk Up","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Black Belt Daisuke": {"level":80,"nature":"Naughty","ability":"No Guard","moves":["Bulk Up","Cross Chop","Scary Face","Dynamic Punch"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Team Rocket Grunt Set 1": {"nature":"Impish","ability":"Guts","level":42,"moves":["Bulk Up","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Lax","ability":"Guts","level":46,"moves":["Bulk Up","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":46,"nature":"Bold","ability":"Guts","moves":["Wake-Up Slap","Dual Chop","Submission","Bulk Up"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Atsushi": {"level":40,"nature":"Mild","ability":"No Guard","moves":["Vital Throw","Wake-Up Slap","Dual Chop","Submission"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Kiyo": {"level":43,"nature":"Mild","ability":"Guts","moves":["Wake-Up Slap","Dual Chop","Submission","Bulk Up"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Takashi": {"level":38,"nature":"Careful","ability":"No Guard","moves":["Vital Throw","Wake-Up Slap","Dual Chop","Submission"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Black Belt Takashi Set 2": {"level":38,"nature":"Lax","ability":"No Guard","moves":["Vital Throw","Wake-Up Slap","Dual Chop","Submission"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":42,"nature":"Naughty","ability":"Guts","moves":["Vital Throw","Wake-Up Slap","Dual Chop","Submission"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 3": {"level":48,"nature":"Gentle","ability":"Guts","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Hiker Earl": {"level":49,"nature":"Quirky","ability":"Guts","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Larry": {"level":49,"nature":"Relaxed","ability":"No Guard","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Larry Set 2": {"level":49,"nature":"Naive","ability":"No Guard","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Crush Girl Cyndy": {"level":48,"nature":"Bold","ability":"No Guard","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Perrserker": {
     "Team Rocket Grunt Set 1": {"nature":"Bold","ability":"Tough Claws","level":41,"moves":["Metal Sound","Screech","Slash","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Hasty","ability":"Battle Armor","level":48,"moves":["Metal Sound","Screech","Slash","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 3": {"nature":"Timid","ability":"Battle Armor","level":75,"moves":["Metal Sound","Screech","Slash","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":41,"nature":"Hardy","ability":"Battle Armor","moves":["Bullet Punch","Swagger","Fury Swipes","Screech"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 3": {"level":48,"nature":"Relaxed","ability":"Battle Armor","moves":["Fury Swipes","Screech","Slash","Metal Sound"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":75,"nature":"Docile","ability":"Battle Armor","moves":["Screech","Slash","Metal Sound","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Picnicker Claire": {"level":84,"nature":"Sassy","ability":"Battle Armor","moves":["Screech","Slash","Metal Sound","Thrash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Fearow": {
-    "Bird Keeper Benny": {"nature":"Bashful","ability":"Technician","level":57,"moves":["Brave Bird","Drill Peck","Dual Wingbeat","Roost"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Impish","ability":"Frisk","level":41,"moves":["Brave Bird","Drill Peck","Dual Wingbeat","Roost"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Bird Keeper Benny": {"level":57,"nature":"Brave","ability":"Technician","moves":["Roost","Drill Peck","Drill Run","Brave Bird"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":41,"nature":"Naughty","ability":"Frisk","moves":["Agility","Dual Wingbeat","Roost","Drill Peck"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Bird Keeper Chaz": {"level":49,"nature":"Quirky","ability":"Frisk","moves":["Roost","Drill Peck","Drill Run","Brave Bird"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Runerigus": {
-    "Team Rocket Grunt": {"nature":"Hardy","ability":"Wandering Spirit","level":42,"moves":["Destiny Bond","Earthquake","Guard Split","Power Split"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":42,"nature":"Gentle","ability":"Wandering Spirit","moves":["Hex","Mean Look","Slam","Curse"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Nidoking": {
     "*Ace Trainer Zac": {"nature":"Timid","ability":"Sheer Force","level":72,"item":"Life Orb","moves":["Earth Power","Fire Blast","Ice Beam","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Tamer Edgar": {"nature":"Modest","ability":"Poison Touch","level":62,"moves":["Chip Away","Earth Power","Poison Sting","Thrash"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Tamer Edgar": {"level":62,"nature":"Relaxed","ability":"Rivalry","moves":["Chip Away","Thrash","Earth Power","Megahorn"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
     "*Crush Girl Sharon": {"nature":"Timid","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}},
     "*Professor Oak": {"nature":"Timid","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Wave"],"evs":{"sp":252,"sa":252,"sd":4}},
     "Boss Giovanni": {"nature":"Timid","ability":"Sheer Force","level":45,"item":"Life Orb","moves":["Earth Power","Ice Beam","Sludge Bomb","Thunderbolt"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Cue Ball Corey": {"nature":"Quiet","ability":"Rivalry","level":56,"moves":["Chip Away","Earth Power","Poison Sting","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Cool Couple Ray & Tyra": {"nature":"Timid","ability":"Sheer Force","level":85,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Bomb"],"evs":{"hp":6,"sp":252,"sa":252}}
+    "Cue Ball Corey": {"level":56,"nature":"Lonely","ability":"Rivalry","moves":["Poison Sting","Chip Away","Thrash","Earth Power"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Cool Couple Ray & Tyra": {"nature":"Timid","ability":"Sheer Force","level":85,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Bomb"],"evs":{"hp":6,"sp":252,"sa":252}},
+    "Camper Bryce": {"level":84,"nature":"Modest","ability":"Rivalry","moves":["Chip Away","Thrash","Earth Power","Megahorn"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Honchkrow": {
     "Boss Giovanni": {"nature":"Jolly","ability":"Super Luck","level":45,"item":"Scope Lens","moves":["Drill Peck","Heat Wave","Night Slash","Sucker Punch"],"evs":{"at":252,"df":4,"sp":252}},
@@ -1453,24 +1553,25 @@ var SETDEX_SV = {
   },
   "Ninjask": {
     "Team Rocket Grunt Set 1": {"nature":"Relaxed","ability":"Speed Boost","level":38,"moves":["First Impression","Sonic Slash","Swords Dance","X-Scissor"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Modest","ability":"Speed Boost","level":48,"moves":["First Impression","Sonic Slash","Swords Dance","X-Scissor"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Timid","ability":"Speed Boost","moves":["Pounce","First Impression","Swords Dance","X-Scissor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":38,"nature":"Brave","ability":"Speed Boost","moves":["Dual Wingbeat","Mind Reader","Pounce","First Impression"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Talonflame": {
     "*Team Rocket Grunt": {"nature":"Timid","ability":"Gale Wings","level":44,"item":"Wide Lens","moves":["Fire Blast","Hurricane","Tailwind","Will-O-Wisp"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Super Nerd Aavery": {"nature":"Docile","ability":"Flame Body","level":73,"moves":["Dual Wingbeat","Me First","Steel Wing","Tailwind"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Bird Keeper Carter": {"nature":"Modest","ability":"Flame Body","level":57,"moves":["Dual Wingbeat","Me First","Steel Wing","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Super Nerd Aavery": {"level":73,"nature":"Docile","ability":"Flame Body","moves":["Me First","Tailwind","Steel Wing","Brave Bird"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Bird Keeper Carter": {"level":57,"nature":"Modest","ability":"Flame Body","moves":["Acrobatics","Dual Wingbeat","Me First","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Shiftry": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Wind Rider","level":43,"item":"Focus Sash","moves":["Ceaseless Edge","Leaf Blade","Low Kick","X-Scissor"],"evs":{"at":252,"df":4,"sp":252}},
     "*Picnicker Susie": {"nature":"Adamant","ability":"Chlorophyll","level":63,"item":"Life Orb","moves":["Fake Out","Knock Off","Parting Shot","Solar Blade"],"evs":{"at":252,"df":4,"sp":252}},
     "*Burglar Anson": {"nature":"Jolly","ability":"Wind Rider","level":78,"item":"Focus Sash","moves":["Knock Off","Leaf Blade","Low Kick","Tailwind"],"ivs":{"at":30,"sa":30},"evs":{"at":252,"df":4,"sp":252}},
-    "Team Rocket Grunt": {"nature":"Bold","ability":"Wind Rider","level":42,"moves":["Hurricane","Leaf Storm","Nasty Plot","Toxic Spikes"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":42,"nature":"Hardy","ability":"Chlorophyll","moves":["Fake Out","Leaf Tornado","Hurricane","Nasty Plot"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Toxicroak": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Dry Skin","level":43,"item":"Lum Berry","moves":["Drain Punch","Ice Punch","Knock Off","Poison Jab"],"evs":{"at":252,"df":4,"sp":252}},
     "Biker Lukas": {"nature":"Mild","ability":"Dry Skin","level":57,"moves":["Drain Punch","Poison Jab","Smokescreen","Sucker Punch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Biker Alex": {"nature":"Modest","ability":"Dry Skin","level":57,"moves":["Nasty Plot","Screech","Sludge Bomb","Vacuum Wave"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Serious","ability":"Dry Skin","level":46,"moves":["Belch","Close Combat","Poison Jab","Sludge Bomb"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Relaxed","ability":"Dry Skin","moves":["Mud Bomb","Sucker Punch","Venoshock","Nasty Plot"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Eelektross": {
     "*Team Rocket Grunt": {"nature":"Modest","ability":"Levitate","level":44,"item":"Expert Belt","moves":["Dragon Pulse","Flamethrower","Giga Drain","Thunderbolt"],"evs":{"hp":252,"sp":4,"sa":252}},
@@ -1484,41 +1585,47 @@ var SETDEX_SV = {
     "Biker Isaac": {"nature":"Hardy","ability":"Sniper","level":57,"moves":["Brave Bird","Heat Wave","Screech","Sludge Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Ace Trainer Rolando": {"nature":"Timid","ability":"Sniper","level":81,"item":"Sitrus Berry","moves":["Giga Drain","Heat Wave","Hurricane","Nasty Plot"],"evs":{"df":4,"sp":252,"sa":252}},
     "Team Rocket Grunt Set 1": {"nature":"Hardy","ability":"Sniper","level":46,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Mild","ability":"Infiltrator","level":48,"moves":["Air Slash","Haze","Quick Guard","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":48,"nature":"Serious","ability":"Infiltrator","moves":["Dual Wingbeat","Haze","Venoshock","Air Slash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":46,"nature":"Calm","ability":"Infiltrator","moves":["Leech Life","Dual Wingbeat","Haze","Venoshock"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Dipplin": {
     "*Team Rocket Grunt": {"nature":"Bold","ability":"Sticky Hold","level":43,"item":"Eviolite","moves":["Dragon Pulse","Giga Drain","Pollen Puff","Recover"],"evs":{"hp":252,"df":40,"sa":216}}
   },
   "Purugly": {
     "Team Rocket Grunt Set 1": {"nature":"Calm","ability":"Own Tempo","level":46,"moves":["Attract","Double-Edge","Hone Claws","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Hardy","ability":"Thick Fat","level":46,"moves":["Attract","Double-Edge","Hone Claws","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":46,"nature":"Gentle","ability":"Thick Fat","moves":["Captivate","Body Slam","Sucker Punch","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":46,"nature":"Modest","ability":"Thick Fat","moves":["Captivate","Body Slam","Sucker Punch","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Grafaiai": {
-    "Team Rocket Grunt": {"nature":"Timid","ability":"Unburden","level":46,"moves":["Double-Edge","Encore","Gunk Shot","Sketch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Docile","ability":"Unburden","moves":["Taunt","Parting Shot","Substitute","Knock Off"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Stonjourner": {
-    "Team Rocket Grunt": {"nature":"Sassy","ability":"Rocky Payload","level":46,"moves":["Heavy Slam","Mega Kick","Stone Edge","Wide Guard"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Quiet","ability":"Rocky Payload","moves":["Bulldoze","Stealth Rock","Rock Slide","Body Slam"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Bruxish": {
-    "Team Rocket Grunt": {"nature":"Lax","ability":"Dazzling","level":47,"moves":["Aqua Fang","Psychic Fangs","Screech","Wave Crash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Bold","ability":"Dazzling","moves":["Aqua Tail","Screech","Psychic Fangs","Wave Crash"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Electrode": {
     "Biker Nikolas": {"nature":"Modest","ability":"Soundproof","level":55,"moves":["Explosion","Spark","Thunderbolt","Tri Attack"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Scientist Joshua": {"nature":"Timid","ability":"Soundproof","level":45,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Juggler Kirk": {"nature":"Naive","ability":"Soundproof","level":63,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Scientist Joshua": {"level":45,"nature":"Lonely","ability":"Soundproof","moves":["Light Screen","Magnet Rise","Discharge","Explosion"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Juggler Kirk": {"level":63,"nature":"Bold","ability":"Soundproof","moves":["Explosion","Gyro Ball","Mirror Coat","Court Change"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Scientist Taylor": {"nature":"Adamant","ability":"Galvanize","level":44,"item":"Choice Band","moves":["Explosion"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Scientist Jerry": {"nature":"Naughty","ability":"Static","level":47,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Scientist Ted": {"nature":"Hasty","ability":"Soundproof","level":67,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Juggler Nelson": {"nature":"Serious","ability":"Soundproof","level":81,"moves":["Court Change","Explosion","Gyro Ball","Mirror Coat"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Scientist Jerry": {"level":47,"nature":"Jolly","ability":"Static","moves":["Magnet Rise","Discharge","Explosion","Gyro Ball"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Scientist Ted": {"level":67,"nature":"Gentle","ability":"Static","moves":["Explosion","Gyro Ball","Mirror Coat","Court Change"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Juggler Nelson": {"level":81,"nature":"Adamant","ability":"Soundproof","moves":["Explosion","Gyro Ball","Mirror Coat","Court Change"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Marowak": {
-    "Team Rocket Grunt": {"nature":"Naive","ability":"Rock Head","level":46,"moves":["Bone Rush","Double-Edge","Endeavor","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Timid","ability":"Rock Head","moves":["False Swipe","Thrash","Fling","Stomping Tantrum"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Crush Girl Jocelyn": {"level":88,"nature":"Rash","ability":"Battle Armor","moves":["Endeavor","Double-Edge","Retaliate","Bone Rush"],"item":"Thick Club","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Gentleman Clifford": {"level":49,"nature":"Lonely","ability":"Rock Head","moves":["Thrash","Fling","Stomping Tantrum","Endeavor"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Ruin Maniac Lawson": {"level":49,"nature":"Impish","ability":"Rock Head","moves":["Thrash","Fling","Stomping Tantrum","Endeavor"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Grapploct": {
     "*Crush Kin Mik & Kia": {"nature":"Adamant","ability":"Technician","level":98,"item":"Assault Vest","moves":["Aqua Jet","Arm Thrust","Liquidation","Mach Punch"],"evs":{"hp":252,"at":252,"sd":4}},
-    "Crush Kin Ron & Mya": {"nature":"Naive","ability":"Limber","level":58,"item":"Black Belt","moves":["Arm Thrust","Brutal Swing","Jet Punch","Topsy-Turvy"],"evs":{"at":128,"sp":252,"sa":132}},
+    "Crush Kin Ron & Mya": {"level":58,"nature":"Lax","ability":"Limber","moves":["Reversal","Superpower","Topsy-Turvy","Brutal Swing"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Crush Girl Sharon": {"nature":"Adamant","ability":"Technician","level":100,"item":"Assault Vest","moves":["Aqua Jet","Brutal Swing","Drain Punch","Mach Punch"],"evs":{"hp":252,"at":252,"sd":4}},
-    "Team Rocket Grunt": {"nature":"Naive","ability":"Limber","level":47,"moves":["Arm Thrust","Brutal Swing","Jet Punch","Topsy-Turvy"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Lax","ability":"Limber","moves":["Submission","Taunt","Reversal","Superpower"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Crush Girl Tanya": {"level":84,"nature":"Bashful","ability":"Limber","moves":["Topsy-Turvy","Brutal Swing","Arm Thrust","Jet Punch"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Klinklang": {
     "Biker Virgil": {"nature":"Brave","ability":"Clear Body","level":54,"moves":["Gear Grind","Shift Gear","Smokescreen","Wild Charge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
@@ -1529,16 +1636,16 @@ var SETDEX_SV = {
   },
   "Porygon2": {
     "Leader Sabrina": {"nature":"Relaxed","ability":"Trace","level":58,"item":"Eviolite","moves":["Trick Room","Teleport","Ice Beam","Thunderbolt"],"shiny":1,"ivs":{"at":0,"sp":0},"evs":{"hp":252,"df":252,"sd":4}},
-    "Scientist Ted": {"nature":"Relaxed","ability":"Download","level":69,"moves":["Discharge","Hyper Beam","Lock-On","Tri Attack"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Scientist Ted": {"level":69,"nature":"Mild","ability":"Download","moves":["Tri Attack","Magic Coat","Zap Cannon","Hyper Beam"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Scientist Jose": {"nature":"Modest","ability":"Trace","level":45,"moves":["Aeroblast","Ice Beam","Thunderbolt","Tri Attack"],"evs":{"hp":252,"sp":6,"sa":252}}
   },
   "Kadabra": {
-    "Juggler Dalton": {"nature":"Quirky","ability":"Synchronize","level":45,"moves":["Focus Blast","Future Sight","Psychic","Role Play"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Psychic Tyron": {"nature":"Naive","ability":"Synchronize","level":53,"moves":["Focus Blast","Future Sight","Psychic","Role Play"],"evs":{"at":128,"sp":252,"sa":132}}
+    "Juggler Dalton": {"level":45,"nature":"Modest","ability":"Synchronize","moves":["Recover","Psychic","Role Play","Future Sight"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Psychic Tyron": {"level":53,"nature":"Sassy","ability":"Inner Focus","moves":["Recover","Psychic","Role Play","Future Sight"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Mr. Mime": {
-    "Juggler Dalton": {"nature":"Bold","ability":"Soundproof","level":44,"moves":["Moonblast","Psycho Boost","Safeguard","Sparkly Swirl"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Psychic Tyron": {"nature":"Naive","ability":"Soundproof","level":53,"moves":["Moonblast","Psycho Boost","Safeguard","Sparkly Swirl"],"evs":{"at":128,"sp":252,"sa":132}},
+    "Juggler Dalton": {"level":44,"nature":"Gentle","ability":"Soundproof","moves":["Recycle","Taunt","Psychic","Role Play"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Psychic Tyron": {"level":53,"nature":"Modest","ability":"Filter","moves":["Taunt","Psychic","Role Play","Safeguard"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Juggler Gregory": {"nature":"Rash","ability":"Soundproof","level":83,"moves":["Dazzling Gleam","Psychic"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Kecleon": {
@@ -1550,36 +1657,39 @@ var SETDEX_SV = {
     "*Bird Keeper Perry": {"nature":"Timid","ability":"Trace","level":63,"item":"Lum Berry","moves":["Calm Mind","Moonblast","Mystical Fire","Psychic"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Arcanine": {
-    "Super Nerd Erik": {"nature":"Mild","ability":"Intimidate","level":72,"moves":["Fire Fang","Flare Blitz","Helping Hand","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Burglar Lewis": {"nature":"Serious","ability":"Intimidate","level":70,"moves":["Fire Fang","Flare Blitz","Helping Hand","Retaliate"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Super Nerd Erik": {"level":72,"nature":"Mild","ability":"Intimidate","moves":["Fire Fang","Flare Blitz","Helping Hand","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Burglar Lewis": {"level":70,"nature":"Sassy","ability":"Flash Fire","moves":["Fire Fang","Flare Blitz","Helping Hand","Retaliate"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Scientist Beau": {"nature":"Mild","ability":"Intimidate","level":41,"moves":["Extreme Speed","Flamethrower","Play Rough","Wild Charge"],"evs":{"hp":6,"at":128,"sp":252,"sa":128}}
   },
   "Houndstone": {
-    "Youngster Johnson": {"nature":"Naive","ability":"Sand Rush","level":71,"moves":["Body Press","Charm","Double-Edge","Last Respects"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Youngster Johnson": {"level":71,"nature":"Modest","ability":"Sand Rush","moves":["Body Press","Charm","Double-Edge","Last Respects"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Biker Ruben": {"nature":"Jolly","ability":"Sand Rush","level":64,"item":"Spell Tag","moves":["Body Press","Fire Fang","Ice Fang","Last Respects"],"evs":{"at":252,"sp":252,"sd":4}},
-    "Team Rocket Grunt": {"nature":"Careful","ability":"Sand Rush","level":47,"moves":["Body Press","Charm","Double-Edge","Last Respects"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Rash","ability":"Sand Rush","moves":["Helping Hand","Body Press","Charm","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Skuntank": {
-    "Juggler Nate": {"nature":"Relaxed","ability":"Stench","level":63,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Juggler Nate": {"level":63,"nature":"Careful","ability":"Stench","moves":["Venom Drench","Sucker Punch","Belch","Explosion"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Team Rocket Grunt Set 1": {"nature":"Timid","ability":"Stench","level":47,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Jolly","ability":"Stench","level":46,"moves":["Belch","Explosion","Sucker Punch","Venom Drench"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":46,"nature":"Lax","ability":"Stench","moves":["Venom Drench","Sucker Punch","Belch","Explosion"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":47,"nature":"Docile","ability":"Stench","moves":["Venom Drench","Sucker Punch","Belch","Explosion"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Stoutland": {
-    "Team Rocket Grunt": {"nature":"Docile","ability":"Intimidate","level":47,"moves":["Giga Impact","Last Resort","Play Rough","Reversal"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Brave","ability":"Intimidate","moves":["Retaliate","Crunch","Roar","Reversal"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Machamp": {
     "*Professor Oak": {"nature":"Adamant","ability":"No Guard","level":100,"item":"Assault Vest","moves":["Dynamic Punch","Knock Off","Mach Punch","Stone Edge"],"evs":{"hp":252,"at":252,"sd":4}},
-    "Team Rocket Grunt": {"nature":"Brave","ability":"Guts","level":47,"moves":["Close Combat","Cross Chop","Dynamic Punch","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Careful","ability":"Guts","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt Set 2": {"level":47,"nature":"Careful","ability":"Guts","moves":["Dual Chop","Submission","Bulk Up","Cross Chop"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Weavile": {
     "Biker Alex": {"nature":"Lax","ability":"Pressure","level":57,"moves":["Ice Shard","Night Slash","Smokescreen","Triple Axel"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Rocket Admin Ariana": {"nature":"Jolly","ability":"Pressure","level":100,"item":"Focus Sash","moves":["Ice Shard","Low Kick","Night Slash","Triple Axel"],"evs":{"hp":6,"at":252,"sp":252}},
     "Team Rocket Grunt Set 1": {"nature":"Sassy","ability":"Pressure","level":46,"moves":["Dark Pulse","Night Slash","Punishment","Snatch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Lax","ability":"Pressure","level":75,"moves":["Dark Pulse","Night Slash","Punishment","Snatch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":46,"nature":"Quiet","ability":"Pressure","moves":["Screech","Night Slash","Snatch","Punishment"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":75,"nature":"Bold","ability":"Pressure","moves":["Night Slash","Snatch","Punishment","Dark Pulse"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Armarouge": {
-    "Scientist Rodney": {"nature":"Quirky","ability":"Flash Fire","level":48,"moves":["Armor Cannon","Calm Mind","Expanding Force","Flamethrower"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Channeler Stacy": {"nature":"Jolly","ability":"Flash Fire","level":54,"moves":["Armor Cannon","Calm Mind","Expanding Force","Flamethrower"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Scientist Rodney": {"level":48,"nature":"Modest","ability":"Flash Fire","moves":["Calm Mind","Flamethrower","Expanding Force","Armor Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Channeler Stacy": {"level":54,"nature":"Careful","ability":"Weak Armor","moves":["Calm Mind","Flamethrower","Expanding Force","Armor Cannon"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Leader Blaine": {"nature":"Timid","ability":"Mega Launcher","level":75,"item":"Focus Sash","moves":["Armor Cannon","Aura Sphere","Energy Ball","Psyshock"],"shiny":1,"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Musharna": {
@@ -1587,38 +1697,42 @@ var SETDEX_SV = {
   },
   "Amoonguss": {
     "Ace Trainer Caroline": {"nature":"Impish","ability":"Regenerator","level":83,"item":"Black Sludge","moves":["Clear Smog","Foul Play","Giga Drain","Spore"],"evs":{"hp":252,"df":128,"sp":4,"sd":128}},
-    "Lass Crissy": {"nature":"Careful","ability":"Effect Spore","level":59,"moves":["Rage Powder","Sludge Bomb","Solar Beam","Spore"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Lass Crissy": {"level":59,"nature":"Naive","ability":"Effect Spore","moves":["Synthesis","Sludge Bomb","Solar Beam","Rage Powder"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "Scientist Taylor": {"nature":"Modest","ability":"Effect Spore","level":44,"moves":["Giga Drain","Sludge Bomb","Spore"],"evs":{"hp":252,"sp":6,"sa":252}}
   },
   "Scolipede": {
     "Scientist Taylor": {"nature":"Adamant","ability":"Speed Boost","level":44,"item":"Prism Scale","moves":["Poison Jab","Swords Dance","X-Scissor"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Team Rocket Grunt": {"nature":"Gentle","ability":"Poison Touch","level":43,"moves":["Double-Edge","Rock Climb","Toxic","Venom Drench"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":43,"nature":"Quiet","ability":"Poison Touch","moves":["Bug Bite","Venoshock","Agility","Steamroller"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Corviknight": {
     "*Ace Trainer Barry": {"nature":"Impish","ability":"Pressure","level":100,"item":"Leftovers","moves":["Agility","Bulk Up","Power Trip","Roost"],"evs":{"hp":252,"df":252,"sd":4}},
-    "Bird Keeper Roger": {"nature":"Impish","ability":"Unnerve","level":63,"moves":["Brave Bird","Drill Peck","Iron Defense","Swagger"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Hardy","ability":"Pressure","level":49,"moves":["Brave Bird","Drill Peck","Iron Defense","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Bird Keeper Roger": {"level":63,"nature":"Quiet","ability":"Unnerve","moves":["Drill Peck","Swagger","Brave Bird","Iron Defense"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":49,"nature":"Gentle","ability":"Pressure","moves":["Taunt","Scary Face","Drill Peck","Swagger"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Marowak-Alola": {
     "Angry Ghost": {"nature":"Jolly","ability":"Bone Zone","level":58,"item":"Thick Club","moves":["Bonemerang","Shadow Bone","Fire Punch","Thunder Punch"],"evs":{"hp":252,"at":252,"df":252,"sd":252,"sp":252}},
-    "Team Rocket Grunt": {"nature":"Naive","ability":"Rock Head","level":46,"moves":["Bone Rush","Endeavor","Flare Blitz","Retaliate"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Timid","ability":"Rock Head","moves":["Shadow Bone","Thrash","Fling","Stomping Tantrum"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gliscor": {
     "*Bird Keeper Sebastian": {"nature":"Jolly","ability":"Poison Heal","level":64,"item":"Toxic Orb","moves":["Dual Wingbeat","Earthquake","Stealth Rock","U-turn"],"evs":{"hp":252,"at":4,"sp":252}},
     "*PkMn Trainer Ketchup": {"nature":"Adamant","ability":"Poison Heal","level":79,"item":"Toxic Orb","moves":["Earthquake","Facade","Roost","Swords Dance"],"evs":{"hp":252,"at":252,"sp":6}},
     "*Ace Trainer Lucy": {"nature":"Jolly","ability":"Poison Heal","level":71,"item":"Toxic Orb","moves":["Dual Wingbeat","Earthquake","Facade","Swords Dance"],"evs":{"at":252,"sp":252}},
-    "Team Rocket Grunt": {"nature":"Calm","ability":"Sand Veil","level":45,"moves":["Crabhammer","Earthquake","Spikes","Toxic Spikes"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":45,"nature":"Modest","ability":"Hyper Cutter","moves":["Night Slash","U-turn","X-Scissor","Sky Uppercut"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Sandslash": {
-    "Team Rocket Grunt": {"nature":"Careful","ability":"Sand Veil","level":47,"moves":["Earthquake","Gyro Ball","Sandstorm","Swords Dance"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Rash","ability":"Sand Veil","moves":["Slash","Dig","Gyro Ball","Swords Dance"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Camper Bryce": {"level":85,"nature":"Docile","ability":"Sand Veil","moves":["Gyro Ball","Swords Dance","Sandstorm","Earthquake"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tamer Evan": {"level":48,"nature":"Careful","ability":"Sand Veil","moves":["Dig","Gyro Ball","Swords Dance","Sandstorm"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Ruin Maniac Layton": {"level":48,"nature":"Naive","ability":"Sand Veil","moves":["Dig","Gyro Ball","Swords Dance","Sandstorm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Ruin Maniac Layton Set 2": {"level":48,"nature":"Sassy","ability":"Sand Veil","moves":["Dig","Gyro Ball","Swords Dance","Sandstorm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Donphan": {
     "Ace Trainer George": {"nature":"Adamant","ability":"Technician","level":84,"item":"Leftovers","moves":["Bonemerang","Ice Shard","Knock Off","Rock Blast"],"evs":{"hp":252,"at":252,"sp":6}},
     "*Leader Pryce": {"nature":"Brave","ability":"Technician","level":100,"item":"Lum Berry","moves":["Bonemerang","Ice Shard","Knock Off","Rock Tomb"],"ivs":{"sp":0,"sa":0},"evs":{"hp":252,"at":252,"df":4}},
-    "Team Rocket Grunt": {"nature":"Jolly","ability":"Sturdy","level":48,"moves":["Bonemerang","Earthquake","Giga Impact","Head Smash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":48,"nature":"Impish","ability":"Sturdy","moves":["Slam","Stomping Tantrum","Scary Face","Earthquake"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Thievul": {
-    "Team Rocket Grunt": {"nature":"Brave","ability":"Run Away","level":49,"moves":["Foul Play","Mystical Fire","Night Slash","Parting Shot"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":49,"nature":"Careful","ability":"Run Away","moves":["Night Slash","Dark Pulse","Mystical Fire","Foul Play"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Staraptor": {
     "*Rival Blue Set 1": {"nature":"Jolly","ability":"Intimidate","level":52,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
@@ -1637,7 +1751,7 @@ var SETDEX_SV = {
     "*Rival Blue Set 2": {"nature":"Adamant","ability":"Huge Power","level":79,"item":"Mystic Water","moves":["Aqua Jet","Liquidation","Play Rough","Superpower"],"evs":{"hp":252,"at":252,"df":4}},
     "*Rival Blue Set 3": {"nature":"Adamant","ability":"Huge Power","level":80,"item":"Mystic Water","moves":["Ice Punch","Waterfall","Play Rough","Liquidation"],"evs":{"hp":252,"at":252,"sd":4}},
     "*PkMn Trainer Ketchup": {"nature":"Adamant","ability":"Huge Power","level":79,"item":"Assault Vest","moves":["Aqua Jet","Liquidation","Play Rough","Superpower"],"evs":{"hp":252,"at":252,"sp":6}},
-    "SwimmerM Douglas": {"nature":"Lax","ability":"Thick Fat","level":61,"moves":["Double-Edge","Hydro Pump","Rain Dance","Superpower"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Douglas": {"level":61,"nature":"Rash","ability":"Huge Power","moves":["Rain Dance","Double-Edge","Superpower","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Charizard-Mega-Y": {
     "*Rival Blue": {"nature":"Timid","ability":"Drought","level":54,"item":"Charizardite Y","moves":["Air Slash","Flamethrower","Focus Blast","Solar Beam"],"evs":{"df":4,"sp":252,"sa":252}},
@@ -1655,16 +1769,16 @@ var SETDEX_SV = {
     "*PkMn Trainer Red": {"nature":"Modest","ability":"Mega Launcher","level":100,"item":"Blastoisinite","moves":["Aura Sphere","Dark Pulse","Ice Beam","Shell Smash"],"evs":{"hp":4,"sp":252,"sa":252}}
   },
   "Copperajah": {
-    "Tamer Phil": {"nature":"Modest","ability":"Heavy Metal","level":62,"moves":["Double Iron Bash","High Horsepower","Play Rough","Superpower"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Tamer Phil": {"level":62,"nature":"Naive","ability":"Heavy Metal","moves":["Strength","Iron Head","Play Rough","High Horsepower"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
     "Biker Gerald": {"nature":"Quiet","ability":"Heavy Metal","level":57,"moves":["Gyro Ball","High Horsepower","Screech"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Gentle","ability":"Heavy Metal","level":46,"moves":["Double Iron Bash","High Horsepower","Play Rough","Superpower"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":46,"nature":"Quiet","ability":"Heavy Metal","moves":["Iron Defense","Dig","Strength","Iron Head"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Swoobat": {
-    "Bird Keeper Edwin": {"nature":"Mild","ability":"Unaware","level":58,"moves":["Calm Mind","Endeavor","Heat Wave","Psychic"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Quirky","ability":"Unaware","level":46,"moves":["Calm Mind","Endeavor","Heat Wave","Psychic"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Bird Keeper Edwin": {"level":58,"nature":"Quiet","ability":"Unaware","moves":["Psychic","Calm Mind","Endeavor","Heat Wave"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":46,"nature":"Rash","ability":"Unaware","moves":["Air Slash","Future Sight","Psychic","Calm Mind"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gothitelle": {
-    "Juggler Nelson": {"nature":"Mild","ability":"Frisk","level":82,"moves":["Charm","Magic Room","Psychic","Psycho Boost"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Juggler Nelson": {"level":82,"nature":"Relaxed","ability":"Frisk","moves":["Psychic","Charm","Magic Room","Psycho Boost"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Rocket Admin Archer": {"nature":"Modest","ability":"Competitive","level":54,"item":"Colbur Berry","moves":["Hidden Power Fighting","Psychic","Shadow Ball","Thunder Wave"],"ivs":{"df":30,"sp":30,"sa":30,"sd":30},"evs":{"hp":252,"df":4,"sa":252}}
   },
   "Gholdengo": {
@@ -1678,8 +1792,8 @@ var SETDEX_SV = {
     "*Rocket Admin Archer": {"nature":"Timid","ability":"Solar Power","level":100,"item":"Houndoominite","moves":["Fiery Wrath","Flamethrower","Sludge Bomb","Solar Beam"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Incineroar": {
-    "Burglar Quinn": {"nature":"Rash","ability":"Blaze","level":72,"moves":["Cross Chop","Flare Blitz","Outrage","Scary Face"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Juggler Kirk": {"nature":"Modest","ability":"Blaze","level":63,"moves":["Cross Chop","Flare Blitz","Outrage","Scary Face"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Burglar Quinn": {"level":72,"nature":"Naughty","ability":"Blaze","moves":["Scary Face","Flare Blitz","Outrage","Cross Chop"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Juggler Kirk": {"level":63,"nature":"Docile","ability":"Blaze","moves":["Flamethrower","Scary Face","Flare Blitz","Outrage"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Rocket Admin Ariana": {"nature":"Adamant","ability":"Intimidate","level":54,"item":"Sitrus Berry","moves":["Darkest Lariat","Fake Out","Fire Punch","Parting Shot"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Primarina": {
@@ -1703,11 +1817,11 @@ var SETDEX_SV = {
     "*Ace Trainer Andrew": {"nature":"Jolly","ability":"Technician","level":100,"item":"Sceptilite","moves":["Bullet Seed","Rock Tomb","Scale Shot","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Kabutops": {
-    "Scientist Travis": {"nature":"Hasty","ability":"Sharpness","level":45,"moves":["Mega Drain","Metal Sound","Sacred Sword","Stone Axe"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Scientist Travis": {"level":45,"nature":"Brave","ability":"Sharpness","moves":["Endure","Aqua Jet","Mega Drain","Metal Sound"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Omastar": {
     "*Leader Brock": {"nature":"Timid","ability":"Weak Armor","level":66,"item":"Power Herb","moves":["Ice Beam","Meteor Beam","Shell Smash","Surf"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Scientist Travis": {"nature":"Mild","ability":"Swift Swim","level":45,"moves":["Ancient Power","Meteor Beam","Shell Smash","Tickle"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Scientist Travis": {"level":45,"nature":"Relaxed","ability":"Swift Swim","moves":["Brine","Detect","Ancient Power","Meteor Beam"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Ace Trainer Wilton": {"nature":"Modest","ability":"Swift Swim","level":63,"item":"White Herb","moves":["Hydro Pump","Ice Beam","Power Gem","Shell Smash"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Accelgor": {
@@ -1727,13 +1841,14 @@ var SETDEX_SV = {
     "*Crush Girl Jocelyn": {"nature":"Jolly","ability":"Defeatist","level":100,"item":"Mystic Water","moves":["Brave Bird","Rock Slide","Roost","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Sharpedo": {
-    "SwimmerM Reece": {"nature":"Hasty","ability":"Rough Skin","level":58,"moves":["Agility","Aqua Fang","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Ronald": {"nature":"Lonely","ability":"Rough Skin","level":64,"moves":["Agility","Aqua Fang","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Sis And Bro Lil & Ian": {"nature":"Lonely","ability":"Rough Skin","level":65,"moves":["Agility","Aqua Fang","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Jolly","ability":"Rough Skin","level":47,"moves":["Agility","Aqua Fang","Skull Bash","Taunt"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "SwimmerM Reece": {"level":58,"nature":"Calm","ability":"Rough Skin","moves":["Crunch","Agility","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Ronald": {"level":64,"nature":"Quiet","ability":"Rough Skin","moves":["Crunch","Agility","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Sis And Bro Lil & Ian": {"level":65,"nature":"Timid","ability":"Rough Skin","moves":["Crunch","Agility","Skull Bash","Taunt"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Team Rocket Grunt": {"level":47,"nature":"Impish","ability":"Rough Skin","moves":["Ice Fang","Poison Fang","Crunch","Agility"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Fisherman Tommy": {"level":85,"nature":"Calm","ability":"Rough Skin","moves":["Agility","Skull Bash","Taunt","Aqua Fang"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Sandaconda": {
-    "Team Rocket Grunt": {"nature":"Rash","ability":"Sand Spit","level":47,"moves":["Double-Edge","Earthquake","Last Resort","Sand Tomb"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Modest","ability":"Sand Spit","moves":["Glare","Dig","Sandstorm","Slam"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Drapion": {
     "Biker Alex": {"nature":"Bashful","ability":"Battle Armor","level":57,"moves":["Earthquake","Poison Jab","Smokescreen","Wicked Blow"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
@@ -1742,43 +1857,45 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"nature":"Calm","ability":"Sniper","level":47,"moves":["Aqua Tail","Crunch","Poison Jab","Wing Attack"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
   },
   "Seviper": {
-    "Tamer Phil": {"nature":"Modest","ability":"Merciless","level":63,"moves":["Coil","Gunk Shot","Hypnosis","Wring Out"],"evs":{"hp":6,"sa":252,"sd":252}},
-    "Cue Ball Isaiah": {"nature":"Hasty","ability":"Merciless","level":55,"moves":["Coil","Gunk Shot","Hypnosis","Wring Out"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Tamer Phil": {"level":63,"nature":"Adamant","ability":"Merciless","moves":["Belch","Coil","Wring Out","Gunk Shot"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Cue Ball Isaiah": {"level":55,"nature":"Brave","ability":"Merciless","moves":["Belch","Coil","Wring Out","Gunk Shot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Biker Malik": {"nature":"Relaxed","ability":"Merciless","level":57,"moves":["Flamethrower","Giga Drain","Sludge Bomb","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "Team Rocket Grunt Set 1": {"nature":"Hasty","ability":"Merciless","level":45,"moves":["Coil","Gunk Shot","Hypnosis","Wring Out"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Team Rocket Grunt Set 2": {"nature":"Hasty","ability":"Merciless","level":43,"moves":["Coil","Gunk Shot","Hypnosis","Wring Out"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt Set 2": {"level":45,"nature":"Relaxed","ability":"Merciless","moves":["Swords Dance","Crunch","Belch","Coil"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":43,"nature":"Relaxed","ability":"Merciless","moves":["Haze","Swords Dance","Crunch","Belch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Aggron": {
-    "Team Rocket Grunt": {"nature":"Rash","ability":"Rock Head","level":47,"moves":["Autotomize","Double-Edge","Heavy Slam","Metal Burst"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":47,"nature":"Naive","ability":"Sturdy","moves":["Metal Sound","Iron Tail","Iron Defense","Double-Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Cloyster": {
     "*Leader Pryce": {"nature":"Jolly","ability":"Skill Link","level":71,"item":"White Herb","moves":["Icicle Spear","Rock Blast","Shell Smash","Waterfall"],"evs":{"at":252,"sp":252,"sd":4}},
-    "Fisherman Ronald": {"nature":"Impish","ability":"Shell Armor","level":64,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Scientist Parkker": {"nature":"Quiet","ability":"Shell Armor","level":45,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "SwimmerM Richard": {"nature":"Quirky","ability":"Skill Link","level":59,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Ronald": {"level":64,"nature":"Impish","ability":"Shell Armor","moves":["Spike Cannon","Ice Shard","Spikes","Icicle Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Scientist Parkker": {"level":45,"nature":"Brave","ability":"Skill Link","moves":["Aurora Beam","Spike Cannon","Ice Shard","Spikes"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "SwimmerM Richard": {"level":59,"nature":"Impish","ability":"Skill Link","moves":["Spike Cannon","Ice Shard","Spikes","Icicle Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*SwimmerM Finn": {"nature":"Jolly","ability":"Skill Link","level":99,"item":"Focus Sash","moves":["Icicle Spear","Rock Blast","Shell Smash","Waterfall"],"evs":{"df":4,"sp":252,"sa":252}},
-    "SwimmerM Barry": {"nature":"Relaxed","ability":"Skill Link","level":64,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerF Nora": {"nature":"Modest","ability":"Shell Armor","level":64,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Barry": {"level":64,"nature":"Mild","ability":"Skill Link","moves":["Spike Cannon","Ice Shard","Spikes","Icicle Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Nora": {"level":64,"nature":"Docile","ability":"Shell Armor","moves":["Spike Cannon","Ice Shard","Spikes","Icicle Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Ace Trainer George": {"nature":"Jolly","ability":"Skill Link","level":84,"item":"White Herb","moves":["Icicle Spear","Liquidation","Rock Blast","Shell Smash"],"evs":{"hp":6,"at":252,"sp":252}},
     "*PkMn Trainer Ketchup": {"nature":"Jolly","ability":"Skill Link","level":79,"item":"Focus Sash","moves":["Explosion","Icicle Spear","Liquidation","Shell Smash"],"evs":{"hp":6,"at":252,"sp":252}},
-    "SwimmerM Axle": {"nature":"Lonely","ability":"Shell Armor","level":61,"moves":["Ice Shard","Icicle Crash","Shell Smash","Spikes"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Axle": {"level":61,"nature":"Quiet","ability":"Shell Armor","moves":["Spike Cannon","Ice Shard","Spikes","Icicle Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Garrett": {"level":84,"nature":"Docile","ability":"Skill Link","moves":["Ice Shard","Spikes","Icicle Crash","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lickilicky": {
-    "Scientist Parkker": {"nature":"Lax","ability":"Unaware","level":45,"moves":["Gyro Ball","Me First","Refresh","Screech"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
-    "Pokemaniac Mark": {"nature":"Jolly","ability":"Own Tempo","level":62,"moves":["Gyro Ball","Me First","Refresh","Screech"],"evs":{"hp":4,"sp":252,"sd":252}},
-    "Pokemaniac Dawson": {"nature":"Jolly","ability":"Own Tempo","level":81,"moves":["Gyro Ball","Me First","Refresh","Screech"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Scientist Parkker": {"level":45,"nature":"Bashful","ability":"Unaware","moves":["Rollout","Chip Away","Me First","Refresh"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Pokemaniac Mark": {"level":62,"nature":"Quiet","ability":"Own Tempo","moves":["Screech","Power Whip","Wring Out","Gyro Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Pokemaniac Dawson": {"level":81,"nature":"Sassy","ability":"Own Tempo","moves":["Screech","Power Whip","Wring Out","Gyro Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Luxray": {
-    "Team Rocket Grunt": {"nature":"Calm","ability":"Rivalry","level":42,"moves":["Crunch","Sucker Punch","Volt Tackle","Zing Zap"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":42,"nature":"Mild","ability":"Rivalry","moves":["Roar","Swagger","Thunder Fang","Crunch"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Rhydon": {
     "Biker Isaac": {"nature":"Docile","ability":"Lightning Rod","level":57,"moves":["Earthquake","Megahorn","Rock Blast","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Team Rocket Grunt": {"nature":"Naughty","ability":"Lightning Rod","level":42,"moves":["Earthquake","Megahorn","Stone Edge","Take Down"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":42,"nature":"Hardy","ability":"Lightning Rod","moves":["Rock Blast","Drill Run","Take Down","Stone Edge"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Meowstic": {
-    "Juggler Nelson": {"nature":"Quirky","ability":"Prankster","level":76,"moves":["Imprison","Misty Terrain","Role Play","Sucker Punch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Psychic Johan": {"nature":"Naive","ability":"Prankster","level":53,"moves":["Imprison","Misty Terrain","Role Play","Sucker Punch"],"evs":{"at":128,"sp":252,"sa":132}},
-    "Team Rocket Grunt": {"nature":"Bashful","ability":"Feline Prowess","level":44,"moves":["Imprison","Misty Terrain","Role Play","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Juggler Nelson": {"level":76,"nature":"Quirky","ability":"Prankster","moves":["Imprison","Sucker Punch","Misty Terrain","Quick Guard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Psychic Johan": {"level":53,"nature":"Modest","ability":"Feline Prowess","moves":["Imprison","Sucker Punch","Misty Terrain","Quick Guard"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Team Rocket Grunt": {"level":44,"nature":"Jolly","ability":"Prankster","moves":["Miracle Eye","Reflect","Psychic","Role Play"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Hippowdon": {
     "Boss Giovanni": {"nature":"Adamant","ability":"Sand Stream","level":56,"item":"Smooth Rock","moves":["Earthquake","Roar","Stealth Rock","Stone Edge"],"evs":{"hp":252,"at":252,"df":4}}
@@ -1798,7 +1915,7 @@ var SETDEX_SV = {
     "Boss Giovanni": {"nature":"Jolly","ability":"Sand Veil","level":57,"item":"Yache Berry","moves":["Earthquake","Rock Slide","Scale Shot","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Torterra": {
-    "Beauty Olivia": {"nature":"Hardy","ability":"Overgrow","level":57,"moves":["Giga Drain","Head Smash","Headlong Rush","Leaf Storm"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Beauty Olivia": {"level":57,"nature":"Mild","ability":"Overgrow","moves":["Synthesis","Crunch","Giga Drain","Leaf Storm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Boss Giovanni": {"nature":"Jolly","ability":"Rock Head","level":56,"item":"White Herb","moves":["Earthquake","Head Smash","Shell Smash","Wood Hammer"],"evs":{"at":252,"sp":252,"sd":4}},
     "*Ace Trainer Andrew": {"nature":"Jolly","ability":"Rock Head","level":100,"item":"Yache Berry","moves":["Head Smash","Headlong Rush","Shell Smash","Wood Hammer"],"evs":{"at":252,"df":4,"sp":252}}
   },
@@ -1819,7 +1936,7 @@ var SETDEX_SV = {
   },
   "Gastrodon": {
     "*PkMn Trainer Cole": {"nature":"Calm","ability":"Storm Drain","level":57,"item":"Rocky Helmet","moves":["Earth Power","Mirror Coat","Recover","Scald"],"evs":{"hp":252,"sd":252}},
-    "Picnicker Missy": {"nature":"Rash","ability":"Storm Drain","level":64,"moves":["Body Slam","Muddy Water","Rain Dance","Recover"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Missy": {"level":64,"nature":"Adamant","ability":"Storm Drain","moves":["Rain Dance","Body Slam","Muddy Water","Recover"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Centiskorch-Mega": {
     "*Ace Trainer Derek": {"nature":"Adamant","ability":"Mountaineer","level":72,"item":"Centiskite","moves":["Flare Blitz","Knock Off","Leech Life","Power Whip"],"evs":{"hp":252,"at":252,"df":4}},
@@ -1832,12 +1949,14 @@ var SETDEX_SV = {
   },
   "Farfetch’d": {
     "*PkMn Trainer Sam": {"nature":"Jolly","ability":"Sharpness","level":57,"item":"Leek","moves":["Brave Bird","Sacred Sword","Leaf Blade","Night Slash"],"evs":{"hp":6,"at":252,"sp":252}},
-    "Bird Keeper Donald": {"nature":"Hardy","ability":"Frisk","level":58,"moves":["Drill Peck","False Swipe","Sacred Sword","Swords Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Donald": {"level":58,"nature":"Mild","ability":"Frisk","moves":["Acrobatics","Feint","False Swipe","Brave Bird"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Youngster Cordell": {"level":48,"nature":"Serious","ability":"Inner Focus","moves":["Night Slash","Acrobatics","Feint","False Swipe"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Youngster Cordell Set 2": {"level":48,"nature":"Sassy","ability":"Inner Focus","moves":["Night Slash","Acrobatics","Feint","False Swipe"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Dodrio": {
-    "Cue Ball Jamal": {"nature":"Careful","ability":"Early Bird","level":56,"moves":["Brave Bird","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Bird Keeper Marlon": {"nature":"Docile","ability":"Rock Head","level":57,"moves":["Brave Bird","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Bird Keeper Chester": {"nature":"Quirky","ability":"Rock Head","level":58,"moves":["Brave Bird","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Jamal": {"level":56,"nature":"Relaxed","ability":"Early Bird","moves":["Jump Kick","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Bird Keeper Marlon": {"level":57,"nature":"Sassy","ability":"Rock Head","moves":["Jump Kick","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Bird Keeper Chester": {"level":58,"nature":"Lax","ability":"Early Bird","moves":["Jump Kick","Double-Edge","Endeavor","Thrash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*PkMn Trainer Shelly": {"nature":"Jolly","ability":"Rock Head","level":57,"item":"Focus Sash","moves":["Brave Bird","Double-Edge","Jump Kick","Pursuit"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Appletun-Mega": {
@@ -1848,16 +1967,16 @@ var SETDEX_SV = {
   },
   "Swampert": {
     "*Cue Ball Camron": {"nature":"Sassy","ability":"Damp","level":63,"item":"Leftovers","moves":["Earthquake","Flip Turn","Stealth Rock","Yawn"],"evs":{"hp":252,"at":4,"df":252}},
-    "SwimmerM Dean": {"nature":"Timid","ability":"Torrent","level":65,"moves":["Earthquake","Muddy Water","Protect","Take Down"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Dean": {"level":65,"nature":"Lonely","ability":"Torrent","moves":["Muddy Water","Take Down","Earthquake","Hammer Arm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Dumbass Kid": {"nature":"Adamant","ability":"Torrent","level":57,"item":"Rindo Berry","moves":["Earthquake","Flip Turn","Liquidation","Stealth Rock"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Pelipper": {
-    "Bird Keeper Roger": {"nature":"Quirky","ability":"Frisk","level":63,"moves":["Hurricane","Hydro Pump","Roost","Spit Up"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Bird Keeper Roger": {"level":63,"nature":"Lax","ability":"Rain Dish","moves":["Roost","Tailwind","Hydro Pump","Hurricane"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Ace Trainer Janny": {"nature":"Calm","ability":"Drizzle","level":100,"item":"Damp Rock","moves":["Hurricane","Roost","Scald","U-turn"],"evs":{"hp":248,"df":8,"sp":252}},
     "*Dumbass Kid": {"nature":"Modest","ability":"Drizzle","level":57,"item":"Damp Rock","moves":["Hurricane","Roost","Surf","U-turn"],"evs":{"hp":6,"sp":252,"sa":252}},
     "*SwimmerF Tisha": {"nature":"Bold","ability":"Drizzle","level":100,"item":"Damp Rock","moves":["Hurricane","Ice Beam","Scald","U-turn"],"ivs":{"sa":30},"evs":{"hp":248,"df":252,"sa":8}},
-    "Bird Keeper Beck": {"nature":"Lax","ability":"Frisk","level":57,"moves":["Hurricane","Hydro Pump","Roost","Spit Up"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM Axle": {"nature":"Adamant","ability":"Frisk","level":62,"moves":["Hurricane","Hydro Pump","Roost","Spit Up"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Beck": {"level":57,"nature":"Hardy","ability":"Frisk","moves":["Roost","Tailwind","Hydro Pump","Hurricane"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Axle": {"level":62,"nature":"Adamant","ability":"Frisk","moves":["Roost","Tailwind","Hydro Pump","Hurricane"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Frosmoth": {
     "*Dumbass Kid": {"nature":"Modest","ability":"Ice Scales","level":57,"item":"Leftovers","moves":["Bug Buzz","Hurricane","Ice Beam","Quiver Dance"],"evs":{"hp":6,"sp":252,"sa":252}}
@@ -1868,40 +1987,40 @@ var SETDEX_SV = {
     "*Elite Four Lorelei": {"nature":"Adamant","ability":"Swift Swim","level":85,"item":"Swampertite","moves":["Power-Up Punch","Earthquake","Ice Punch","Waterfall"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Slowbro": {
-    "SwimmerM Matthew": {"nature":"Modest","ability":"Own Tempo","level":63,"moves":["Amnesia","Psych Up","Psychic","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Psychic Cameron": {"nature":"Naive","ability":"Oblivious","level":54,"moves":["Amnesia","Psych Up","Psychic","Rain Dance"],"evs":{"at":128,"sp":252,"sa":132}}
+    "SwimmerM Matthew": {"level":63,"nature":"Quirky","ability":"Own Tempo","moves":["Amnesia","Psychic","Rain Dance","Psych Up"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Psychic Cameron": {"level":54,"nature":"Hasty","ability":"Own Tempo","moves":["Zen Headbutt","Slack Off","Amnesia","Psychic"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Slowking": {
-    "Psychic Cameron": {"nature":"Naive","ability":"Oblivious","level":53,"moves":["Psych Up","Psychic","Swagger","Trump Card"],"evs":{"at":128,"sp":252,"sa":132}},
-    "SwimmerF Melissa": {"nature":"Jolly","ability":"Oblivious","level":64,"moves":["Psych Up","Psychic","Swagger","Trump Card"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Psychic Cameron": {"level":53,"nature":"Adamant","ability":"Own Tempo","moves":["Nasty Plot","Swagger","Psychic","Trump Card"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "SwimmerF Melissa": {"level":64,"nature":"Careful","ability":"Own Tempo","moves":["Psychic","Trump Card","Psych Up","Heal Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Espathra": {
-    "Psychic Cameron": {"nature":"Naive","ability":"Frisk","level":53,"moves":["Dazzling Gleam","Last Resort","Psychic","Uproar"],"evs":{"at":128,"sp":252,"sa":132}}
+    "Psychic Cameron": {"level":53,"nature":"Naughty","ability":"Speed Boost","moves":["Agility","Uproar","Dazzling Gleam","Psychic"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Grumpig": {
-    "Psychic Johan": {"nature":"Naive","ability":"Thick Fat","level":53,"moves":["Bounce","Payback","Psychic","Slack Off"],"evs":{"at":128,"sp":252,"sa":132}}
+    "Psychic Johan": {"level":53,"nature":"Hasty","ability":"Own Tempo","moves":["Snore","Psyshock","Payback","Psychic"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Gallade": {
-    "Psychic Johan": {"nature":"Naive","ability":"Steadfast","level":54,"moves":["Close Combat","Protect","Psycho Cut","Sacred Sword"],"evs":{"at":128,"sp":252,"sa":132}}
+    "Psychic Johan": {"level":54,"nature":"Careful","ability":"Sharpness","moves":["Feint","False Swipe","Protect","Close Combat"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Espeon": {
     "*Picnicker Susie": {"nature":"Timid","ability":"Magic Bounce","level":63,"item":"Twisted Spoon","moves":["Calm Mind","Psychic","Shadow Ball","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Psychic Johan": {"nature":"Naive","ability":"Synchronize","level":53,"moves":["Fiery Dance","Last Resort","Power Swap","Psychic"],"evs":{"at":128,"sp":252,"sa":132}}
+    "Psychic Johan": {"level":53,"nature":"Rash","ability":"Synchronize","moves":["Morning Sun","Psychic","Last Resort","Power Swap"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Bronzong": {
-    "Psychic Preston": {"nature":"Naive","ability":"Levitate","level":54,"moves":["Heal Block","Heavy Slam","Payback","Spin Out"],"evs":{"at":128,"sp":252,"sa":132}},
-    "Scientist Ivan": {"nature":"Quiet","ability":"Levitate","level":70,"moves":["Heal Block","Heavy Slam","Payback","Spin Out"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}},
+    "Psychic Preston": {"level":54,"nature":"Adamant","ability":"Heatproof","moves":["Payback","Heal Block","Heavy Slam","Spin Out"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Scientist Ivan": {"level":70,"nature":"Impish","ability":"Levitate","moves":["Payback","Heal Block","Heavy Slam","Spin Out"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "*Leader Jasmine": {"nature":"Relaxed","ability":"Levitate","level":71,"item":"Leftovers","moves":["Earthquake","Explosion","Gyro Ball","Stealth Rock"],"ivs":{"sp":0},"evs":{"hp":252,"df":252,"sd":4}}
   },
   "Cofagrigus": {
-    "Channeler Amanda": {"nature":"Timid","ability":"Mummy","level":55,"moves":["Destiny Bond","Grudge","Mean Look","Shadow Ball"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Amanda": {"level":55,"nature":"Lonely","ability":"Mummy","moves":["Guard Split","Shadow Ball","Grudge","Mean Look"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Gengar": {
     "Biker Ernest": {"nature":"Brave","ability":"Levitate","level":58,"moves":["Destiny Bond","Minimize","Shadow Ball","Sludge Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Channeler Tasha": {"nature":"Lonely","ability":"Levitate","level":55,"moves":["Dark Pulse","Destiny Bond","Hex","Nightmare"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Channeler Tasha": {"level":55,"nature":"Hasty","ability":"Levitate","moves":["Dream Eater","Dark Pulse","Destiny Bond","Hex"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Froslass": {
-    "Channeler Tasha": {"nature":"Quirky","ability":"Ice Body","level":53,"moves":["Blizzard","Freeze-Dry","Frost Breath","Snowscape"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Channeler Tasha": {"level":53,"nature":"Hardy","ability":"Ice Body","moves":["Captivate","Bitter Malice","Frost Breath","Blizzard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Fisherman Andrew": {"nature":"Timid","ability":"Ice Body","level":63,"item":"Light Clay","moves":["Aurora Veil","Blizzard","Freeze-Dry","Shadow Ball"],"evs":{"sp":252,"sa":252,"sd":4}}
   },
   "Hatterene": {
@@ -1929,7 +2048,8 @@ var SETDEX_SV = {
   "Walrein": {
     "*Rocker Luca": {"nature":"Bold","ability":"Ice Body","level":63,"item":"Leftovers","moves":["Blizzard","Protect","Substitute","Toxic"],"evs":{"hp":252,"df":252,"sd":4}},
     "*Leader Pryce": {"nature":"Calm","ability":"Fur Coat","level":71,"item":"Leftovers","moves":["Ice Beam","Rest","Sleep Talk","Toxic"],"evs":{"hp":252,"df":4,"sd":252}},
-    "Ace Trainer Colby": {"nature":"Calm","ability":"Fur Coat","level":83,"item":"Leftovers","moves":["Ice Beam","Protect","Surf","Toxic"],"evs":{"hp":252,"df":128,"sp":4,"sd":128}}
+    "Ace Trainer Colby": {"nature":"Calm","ability":"Fur Coat","level":83,"item":"Leftovers","moves":["Ice Beam","Protect","Surf","Toxic"],"evs":{"hp":252,"df":128,"sp":4,"sd":128}},
+    "SwimmerF Amara": {"level":85,"nature":"Naughty","ability":"Ice Body","moves":["Snore","Snowscape","Blizzard","Ice Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Darmanitan-Galar": {
     "*Camper Justin": {"nature":"Jolly","ability":"Gorilla Tactics","level":63,"item":"Choice Scarf","moves":["Earthquake","Flare Blitz","Icicle Crash","U-turn"],"evs":{"at":252,"sp":252,"sd":4}}
@@ -1945,7 +2065,8 @@ var SETDEX_SV = {
   "Mienshao": {
     "*Biker Lao": {"nature":"Jolly","ability":"Inner Focus","level":63,"item":"Life Orb","moves":["Close Combat","Fake Out","Knock Off","U-turn"],"evs":{"at":252,"sp":252,"sd":4}},
     "Ace Trainer George": {"nature":"Jolly","ability":"Regenerator","level":84,"item":"Life Orb","moves":["Close Combat","Fake Out","Knock Off","U-turn"],"evs":{"hp":6,"at":252,"sp":252}},
-    "*Ace Trainer Derek": {"nature":"Jolly","ability":"Inner Focus","level":72,"item":"Life Orb","moves":["Close Combat","Fake Out","Knock Off","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Ace Trainer Derek": {"nature":"Jolly","ability":"Inner Focus","level":72,"item":"Life Orb","moves":["Close Combat","Fake Out","Knock Off","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
+    "Black Belt Hugh": {"level":86,"nature":"Docile","ability":"Inner Focus","moves":["Bounce","High Jump Kick","Reversal","Aura Sphere"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Dugtrio-Alola": {
     "*Biker Lao": {"nature":"Naive","ability":"Sand Force","level":63,"item":"Life Orb","moves":["Earthquake","Iron Head","Stone Edge","Sucker Punch"],"evs":{"at":252,"sp":252,"sd":4}}
@@ -1982,33 +2103,33 @@ var SETDEX_SV = {
   "Seismitoad": {
     "Biker Virgil": {"nature":"Jolly","ability":"Swift Swim","level":54,"moves":["Earth Power","Scald","Sludge Bomb","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Ace Trainer Janny": {"nature":"Modest","ability":"Swift Swim","level":100,"item":"Life Orb","moves":["Earth Power","Focus Blast","Surf","Weather Ball"],"evs":{"sp":252,"sa":252}},
-    "SwimmerM Roland": {"nature":"Rash","ability":"Swift Swim","level":64,"moves":["Echoed Voice","Flail","Hydro Pump","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Roland": {"level":64,"nature":"Rash","ability":"Swift Swim","moves":["Drain Punch","Echoed Voice","Hydro Pump","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Bouffalant": {
     "Biker Virgil": {"nature":"Adamant","ability":"Reckless","level":55,"moves":["Earthquake","Head Charge","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Beauty Sheila": {"nature":"Adamant","ability":"Sap Sipper","level":63,"item":"Normal Gem","moves":["Close Combat","Head Charge","High Horsepower","Zen Headbutt"],"evs":{"hp":252,"at":252,"sp":4}}
   },
   "Cyclizar": {
-    "Cue Ball Raul": {"nature":"Jolly","ability":"Shed Skin","level":55,"moves":["Double-Edge","Dragon Rush","Shed Tail","Shift Gear"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Raul": {"level":55,"nature":"Naughty","ability":"Shed Skin","moves":["Dragon Pulse","Double-Edge","Dragon Rush","Shift Gear"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Ace Trainer Rolando": {"nature":"Jolly","ability":"Regenerator","level":81,"item":"Sitrus Berry","moves":["Body Slam","Dragon Claw","Knock Off","Shed Tail"],"evs":{"hp":252,"df":4,"sp":252}}
   },
   "Probopass": {
     "Biker Nikolas": {"nature":"Bashful","ability":"Magnet Pull","level":55,"moves":["Discharge","Earth Power","Power Gem","Spark"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*Black Belt Shea": {"nature":"Bold","ability":"Levitate","level":100,"item":"Leftovers","moves":["Flash Cannon","Power Gem","Thunder Wave","Volt Switch"],"evs":{"hp":252,"df":252,"sa":4}},
-    "Scientist Braydon": {"nature":"Lax","ability":"Magnet Pull","level":69,"moves":["Earth Power","Lock-On","Stone Edge","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Scientist Braydon": {"level":69,"nature":"Bashful","ability":"Magnet Pull","moves":["Earth Power","Stone Edge","Lock-On","Zap Cannon"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Feraligatr": {
-    "Cue Ball Jamal": {"nature":"Serious","ability":"Sheer Force","level":55,"moves":["Dragon Dance","Jaw Lock","Superpower","Triple Dive"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Jamal": {"level":55,"nature":"Sassy","ability":"Sheer Force","moves":["Aqua Fang","Superpower","Triple Dive","Jaw Lock"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Gatekeeper Logan": {"nature":"Jolly","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Aqua Jet","Crunch","Ice Punch","Liquidation"],"evs":{"at":252,"df":4,"sp":252}},
     "Ace Trainer Colby": {"nature":"Jolly","ability":"Strong Jaw","level":83,"item":"Focus Sash","moves":["Aqua Fang","Dragon Dance","Ice Fang","Jaw Lock"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Hitmonchan": {
-    "Cue Ball Zeek": {"nature":"Relaxed","ability":"Frisk","level":56,"moves":["Close Combat","Mega Punch","Sky Uppercut","Sucker Punch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Cue Ball Zeek": {"level":56,"nature":"Careful","ability":"Frisk","moves":["Sky Uppercut","Mega Punch","Sucker Punch","Focus Punch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Huntail": {
     "PkMn Trainer Brendan": {"nature":"Jolly","ability":"Intimidate","level":81,"item":"White Herb","moves":["Crunch","Ice Fang","Liquidation","Shell Smash"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Crush Girl Jocelyn": {"nature":"Naughty","ability":"Intimidate","level":100,"item":"White Herb","moves":["Ice Beam","Psychic Fangs","Shell Smash","Waterfall"],"evs":{"at":252,"sp":252,"sa":4}},
-    "Cue Ball Corey": {"nature":"Careful","ability":"Intimidate","level":56,"moves":["Aqua Fang","Crunch","Shell Smash","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Cue Ball Corey": {"level":56,"nature":"Impish","ability":"Intimidate","moves":["Aqua Tail","Coil","Crunch","Aqua Fang"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Dumbass Jojo Fan": {"nature":"Adamant","ability":"Intimidate","level":100,"item":"White Herb","moves":["Crunch","Liquidation","Shell Smash","Sucker Punch"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Swalot": {
@@ -2016,14 +2137,16 @@ var SETDEX_SV = {
     "Biker Jaxon": {"nature":"Rash","ability":"Liquid Ooze","level":57,"moves":["Ice Beam","Sludge","Sludge Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Qwilfish": {
-    "Biker Jaxon": {"nature":"Gentle","ability":"Swift Swim","level":57,"moves":["Explosion","Poison Jab","Screech","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Biker Jaxon": {"nature":"Gentle","ability":"Swift Swim","level":57,"moves":["Explosion","Poison Jab","Screech","Waterfall"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Fisherman Tylor": {"level":49,"nature":"Relaxed","ability":"Swift Swim","moves":["Pin Missile","Take Down","Aqua Tail","Poison Jab"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Tylor Set 2": {"level":49,"nature":"Naive","ability":"Swift Swim","moves":["Pin Missile","Take Down","Aqua Tail","Poison Jab"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Decidueye": {
     "*Bird Keeper Jacob": {"nature":"Naive","ability":"Tinted Lens","level":63,"item":"Spell Tag","moves":["Hurricane","Leaf Blade","Spirit Shackle","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Mantine": {
     "*Bird Keeper Jacob": {"nature":"Modest","ability":"Swift Swim","level":63,"item":"Sharp Beak","moves":["Flip Turn","Hurricane","Hydro Pump","Ice Beam"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Sis And Bro Lia & Luc": {"nature":"Modest","ability":"Water Absorb","level":64,"moves":["Air Slash","Aqua Ring","Bounce","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Sis And Bro Lia & Luc": {"level":64,"nature":"Quirky","ability":"Water Absorb","moves":["Air Slash","Aqua Ring","Bounce","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Pikachu-Surfing": {
     "*Dragon Tamer Ramiro": {"nature":"Timid","ability":"Lightning Rod","level":64,"item":"Focus Sash","moves":["Bouncy Bubble","Electroweb","Fake Out","Thunder"],"ivs":{"at":30},"evs":{"sp":252,"sa":252,"sd":4}}
@@ -2032,8 +2155,9 @@ var SETDEX_SV = {
     "*Ace Trainer Samantha": {"nature":"Modest","ability":"Competitive","level":100,"item":"Assault Vest","moves":["Bouncy Bubble","Flip Turn","Ice Beam","Weather Ball"],"evs":{"hp":252,"df":4,"sa":252}},
     "*SwimmerF Amara": {"nature":"Modest","ability":"Competitive","level":100,"item":"Sitrus Berry","moves":["Haze","Hidden Power Grass","Hydro Pump","Ice Beam"],"ivs":{"at":30,"sa":30},"evs":{"hp":252,"df":4,"sa":252}},
     "*SwimmerM Garrett": {"nature":"Timid","ability":"Competitive","level":98,"item":"Choice Scarf","moves":["Surf"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Fisherman Wade": {"nature":"Bashful","ability":"Marvel Scale","level":63,"moves":["Bouncy Bubble","Coil","Hydro Pump","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "*Dragon Tamer Ramiro": {"nature":"Modest","ability":"Competitive","level":64,"item":"Sitrus Berry","moves":["Bouncy Bubble","Hidden Power Grass","Ice Beam","Mirror Coat"],"ivs":{"at":30,"sa":30},"evs":{"hp":252,"df":4,"sa":252}}
+    "Fisherman Wade": {"level":63,"nature":"Lax","ability":"Marvel Scale","moves":["Safeguard","Coil","Hydro Pump","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "*Dragon Tamer Ramiro": {"nature":"Modest","ability":"Competitive","level":64,"item":"Sitrus Berry","moves":["Bouncy Bubble","Hidden Power Grass","Ice Beam","Mirror Coat"],"ivs":{"at":30,"sa":30},"evs":{"hp":252,"df":4,"sa":252}},
+    "Fisherman Tommy": {"level":85,"nature":"Modest","ability":"Competitive","moves":["Coil","Hydro Pump","Rain Dance","Bouncy Bubble"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lapras-Mega": {
     "*SwimmerM Garrett": {"nature":"Modest","ability":"Liquid Voice","level":100,"item":"Laprasite","moves":["Blizzard","Boomburst","Draco Meteor","Thunderbolt"],"ivs":{"at":0},"evs":{"df":4,"sp":252,"sa":252}},
@@ -2048,7 +2172,7 @@ var SETDEX_SV = {
   },
   "Kilowattrel": {
     "*Ace Trainer Wilton": {"nature":"Timid","ability":"Volt Absorb","level":63,"item":"Sharp Beak","moves":["Hurricane","Thunder","Volt Switch","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Bird Keeper Roger": {"nature":"Quirky","ability":"Static","level":64,"moves":["Agility","Discharge","Hurricane","Volt Switch"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Roger": {"level":64,"nature":"Hardy","ability":"Volt Absorb","moves":["Agility","Volt Switch","Discharge","Hurricane"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Pinsir-Mega": {
     "Ace Trainer George": {"nature":"Jolly","ability":"Aerilate","level":84,"item":"Pinsirite","moves":["Close Combat","Double-Edge","Quick Attack","X-Scissor"],"evs":{"hp":6,"at":252,"sp":252}},
@@ -2072,40 +2196,43 @@ var SETDEX_SV = {
     "*PkMn Trainer Brendan": {"nature":"Adamant","ability":"Pure Power","level":66,"item":"Choice Scarf","moves":["Close Combat","Ice Punch","Psycho Cut","Thunder Punch"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Alcremie": {
-    "Picnicker Yazmin": {"nature":"Calm","ability":"Sweet Veil","level":58,"moves":["Entrainment","Misty Terrain","Moonblast","Recover"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Yazmin": {"level":58,"nature":"Calm","ability":"Sweet Veil","moves":["Dazzling Gleam","Recover","Misty Terrain","Entrainment"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Pidgeotto": {
-    "Bird Keeper Edwin": {"nature":"Relaxed","ability":"Frisk","level":57,"moves":["Air Slash","Hurricane","Mirror Move","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Edwin": {"level":57,"nature":"Quiet","ability":"Frisk","moves":["Agility","Air Slash","Mirror Move","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Youngster Destin": {"level":48,"nature":"Hasty","ability":"Frisk","moves":["Agility","Air Slash","Mirror Move","Tailwind"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Bird Keeper Milo": {"level":49,"nature":"Sassy","ability":"Frisk","moves":["Agility","Air Slash","Mirror Move","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Pidgeot": {
-    "Bird Keeper Edwin": {"nature":"Bold","ability":"Frisk","level":57,"moves":["Agility","Air Slash","Mirror Move","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Edwin": {"level":57,"nature":"Naive","ability":"Frisk","moves":["Agility","Air Slash","Mirror Move","Tailwind"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Togekiss": {
     "*Bird Keeper Sebastian": {"nature":"Modest","ability":"Serene Grace","level":63,"item":"Leftovers","moves":["Air Slash","Fire Blast","Thunder Wave","Roost"],"evs":{"df":4,"sa":252,"sp":252}},
-    "Bird Keeper Chester": {"nature":"Naive","ability":"Hustle","level":58,"moves":["Aeroblast","Air Slash","Aura Sphere","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Bird Keeper Chester": {"level":58,"nature":"Modest","ability":"Serene Grace","moves":["Sky Attack","Extreme Speed","Aura Sphere","Air Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Crush Girl Jocelyn": {"nature":"Jolly","ability":"Serene Grace","level":100,"item":"Leftovers","moves":["Air Slash","Extrasensory","Flamethrower","Thunder Wave"],"evs":{"sp":252,"sa":252}}
   },
   "Eldegoss": {
-    "Picnicker Kindra": {"nature":"Bold","ability":"Cotton Down","level":57,"moves":["Aromatherapy","Cotton Guard","Hyper Voice","Leaf Storm"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Kindra": {"level":57,"nature":"Gentle","ability":"Cotton Down","moves":["Hyper Voice","Aromatherapy","Leaf Storm","Cotton Guard"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Flapple": {
-    "Picnicker Kindra": {"nature":"Naughty","ability":"Ripen","level":58,"moves":["Dragon Dance","Dragon Energy","Outrage","Scale Shot"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Kindra": {"level":58,"nature":"Calm","ability":"Ripen","moves":["Fly","Dragon Rush","Dragon Dance","Outrage"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Venomoth": {
-    "Picnicker Kindra": {"nature":"Naive","ability":"Shield Dust","level":56,"moves":["Poison Fang","Psychic","Quiver Dance","Zen Headbutt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Kindra": {"level":56,"nature":"Naive","ability":"Shield Dust","moves":["Leech Life","Zen Headbutt","Poison Fang","Psychic"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Bug Catcher Vance": {"level":48,"nature":"Lax","ability":"Tinted Lens","moves":["Sleep Powder","Leech Life","Zen Headbutt","Poison Fang"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
   },
   "Venusaur": {
-    "Beauty Olivia": {"nature":"Docile","ability":"Overgrow","level":58,"moves":["Chloroblast","Petal Blizzard","Solar Beam","Synthesis"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Beauty Olivia": {"level":58,"nature":"Sassy","ability":"Overgrow","moves":["Sludge Bomb","Synthesis","Petal Blizzard","Solar Beam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Beauty Lola": {"nature":"Naive","ability":"Chlorophyll","level":63,"item":"Sitrus Berry","moves":["Earth Power","Petal Blizzard","Safeguard","Weather Ball"],"evs":{"at":4,"sp":252,"sa":252}}
   },
   "Raichu": {
-    "Picnicker Becky": {"nature":"Docile","ability":"Static","level":57,"moves":["Extreme Speed","Quick Attack","Thunderbolt","Zippy Zap"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Becky": {"level":57,"nature":"Mild","ability":"Static","moves":["Tail Whip","Quick Attack","Thunderbolt","Extreme Speed"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Raichu-Alola": {
-    "Picnicker Becky": {"nature":"Careful","ability":"Surge Surfer","level":58,"moves":["Quick Attack","Speed Swap","Thunder Shock","Thunderbolt"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Becky": {"level":58,"nature":"Relaxed","ability":"Surge Surfer","moves":["Speed Swap","Thunder Shock","Quick Attack","Thunderbolt"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Delcatty": {
-    "Picnicker Celia": {"nature":"Lax","ability":"Cute Charm","level":58,"moves":["Attract","Hyper Voice","Round","Sing"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Celia": {"level":58,"nature":"Rash","ability":"Wonder Skin","moves":["Sing","Attract","Round","Hyper Voice"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Hawlucha": {
     "*Leader Erika": {"nature":"Adamant","ability":"Unburden","level":66,"item":"Grassy Seed","moves":["Swords Dance","Close Combat","Acrobatics","Stone Edge"],"evs":{"at":252,"sd":4,"sp":252}},
@@ -2114,7 +2241,8 @@ var SETDEX_SV = {
   },
   "Magmortar": {
     "*PkMn Trainer Haley": {"nature":"Timid","ability":"Flame Body","level":66,"item":"Power Herb","moves":["Flamethrower","Meteor Beam","Steam Eruption","Thunderbolt"],"evs":{"hp":6,"sp":252,"sa":252}},
-    "Juggler Shawn": {"nature":"Serious","ability":"Flame Body","level":63,"moves":["Fire Blast","Hydro Steam","Magma Storm","Steam Eruption"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Juggler Shawn": {"level":63,"nature":"Sassy","ability":"Quick Draw","moves":["Sunny Day","Flamethrower","Fire Blast","Hydro Steam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Gatekeeper Logan": {"level":88,"nature":"Bold","ability":"Quick Draw","moves":["Fire Blast","Hydro Steam","Magma Storm","Steam Eruption"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}}
   },
   "Cursola": {
     "*PkMn Trainer Haley": {"nature":"Timid","ability":"Unburden","level":66,"item":"Power Herb","moves":["Ice Beam","Meteor Beam","Mystical Fire","Shadow Ball"],"evs":{"hp":6,"sp":252,"sa":252}}
@@ -2123,37 +2251,39 @@ var SETDEX_SV = {
     "*PkMn Trainer Haley": {"nature":"Careful","ability":"Aerilate","level":66,"item":"Sandacondite","moves":["Body Slam","Coil","Rest","Sleep Talk"],"evs":{"hp":252,"sd":252}}
   },
   "Toucannon": {
-    "Bird Keeper Marlon": {"nature":"Naive","ability":"Frisk","level":57,"moves":["Bullet Seed","Drill Peck","Feather Dance","Hyper Voice"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Marlon": {"level":57,"nature":"Bold","ability":"Frisk","moves":["Drill Peck","Bullet Seed","Feather Dance","Hyper Voice"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Murkrow": {
-    "Bird Keeper Marlon": {"nature":"Modest","ability":"Insomnia","level":57,"moves":["Quash","Sucker Punch","Tailwind","Torment"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Marlon": {"level":57,"nature":"Modest","ability":"Insomnia","moves":["Mean Look","Snarl","Tailwind","Sucker Punch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Blaziken": {
-    "Bird Keeper Mitch": {"nature":"Serious","ability":"Striker","level":56,"moves":["Brave Bird","Flare Blitz","Sky Uppercut","Triple Arrows"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Mitch": {"level":56,"nature":"Sassy","ability":"Striker","moves":["Triple Arrows","Brave Bird","Sky Uppercut","Flare Blitz"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Crush Girl Sharon": {"level":86,"nature":"Bashful","ability":"Striker","moves":["Triple Arrows","Brave Bird","Sky Uppercut","Flare Blitz"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Braviary": {
-    "Bird Keeper Mitch": {"nature":"Docile","ability":"Sheer Force","level":56,"moves":["Crush Claw","Double-Edge","Drill Peck","Sky Drop"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Mitch": {"level":56,"nature":"Modest","ability":"Sheer Force","moves":["Crush Claw","Sky Drop","Whirlwind","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Altaria": {
-    "Bird Keeper Mitch": {"nature":"Sassy","ability":"Natural Cure","level":55,"moves":["Dragon Dance","Moonblast","Outrage","Perish Song"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Bird Keeper Mitch": {"level":55,"nature":"Careful","ability":"Natural Cure","moves":["Cotton Guard","Dragon Claw","Perish Song","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Dragalge": {
     "Biker Lukas": {"nature":"Bold","ability":"Poison Touch","level":57,"moves":["Dragon Pulse","Sludge Bomb","Smokescreen"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
     "*SwimmerF Maria": {"nature":"Modest","ability":"Adaptability","level":99,"item":"Choice Specs","moves":["Draco Barrage","Flip Turn","Scald","Sludge Wave"],"evs":{"hp":252,"df":4,"sa":252}}
   },
   "Empoleon": {
-    "Bird Keeper Benny": {"nature":"Rash","ability":"Torrent","level":57,"moves":["Drill Peck","Haze","Hydro Pump","Make It Rain"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Bird Keeper Benny": {"level":57,"nature":"Naughty","ability":"Torrent","moves":["Mist","Haze","Drill Peck","Make It Rain"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Twins Joy & Meg": {"nature":"Timid","ability":"Competitive","level":100,"item":"Weakness Policy","moves":["Flash Cannon","Grass Knot","Hydro Pump","Ice Beam"],"ivs":{"sa":30},"evs":{"hp":176,"sp":252,"sa":80}},
     "Ace Trainer Colby": {"nature":"Bold","ability":"Competitive","level":84,"item":"Leftovers","moves":["Calm Mind","Rest","Scald","Sleep Talk"],"evs":{"hp":252,"df":252}}
   },
   "Cinderace": {
-    "Twins Kiri & Jan": {"nature":"Sassy","ability":"Blaze","level":56,"moves":["Bounce","Counter","Court Change","Double-Edge"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Twins Kiri & Jan": {"level":56,"nature":"Jolly","ability":"Blaze","moves":["Headbutt","Counter","Bounce","Double-Edge"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Inteleon": {
     "*Ace Trainer Andrew": {"nature":"Timid","ability":"Sniper","level":100,"item":"Scope Lens","moves":["Hidden Power Grass","Ice Beam","Snipe Shot","U-turn"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}},
-    "SwimmerM Spencer": {"nature":"Naughty","ability":"Torrent","level":63,"moves":["Hydro Pump","Liquidation","Rain Dance","Soak"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Twins Kiri & Jan": {"nature":"Hardy","ability":"Torrent","level":56,"moves":["Hydro Pump","Liquidation","Rain Dance","Soak"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "*SwimmerF Maria": {"nature":"Timid","ability":"Sniper","level":100,"item":"Scope Lens","moves":["Hidden Power Grass","Ice Beam","Snipe Shot","U-turn"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
+    "SwimmerM Spencer": {"level":63,"nature":"Naive","ability":"Torrent","moves":["Liquidation","Soak","Rain Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Twins Kiri & Jan": {"level":56,"nature":"Mild","ability":"Torrent","moves":["U-turn","Liquidation","Soak","Rain Dance"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "*SwimmerF Maria": {"nature":"Timid","ability":"Sniper","level":100,"item":"Scope Lens","moves":["Hidden Power Grass","Ice Beam","Snipe Shot","U-turn"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}},
+    "SwimmerF Abigail": {"level":84,"nature":"Timid","ability":"Torrent","moves":["Liquidation","Soak","Rain Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Tangrowth": {
     "*Picnicker Alma": {"nature":"Timid","ability":"Chlorophyll","level":63,"item":"Assault Vest","moves":["Hidden Power Fire","Knock Off","Sludge Bomb","Solar Beam"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"sp":252,"sa":252}},
@@ -2161,7 +2291,8 @@ var SETDEX_SV = {
   },
   "Chansey": {
     "Ace Trainer Alexa": {"nature":"Bold","ability":"Natural Cure","level":83,"item":"Eviolite","moves":["Protect","Seismic Toss","Toxic","Wish"],"evs":{"hp":252,"df":252}},
-    "*Picnicker Alma": {"nature":"Bold","ability":"Natural Cure","level":63,"item":"Eviolite","moves":["Seismic Toss","Soft-Boiled","Teleport","Thunder Wave"],"evs":{"hp":252,"df":252,"sd":4}}
+    "*Picnicker Alma": {"nature":"Bold","ability":"Natural Cure","level":63,"item":"Eviolite","moves":["Seismic Toss","Soft-Boiled","Teleport","Thunder Wave"],"evs":{"hp":252,"df":252,"sd":4}},
+    "PkMn Breeder Bethany": {"level":50,"nature":"Careful","ability":"Serene Grace","moves":["Fling","Heal Pulse","Egg Bomb","Light Screen"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Chandelure": {
     "*Aroma Lady Violet": {"nature":"Timid","ability":"Shadow Tag","level":100,"item":"Choice Scarf","moves":["Energy Ball","Flamethrower","Scorching Sands","Shadow Ball"],"evs":{"df":4,"sp":252,"sa":252}},
@@ -2201,20 +2332,21 @@ var SETDEX_SV = {
     "*Beauty Sheila": {"nature":"Jolly","ability":"Sap Sipper","level":63,"item":"Magnet","moves":["Bolt Strike","Flare Blitz","Low Kick","Return"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Ursaring": {
-    "Picnicker Valerie": {"nature":"Sassy","ability":"Quick Feet","level":57,"moves":["Close Combat","Rest","Scary Face","Thrash"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
-    "Team Rocket Grunt": {"nature":"Hasty","ability":"Guts","level":75,"moves":["Close Combat","Rest","Scary Face","Thrash"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Picnicker Valerie": {"level":57,"nature":"Docile","ability":"Quick Feet","moves":["Scary Face","Rest","Thrash","Close Combat"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Team Rocket Grunt": {"level":75,"nature":"Relaxed","ability":"Guts","moves":["Scary Face","Rest","Thrash","Close Combat"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Tamer Evan": {"level":49,"nature":"Modest","ability":"Guts","moves":["Crunch","Scary Face","Rest","Thrash"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Nidorina": {
-    "Picnicker Gwen": {"nature":"Quirky","ability":"Poison Touch","level":57,"moves":["Captivate","Crunch","Flatter","Poison Fang"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Gwen": {"level":57,"nature":"Modest","ability":"Poison Touch","moves":["Toxic Spikes","Flatter","Crunch","Captivate"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Eevee": {
-    "Picnicker Gwen": {"nature":"Docile","ability":"Run Away","level":57,"moves":["Charm","Double-Edge","Last Resort","Trump Card"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Gwen": {"level":57,"nature":"Sassy","ability":"Run Away","moves":["Charm","Double-Edge","Last Resort","Trump Card"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Prinplup": {
-    "Picnicker Gwen": {"nature":"Lax","ability":"Torrent","level":57,"moves":["Drill Peck","Hydro Pump","Mist","Whirlpool"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Gwen": {"level":57,"nature":"Lax","ability":"Torrent","moves":["Whirlpool","Mist","Drill Peck","Hydro Pump"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Riolu": {
-    "Picnicker Gwen": {"nature":"Naive","ability":"Steadfast","level":57,"moves":["Copycat","Final Gambit","Reversal","Screech"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Gwen": {"level":57,"nature":"Bold","ability":"Steadfast","moves":["Copycat","Screech","Reversal","Final Gambit"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Exeggutor": {
     "*Professor Oak": {"nature":"Modest","ability":"Harvest","level":100,"item":"Sitrus Berry","moves":["Chloroblast","Earth Power","Psyshock","Sleep Powder"],"evs":{"hp":252,"df":4,"sa":252}},
@@ -2222,7 +2354,7 @@ var SETDEX_SV = {
     "Leader Blaine": {"nature":"Timid","ability":"Chlorophyll","level":76,"item":"Lum Berry","moves":["Giga Drain","Growth","Psyshock","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Emboar": {
-    "Burglar Quinn": {"nature":"Naughty","ability":"Reckless","level":74,"moves":["Flamethrower","Flare Blitz","Head Smash","Jump Kick"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Burglar Quinn": {"level":74,"nature":"Bold","ability":"Reckless","moves":["Flamethrower","Head Smash","Jump Kick","Flare Blitz"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Bird Keeper Robert": {"nature":"Naive","ability":"Bull Rush","level":63,"item":"Charcoal","moves":["Close Combat","Flare Blitz","Solar Beam","Wild Charge"],"evs":{"at":252,"df":4,"sp":252}},
     "*Cue Ball Paxton": {"nature":"Jolly","ability":"Bull Rush","level":100,"item":"Fightinium Z","moves":["Close Combat","Flare Blitz","Head Smash","Wild Charge"],"evs":{"at":252,"df":4,"sp":252}}
   },
@@ -2235,7 +2367,7 @@ var SETDEX_SV = {
     "*Ace Trainer Derek": {"nature":"Adamant","ability":"Solid Rock","level":71,"item":"Hard Stone","moves":["Earthquake","Fire Punch","Megahorn","Stone Edge"],"evs":{"hp":252,"at":252,"df":4}},
     "Rocket Admin Ariana": {"nature":"Adamant","ability":"Solid Rock","level":78,"item":"Weakness Policy","moves":["Earthquake","Heat Crash","Ice Punch","Rock Blast"],"evs":{"hp":252,"at":252,"sp":6}},
     "*Bird Keeper Perry": {"nature":"Careful","ability":"Solid Rock","level":63,"item":"Rindo Berry","moves":["Earthquake","Fire Punch","Stealth Rock","Stone Edge"],"evs":{"hp":252,"at":252,"sd":4}},
-    "Pokemaniac Mark": {"nature":"Jolly","ability":"Lightning Rod","level":60,"moves":["Earthquake","Megahorn","Stone Edge","Take Down"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "Pokemaniac Mark": {"level":60,"nature":"Naive","ability":"Lightning Rod","moves":["Take Down","Stone Edge","Earthquake","Megahorn"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Crustle": {
     "*Biker Jared": {"nature":"Adamant","ability":"Sturdy","level":63,"item":"Custap Berry","moves":["Earthquake","Spikes","Stealth Rock","Stone Edge"],"evs":{"hp":252,"at":252,"df":4}}
@@ -2248,10 +2380,10 @@ var SETDEX_SV = {
     "*Biker Jared": {"nature":"Jolly","ability":"Thick Fat","level":63,"item":"Soft Sand","moves":["Headlong Rush","Ice Shard","Icicle Crash","Rock Tomb"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Appletun": {
-    "Juggler Kirk": {"nature":"Mild","ability":"Ripen","level":62,"moves":["Draco Meteor","Dragon Pulse","Energy Ball","Leaf Storm"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Juggler Kirk": {"level":62,"nature":"Mild","ability":"Ripen","moves":["Body Slam","Iron Defense","Dragon Pulse","Energy Ball"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Bewear": {
-    "Tamer Edgar": {"nature":"Modest","ability":"Fluffy","level":63,"moves":["Double-Edge","Pain Split","Superpower","Thrash"],"evs":{"hp":6,"sa":252,"sd":252}},
+    "Tamer Edgar": {"level":63,"nature":"Serious","ability":"Fluffy","moves":["Thrash","Pain Split","Double-Edge","Superpower"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
     "*Crush Girl Tanya": {"nature":"Adamant","ability":"Fluffy","level":100,"item":"Sitrus Berry","moves":["Close Combat","Darkest Lariat","Double-Edge","Drain Punch"],"evs":{"hp":252,"at":252,"sp":4}}
   },
   "Swellow": {
@@ -2296,9 +2428,10 @@ var SETDEX_SV = {
     "*Leader Misty": {"nature":"Jolly","ability":"Zero to Hero","level":66,"item":"Mystic Water","moves":["Drain Punch","Flip Turn","Jet Punch","Wave Crash"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Kingdra": {
-    "SwimmerM Darrin": {"nature":"Lonely","ability":"Swift Swim","level":63,"moves":["Agility","Dragon Dance","Dragon Pulse","Snipe Shot"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Darrin": {"level":63,"nature":"Lonely","ability":"Swift Swim","moves":["Agility","Dragon Pulse","Dragon Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Leader Misty Set 1": {"nature":"Jolly","ability":"Swift Swim","level":66,"item":"Scope Lens","moves":["Dragon Pulse","Hurricane","Ice Beam","Snipe Shot"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "*Leader Misty Set 2": {"nature":"Timid","ability":"Swift Swim","level":100,"item":"Waterium Z","moves":["Draco Barrage","Hurricane","Hydro Pump","Muddy Water"],"evs":{"df":4,"sp":252,"sa":252}}
+    "*Leader Misty Set 2": {"nature":"Timid","ability":"Swift Swim","level":100,"item":"Waterium Z","moves":["Draco Barrage","Hurricane","Hydro Pump","Muddy Water"],"evs":{"df":4,"sp":252,"sa":252}},
+    "SwimmerF Maria": {"level":87,"nature":"Jolly","ability":"Sniper","moves":["Dragon Pulse","Dragon Dance","Hydro Pump","Snipe Shot"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Archaludon": {
     "*Leader Misty": {"nature":"Modest","ability":"Sturdy","level":66,"item":"Leftovers","moves":["Body Press","Dragon Pulse","Electro Shot","Flash Cannon"],"evs":{"hp":252,"df":4,"sa":252}}
@@ -2308,7 +2441,8 @@ var SETDEX_SV = {
   },
   "Gorebyss": {
     "*Leader Misty": {"nature":"Timid","ability":"Dazzling","level":66,"item":"Focus Sash","moves":["Ice Beam","Moonblast","Shell Smash","Surf"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "SwimmerF Melissa": {"nature":"Timid","ability":"Dazzling","level":64,"moves":["Coil","Hydro Pump","Moonblast","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerF Melissa": {"level":64,"nature":"Rash","ability":"Dazzling","moves":["Coil","Moonblast","Hydro Pump","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Garrett": {"level":85,"nature":"Bashful","ability":"Dazzling","moves":["Coil","Moonblast","Hydro Pump","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Great Tusk": {
     "*Elite Four Bruno": {"nature":"Jolly","ability":"Protosynthesis","level":85,"item":"Focus Sash","moves":["Headlong Rush","Close Combat","Stealth Rock","Knock Off"],"evs":{"at":252,"df":4,"sp":252}},
@@ -2327,7 +2461,8 @@ var SETDEX_SV = {
   },
   "Parasect": {
     "Ace Trainer Caroline": {"nature":"Adamant","ability":"Dry Skin","level":83,"item":"Focus Sash","moves":["Crabhammer","Leaf Blade","Leech Life","Spore"],"evs":{"hp":252,"at":252,"sp":6}},
-    "Lass Crissy": {"nature":"Adamant","ability":"Effect Spore","level":59,"moves":["Aromatherapy","Crabhammer","Rage Powder","Sappy Seed"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Crissy": {"level":59,"nature":"Rash","ability":"Effect Spore","moves":["Sappy Seed","Crabhammer","Aromatherapy","Rage Powder"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Marcy": {"level":49,"nature":"Rash","ability":"Dry Skin","moves":["Leech Life","Swords Dance","Sappy Seed","Crabhammer"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Hoopa-Unbound": {
     "*Dumbass Jojo Fan Set 1": {"nature":"Jolly","ability":"Magician","level":71,"item":"Focus Sash","moves":["Drain Punch","Fire Punch","Gunk Shot","Hyperspace Fury"],"evs":{"at":252,"df":4,"sp":252}},
@@ -2353,57 +2488,64 @@ var SETDEX_SV = {
     "*Dumbass Jojo Fan Set 2": {"nature":"Adamant","ability":"ORAORAORAORA","level":100,"item":"Machampite","moves":["Bullet Punch","Drain Punch","Ice Punch","Power-Up Punch"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Samurott": {
-    "SwimmerM Tony": {"nature":"Sassy","ability":"Torrent","level":63,"moves":["Hydro Pump","Razor Shell","Sacred Sword","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerM Tony": {"level":63,"nature":"Jolly","ability":"Torrent","moves":["Swords Dance","Hydro Pump","Sacred Sword","Razor Shell"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Leader Jasmine": {"nature":"Jolly","ability":"Sharpness","level":71,"item":"White Herb","moves":["Cut","Razor Shell","Sacred Sword","Shell Smash"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Toedscruel": {
-    "SwimmerM Douglas": {"nature":"Brave","ability":"Clear Body","level":62,"moves":["Earth Power","Giga Drain","Power Whip","Spore"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Douglas": {"level":62,"nature":"Adamant","ability":"Mold Breaker","moves":["Spore","Giga Drain","Earth Power","Power Whip"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Gyarados": {
     "*Leader Falkner": {"nature":"Jolly","ability":"Moxie","level":100,"item":"Flyinium Z","moves":["Bounce","Dragon Dance","Earthquake","Waterfall"],"ivs":{"sa":0}},
     "*Professor Oak": {"nature":"Jolly","ability":"Moxie","level":100,"item":"Water Gem","moves":["Dragon Dance","Earthquake","Power Whip","Waterfall"],"evs":{"at":252,"sp":252}},
-    "SwimmerF Alice": {"nature":"Lax","ability":"Intimidate","level":64,"moves":["Bounce","Dragon Dance","Hyper Beam","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerF Alice": {"level":64,"nature":"Rash","ability":"Intimidate","moves":["Hurricane","Rain Dance","Hyper Beam","Bounce"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Fisherman Tommy": {"nature":"Jolly","ability":"Moxie","level":98,"item":"Wacan Berry","moves":["Dragon Dance","Earthquake","Ice Fang","Waterfall"],"evs":{"at":252,"df":4,"sp":252}},
-    "Fisherman Wade": {"nature":"Naughty","ability":"Intimidate","level":64,"moves":["Bounce","Dragon Dance","Hyper Beam","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "SwimmerM David": {"nature":"Rash","ability":"Intimidate","level":62,"moves":["Bounce","Dragon Dance","Hyper Beam","Rain Dance"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Wade": {"level":64,"nature":"Naughty","ability":"Intimidate","moves":["Hurricane","Rain Dance","Hyper Beam","Bounce"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM David": {"level":62,"nature":"Naughty","ability":"Intimidate","moves":["Hurricane","Rain Dance","Hyper Beam","Bounce"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Samir": {"level":50,"nature":"Quirky","ability":"Intimidate","moves":["Dragon Rage","Crunch","Aqua Tail","Hurricane"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Dewgong": {
-    "Picnicker Irene": {"nature":"Naughty","ability":"Thick Fat","level":63,"moves":["Aqua Tail","Dive","Safeguard","Snowscape"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Picnicker Irene": {"level":63,"nature":"Bold","ability":"Ice Scales","moves":["Take Down","Dive","Aqua Tail","Safeguard"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*SwimmerF Amara": {"nature":"Calm","ability":"Ice Scales","level":100,"item":"Sitrus Berry","moves":["Ice Beam","Rest","Scald","Sleep Talk"],"evs":{"hp":252,"df":4,"sp":252}},
-    "SwimmerM David": {"nature":"Serious","ability":"Ice Scales","level":63,"moves":["Aqua Tail","Dive","Safeguard","Snowscape"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM David": {"level":63,"nature":"Gentle","ability":"Ice Scales","moves":["Take Down","Dive","Aqua Tail","Safeguard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Amara": {"level":84,"nature":"Docile","ability":"Ice Scales","moves":["Dive","Aqua Tail","Safeguard","Snowscape"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lanturn": {
     "*Tuber Alexis": {"nature":"Modest","ability":"Illuminate","level":100,"item":"Life Orb","moves":["Blizzard","Hydro Pump","Thunder","Volt Switch"],"evs":{"hp":252,"df":4,"sa":252}},
-    "SwimmerM David": {"nature":"Adamant","ability":"Volt Absorb","level":62,"moves":["Charge","Hydro Pump","Ion Deluge","Parabolic Charge"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM David": {"level":62,"nature":"Naughty","ability":"Illuminate","moves":["Hydro Pump","Ion Deluge","Parabolic Charge","Charge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Denise": {"level":49,"nature":"Calm","ability":"Volt Absorb","moves":["Signal Beam","Scald","Discharge","Aqua Ring"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Wishiwashi-School": {
     "*SwimmerF Abigail": {"nature":"Modest","ability":"Schooling","level":100,"item":"Sitrus Berry","moves":["Earthquake","Hydro Pump","Ice Beam","U-turn"],"evs":{"hp":252,"df":4,"sa":252}},
     "SwimmerF Alice": {"nature":"Lonely","ability":"Schooling","level":60,"moves":["Aqua Tail","Double-Edge","Endeavor","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
   },
   "Alomomola": {
-    "SwimmerF Anya": {"nature":"Adamant","ability":"Hydration","level":57,"moves":["Brine","Safeguard","Whirlpool","Wish"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Fisherman Wade": {"nature":"Sassy","ability":"Hydration","level":62,"moves":["Brine","Safeguard","Whirlpool","Wish"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerF Anya": {"level":57,"nature":"Adamant","ability":"Hydration","moves":["Safeguard","Whirlpool","Helping Hand","Healing Wish"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Fisherman Wade": {"level":62,"nature":"Jolly","ability":"Hydration","moves":["Whirlpool","Helping Hand","Healing Wish","Wide Guard"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Amara": {"level":85,"nature":"Brave","ability":"Hydration","moves":["Helping Hand","Healing Wish","Wide Guard","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Vaporeon": {
-    "Sis And Bro Lia & Luc": {"nature":"Sassy","ability":"Water Absorb","level":64,"moves":["Haze","Hydro Pump","Last Resort","Muddy Water"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Sis And Bro Lia & Luc": {"level":64,"nature":"Relaxed","ability":"Water Absorb","moves":["Haze","Muddy Water","Last Resort","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*SwimmerF Tisha": {"nature":"Modest","ability":"Hydration","level":100,"item":"Leftovers","moves":["Acid Armor","Ice Beam","Rest","Scald"],"ivs":{"at":0},"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Kingler": {
     "*Tuber Alexis": {"nature":"Jolly","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Aqua Jet","Close Combat","Liquidation","Swords Dance"],"evs":{"at":252,"sp":252,"sd":4}},
-    "SwimmerF Nora": {"nature":"Careful","ability":"Hyper Cutter","level":63,"moves":["Crabhammer","Flail","Ice Hammer","Meteor Mash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerF Nora": {"level":63,"nature":"Naive","ability":"Hyper Cutter","moves":["Slam","Brine","Crabhammer","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Tisha": {"level":38,"nature":"Hardy","ability":"Shell Armor","moves":["Mud Shot","Metal Claw","Stomp","Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerM Mymo": {"level":49,"nature":"Sassy","ability":"Hyper Cutter","moves":["Metal Claw","Stomp","Slash","Slam"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Swanna": {
     "*Tuber Amira": {"nature":"Naive","ability":"No Guard","level":100,"item":"Flying Gem","moves":["Aqua Jet","Blizzard","Hurricane","Hydro Pump"],"evs":{"df":4,"sp":252,"sa":252}},
     "Ace Trainer Colby": {"nature":"Timid","ability":"No Guard","level":83,"item":"Life Orb","moves":["Hurricane","Hydro Pump","Ice Beam"],"evs":{"hp":6,"sp":252,"sa":252}},
-    "Picnicker Irene": {"nature":"Sassy","ability":"Frisk","level":63,"moves":["Hurricane","Hydro Pump","Rain Dance","Tailwind"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Picnicker Irene": {"level":63,"nature":"Docile","ability":"Frisk","moves":["Rain Dance","Tailwind","Hydro Pump","Hurricane"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Politoed": {
-    "SwimmerF Shirley": {"nature":"Hasty","ability":"Damp","level":63,"moves":["Bounce","Hyper Voice","Perish Song","Swagger"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "SwimmerF Shirley": {"level":63,"nature":"Calm","ability":"Damp","moves":["Perish Song","Swagger","Bounce","Hyper Voice"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Elite Four Lorelei": {"nature":"Timid","ability":"Drizzle","level":85,"item":"Damp Rock","moves":["Flip Turn","Scald","Haze","Rain Dance"],"evs":{"hp":252,"df":4,"sp":252}}
   },
   "Lapras": {
-    "SwimmerF Tiffany": {"nature":"Naughty","ability":"Water Absorb","level":65,"moves":["Boomburst","Dragon Dance","Dragon Hammer","Wish"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Pokemaniac Dawson": {"nature":"Jolly","ability":"Water Absorb","level":80,"moves":["Boomburst","Dragon Dance","Dragon Hammer","Wish"],"evs":{"hp":4,"sp":252,"sd":252}}
+    "SwimmerF Tiffany": {"level":65,"nature":"Naive","ability":"Hydration","moves":["Dragon Pulse","Dragon Dance","Wish","Boomburst"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Pokemaniac Dawson": {"level":80,"nature":"Brave","ability":"Water Absorb","moves":["Dragon Dance","Wish","Boomburst","Dragon Hammer"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "SwimmerF Maria": {"level":87,"nature":"Sassy","ability":"Hydration","moves":["Dragon Dance","Wish","Boomburst","Dragon Hammer"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Jynx": {
     "*Leader Pryce": {"nature":"Timid","ability":"Dry Skin","level":71,"item":"Focus Sash","moves":["Focus Blast","Freeze-Dry","Lovely Kiss","Psystrike"],"evs":{"sp":252,"sa":252,"sd":4}}
@@ -2416,7 +2558,8 @@ var SETDEX_SV = {
     "*Leader Pryce": {"nature":"Jolly","ability":"Refrigerate","level":71,"item":"Glalitite","moves":["Double-Edge","Earthquake","Fake Out","Quick Attack"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Solrock": {
-    "PkMn Trainer May": {"nature":"Jolly","ability":"Levitate","level":71,"item":"Focus Sash","moves":["Earthquake","Explosion","Photon Geyser","Stealth Rock"],"evs":{"hp":6,"at":252,"sp":252}}
+    "PkMn Trainer May": {"nature":"Jolly","ability":"Levitate","level":71,"item":"Focus Sash","moves":["Earthquake","Explosion","Photon Geyser","Stealth Rock"],"evs":{"hp":6,"at":252,"sp":252}},
+    "Gatekeeper Logan": {"level":88,"nature":"Naughty","ability":"Levitate","moves":["Stone Edge","Photon Geyser","Explosion","Wonder Room"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}}
   },
   "Manectric": {
     "PkMn Trainer May": {"nature":"Timid","ability":"Lightning Rod","level":72,"item":"Choice Specs","moves":["Overheat","Switcheroo","Thunderbolt","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}}
@@ -2434,19 +2577,19 @@ var SETDEX_SV = {
     "*Ace Trainer Andrew": {"nature":"Jolly","ability":"Speed Boost","level":100,"item":"Blazikenite","moves":["Close Combat","Flare Blitz","Knock Off","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Basculin": {
-    "Fisherman Claude": {"nature":"Lax","ability":"Reckless","level":64,"moves":["Aqua Fang","Head Smash","Waterfall","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Claude": {"level":64,"nature":"Hardy","ability":"Reckless","moves":["Aqua Fang","Head Smash","Waterfall","Wave Crash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Dhelmise": {
-    "Fisherman Claude": {"nature":"Docile","ability":"Steely Spirit","level":65,"moves":["Heavy Slam","Phantom Force","Power Whip","Spirit Shackle"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Claude": {"level":65,"nature":"Sassy","ability":"Steely Spirit","moves":["Heavy Slam","Phantom Force","Power Whip","Spirit Shackle"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Blastoise": {
-    "SwimmerM Jerome": {"nature":"Naive","ability":"Torrent","level":64,"moves":["Hydro Pump","Iron Defense","Rain Dance","Shell Smash"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "SwimmerM Jerome": {"level":64,"nature":"Bold","ability":"Torrent","moves":["Ice Beam","Iron Defense","Rain Dance","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Magikarp": {
-    "Fisherman Wade": {"nature":"Bold","ability":"Swift Swim","level":70,"moves":["Flail","Splash","Tackle"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Wade": {"level":70,"nature":"Gentle","ability":"Swift Swim","moves":["Splash","Tackle","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Feebas": {
-    "Fisherman Wade": {"nature":"Naive","ability":"Swift Swim","level":70,"moves":["Flail","Splash","Tackle"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Fisherman Wade": {"level":70,"nature":"Bold","ability":"Swift Swim","moves":["Splash","Tackle","Flail"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Forretress": {
     "*Leader Jasmine": {"nature":"Relaxed","ability":"Sturdy","level":71,"item":"Custap Berry","moves":["Earthquake","Explosion","Gyro Ball","Stealth Rock"],"ivs":{"sp":0},"evs":{"hp":252,"df":252,"sd":4}}
@@ -2471,29 +2614,30 @@ var SETDEX_SV = {
     "*Leader Jasmine": {"nature":"Jolly","ability":"Hustle","level":71,"item":"Life Orb","moves":["Close Combat","Hone Claws","Iron Head","X-Scissor"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Grimmsnarl": {
-    "Youngster Johnson": {"nature":"Careful","ability":"Frisk","level":71,"moves":["Foul Play","Hammer Arm","Nasty Plot","Play Rough"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}},
+    "Youngster Johnson": {"level":71,"nature":"Relaxed","ability":"Frisk","moves":["Nasty Plot","Play Rough","Foul Play","Hammer Arm"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
     "*Channeler Rachel": {"nature":"Relaxed","ability":"Prankster","level":100,"item":"Light Clay","moves":["Fake Out","Light Screen","Reflect","Toxic"],"evs":{"hp":252,"df":252}},
     "*Biker Goon": {"nature":"Impish","ability":"Prankster","level":98,"item":"Light Clay","moves":["Light Screen","Reflect","Spirit Break","Thunder Wave"],"evs":{"hp":252,"df":252,"sp":4}}
   },
   "Charizard": {
     "*Ace Trainer Samantha": {"nature":"Timid","ability":"Solar Power","level":100,"item":"Choice Specs","moves":["Air Slash","Flamethrower","Solar Beam","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Burglar Arnie": {"nature":"Gentle","ability":"Blaze","level":67,"moves":["Dragon Dance","Fire Spin","Flamethrower","Inferno"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Burglar Arnie": {"level":67,"nature":"Docile","ability":"Blaze","moves":["Flamethrower","Fire Spin","Inferno","Dragon Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Ace Trainer Lucy": {"nature":"Timid","ability":"Solar Power","level":71,"item":"Firium Z","moves":["Air Slash","Fire Blast","Scorching Sands","Solar Beam"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Super Nerd Aavery": {"nature":"Modest","ability":"Blaze","level":71,"moves":["Dragon Dance","Fire Spin","Flamethrower","Inferno"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Aavery": {"level":71,"nature":"Docile","ability":"Blaze","moves":["Fire Spin","Inferno","Dragon Dance","Heat Wave"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Delphox": {
     "*Camper Bryce": {"nature":"Timid","ability":"Magic Guard","level":99,"item":"Life Orb","moves":["Foul Play","Heat Wave","Mind Blown","Psychic"],"ivs":{"at":0},"evs":{"df":4,"sp":252,"sa":252}},
-    "Burglar Arnie": {"nature":"Timid","ability":"Blaze","level":69,"moves":["Magic Room","Mind Blown","Psychic","Sunny Day"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
-    "Burglar Quinn": {"nature":"Lonely","ability":"Blaze","level":73,"moves":["Magic Room","Mind Blown","Psychic","Sunny Day"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}}
+    "Burglar Arnie": {"level":69,"nature":"Rash","ability":"Blaze","moves":["Wish","Psychic","Sunny Day","Magic Room"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Burglar Quinn": {"level":73,"nature":"Timid","ability":"Blaze","moves":["Wish","Psychic","Sunny Day","Magic Room"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Heatmor": {
-    "Super Nerd Aavery": {"nature":"Serious","ability":"Gluttony","level":72,"moves":["Dynamic Punch","Flare Blitz","Inferno","Swallow"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Aavery": {"level":72,"nature":"Adamant","ability":"Gluttony","moves":["Spit Up","Swallow","Flare Blitz","Inferno"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Oricorio": {
-    "Super Nerd Aavery": {"nature":"Gentle","ability":"Dancer","level":72,"moves":["Agility","Hurricane","Mirror Move","Quiver Dance"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Super Nerd Aavery": {"level":72,"nature":"Serious","ability":"Dancer","moves":["Mirror Move","Agility","Hurricane","Quiver Dance"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Sunflora": {
-    "*Ace Trainer Derek": {"nature":"Timid","ability":"Chlorophyll","level":72,"item":"Focus Sash","moves":["Flamethrower","Growth","Hidden Power Rock","Solar Beam"],"ivs":{"df":30,"sp":30,"sd":30},"evs":{"df":4,"sp":252,"sa":252}}
+    "*Ace Trainer Derek": {"nature":"Timid","ability":"Chlorophyll","level":72,"item":"Focus Sash","moves":["Flamethrower","Growth","Hidden Power Rock","Solar Beam"],"ivs":{"df":30,"sp":30,"sd":30},"evs":{"df":4,"sp":252,"sa":252}},
+    "Aroma Lady Rose": {"level":49,"nature":"Naughty","ability":"Chlorophyll","moves":["Solar Beam","Double-Edge","Sunny Day","Leaf Storm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Lycanroc": {
     "*Ace Trainer Lucy": {"nature":"Jolly","ability":"Steadfast","level":71,"item":"Focus Sash","moves":["Accelerock","Endeavor","Rock Tomb","Stealth Rock"],"evs":{"at":252,"df":4,"sp":252}}
@@ -2525,13 +2669,13 @@ var SETDEX_SV = {
   },
   "Hydreigon": {
     "*Tuber Alexis": {"nature":"Timid","ability":"Levitate","level":100,"item":"Waterium Z","moves":["Dark Pulse","Fire Blast","Nasty Plot","Surf"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Team Rocket Grunt": {"nature":"Lonely","ability":"Levitate","level":75,"moves":["Body Slam","Draco Barrage","Fickle Beam","Scary Face"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":75,"nature":"Sassy","ability":"Levitate","moves":["Dragon Rush","Body Slam","Scary Face","Fickle Beam"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Absol": {
-    "Team Rocket Grunt": {"nature":"Sassy","ability":"Pressure","level":74,"moves":["Future Sight","Perish Song","Razor Wind","Swords Dance"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":74,"nature":"Bashful","ability":"Pressure","moves":["Razor Wind","Future Sight","Perish Song","Swords Dance"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Mandibuzz": {
-    "Team Rocket Grunt": {"nature":"Modest","ability":"Overcoat","level":74,"moves":["Dark Pulse","Dual Wingbeat","Embargo","Tailwind"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Team Rocket Grunt": {"level":74,"nature":"Timid","ability":"Frisk","moves":["Embargo","Whirlwind","Brave Bird","Mirror Move"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Tapu Lele": {
     "Boss Giovanni": {"nature":"Timid","ability":"Psychic Surge","level":80,"item":"Terrain Extender","moves":["Aura Sphere","Moonblast","Psychic","Thunderbolt"],"evs":{"hp":4,"sp":252,"sa":252}}
@@ -2594,7 +2738,7 @@ var SETDEX_SV = {
     "Leader Clair": {"nature":"Timid","ability":"Beast Boost","level":81,"item":"Life Orb","moves":["Draco Meteor","Flamethrower","Nasty Plot","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Ninetales-Alola": {
-    "Burglar Simon": {"nature":"Hardy","ability":"Serene Grace","level":70,"moves":["Aurora Veil","Confuse Ray","Frost Breath","Safeguard"],"ivs":{"hp":10,"at":10,"df":10,"sp":10,"sa":10,"sd":10}},
+    "Burglar Simon": {"level":70,"nature":"Timid","ability":"Serene Grace","moves":["Ice Shard","Confuse Ray","Safeguard","Frost Breath"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Ace Trainer Nick": {"nature":"Timid","ability":"Snow Warning","level":100,"item":"Light Clay","moves":["Aurora Veil","Freeze-Dry","Frost Breath","Moonblast"],"evs":{"hp":252,"df":4,"sp":252}},
     "*Elite Four Lorelei": {"nature":"Timid","ability":"Snow Warning","level":85,"item":"Light Clay","moves":["Blizzard","Aurora Veil","Freeze-Dry","Snowscape"],"evs":{"df":4,"sa":252,"sp":252}}
   },
@@ -2621,7 +2765,8 @@ var SETDEX_SV = {
   },
   "Persian": {
     "*Burglar Anson": {"nature":"Timid","ability":"Feline Prowess","level":78,"item":"Life Orb","moves":["Hyper Voice","Shadow Ball","Thunderbolt","U-turn"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Tamer Vincent": {"nature":"Modest","ability":"Limber","level":80,"moves":["Assurance","Captivate","Feint","Night Slash"],"evs":{"hp":6,"sa":252,"sd":252}}
+    "Tamer Vincent": {"level":80,"nature":"Serious","ability":"Technician","moves":["Assurance","Captivate","Night Slash","Feint"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Picnicker Claire": {"level":84,"nature":"Gentle","ability":"Limber","moves":["Assurance","Captivate","Night Slash","Feint"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Deoxys-Attack": {
     "PkMn Trainer Brendan": {"nature":"Naive","ability":"Pressure","level":81,"item":"Focus Sash","moves":["Extreme Speed","Ice Beam","Psychic","Superpower"],"evs":{"at":128,"sp":252,"sa":132}}
@@ -2663,7 +2808,8 @@ var SETDEX_SV = {
     "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Compound Eyes","level":100,"item":"Focus Sash","moves":["Bug Buzz","Sticky Web","Thunder","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Passimian": {
-    "Black Belt Daisuke": {"nature":"Bashful","ability":"Receiver","level":81,"item":"Black Belt","moves":["Close Combat","Court Change","Reversal","Sucker Punch"],"ivs":{"hp":15,"at":15,"df":15,"sp":15,"sa":15,"sd":15}}
+    "Black Belt Daisuke": {"level":81,"nature":"Rash","ability":"Receiver","moves":["Close Combat","Reversal","Sucker Punch","Court Change"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Crush Girl Sharon": {"level":86,"nature":"Quiet","ability":"Receiver","moves":["Close Combat","Reversal","Sucker Punch","Court Change"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Audino-Mega": {
     "Ace Trainer Alexa": {"nature":"Bold","ability":"Regenerator","level":84,"item":"Audinite","moves":["Moonblast","Protect","Toxic","Wish"],"evs":{"hp":252,"df":252}}
@@ -2673,7 +2819,9 @@ var SETDEX_SV = {
     "*Biker Goon": {"nature":"Jolly","ability":"Strong Jaw","level":100,"item":"Sharpedonite","moves":["Aqua Fang","Close Combat","Crunch","Protect"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Bellossom": {
-    "Ace Trainer Caroline": {"nature":"Timid","ability":"Chlorophyll","level":83,"item":"Leftovers","moves":["Moonblast","Quiver Dance","Sleep Powder","Strength Sap"],"evs":{"hp":252,"sp":252,"sa":4}}
+    "Ace Trainer Caroline": {"nature":"Timid","ability":"Chlorophyll","level":83,"item":"Leftovers","moves":["Moonblast","Quiver Dance","Sleep Powder","Strength Sap"],"evs":{"hp":252,"sp":252,"sa":4}},
+    "Aroma Lady Miah": {"level":50,"nature":"Sassy","ability":"Chlorophyll","moves":["Stun Spore","Sunny Day","Petal Blizzard","Petal Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
+    "Aroma Lady Miah Set 2": {"level":50,"nature":"Naughty","ability":"Chlorophyll","moves":["Stun Spore","Sunny Day","Petal Blizzard","Petal Dance"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Vileplume": {
     "Ace Trainer Caroline": {"nature":"Calm","ability":"Chlorophyll","level":83,"item":"Black Sludge","moves":["Giga Drain","Sleep Powder","Sludge Bomb","Strength Sap"],"evs":{"hp":252,"df":128,"sp":4,"sd":128}}
@@ -2882,7 +3030,8 @@ var SETDEX_SV = {
   },
   "Tauros": {
     "*Professor Oak": {"nature":"Jolly","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Close Combat","Head Charge","Iron Head","Throat Chop"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Crush Girl Tanya": {"nature":"Jolly","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Close Combat","Head Charge","Iron Head","Throat Chop"],"evs":{"at":252,"sp":252}}
+    "*Crush Girl Tanya": {"nature":"Jolly","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Close Combat","Head Charge","Iron Head","Throat Chop"],"evs":{"at":252,"sp":252}},
+    "Tamer Cole": {"level":39,"nature":"Hardy","ability":"Intimidate","moves":["Rest","Payback","Work Up","Raging Bull"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Butterfree-Mega": {
     "*Camper Bryce": {"nature":"Timid","ability":"Compound Eyes","level":100,"item":"Butterfrite","moves":["Bug Buzz","Hurricane","Sleep Powder","U-turn"],"evs":{"hp":36,"df":56,"sp":164,"sa":252}}
@@ -2910,7 +3059,8 @@ var SETDEX_SV = {
     "*PkMn Ranger Beth": {"nature":"Jolly","ability":"Mold Breaker","level":99,"item":"Lum Berry","moves":["Close Combat","Poison Jab","Scale Shot","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Golem": {
-    "*PkMn Ranger Beth": {"nature":"Adamant","ability":"Sturdy","level":99,"item":"Custap Berry","moves":["Explosion","Headlong Rush","Stone Edge","Sucker Punch"],"evs":{"hp":252,"at":252,"df":4}}
+    "*PkMn Ranger Beth": {"nature":"Adamant","ability":"Sturdy","level":99,"item":"Custap Berry","moves":["Explosion","Headlong Rush","Stone Edge","Sucker Punch"],"evs":{"hp":252,"at":252,"df":4}},
+    "Ruin Maniac Foster": {"level":50,"nature":"Relaxed","ability":"Rock Head","moves":["Earthquake","Explosion","Headlong Rush","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Ambipom": {
     "*Rocket Admin Ariana": {"nature":"Jolly","ability":"Technician","level":100,"item":"Life Orb","moves":["Arm Thrust","Beat Up","Fake Out","U-turn"],"evs":{"hp":6,"at":252,"sp":252}}
@@ -2994,9 +3144,120 @@ var SETDEX_SV = {
     "*Ace Trainer Sharon": {"nature":"Timid","ability":"Contrary","level":100,"item":"Leftovers","moves":["Glare","Leaf Storm","Leech Seed","Substitute"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Flabébé": {
-    "Lass Sally": {"nature":"Rash","ability":"Natural Cure","level":13,"moves":["Misty Terrain","Moonblast","Petal Dance","Solar Beam"],"ivs":{"hp":5,"at":5,"df":5,"sp":5,"sa":5,"sd":5}}
+    "Lass Sally": {"level":13,"nature":"Adamant","ability":"Natural Cure","moves":["Tackle","Vine Whip","Fairy Wind","Lucky Chant"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Scream Tail": {
     "*Burglar Anson": {"nature":"Bold","ability":"Protosynthesis","level":78,"item":"Leftovers","moves":["Moonblast","Psychic","Teleport","Thunder Wave"],"evs":{"hp":252,"df":252}}
+  },
+  "Ekans": {
+    "PkMn Trainer Red": {"level":5,"nature":"Quirky","ability":"Shed Skin","moves":["Wrap","Leer","Poison Sting"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}},
+    "Team Rocket Grunt": {"level":48,"nature":"Quirky","ability":"Intimidate","moves":["Coil","Jaw Lock","Belch","Haze"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Wishiwashi": {
+    "SwimmerF Alice": {"level":60,"nature":"Timid","ability":"Schooling","moves":["Aqua Tail","Double-Edge","Endeavor","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Crabrawler": {
+    "Black Belt Atsushi": {"level":40,"nature":"Mild","ability":"Iron Fist","moves":["Dizzy Punch","Payback","Reversal","Crabhammer"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Poliwag": {
+    "Tuber Amira": {"level":34,"nature":"Brave","ability":"Damp","moves":["Body Slam","Bubble Beam","Mud Shot","Belly Drum"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tuber Amira Set 2": {"level":34,"nature":"Hardy","ability":"Damp","moves":["Body Slam","Bubble Beam","Mud Shot","Belly Drum"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Marill": {
+    "PkMn Breeder Alize": {"level":48,"nature":"Naughty","ability":"Huge Power","moves":["Rain Dance","Double-Edge","Superpower","Hydro Pump"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "SwimmerF Nicole": {"level":50,"nature":"Relaxed","ability":"Thick Fat","moves":["Rain Dance","Double-Edge","Superpower","Hydro Pump"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Hoppip": {
+    "Lady Jacki": {"level":48,"nature":"Naive","ability":"Leaf Guard","moves":["U-turn","Worry Seed","Giga Drain","Bounce"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Lass Dalia": {"level":46,"nature":"Sassy","ability":"Leaf Guard","moves":["U-turn","Worry Seed","Giga Drain","Bounce"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Lass Dalia Set 2": {"level":47,"nature":"Rash","ability":"Leaf Guard","moves":["U-turn","Worry Seed","Giga Drain","Bounce"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Skiploom": {
+    "Lady Jacki": {"level":50,"nature":"Brave","ability":"Leaf Guard","moves":["Rage Powder","Cotton Spore","U-turn","Worry Seed"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Lass Dalia": {"level":47,"nature":"Docile","ability":"Leaf Guard","moves":["Acrobatics","Rage Powder","Cotton Spore","U-turn"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Lass Dalia Set 2": {"level":48,"nature":"Hasty","ability":"Leaf Guard","moves":["Rage Powder","Cotton Spore","U-turn","Worry Seed"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Slowking-Galar": {
+    "SwimmerF Abigail": {"level":85,"nature":"Hardy","ability":"Own Tempo","moves":["Psychic","Psych Up","Rain Dance","Heal Pulse"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Crabominable": {
+    "Crush Girl Tanya": {"level":85,"nature":"Impish","ability":"Iron Fist","moves":["Iron Defense","Dynamic Punch","Close Combat","Gigaton Hammer"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Electivire": {
+    "Black Belt Shea": {"level":86,"nature":"Naughty","ability":"Motor Drive","moves":["Thunderbolt","Thunder","Bulk Up","Plasma Fists"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Chesnaught": {
+    "Black Belt Hugh": {"level":85,"nature":"Hasty","ability":"Bulletproof","moves":["Pain Split","Wood Hammer","Hammer Arm","Giga Impact"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Primeape": {
+    "Crush Kin Mik & Kia": {"level":86,"nature":"Quirky","ability":"Anger Point","moves":["Cross Chop","Final Gambit","Close Combat","Rage Fist"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Crush Girl Cyndy": {"level":48,"nature":"Careful","ability":"Anger Point","moves":["Shadow Punch","Screech","Stomping Tantrum","Outrage"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Staryu": {
+    "Tuber Alexis": {"level":34,"nature":"Jolly","ability":"Natural Cure","moves":["Bubble Beam","Camouflage","Gyro Ball","Brine"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tuber Alexis Set 2": {"level":34,"nature":"Lax","ability":"Natural Cure","moves":["Bubble Beam","Camouflage","Gyro Ball","Brine"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Krabby": {
+    "Tuber Alexis": {"level":34,"nature":"Rash","ability":"Hyper Cutter","moves":["Metal Claw","Stomp","Protect","Slash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Tuber Alexis Set 2": {"level":34,"nature":"Hasty","ability":"Hyper Cutter","moves":["Metal Claw","Stomp","Protect","Slash"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Mareep": {
+    "Lady Gillian": {"level":47,"nature":"Impish","ability":"Illuminate","moves":["Discharge","Signal Beam","Light Screen","Thunder"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
+    "Lady Gillian Set 2": {"level":48,"nature":"Naive","ability":"Illuminate","moves":["Discharge","Signal Beam","Light Screen","Thunder"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
+  },
+  "Pidgey": {
+    "Bird Keeper Milo": {"level":47,"nature":"Jolly","ability":"Frisk","moves":["Agility","Fly","Tailwind","Mirror Move"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Spearow": {
+    "Bird Keeper Chaz": {"level":47,"nature":"Bold","ability":"Frisk","moves":["Agility","Focus Energy","Roost","Drill Peck"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Hoothoot": {
+    "Bird Keeper Harold": {"level":47,"nature":"Relaxed","ability":"Tinted Lens","moves":["Roost","Moonblast","Synchronoise","Dream Eater"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Noctowl": {
+    "Bird Keeper Harold": {"level":49,"nature":"Mild","ability":"Tinted Lens","moves":["Reflect","Uproar","Roost","Moonblast"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Sunkern": {
+    "Aroma Lady Rose": {"level":49,"nature":"Quirky","ability":"Chlorophyll","moves":["Solar Beam","Double-Edge","Sunny Day","Seed Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Chinchou": {
+    "SwimmerF Denise": {"level":49,"nature":"Timid","ability":"Volt Absorb","moves":["Parabolic Charge","Aqua Ring","Hydro Pump","Ion Deluge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Sudowoodo": {
+    "Hiker Daryl": {"level":50,"nature":"Quiet","ability":"Rock Head","moves":["Sucker Punch","Double-Edge","Stone Edge","Hammer Arm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Kangaskhan": {
+    "Pokemaniac Hector": {"level":49,"nature":"Quiet","ability":"Early Bird","moves":["Crunch","Endure","Outrage","Sucker Punch"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
+  },
+  "Psyduck": {
+    "Young Couple Eve & Jon": {"level":50,"nature":"Careful","ability":"Cloud Nine","moves":["Psych Up","Amnesia","Hydro Pump","Wonder Room"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Camerupt": {
+    "PkMn Ranger Beth": {"level":87,"nature":"Lax","ability":"Magma Armor","moves":["Hydro Steam","Slack Off","Steam Eruption","Magma Storm"],"ivs":{"hp":0,"at":0,"df":0,"sa":0,"sd":0,"sp":0}}
+  },
+  "Natu": {
+    "Psychic Laura": {"level":48,"nature":"Modest","ability":"Early Bird","moves":["Psycho Shift","Future Sight","Power Swap","Guard Swap"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
+    "Psychic Laura Set 2": {"level":48,"nature":"Bold","ability":"Early Bird","moves":["Psycho Shift","Future Sight","Power Swap","Guard Swap"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
+  },
+  "Yanma": {
+    "Bug Catcher Jonah": {"level":45,"nature":"Calm","ability":"Compound Eyes","moves":["Pursuit","Ancient Power","Hypnosis","Wing Attack"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Jonah Set 2": {"level":46,"nature":"Calm","ability":"Compound Eyes","moves":["Ancient Power","Hypnosis","Wing Attack","Screech"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
+  },
+  "Beedrill": {
+    "Bug Catcher Jonah": {"level":45,"nature":"Lax","ability":"Swarm","moves":["Poison Jab","Agility","Endeavor","Fell Stinger"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}},
+    "Bug Catcher Jonah Set 2": {"level":47,"nature":"Bashful","ability":"Swarm","moves":["Poison Jab","Agility","Endeavor","Fell Stinger"],"ivs":{"hp":1,"at":1,"df":1,"sa":1,"sd":1,"sp":1}}
+  },
+  "Victreebel": {
+    "Youngster Nash": {"level":49,"nature":"Timid","ability":"Chlorophyll","moves":["Leaf Storm","Lunge","Leaf Blade","Sludge Bomb"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Snubbull": {
+    "Lass Joana": {"level":49,"nature":"Jolly","ability":"Strong Jaw","moves":["Rage","Play Rough","Payback","Crunch"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Pinsir": {
+    "Camper Riley": {"level":49,"nature":"Naughty","ability":"Mold Breaker","moves":["Submission","Storm Throw","Thrash","Superpower"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
+  },
+  "Paras": {
+    "Picnicker Marcy": {"level":48,"nature":"Careful","ability":"Dry Skin","moves":["Swords Dance","Leaf Blade","Crabhammer","Aromatherapy"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
+    "Picnicker Marcy Set 2": {"level":48,"nature":"Gentle","ability":"Dry Skin","moves":["Swords Dance","Leaf Blade","Crabhammer","Aromatherapy"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   }
 };
