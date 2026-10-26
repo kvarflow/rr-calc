@@ -254,10 +254,12 @@ $(".percent-hp").on("keyup input", function () {
 	calcCurrentHP($(this).parent(), max, percent);
 });
 
+// Multi-hit moves: Skill Link always hits 5 times; Radical Red's Loaded Dice 5 times two times in
+// three (4 otherwise), so 5 too (pick 4 in the hits list for the unlucky case); else 3.
 $(".ability").bind("keyup change", function () {
 	var moveHits =
 		$(this).val() === 'Skill Link' ? 5 :
-			$(this).closest(".poke-info").find(".item").val() === 'Loaded Dice' ? 4 : 3;
+			$(this).closest(".poke-info").find(".item").val() === 'Loaded Dice' ? 5 : 3;
 	$(this).closest(".poke-info").find(".move-hits").val(moveHits);
 
 	var ability = $(this).closest(".poke-info").find(".ability").val();
@@ -561,7 +563,7 @@ $(".move-selector").change(function () {
 		var pokemon = $(this).closest(".poke-info");
 		var moveHits =
 			pokemon.find(".ability").val() === 'Skill Link' ? 5 :
-				pokemon.find(".item").val() === 'Loaded Dice' ? 4 : 3;
+				pokemon.find(".item").val() === 'Loaded Dice' ? 5 : 3;
 		moveGroupObj.children(".move-hits").val(moveHits);
 	} else if (dropsStats) {
 		moveGroupObj.children(".move-hits").hide();
@@ -583,7 +585,7 @@ $(".item").change(function () {
 	}
 	var moveHits =
 		$(this).closest(".poke-info").find(".ability").val() === 'Skill Link' ? 5 :
-			itemName === 'Loaded Dice' ? 4 : 3;
+			itemName === 'Loaded Dice' ? 5 : 3;
 	$(this).closest(".poke-info").find(".move-hits").val(moveHits);
 	autosetQP($(this).closest(".poke-info"));
 });
