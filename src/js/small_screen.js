@@ -415,15 +415,77 @@ function renderQuickStrips() {
 	});
 }
 
+// The result card follows every change to the calculator's result text, whoever writes it.
+function bindResultSummary() {
+	var summary = $('<div id="ss-result" class="ss-result" title="Tap to copy"></div>').prependTo(".main-result-group");
+	$(".main-result-group").addClass("ss-summarized");
+	summary.on("click", function (event) {
+		var rolls = $(event.target).closest(".ss-result-rolls").length;
+		$(rolls ? "#damageValues" : "#mainResult").click();
+		summary.attr("data-copied", rolls ? "Rolls copied" : "Copied");
+		setTimeout(function () {
+			summary.removeAttr("data-copied");
+		}, 1500);
+	});
+	var observer = new MutationObserver(renderResultSummary);
+	["mainResult", "damageValues"].forEach(function (id) {
+		observer.observe(document.getElementById(id), {childList: true, characterData: true, subtree: true});
+	});
+	renderResultSummary();
+}
+
 // Shorter results text that fits beside each move.
 function compactResults(p1Name, p2Name) {
 	// Just the names: "(select one to show detailed results)" does not fit.
 	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name));
 	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name));
-	// Just the damage range, as "21.2–27.2%"; recoil and recovery are in the detailed result below.
+	// Just the damage range, as "21.2–27.0%"; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
-		return text.replace(/ \(.*$/, "").replace(" - ", "\u2013");
+		return formatDamageRange(text.replace(/ \(.*$/, ""));
 	});
+}
+
+// "12.9 - 15%" as "12.9–15.0%" (one decimal each, so the column lines up), "0 - 0%" as "0%" and
+// one amount (a fixed-damage move) once.
+function formatDamageRange(text) {
+	var range = /^([\d.]+) - ([\d.]+)%$/.exec(text);
+	if (!range) return text.replace(" - ", "\u2013");
+	var low = +range[1];
+	var high = +range[2];
+	if (!high) return "0%";
+	return low === high ? low.toFixed(1) + "%" : low.toFixed(1) + "\u2013" + high.toFixed(1) + "%";
+}
+
+// The detailed result as a card: the move and its damage, the KO chance, then who is fighting and
+// the rolls in small print (the calculator's own sentence is kept, hidden, for copying).
+function renderResultSummary() {
+	var summary = $("#ss-result");
+	var desc = $("#mainResult").text();
+	var parts = /^(.*) vs\. (.*?): (\d+)-(\d+) \(([\d.]+) - ([\d.]+)%\)(.*?)(?: -- (.*))?$/.exec(desc);
+	var rolls = $("#damageValues").text().replace(/^Possible damage amounts: \((.*)\)$/, "$1");
+	summary.empty();
+	if (!parts) {
+		summary.append($('<div class="ss-result-who"></div>').text(desc));
+		return;
+	}
+	var moveName = $(".result-move:checked").next("label").text().trim();
+	var attacker = parts[1];
+	if (moveName && attacker.slice(-moveName.length) === moveName) attacker = attacker.slice(0, -moveName.length).trim();
+	else moveName = "";
+	var ko = (parts[8] || "").replace(/^./, function (first) {
+		return first.toUpperCase();
+	});
+	var hp = parts[3] === parts[4] ? parts[3] : parts[3] + "\u2013" + parts[4];
+	summary.append(
+		$('<div class="ss-result-top"></div>').append(
+			$('<span class="ss-result-move"></span>').text(moveName),
+			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
+		$('<div class="ss-result-ko"></div>').append(
+			ko ? $('<span class="ss-result-ko-text"></span>').text(ko)
+				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
+			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7])),
+		$('<div class="ss-result-who"></div>').text(attacker + " vs. " + parts[2]),
+		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 
 // Battle: double-tap a move to make it a crit (again to undo), to see its damage at once. The move
@@ -572,6 +634,7 @@ $(document).ready(function () {
 	// The mode and notation switches, shown under More.
 	$(".wrapper > div").first().attr("id", "ss-page-settings").attr("data-ss-part", "more");
 	bindTeamDrag($('<div id="ss-quick" class="ss-quick" data-ss-part="results"></div>').insertAfter(".main-result-group"));
+	if (isSmallScreenOn()) bindResultSummary();
 
 	var layout = $('<label class="ss-layout-setting">Layout <select id="ss-layout">' +
 		'<option value="auto">Automatic</option><option value="on">Small screen</option><option value="off">Desktop</option>' +
