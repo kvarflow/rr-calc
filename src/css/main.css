@@ -1383,22 +1383,37 @@ html.small-screen .move-result-subgroup .btn.ss-threat {
 html.small-screen .move-result-subgroup .btn.ss-threat-ko::before {
     content: "KO";
     position: absolute;
-    top: 0;
+    top: 50%;
     left: 6px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 800;
     line-height: 11px;
     letter-spacing: 0.04em;
     color: var(--ss-danger, #c0392b);
 }
-html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""])::after {
+/* The chance and KO have their own room at the ends, so the move's name never sits under them. */
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"]),
+html.small-screen .move-result-subgroup .btn.ss-crit {
+    padding-right: 24px;
+}
+html.small-screen .move-result-subgroup .btn.ss-threat-ko {
+    padding-left: 18px;
+}
+/* A move the AI will not pick: no 0%, just greyed. */
+html.small-screen .move-result-subgroup .btn[data-ai="0%"] {
+    color: var(--ss-muted, #888);
+}
+html.small-screen .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"])::after {
     content: attr(data-ai);
     position: absolute;
-    top: 0;
+    top: 50%;
     right: 4px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 700;
     line-height: 11px;
+    font-variant-numeric: tabular-nums;
     color: var(--ss-muted, #888);
 }
 html.small-screen .move-result-subgroup .btn.ss-ai-likely::after {
@@ -1447,8 +1462,9 @@ html.small-screen .move-result-subgroup .btn.ss-crit {
 html.small-screen .move-result-subgroup .btn.ss-crit::after {
     content: "CRIT";
     position: absolute;
-    top: 0;
-    right: 4px;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
     font-size: 8px;
     font-weight: 800;
     line-height: 11px;
