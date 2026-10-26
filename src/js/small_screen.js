@@ -103,13 +103,17 @@ function buildTrainerCard() {
 			});
 	};
 	card.addClass("ss-quick-trainer").toggleClass("ss-quick-defeated", defeated);
-	card.find(".ss-quick-head").prepend(step("Previous trainer", "#previous-trainer", "\u25C0")).append(
+	card.find(".ss-quick-head").append(
 		defeated ? '<span class="ss-quick-badge">Defeated \u2713</span>' : "",
-		step("Next trainer", "#next-trainer", "\u25B6").toggleClass("ss-quick-next", defeated),
 		$('<button type="button" class="ss-quick-ko-btn"></button>')
 			.text($("#trainer-ko").text() === "Undo KO" ? "Undo KO" : "KO")
 			.attr("title", "Mark the Pokémon you face as KO'd and load his next one")
 			.click(toggleActiveKO));
+	// Previous / Next trainer, spelled out, at the bottom of the card.
+	$('<div class="ss-quick-foot"></div>').append(
+		step("Previous trainer", "#previous-trainer", "\u25C0 Previous trainer"),
+		step("Next trainer", "#next-trainer", "Next trainer \u25B6").toggleClass("ss-quick-next", defeated)
+	).appendTo(card);
 	return card;
 }
 
@@ -479,12 +483,12 @@ function renderResultSummary() {
 	summary.append(
 		$('<div class="ss-result-top"></div>').append(
 			$('<span class="ss-result-move"></span>').text(moveName),
-			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
-		$('<div class="ss-result-ko"></div>').append(
 			ko ? $('<span class="ss-result-ko-text"></span>').text(ko)
 				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
-			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7])),
-		$('<div class="ss-result-who"></div>').text(attacker + " vs. " + parts[2]),
+			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
+		$('<div class="ss-result-who"></div>').append(
+			$('<span class="ss-result-hp"></span>').text(hp + " HP" + parts[7]),
+			document.createTextNode(" \u00B7 " + attacker + " vs. " + parts[2])),
 		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 
