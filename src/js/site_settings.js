@@ -103,6 +103,11 @@ var CHANGELOG = [
 		"Small screens: a neater result card (the move and its damage, the KO chance, then who is fighting " +
 			"and the rolls in small print) and damage ranges with one decimal on both ends",
 		"Battle: Previous trainer and Next trainer spelled out at the bottom of the trainer card",
+		"The arc bar follows your progress: beating Misty moves you on to Lt. Surge's arc, fights you left for " +
+			"later move on with you, and a fight counts in the arc you beat it in (Bugsy after Misty: Lt. Surge's)",
+		"A ? beside the item says what it does, from Radical Red's own item text",
+		"Result card: the KO chance stays on the move's line and the HP range is gone (the rolls show it)",
+		"This run: top fraggers and the fainted as a grid of sprites; on small screens your progress sits above the trainer",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
