@@ -108,6 +108,9 @@ var CHANGELOG = [
 		"A ? beside the item says what it does, from Radical Red's own item text",
 		"Result card: the KO chance stays on the move's line and the HP range is gone (the rolls show it)",
 		"This run: top fraggers and the fainted as a grid of sprites; on small screens your progress sits above the trainer",
+		"Rank the box against the foe: by damage dealt, damage taken or Speed, each Pok\u00e9mon's figure on its " +
+			"sprite (an idea from hzla's Dynamic Calc), optionally as if your box were at the level cap",
+		"Normal: the Route 22 rival's Darmanitan has its 4 EVs in Sp. Def, as in the game",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
