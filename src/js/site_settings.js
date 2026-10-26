@@ -111,6 +111,8 @@ var CHANGELOG = [
 		"Rank the box against the foe: by damage dealt, damage taken or Speed, each Pok\u00e9mon's figure on its " +
 			"sprite (an idea from hzla's Dynamic Calc), optionally as if your box were at the level cap",
 		"Normal: the Route 22 rival's Darmanitan has its 4 EVs in Sp. Def, as in the game",
+		"Loaded Dice: multi-hit moves count 5 hits (Radical Red's Loaded Dice hits 5 times two times in three, " +
+			"4 otherwise); it was 4. The box colors and the trainer AI count it too",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
 		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +

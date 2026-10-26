@@ -101,7 +101,9 @@ export class Move implements State.Move {
           } else if (options.hits) {
             this.hits = options.hits;
           } else {
-            this.hits = (options.ability === 'Skill Link')
+            // Radical Red's Loaded Dice hits 5 times two times in three (4 times otherwise), so
+            // it takes the most hits, like Skill Link.
+            this.hits = (options.ability === 'Skill Link' || options.item === 'Loaded Dice')
               ? data.multihit[1]
               : data.multihit[0] + 1;
           }
