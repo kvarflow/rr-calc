@@ -1696,12 +1696,15 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     padding-top: 6px;
 }
 .ss-quick-foot .ss-quick-step {
-    height: auto;
-    min-height: 30px;
-    padding: 2px 6px;
-    border-radius: 10px;
-    line-height: 1.2;
-    white-space: normal;
+    min-width: 0;
+    height: 24px;
+    padding: 0 4px;
+    border-radius: 8px;
+    font-size: 10px;
+    line-height: 22px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .ss-quick-step:disabled {
     opacity: 0.35;
@@ -2251,16 +2254,22 @@ html.small-screen #importedSetsOptions {
     html.small-screen .ss-quick-box .ss-quick-grid {
         grid-template-columns: repeat(6, 1fr);
     }
-    /* A half-width card: the trainer's buttons wrap rather than run off the screen, his name has
-       a line of its own, and Previous / Next trainer stack so each reads on one line. */
+    /* A half-width card: the trainer's buttons wrap rather than run off the screen and his name has
+       a line of its own. */
     html.small-screen .ss-quick-head {
         flex-wrap: wrap;
     }
     html.small-screen .ss-quick-trainer .ss-quick-head .ss-quick-label {
         flex-basis: 100%;
     }
-    html.small-screen .ss-quick-foot {
-        grid-template-columns: 1fr;
+    /* Each label on one line in half a card: no arrows, a little smaller. */
+    html.small-screen .ss-quick-foot .ss-quick-step {
+        padding: 0 2px;
+        font-size: 9.5px;
+        letter-spacing: -0.01em;
+    }
+    html.small-screen .ss-quick-foot .ss-step-arrow {
+        display: none;
     }
     html.small-screen .ss-tabs {
         position: fixed;

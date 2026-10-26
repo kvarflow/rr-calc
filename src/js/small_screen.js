@@ -95,8 +95,8 @@ function buildTrainerCard() {
 	var card = buildTeamCard($("#trainer-name").text() || "Trainer", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1);
 	if (typeof toggleActiveKO !== "function") return card;
 	var defeated = isTrainerDefeated(currentTrainerIndex);
-	var step = function (label, original, text) {
-		return $('<button type="button" class="ss-quick-step"></button>').attr("aria-label", label).text(text)
+	var step = function (label, original, html) {
+		return $('<button type="button" class="ss-quick-step"></button>').attr("aria-label", label).html(html)
 			.prop("disabled", $(original).prop("disabled"))
 			.click(function () {
 				$(original).click();
@@ -111,8 +111,8 @@ function buildTrainerCard() {
 			.click(toggleActiveKO));
 	// Previous / Next trainer, spelled out, at the bottom of the card.
 	$('<div class="ss-quick-foot"></div>').append(
-		step("Previous trainer", "#previous-trainer", "\u25C0 Previous trainer"),
-		step("Next trainer", "#next-trainer", "Next trainer \u25B6").toggleClass("ss-quick-next", defeated)
+		step("Previous trainer", "#previous-trainer", '<span class="ss-step-arrow">\u25C0 </span>Previous trainer'),
+		step("Next trainer", "#next-trainer", 'Next trainer<span class="ss-step-arrow"> \u25B6</span>').toggleClass("ss-quick-next", defeated)
 	).appendTo(card);
 	return card;
 }
