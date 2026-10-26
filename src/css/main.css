@@ -2253,9 +2253,16 @@ html.small-screen #importedSetsOptions {
     html.small-screen .ss-quick-box .ss-quick-grid {
         grid-template-columns: repeat(6, 1fr);
     }
-    /* A half-width card: the trainer's buttons wrap rather than run off the screen. */
+    /* A half-width card: the trainer's buttons wrap rather than run off the screen, his name has
+       a line of its own, and Previous / Next trainer stack so each reads on one line. */
     html.small-screen .ss-quick-head {
         flex-wrap: wrap;
+    }
+    html.small-screen .ss-quick-trainer .ss-quick-head .ss-quick-label {
+        flex-basis: 100%;
+    }
+    html.small-screen .ss-quick-foot {
+        grid-template-columns: 1fr;
     }
     html.small-screen .ss-tabs {
         position: fixed;
