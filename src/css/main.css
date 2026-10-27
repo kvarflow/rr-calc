@@ -3692,41 +3692,69 @@ html.small-screen #emulator-sync-panel {
     font-weight: 700;
     pointer-events: none;
 }
-/* The Dex's evolution line: each stage, then what it becomes and how, indented under it. */
-.dex-evo-node {
+/* The Dex's evolution line, left to right: each stage as a small card, an arrow to the next with
+   how under it, wrapping onto another row on a narrow screen; branches one under another. */
+.dex-evolutions {
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.dex-evo-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 8px;
+}
+.dex-evo-branches {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 2px;
+    gap: 6px;
 }
 .dex-evo-branch {
-    margin-left: 18px;
-    padding-left: 10px;
-    border-left: 2px solid var(--sh-line);
+    display: flex;
+    align-items: center;
+}
+.dex-evo-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    width: 80px;
+    padding: 0 4px;
+    text-align: center;
+}
+.dex-evo-arrow-icon {
+    color: var(--sh-muted);
+    font-size: 1.3em;
+    line-height: 1;
 }
 .dex-evo-how {
-    margin: 4px 0 2px;
+    margin-top: 2px;
     color: var(--sh-muted);
-    font-size: 0.85em;
-}
-.dex-evo-how::before {
-    content: "\2193  ";
+    font-size: 0.72em;
+    line-height: 1.25;
 }
 .dex-evo-mon {
-    display: inline-flex;
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 6px;
-    padding: 2px 10px 2px 4px;
+    flex: none;
+    min-width: 72px;
+    max-width: 96px;
+    padding: 4px 6px;
     border: 1px solid var(--sh-line);
-    border-radius: 999px;
+    border-radius: 12px;
     background: transparent;
     color: inherit;
     font: inherit;
+    font-size: 0.85em;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
     cursor: pointer;
 }
 .dex-evo-mon img {
-    width: 36px;
-    height: 36px;
+    width: 48px;
+    height: 48px;
     object-fit: contain;
     image-rendering: pixelated;
 }

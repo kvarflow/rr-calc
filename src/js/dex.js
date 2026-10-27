@@ -116,25 +116,50 @@ function getPreEvolution(name) {
 	return null;
 }
 
-// One Pokémon of the line and, under it, what it evolves into and how.
-function buildEvolutionNode(name, current, seen) {
-	seen[name] = true;
-	var node = $('<div class="dex-evo-node"></div>');
-	$('<button type="button" class="dex-evo-mon"></button>').toggleClass("dex-evo-current", name === current)
+function buildEvolutionMon(name, current) {
+	return $('<button type="button" class="dex-evo-mon"></button>').toggleClass("dex-evo-current", name === current)
 		.attr("title", name === current ? name : "Open " + name + " in the Dex")
 		.append(createSpriteImage(name, function () {
 			$(this).remove();
 		}), $('<span class="dex-evo-name"></span>').text(name))
 		.click(function () {
 			if (name !== current && pokedex[name]) openDex(name);
-		}).appendTo(node);
-	(EVOLUTIONS[name] || []).forEach(function (evolution) {
-		if (seen[evolution[0]]) return;
-		$('<div class="dex-evo-branch"></div>').append(
-			$('<div class="dex-evo-how"></div>').text(evolution[1]),
-			buildEvolutionNode(evolution[0], current, seen)).appendTo(node);
-	});
-	return node;
+		});
+}
+
+// An arrow to the next stage, with how under it.
+function buildEvolutionArrow(how) {
+	return $('<div class="dex-evo-arrow"></div>').append('<span class="dex-evo-arrow-icon" aria-hidden="true">\u2192</span>',
+		$('<span class="dex-evo-how"></span>').text(how));
+}
+
+/*
+ * The line from `name`, left to right: each stage and an arrow to the next, wrapping onto another
+ * row when the screen is narrow; where it branches (Eevee), the branches one under another, each
+ * an arrow and its own line.
+ */
+function buildEvolutionChain(name, current, seen) {
+	var chain = $('<div class="dex-evo-chain"></div>');
+	for (;;) {
+		seen[name] = true;
+		chain.append(buildEvolutionMon(name, current));
+		var next = (EVOLUTIONS[name] || []).filter(function (evolution) {
+			return !seen[evolution[0]];
+		});
+		if (next.length === 1) {
+			chain.append(buildEvolutionArrow(next[0][1]));
+			name = next[0][0];
+			continue;
+		}
+		if (next.length > 1) {
+			var branches = $('<div class="dex-evo-branches"></div>').appendTo(chain);
+			next.forEach(function (evolution) {
+				$('<div class="dex-evo-branch"></div>').append(buildEvolutionArrow(evolution[1]),
+					buildEvolutionChain(evolution[0], current, seen)).appendTo(branches);
+			});
+		}
+		return chain;
+	}
 }
 
 // The whole line, from its first stage, with how each one evolves (from the game).
@@ -152,7 +177,7 @@ function buildDexEvolutions(name) {
 			section.append('<p class="dex-none">Does not evolve.</p>');
 			return;
 		}
-		section.append(buildEvolutionNode(root, name, {}));
+		section.append(buildEvolutionChain(root, name, {}));
 	});
 	return section;
 }
