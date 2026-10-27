@@ -169,6 +169,7 @@ $(document).on("trainer:progress customsets:changed box:rendered", function () {
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	applyRelativeLevels(currentTrainerIndex, getTrainerVariant(trainer));
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
+	$("#trainer-skip-label").toggle(canSkipFight(currentTrainerIndex));
 });
 
 /*
@@ -358,8 +359,17 @@ function readSkippedFights() {
 	}
 }
 
+// A beaten fight is no longer left for later: it goes back to its place.
+function isBeatenFight(index) {
+	return typeof isTrainerDefeated === "function" && isTrainerDefeated(index);
+}
+
+function canSkipFight(index) {
+	return !!TRAINER_ORDER[index].parallel && !isBeatenFight(index);
+}
+
 function isFightSkipped(index) {
-	return !!TRAINER_ORDER[index].parallel && readSkippedFights().indexOf(index) !== -1;
+	return canSkipFight(index) && readSkippedFights().indexOf(index) !== -1;
 }
 
 function setFightSkipped(index, skipped) {
@@ -418,7 +428,7 @@ function getTrainerNavOrder(all) {
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
 		if (routes[index]) order = order.concat(routes[index]);
-		if (trainer.parallel && skipped.indexOf(index) !== -1) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
+		if (trainer.parallel && skipped.indexOf(index) !== -1 && !isBeatenFight(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
 		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
 		Object.keys(ends).forEach(function (gate) {
 			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
@@ -606,7 +616,7 @@ function showTrainer(index) {
 		// Rival teams follow the starter setting, Bugsy's your badges, instead of a per-fight choice.
 		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant) && !isBadgeVariant(variant));
 	var ends = getParallelGroupEnds();
-	$("#trainer-skip-label").toggle(!!trainer.parallel)
+	$("#trainer-skip-label").toggle(canSkipFight(currentTrainerIndex))
 		.attr("title", trainer.parallel ? "You can do this fight before or after " + trainer.parallel.gate +
 			": Previous / Next bring it up after " + TRAINER_ORDER[ends[trainer.parallel.gate]].name + ", at the cap after the gym" : "");
 	$("#trainer-skip-where").text(trainer.parallel ? " (fight it after " + TRAINER_ORDER[ends[trainer.parallel.gate]].location + ")" : "");

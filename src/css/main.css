@@ -3672,3 +3672,23 @@ html.small-screen #emulator-sync-panel {
 .ms-trainer-defeated.ms-trainer-folded {
     opacity: 0.75;
 }
+/* KO'd Pokémon in the Mastersheet: greyed, with the Battle tab's cross. */
+.ms-mon-sprite, .ms-mini-mon {
+    position: relative;
+}
+.ms-mon-ko img {
+    filter: grayscale(1);
+    opacity: 0.35;
+}
+.ms-mon-ko .ms-mon-sprite::after, .ms-mini-mon.ms-mon-ko::after {
+    content: "\2715";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ss-danger, #c0392b);
+    font-size: 18px;
+    font-weight: 700;
+    pointer-events: none;
+}

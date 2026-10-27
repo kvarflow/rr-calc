@@ -144,10 +144,16 @@ function getSetData(setId) {
 	return {species: id.pokemonName, name: id.setName, set: (setdex[id.pokemonName] || {})[id.setName] || {}};
 }
 
+// The slots of that team you have KO'd, crossed out as on the Battle tab.
+function getMastersheetKOs(index, variant) {
+	return readSharedTrainerKOs()[getVariantKey(index, variant)] || [];
+}
+
 function buildMastersheetMon(index, variant, setId, slot) {
 	var data = getSetData(setId);
 	var set = data.set;
-	var cell = $('<button type="button" class="ms-mon"></button>').attr({"data-set-id": setId, title: "Load " + data.species + " in the calc"});
+	var cell = $('<button type="button" class="ms-mon"></button>').attr({"data-set-id": setId, title: "Load " + data.species + " in the calc"})
+		.toggleClass("ms-mon-ko", getMastersheetKOs(index, variant).indexOf(slot) !== -1);
 	$('<span class="ms-mon-sprite"></span>').append(createSpriteImage(data.species, function () {
 		$(this).remove();
 	})).appendTo(cell);
@@ -164,8 +170,10 @@ function buildMastersheetMon(index, variant, setId, slot) {
 
 // A trainer's team folded: small sprites under its name, each still loading that Pokémon.
 function buildMastersheetMiniTeam(index, variant) {
+	var kos = getMastersheetKOs(index, variant);
 	return $('<div class="ms-team-mini"></div>').append(variant.sets.map(function (setId, slot) {
 		return $('<button type="button" class="ms-mini-mon"></button>').attr({"data-set-id": setId, title: getPokemonName(setId)})
+			.toggleClass("ms-mon-ko", kos.indexOf(slot) !== -1)
 			.append(createSpriteImage(getPokemonName(setId), function () {
 				$(this).replaceWith(document.createTextNode(getPokemonName(setId)));
 			})).click(function () {
