@@ -126,6 +126,41 @@ var CHANGELOG = [
 			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
 			"Shed Tail, burns, paralysis and poison (with Hex and Venoshock), Sheer Force and Serene Grace chances, " +
 			"draining moves, Rest and Wish, trapping moves and Salt Cure, Defog and Rapid Spin, and many more"
+	]},
+	{version: "1.8", notes: [
+		"Route trainers: every other trainer in the game (over 300 in each mode), with the team the game gives " +
+			"them: their level, the last four moves they learn by then (Hardcore leaves out setup moves, hazards and " +
+			"Protect, as the game does), their class's IVs, and the nature and ability the game works out from their " +
+			"name. Previous / Next take you through them before the boss fight they lead up to (Cerulean City's " +
+			"trainers before Misty), at that fight's level cap; untick \u201cRoute trainers in Previous / Next\u201d " +
+			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten",
+		"Getting ready for more games: a game picker beside the mode buttons (under More on small screens), with " +
+			"Run & Bun, Emerald Kaizo and Platinum Kaizo coming. Each game will have its own box, runs and settings, " +
+			"and follow its own generation's rules (critical hit odds included)",
+		"Mastersheet (from the Progress box): the whole game in order, arc by arc and place by place, with every " +
+			"trainer's team (level, item, ability, nature, moves) and the wild Pok\u00e9mon there, your Nuzlocke dupes " +
+			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it. " +
+			"Tap a place to fold it away; beaten trainers fold their team to small sprites under their name (the arrow " +
+			"opens it again), their Pok\u00e9mon crossed out as on the Battle tab. What you fold is remembered",
+		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
+		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +
+			"It puts first the Pok\u00e9mon with the most damaging move against Pok\u00e9mon 2, each with its best damage, and " +
+			"reorders when Pok\u00e9mon 2 changes (ranking the Box another way on the Box tab keeps that order)",
+		"What a draining move (Giga Drain, Drain Punch...) or Shell Bell heals, in HP and as a share of yours, under " +
+			"the damage and on the Battle tab's result card. It comes from the damage dealt, so never more than the " +
+			"target had left; Big Root adds 30% as in Radical Red",
+		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
+			"KOs and who made it faint. Sort by any column, or export it as a CSV",
+		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
+			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), level-up moves from the game, " +
+			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
+			"open it there",
+		"Emulator sync (Import / Export): the calc follows your battles in RetroArch (the Thor, phones, computers: " +
+			"turn on Network Commands and run its small script, in Termux on Android) or in mGBA 0.10+ on a computer " +
+			"(load its script under Tools > Scripting): the trainer, both Pok\u00e9mon out, their levels, HP, stat " +
+			"changes and status. Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now",
+		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
+			"cap that covers them, and the ones before the same fight come a place at a time"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

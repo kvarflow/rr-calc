@@ -169,6 +169,7 @@ $(document).on("trainer:progress customsets:changed box:rendered", function () {
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
 	applyRelativeLevels(currentTrainerIndex, getTrainerVariant(trainer));
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
+	$("#trainer-skip-label").toggle(canSkipFight(currentTrainerIndex));
 });
 
 /*
@@ -219,9 +220,9 @@ function markBeatenFights(beaten) {
 	var marked = false;
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		trainer.variants.forEach(function (variant) {
-			if (!variant.trainerIds || isVariantDefeated(index, variant, kos) || !variant.trainerIds.every(function (id) {
+			if (!variant.trainerIds || !variant.trainerIds.every(function (id) {
 				return beaten.indexOf(id) !== -1;
-			})) return;
+			}) || isVariantDefeated(index, variant, kos)) return;
 			kos[getVariantKey(index, variant)] = variant.sets.map(function (set, slot) {
 				return slot;
 			});
@@ -358,8 +359,17 @@ function readSkippedFights() {
 	}
 }
 
+// A beaten fight is no longer left for later: it goes back to its place.
+function isBeatenFight(index) {
+	return typeof isTrainerDefeated === "function" && isTrainerDefeated(index);
+}
+
+function canSkipFight(index) {
+	return !!TRAINER_ORDER[index].parallel && !isBeatenFight(index);
+}
+
 function isFightSkipped(index) {
-	return !!TRAINER_ORDER[index].parallel && readSkippedFights().indexOf(index) !== -1;
+	return canSkipFight(index) && readSkippedFights().indexOf(index) !== -1;
 }
 
 function setFightSkipped(index, skipped) {
@@ -382,19 +392,49 @@ function getParallelGroupEnds() {
 	return ends;
 }
 
-// The order Previous and Next follow: the document's, with skipped fights after their group.
-function getTrainerNavOrder() {
+// Route trainers in Previous / Next (all of them, or only the one you are on).
+var ROUTE_TRAINERS_KEY = "routeTrainers";
+
+function areRouteTrainersShown() {
+	return readSetting(ROUTE_TRAINERS_KEY) !== "false";
+}
+
+/*
+ * The order Previous and Next follow: the document's, with skipped fights after their group and
+ * route trainers before the boss fight they lead up to (`all`: every route trainer, shown or not).
+ */
+function getTrainerNavOrder(all) {
 	var ends = getParallelGroupEnds();
 	var waiting = {};
 	var order = [];
+	var routes = {};
+	var showRoutes = all || areRouteTrainersShown();
+	var skipped = readSkippedFights();
 	TRAINER_ORDER.forEach(function (trainer, index) {
-		if (isFightSkipped(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
+		if (!trainer.route || !(showRoutes || index === currentTrainerIndex)) return;
+		var before = trainer.route.before === null ? "end" : trainer.route.before;
+		(routes[before] = routes[before] || []).push(index);
+	});
+	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's).
+	Object.keys(routes).forEach(function (before) {
+		var places = [];
+		routes[before].forEach(function (index) {
+			if (places.indexOf(TRAINER_ORDER[index].location) === -1) places.push(TRAINER_ORDER[index].location);
+		});
+		routes[before].sort(function (a, b) {
+			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) || a - b;
+		});
+	});
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.route) return;
+		if (routes[index]) order = order.concat(routes[index]);
+		if (trainer.parallel && skipped.indexOf(index) !== -1 && !isBeatenFight(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
 		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
 		Object.keys(ends).forEach(function (gate) {
 			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
 		});
 	});
-	return order;
+	return order.concat(routes.end || []);
 }
 
 function stepTrainer(step) {
@@ -436,21 +476,24 @@ function getTrainerVariant(trainer) {
 
 // The cap a fight is at: the one you are at now (badges, gyms marked Defeated, the cap after the gym
 // for a skipped fight) when that is higher than its own; a beaten fight, the cap it was beaten at.
+// A route trainer is at the cap of the fight it comes before.
 function getShownLevelCap(index) {
 	var trainer = TRAINER_ORDER[index];
-	var listed = parseInt(trainer.levelCap) || 0;
+	var levelCap = trainer.route && typeof getArcCaps === "function" ? getArcCaps()[index] : trainer.levelCap;
+	var listed = parseInt(levelCap) || 0;
 	if (typeof isTrainerDefeated === "function" && isTrainerDefeated(index)) {
 		var then = getDefeatCap(index, getTrainerVariant(trainer));
-		return then > listed ? then : trainer.levelCap;
+		return then > listed ? then : levelCap;
 	}
 	var progressCap = getProgressLevelCap();
 	if (isFightSkipped(index)) progressCap = Math.max(progressCap, trainer.parallel.capAfter);
-	return progressCap > listed ? progressCap : trainer.levelCap;
+	return progressCap > listed ? progressCap : levelCap;
 }
 
 function describeTrainer(trainer, index) {
+	var order = getTrainerNavOrder();
 	var details = [
-		(getTrainerNavOrder().indexOf(index) + 1) + " / " + getTrainerNavOrder().length,
+		(order.indexOf(index) + 1) + " / " + order.length,
 		trainer.location,
 		"Level cap " + getShownLevelCap(index)
 	];
@@ -464,7 +507,7 @@ function describeTrainer(trainer, index) {
 	}
 	if (variant.thunderBadge !== undefined) details.push(variant.thunderBadge ? "Team after Lt. Surge" : "Team before Lt. Surge");
 	if (trainer.randomTeams) details.push("Random team (1 in 3)");
-	return details.concat(trainer.optional ? ["Optional"] : []).join(" · ");
+	return details.concat(trainer.route ? ["Route trainer"] : trainer.optional ? ["Optional"] : []).join(" · ");
 }
 
 // The team slot loaded into Pokémon 2. A team can repeat a set (Creator's five Shedinja),
@@ -573,7 +616,7 @@ function showTrainer(index) {
 		// Rival teams follow the starter setting, Bugsy's your badges, instead of a per-fight choice.
 		.toggle(trainer.variants.length > 1 && !isRivalStarterVariant(variant) && !isBadgeVariant(variant));
 	var ends = getParallelGroupEnds();
-	$("#trainer-skip-label").toggle(!!trainer.parallel)
+	$("#trainer-skip-label").toggle(canSkipFight(currentTrainerIndex))
 		.attr("title", trainer.parallel ? "You can do this fight before or after " + trainer.parallel.gate +
 			": Previous / Next bring it up after " + TRAINER_ORDER[ends[trainer.parallel.gate]].name + ", at the cap after the gym" : "");
 	$("#trainer-skip-where").text(trainer.parallel ? " (fight it after " + TRAINER_ORDER[ends[trainer.parallel.gate]].location + ")" : "");
@@ -650,6 +693,8 @@ function buildTrainerPanel() {
 		'<button type="button" id="reset-trainer" title="New run: wipe your box and go back to the first trainer" aria-label="Start a new run"></button>' +
 		'</div>' +
 		'<label class="trainer-on-top"><input type="checkbox" id="trainer-on-top" /> Trainer above Pok\u00e9mon 2</label>' +
+		'<label class="trainer-routes" title="Every other trainer in the game, before the boss fight they lead up to">' +
+		'<input type="checkbox" id="trainer-routes" /> Route trainers in Previous / Next</label>' +
 		'</fieldset>');
 	$("<img />")
 		.attr({src: OAK_SPRITE_URL, alt: ""})
@@ -683,6 +728,10 @@ function bindTrainerEvents() {
 		writeSetting(TRAINER_ON_TOP_KEY, this.checked);
 		placeTrainerPanel(this.checked);
 	});
+	$("#trainer-routes").prop("checked", areRouteTrainersShown()).change(function () {
+		writeSetting(ROUTE_TRAINERS_KEY, this.checked);
+		showTrainer(currentTrainerIndex);
+	});
 	$("#trainer-starter")
 		.append(STARTER_TYPES.map(function (type) {
 			return $("<option></option>").val(type).text(type);
@@ -701,6 +750,8 @@ function bindTrainerEvents() {
 }
 
 $(document).ready(function () {
+	// A game with no boss fights yet (games.js) has no trainer panel.
+	if (!TRAINER_ORDER.length) return;
 	$("#p2").after(buildTrainerPanel());
 	placeTrainerPanel(readSetting(TRAINER_ON_TOP_KEY) === "true");
 	$(".field-info legend").after('<div id="battle-effect-lock" class="battle-effect-lock"></div>');

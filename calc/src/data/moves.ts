@@ -5098,9 +5098,12 @@ const RR_PATCH: {[name: string]: DeepPartial<MoveData>} = {
   },
 }
 
-const SV: {[name: string]: MoveData} = extend(true, {}, SS, SV_PATCH, RR_PATCH);
+const SV_VANILLA: {[name: string]: MoveData} = extend(true, {}, SS, SV_PATCH);
+const SV: {[name: string]: MoveData} = extend(true, {}, SV_VANILLA, RR_PATCH);
 
 export const MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
+// Each generation's own moves, without Radical Red's (gen 9), for another game's (setGameMoves).
+export const VANILLA_MOVES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV_VANILLA];
 
 export class Moves implements I.Moves {
   private readonly gen: I.GenerationNum;
@@ -5205,14 +5208,28 @@ class Move implements I.Move {
 
 const MOVES_BY_ID: Array<{[id: string]: Move}> = [];
 
-let gen = 0;
-for (const moves of MOVES) {
+function buildMovesMap(gen: number) {
+  const moves = MOVES[gen] as {[name: string]: MoveData};
   const map: {[id: string]: Move} = {};
   for (const move in moves) {
     const data = moves[move];
     const m = new Move(move, data, gen);
     map[m.id] = m;
   }
-  MOVES_BY_ID.push(map);
-  gen++;
+  MOVES_BY_ID[gen] = map;
+}
+for (let gen = 0; gen < MOVES.length; gen++) buildMovesMap(gen);
+
+/** A game's own moves for a generation, as setGameSpecies does for Pokémon. */
+export function setGameMoves(
+  gen: number, entries: {[name: string]: MoveData | null}, fromVanilla = true
+) {
+  const table: {[name: string]: MoveData} = {...(fromVanilla ? VANILLA_MOVES[gen] : MOVES[gen])};
+  for (const name in entries) {
+    const data = entries[name];
+    if (data) table[name] = data;
+    else delete table[name];
+  }
+  MOVES[gen] = table;
+  buildMovesMap(gen);
 }

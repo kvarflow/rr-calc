@@ -585,6 +585,8 @@ function importPendingSave() {
 }
 
 $(document).ready(function () {
+	// Only for a game whose save format this reads (games.js).
+	if (getCurrentGame().features.saveImport !== "cfru") return;
 	var fileInput = $('<input type="file" id="save-file-input" accept=".sav,.srm" class="visually-hidden" />');
 	var button = $('<button type="button" id="import-save" class="bs-btn bs-btn-default" title="Load your party and PC boxes from a Radical Red .sav file">Import .sav</button>');
 	button.click(function () {

@@ -325,10 +325,20 @@ th {
     background: #ffff99;
 }
 
-.genSelection, .notationSelection, .modeSelection {
+.genSelection, .notationSelection, .modeSelection, .gameSelection {
     display: inline-block;
     position: relative;
     top: -8px;
+}
+/* The game picker (games.js). */
+.gameSelection {
+    margin-right: 0.5em;
+}
+#game-picker {
+    width: auto;
+    max-width: 11em;
+    padding: 2px 4px;
+    font-size: 0.9em;
 }
 
 /* header */
@@ -963,7 +973,8 @@ legend:has(> .header-sprite)::before {
 .rc-unlikely { color: #c99a00; }
 .rc-never { color: #d33; }
 
-.trainer-on-top {
+.trainer-on-top,
+.trainer-routes {
     display: block;
     margin-top: 6px;
     font-size: 0.85em;
@@ -1594,10 +1605,13 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     gap: 8px;
     margin-top: 8px;
 }
-/* The Box under the teams: only on upright phones (below), where there is room for it. */
+/* The Box (and Box 2) under the teams, the width of both: eight to a row on the Thor, six on an
+   upright phone (below). */
 .ss-quick-side.ss-quick-box {
-    display: none;
     flex-basis: 100%;
+}
+.ss-quick-box .ss-quick-grid {
+    grid-template-columns: repeat(8, 1fr);
 }
 .ss-quick-side {
     flex: 1 1 calc(50% - 4px);
@@ -1874,7 +1888,8 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
 .ss-quick-mon {
     position: relative;
 }
-.box-rank-value {
+.box-rank-value,
+.ss-quick-dmg {
     position: absolute;
     right: 1px;
     bottom: 1px;
@@ -2320,9 +2335,6 @@ html.small-screen #importedSetsOptions {
 /* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
    You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
 @media (max-width: 500px) and (orientation: portrait) {
-    html.small-screen .ss-quick-side.ss-quick-box {
-        display: block;
-    }
     html.small-screen .ss-quick-box .ss-quick-grid {
         grid-template-columns: repeat(6, 1fr);
     }
@@ -2715,7 +2727,8 @@ html.small-screen #ss-install {
 .ss-setting-switches {
     border-top: 1px solid var(--ss-line, #dde2ea);
 }
-.ss-setting-switches > label {
+.ss-setting-switches > label,
+html.small-screen .trainer-routes {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
@@ -2725,7 +2738,8 @@ html.small-screen #ss-install {
     font-weight: 600;
     cursor: pointer;
 }
-.ss-setting-switches input[type="checkbox"] {
+.ss-setting-switches input[type="checkbox"],
+html.small-screen .trainer-routes input[type="checkbox"] {
     flex: none;
     width: 40px;
     height: 24px;
@@ -2738,7 +2752,8 @@ html.small-screen #ss-install {
     cursor: pointer;
     transition: background 0.2s ease;
 }
-.ss-setting-switches input[type="checkbox"]::before {
+.ss-setting-switches input[type="checkbox"]::before,
+html.small-screen .trainer-routes input[type="checkbox"]::before {
     content: "";
     position: absolute;
     top: 3px;
@@ -2750,10 +2765,12 @@ html.small-screen #ss-install {
     box-shadow: 0 1px 2px rgba(16, 24, 40, 0.3);
     transition: left 0.2s ease;
 }
-.ss-setting-switches input[type="checkbox"]:checked {
+.ss-setting-switches input[type="checkbox"]:checked,
+html.small-screen .trainer-routes input[type="checkbox"]:checked {
     background: var(--ss-accent, #3a6fd8);
 }
-.ss-setting-switches input[type="checkbox"]:checked::before {
+.ss-setting-switches input[type="checkbox"]:checked::before,
+html.small-screen .trainer-routes input[type="checkbox"]:checked::before {
     left: 19px;
 }
 /* The credits: a quiet last card. */
@@ -3003,4 +3020,793 @@ html.small-screen .encounters > legend {
 .encounter-check {
     color: #2e9e44;
     font-weight: bold;
+}
+
+/* Run sheets (sheets.js, mastersheet.js, fragsheet.js): a full-screen view over the calc. Colors
+   follow the theme through the small-screen layout's dark variables (dark-theme.css). */
+.sheet-view {
+    --sh-bg: var(--ss-dark-bg, #eef1f6);
+    --sh-card: var(--ss-dark-card, #ffffff);
+    --sh-text: var(--ss-dark-text, #1d2330);
+    --sh-muted: var(--ss-dark-muted, #667085);
+    --sh-line: var(--ss-dark-line, #dde2ea);
+    --sh-accent: var(--ss-accent, #d63031);
+    --sh-good: var(--ss-dark-good, #1e7b39);
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    flex-direction: column;
+    background: var(--sh-bg);
+    color: var(--sh-text);
+    font-size: 14px;
+}
+html.sheet-open .sheet-view {
+    display: flex !important;
+}
+html.sheet-open body {
+    overflow: hidden;
+}
+.sheet-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    padding-top: max(8px, env(safe-area-inset-top));
+    background: var(--sh-card);
+    border-bottom: 1px solid var(--sh-line);
+}
+.sheet-tabs {
+    display: flex;
+    gap: 4px;
+    flex: 1;
+    min-width: 0;
+    overflow-x: auto;
+}
+.sheet-tab, .sheet-close, .sheet-open-button, .fs-export {
+    border: 1px solid var(--sh-line, #ccc);
+    border-radius: 999px;
+    padding: 6px 14px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    white-space: nowrap;
+}
+.sheet-tab-active {
+    background: var(--sh-accent);
+    border-color: var(--sh-accent);
+    color: #fff;
+    font-weight: bold;
+}
+.sheet-close {
+    padding: 6px 12px;
+    font-size: 1.1em;
+    line-height: 1;
+}
+.sheet-body {
+    flex: 1;
+    overflow: auto;
+    padding: 12px;
+    padding-bottom: max(12px, env(safe-area-inset-bottom));
+    -webkit-overflow-scrolling: touch;
+}
+.sheet-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+.sheet-open-button {
+    padding: 4px 12px;
+    font-size: 0.9em;
+}
+.sheet-view button:focus-visible, .sheet-view summary:focus-visible, .fs-sortable:focus-visible {
+    outline: 2px solid var(--sh-accent);
+    outline-offset: 2px;
+}
+
+/* The Mastersheet. */
+.ms-tools, .fs-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px 14px;
+    margin-bottom: 12px;
+}
+.ms-search {
+    flex: 1 1 220px;
+    min-width: 0;
+    padding: 6px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 8px;
+    background: var(--sh-card);
+    color: inherit;
+}
+.ms-jump {
+    max-width: 100%;
+    padding: 6px 12px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: inherit;
+    font: inherit;
+}
+.ms-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+    padding: 6px 14px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    white-space: nowrap;
+    font-weight: normal;
+    cursor: pointer;
+}
+.ms-filter input {
+    position: absolute;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+}
+.ms-filter-on {
+    background: var(--sh-accent);
+    border-color: var(--sh-accent);
+    color: #fff;
+    font-weight: bold;
+}
+.ms-filter:focus-within {
+    outline: 2px solid var(--sh-accent);
+    outline-offset: 2px;
+}
+.ms-arc {
+    margin-bottom: 10px;
+    border-radius: 10px;
+    background: var(--sh-card);
+    border: 1px solid var(--sh-line);
+}
+.ms-arc > summary {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 12px;
+    padding: 10px 14px;
+    cursor: pointer;
+    position: sticky;
+    top: -12px;
+    z-index: 1;
+    background: var(--sh-card);
+    border-radius: 10px;
+}
+.ms-arc-name {
+    font-weight: bold;
+    font-size: 1.15em;
+}
+.ms-arc-meta {
+    color: var(--sh-muted);
+    font-size: 0.9em;
+}
+.ms-arc-current > summary .ms-arc-name {
+    color: var(--sh-accent);
+}
+.ms-arc-body {
+    padding: 0 14px 12px;
+}
+.ms-place h3 {
+    margin: 14px 0 6px;
+    font-size: 1.05em;
+    border-bottom: 1px solid var(--sh-line);
+    padding-bottom: 3px;
+}
+.ms-trainer, .ms-wild {
+    margin: 0 0 8px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--sh-line);
+}
+.ms-trainer-route {
+    border-style: dashed;
+}
+.ms-trainer-defeated {
+    opacity: 0.6;
+}
+.ms-trainer-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    margin-bottom: 6px;
+}
+.ms-trainer-name {
+    border: 0;
+    padding: 0;
+    background: none;
+    color: var(--sh-accent);
+    font: inherit;
+    font-weight: bold;
+    cursor: pointer;
+    text-align: left;
+}
+.ms-trainer-name:hover {
+    text-decoration: underline;
+}
+.ms-trainer-tags {
+    color: var(--sh-muted);
+    font-size: 0.85em;
+}
+.ms-trainer-defeated .ms-trainer-tags {
+    color: var(--sh-good);
+}
+.ms-variant {
+    font-size: 0.85em;
+    max-width: 100%;
+}
+.ms-team {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 6px;
+}
+.ms-mon {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+    padding: 4px 6px;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: rgba(127, 127, 127, 0.08);
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.ms-mon:hover {
+    border-color: var(--sh-accent);
+}
+.ms-mon-sprite img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-mon-sprite {
+    flex: 0 0 40px;
+}
+.ms-mon-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    font-size: 0.85em;
+    line-height: 1.3;
+}
+.ms-mon-name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+.ms-mon-details {
+    color: var(--sh-muted);
+}
+.ms-mon-moves {
+    overflow-wrap: anywhere;
+}
+.ms-wild {
+    background: rgba(127, 127, 127, 0.05);
+}
+.ms-wild-head {
+    font-weight: bold;
+    font-size: 0.9em;
+    margin-bottom: 4px;
+}
+.ms-wild-method {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2px 8px;
+    margin: 2px 0;
+    font-size: 0.85em;
+}
+.ms-wild-label {
+    flex: 0 0 90px;
+    color: var(--sh-muted);
+}
+.ms-wild-mon {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+}
+.ms-wild-mon img {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-wild-rate {
+    color: var(--sh-muted);
+}
+.ms-wild-dupe {
+    opacity: 0.45;
+    text-decoration: line-through;
+}
+.ms-empty, .fs-empty {
+    color: var(--sh-muted);
+}
+
+/* The Frag sheet. */
+.fs-summary {
+    flex: 1;
+    color: var(--sh-muted);
+}
+.fs-scroll {
+    overflow-x: auto;
+    border-radius: 10px;
+    border: 1px solid var(--sh-line);
+    background: var(--sh-card);
+}
+.fs-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.fs-table th, .fs-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--sh-line);
+    text-align: left;
+    white-space: nowrap;
+}
+.fs-table th {
+    position: sticky;
+    top: 0;
+    background: var(--sh-card);
+    font-size: 0.85em;
+}
+.fs-table .fs-numeric {
+    text-align: right;
+}
+.fs-sortable {
+    cursor: pointer;
+    user-select: none;
+}
+.fs-table td img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+    vertical-align: middle;
+}
+.fs-fainted td {
+    opacity: 0.55;
+}
+.fs-status[data-status="Team"] {
+    color: var(--sh-good);
+    font-weight: bold;
+}
+.fs-status[data-status="Fainted"] {
+    color: var(--ss-danger, #c0392b);
+}
+@media (max-width: 600px) {
+    .ms-team {
+        grid-template-columns: 1fr;
+    }
+    .ms-wild-label {
+        flex-basis: 100%;
+    }
+}
+
+/* The Dex (dex.js). */
+.dex-tools {
+    margin-bottom: 12px;
+}
+.dex-search {
+    width: 100%;
+    max-width: 360px;
+    padding: 6px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 8px;
+    background: var(--sh-card);
+    color: inherit;
+}
+.dex-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.dex-sprite img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.dex-title h2 {
+    margin: 0 0 4px;
+    font-size: 1.5em;
+}
+.dex-weight {
+    margin-left: 8px;
+    color: var(--sh-muted);
+    font-size: 0.9em;
+}
+.dex-types {
+    display: inline-flex;
+    gap: 4px;
+}
+.dex-type {
+    display: inline-block;
+    min-width: 58px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #888;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+.dex-type[data-type="Normal"] { background: #9fa19f; }
+.dex-type[data-type="Fighting"] { background: #ff8000; }
+.dex-type[data-type="Flying"] { background: #81b9ef; }
+.dex-type[data-type="Poison"] { background: #9141cb; }
+.dex-type[data-type="Ground"] { background: #915121; }
+.dex-type[data-type="Rock"] { background: #afa981; }
+.dex-type[data-type="Bug"] { background: #91a119; }
+.dex-type[data-type="Ghost"] { background: #704170; }
+.dex-type[data-type="Steel"] { background: #60a1b8; }
+.dex-type[data-type="Fire"] { background: #e62829; }
+.dex-type[data-type="Water"] { background: #2980ef; }
+.dex-type[data-type="Grass"] { background: #3fa129; }
+.dex-type[data-type="Electric"] { background: #e6b800; }
+.dex-type[data-type="Psychic"] { background: #ef4179; }
+.dex-type[data-type="Ice"] { background: #3dcef3; }
+.dex-type[data-type="Dragon"] { background: #5060e1; }
+.dex-type[data-type="Dark"] { background: #624d4e; }
+.dex-type[data-type="Fairy"] { background: #ef70ef; }
+.dex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
+}
+.dex-card {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--sh-line);
+    background: var(--sh-card);
+    min-width: 0;
+}
+.dex-card h3 {
+    margin: 0 0 8px;
+    font-size: 1em;
+}
+.dex-stat {
+    display: grid;
+    grid-template-columns: 44px 36px 1fr;
+    align-items: center;
+    gap: 6px;
+    margin: 3px 0;
+}
+.dex-stat-name {
+    color: var(--sh-muted);
+}
+.dex-stat-value {
+    text-align: right;
+    font-weight: bold;
+}
+.dex-stat-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(127, 127, 127, 0.15);
+    overflow: hidden;
+}
+.dex-stat-bar span {
+    display: block;
+    height: 100%;
+}
+.dex-stat-total {
+    border-top: 1px solid var(--sh-line);
+    padding-top: 3px;
+}
+.dex-ability {
+    margin: 4px 0;
+    font-size: 0.9em;
+}
+.dex-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.dex-table th, .dex-table td {
+    padding: 3px 6px;
+    border-bottom: 1px solid var(--sh-line);
+    text-align: left;
+}
+.dex-table th {
+    color: var(--sh-muted);
+    font-size: 0.85em;
+}
+.dex-table .dex-numeric {
+    text-align: right;
+}
+.dex-table .dex-type {
+    min-width: 0;
+}
+.dex-trainers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.dex-trainer {
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    padding: 4px 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9em;
+    text-align: left;
+    cursor: pointer;
+}
+.dex-trainer:hover {
+    border-color: var(--sh-accent);
+}
+.dex-trainer-defeated {
+    opacity: 0.55;
+}
+.dex-none {
+    color: var(--sh-muted);
+    margin: 0;
+}
+.ms-wild-mon, .fs-species {
+    cursor: pointer;
+}
+.fs-species:hover, .ms-wild-mon:hover .ms-wild-name {
+    text-decoration: underline;
+}
+@media (max-width: 600px) {
+    .dex-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Emulator sync (emulator_sync.js): a quiet box of steps under the buttons. */
+.emulator-sync-panel {
+    margin: 8px 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(127, 127, 127, 0.08);
+    font-size: 0.85em;
+    line-height: 1.4;
+    text-align: left;
+}
+#emulator-sync-status {
+    display: inline-block;
+    margin-bottom: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(178, 106, 0, 0.12);
+    font-weight: 600;
+}
+#emulator-sync-status.emulator-sync-connected {
+    background: rgba(30, 123, 57, 0.12);
+}
+.emulator-sync-how a {
+    display: inline-block;
+    margin-top: 2px;
+    padding: 1px 10px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
+}
+#emulator-sync[aria-pressed="true"] {
+    font-weight: bold;
+}
+#emulator-sync-status {
+    color: #b26a00;
+}
+#emulator-sync-status.emulator-sync-connected {
+    color: #1e7b39;
+}
+.emulator-sync-help {
+    display: block;
+    opacity: 0.75;
+}
+
+.emulator-sync-how {
+    margin: 4px 0;
+}
+
+/* Mastersheet folding: places under their name, trainers' teams as small sprites. */
+.ms-place h3 {
+    padding: 0;
+}
+.ms-place-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    width: 100%;
+    padding: 2px 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.ms-place-meta {
+    color: var(--sh-muted);
+    font-size: 0.8em;
+    font-weight: normal;
+}
+.ms-place-folded .ms-place-body {
+    display: none;
+}
+.ms-fold-icon {
+    display: inline-block;
+    width: 1em;
+    color: var(--sh-muted);
+    transition: transform 0.15s ease;
+}
+.ms-place:not(.ms-place-folded) > h3 .ms-fold-icon,
+.ms-trainer:not(.ms-trainer-folded) .ms-trainer-fold .ms-fold-icon {
+    transform: rotate(90deg);
+}
+.ms-trainer-fold {
+    border: 0;
+    padding: 0 2px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.ms-trainer-folded .ms-team,
+.ms-trainer:not(.ms-trainer-folded) .ms-team-mini,
+.ms-trainer-folded .ms-variant {
+    display: none;
+}
+.ms-trainer-folded .ms-trainer-head {
+    margin-bottom: 2px;
+}
+.ms-team-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+.ms-mini-mon {
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: none;
+    color: inherit;
+    font-size: 0.75em;
+    cursor: pointer;
+}
+.ms-mini-mon:hover {
+    border-color: var(--sh-accent);
+}
+.ms-mini-mon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-trainer-defeated.ms-trainer-folded {
+    opacity: 0.75;
+}
+/* KO'd Pokémon in the Mastersheet: greyed, with the Battle tab's cross. */
+.ms-mon-sprite, .ms-mini-mon {
+    position: relative;
+}
+.ms-mon-ko img {
+    filter: grayscale(1);
+    opacity: 0.35;
+}
+.ms-mon-ko .ms-mon-sprite::after, .ms-mini-mon.ms-mon-ko::after {
+    content: "\2715";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ss-danger, #c0392b);
+    font-size: 18px;
+    font-weight: 700;
+    pointer-events: none;
+}
+/* The Dex's evolution line, left to right: each stage as a small card, an arrow to the next with
+   how under it, wrapping onto another row on a narrow screen; branches one under another. */
+.dex-evolutions {
+    overflow-x: auto;
+    padding-bottom: 4px;
+}
+.dex-evo-chain {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    row-gap: 8px;
+}
+.dex-evo-branches {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.dex-evo-branch {
+    display: flex;
+    align-items: center;
+}
+.dex-evo-arrow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    width: 80px;
+    padding: 0 4px;
+    text-align: center;
+}
+.dex-evo-arrow-icon {
+    color: var(--sh-muted);
+    font-size: 1.3em;
+    line-height: 1;
+}
+.dex-evo-how {
+    margin-top: 2px;
+    color: var(--sh-muted);
+    font-size: 0.72em;
+    line-height: 1.25;
+}
+.dex-evo-mon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: none;
+    min-width: 72px;
+    max-width: 96px;
+    padding: 4px 6px;
+    border: 1px solid var(--sh-line);
+    border-radius: 12px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.85em;
+    line-height: 1.2;
+    text-align: center;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+}
+.dex-evo-mon img {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.dex-evo-mon:hover {
+    border-color: var(--sh-accent);
+}
+.dex-evo-current {
+    background: var(--sh-accent);
+    border-color: var(--sh-accent);
+    color: #fff;
+    font-weight: bold;
+    cursor: default;
+}
+/* The Box's best damage on Pokémon 2 (Battle tab), bottom left: KO counts take the right. */
+.ss-quick-dmg {
+    right: auto;
+    left: 1px;
+}
+
+/* What a draining move or Shell Bell heals, under the damage (desktop) and on the result card. */
+.healing-result {
+    margin-top: 2px;
+    color: #1e7b39;
+    font-weight: 600;
+}
+.ss-result-heal {
+    margin-top: 2px;
+    color: var(--ss-good, #1e7b39);
+    font-size: 12px;
+    font-weight: 600;
 }

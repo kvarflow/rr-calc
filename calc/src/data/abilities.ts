@@ -361,6 +361,8 @@ const RR = SV.concat([
 ]);
 
 export const ABILITIES = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, RR];
+// Each generation's own abilities, without Radical Red's (gen 9), for another game's.
+export const VANILLA_ABILITIES = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
 
 export class Abilities implements I.Abilities {
   private readonly gen: I.GenerationNum;
@@ -394,11 +396,22 @@ class Ability implements I.Ability {
 
 const ABILITIES_BY_ID: Array<{[id: string]: Ability}> = [];
 
-for (const abilities of ABILITIES) {
+function buildAbilitiesMap(gen: number) {
   const map: {[id: string]: Ability} = {};
-  for (const ability of abilities) {
+  for (const ability of ABILITIES[gen]) {
     const a = new Ability(ability);
     map[a.id] = a;
   }
-  ABILITIES_BY_ID.push(map);
+  ABILITIES_BY_ID[gen] = map;
+}
+for (let gen = 0; gen < ABILITIES.length; gen++) buildAbilitiesMap(gen);
+
+/**
+ * A game's abilities for a generation: the generation's own (`fromVanilla`) or what is there now,
+ * and `add`.
+ */
+export function setGameAbilities(gen: number, add: string[], fromVanilla = true) {
+  const base = fromVanilla ? VANILLA_ABILITIES[gen] : ABILITIES[gen];
+  ABILITIES[gen] = base.concat(add.filter(name => !base.includes(name)));
+  buildAbilitiesMap(gen);
 }

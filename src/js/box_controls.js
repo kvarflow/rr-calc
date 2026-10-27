@@ -36,8 +36,9 @@ var BOX_SECTIONS = [
 ];
 // Sets not placed anywhere yet (e.g. freshly imported) go to this section.
 var DEFAULT_BOX_SECTION = "box";
-// Only these modes have a box that can be carried over when switching between them.
-var BOX_TRANSFER_MODES = {normal: "Normal Mode", hardcore: "Hardcore Mode"};
+// A box can be carried over between the modes of one game (games.js), e.g. Radical Red's Normal and
+// Hardcore Modes.
+var BOX_TRANSFER_MODES = getGameModeLabels();
 
 function getBoxLayoutKey(mode) {
 	return "boxlayout:" + (mode || getPageMode());

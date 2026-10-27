@@ -122,9 +122,36 @@ $(".result-move").change(function () {
 			if (desc.indexOf('--') === -1) desc += ' -- possibly the worst move ever';
 			$("#mainResult").text(desc);
 			$("#damageValues").text("Possible damage amounts: (" + displayDamageHits(result.damage) + ")");
+			showHealing(result);
 		}
 	}
 });
+
+/*
+ * What the attacker heals from its hit: a draining move (Giga Drain, Drain Punch; more with Big
+ * Root) or Shell Bell, from the damage dealt (no more than the target had left), in HP and as a
+ * share of the attacker's HP. Under the damage amounts; empty when it heals nothing.
+ */
+function showHealing(result) {
+	var line = $("#healingResult");
+	if (!line.length) line = $('<div id="healingResult" class="healing-result"></div>').insertAfter("#damageValues");
+	var healed = result.recovery("%").recovery;
+	if (!healed[1]) {
+		line.text("").hide();
+		return;
+	}
+	var max = result.attacker.maxHP();
+	var range = function (low, high, suffix) {
+		return (low === high ? low : low + "\u2013" + high) + suffix;
+	};
+	var percent = function (hp) {
+		// Rounded down, as the move list shows it.
+		return Math.floor(1000 * hp / max) / 10;
+	};
+	var source = result.attacker.hasItem("Shell Bell") && !result.move.drain ? "Shell Bell" : result.move.name;
+	line.text("Heals " + range(healed[0], healed[1], " HP") + " (" + range(percent(healed[0]), percent(healed[1]), "%") +
+		" of " + result.attacker.name + "\u2019s HP) from " + source).show();
+}
 
 function displayDamageHits(damage) {
 	// Fixed Damage
@@ -191,8 +218,14 @@ $(".mode").change(function () {
 	}
 });
 
-// The page serving each mode. Other modes (One vs All, All vs One) live on honkalculate.
-var MODE_PAGES = {"one-vs-one": "index", normal: "normal", hardcore: "hardcore"};
+// The page serving each mode: every game's (games.js) and One vs One. Other modes (One vs All, All vs
+// One) live on honkalculate.
+var MODE_PAGES = {"one-vs-one": "index"};
+GAMES.forEach(function (game) {
+	game.modes.forEach(function (mode) {
+		MODE_PAGES[mode.id] = mode.page;
+	});
+});
 var LAST_MODE_KEY = "lastMode";
 // Modes that have been removed, and the mode old links to them now open.
 var RETIRED_MODES = {randoms: "normal"};

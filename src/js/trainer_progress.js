@@ -18,6 +18,17 @@ function readTrainerKOs() {
 	}
 }
 
+// The KOs as last read, for the many read-only checks (isTrainerDefeated for every trainer); it is
+// parsed again only when the saved text changes. Never changed in place: readTrainerKOs gives a copy
+// to change.
+var sharedTrainerKOs = {text: null, kos: {}};
+
+function readSharedTrainerKOs() {
+	var text = readSetting(getTrainerKOKey());
+	if (text !== sharedTrainerKOs.text) sharedTrainerKOs = {text: text, kos: readTrainerKOs()};
+	return sharedTrainerKOs.kos;
+}
+
 function writeTrainerKOs(kos) {
 	writeSetting(getTrainerKOKey(), JSON.stringify(kos));
 	renderTrainerProgress();
@@ -36,7 +47,7 @@ function getTeamKey(index) {
 }
 
 function getKOSlots(index, kos) {
-	return (kos || readTrainerKOs())[getTeamKey(index)] || [];
+	return (kos || readSharedTrainerKOs())[getTeamKey(index)] || [];
 }
 
 function setKOSlots(index, slots) {
@@ -53,7 +64,7 @@ function getVariantKey(index, variant) {
 
 // Whether that team of a fight is beaten (a fight with several teams can be beaten with any).
 function isVariantDefeated(index, variant, kos) {
-	var slots = (kos || readTrainerKOs())[getVariantKey(index, variant)] || [];
+	var slots = (kos || readSharedTrainerKOs())[getVariantKey(index, variant)] || [];
 	return variant.sets.length > 0 && slots.length >= variant.sets.length;
 }
 
@@ -118,6 +129,31 @@ function getCapLevel(index) {
 }
 
 /*
+ * Route trainers (`route`, every other trainer in the game) come after the boss fights in
+ * TRAINER_ORDER, so saved progress keeps its places, and each is fought before the boss fight
+ * `route.before` (null: after the last). They are in the arc of that fight and leave the progress
+ * bars to the boss fights.
+ */
+function isRouteTrainer(index) {
+	return !!(TRAINER_ORDER[index] && TRAINER_ORDER[index].route);
+}
+
+// How many boss fights TRAINER_ORDER starts with.
+function getStoryLength() {
+	for (var i = 0; i < TRAINER_ORDER.length; i++) {
+		if (TRAINER_ORDER[i].route) return i;
+	}
+	return TRAINER_ORDER.length;
+}
+
+// The boss fight a trainer is placed by: itself, or the one a route trainer comes before.
+function getStoryIndex(index) {
+	if (!isRouteTrainer(index)) return index;
+	var before = TRAINER_ORDER[index].route.before;
+	return before === null || before === undefined ? getStoryLength() - 1 : before;
+}
+
+/*
  * Which level-cap arc each trainer belongs to, as the cap in force while you play: a required
  * fight with a higher cap starts a new arc; required fights listed with a lower cap (the
  * Kanto rematches) and fights with no cap stay in the arc they are fought in; an optional fight
@@ -130,6 +166,7 @@ function getArcCaps() {
 	trainerArcCaps = [];
 	var running = 0;
 	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.route) return;
 		var cap = getCapLevel(index);
 		var previous = index ? trainerArcCaps[index - 1] : running;
 		if (!trainer.optional && cap > running) {
@@ -141,12 +178,13 @@ function getArcCaps() {
 			trainerArcCaps.push(previous || running);
 		}
 	});
+	for (var i = trainerArcCaps.length; i < TRAINER_ORDER.length; i++) trainerArcCaps.push(trainerArcCaps[getStoryIndex(i)]);
 	return trainerArcCaps;
 }
 
 // The cap of the next required fight that raises the level cap above `running`.
 function getNextArcCap(index, running) {
-	for (var i = index + 1; i < TRAINER_ORDER.length; i++) {
+	for (var i = index + 1; i < getStoryLength(); i++) {
 		if (!TRAINER_ORDER[i].optional && getCapLevel(i) > running) return getCapLevel(i);
 	}
 	return 0;
@@ -155,11 +193,12 @@ function getNextArcCap(index, running) {
 // The arc around a trainer: its first and last trainer, named after its last required fight
 // at the arc's level cap (e.g. Brock).
 function getArc(index) {
+	index = getStoryIndex(index);
 	var caps = getArcCaps();
 	var first = index;
 	var last = index;
 	while (first > 0 && caps[first - 1] === caps[index]) first--;
-	while (last < caps.length - 1 && caps[last + 1] === caps[index]) last++;
+	while (last < getStoryLength() - 1 && caps[last + 1] === caps[index]) last++;
 	var boss = -1;
 	// Named after its gym leader; else its last required fight at the arc's cap.
 	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
@@ -179,7 +218,7 @@ function getArc(index) {
 // Every arc in game order.
 function getArcs() {
 	var arcs = [];
-	for (var index = 0; index < TRAINER_ORDER.length; index = arcs[arcs.length - 1].last + 1) {
+	for (var index = 0; index < getStoryLength(); index = arcs[arcs.length - 1].last + 1) {
 		arcs.push(getArc(index));
 	}
 	return arcs;
@@ -190,7 +229,7 @@ function getArcs() {
 // still to fight: its own arc, or the one you are in if that is later (it was left for later).
 function getCountedArc(index, arcs, current, kos) {
 	var listed = 0;
-	while (listed < arcs.length - 1 && index > arcs[listed].last) listed++;
+	while (listed < arcs.length - 1 && getStoryIndex(index) > arcs[listed].last) listed++;
 	if (!isTrainerDefeated(index, kos)) return Math.max(listed, current);
 	var arcCap = getDefeatRecord(index, getTrainerVariant(TRAINER_ORDER[index])).arcCap;
 	for (var arc = 0; arc < arcs.length; arc++) {
@@ -230,9 +269,9 @@ function renderTrainerProgress() {
 	var arcDefeated = 0;
 	var total = 0;
 	var defeated = 0;
-	// A fight the documents list twice (marked duplicate) counts once.
+	// A fight the documents list twice (marked duplicate) counts once; route trainers don't count.
 	TRAINER_ORDER.forEach(function (trainer, index) {
-		if (trainer.duplicate) return;
+		if (trainer.duplicate || trainer.route) return;
 		var inArc = getCountedArc(index, arcs, current, kos) === current;
 		total++;
 		if (inArc) arcTotal++;

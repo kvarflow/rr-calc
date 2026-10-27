@@ -513,6 +513,9 @@ const SV = SS.concat([
   'Wellspring Mask',
 ]);
 
+// Gen 9's own items, without Radical Red's, for another game's (setGameItems).
+const SV_VANILLA = SV.slice();
+
 // RR
 SV.push('Burnt Seed', 'Eternamax Orb');
 
@@ -597,6 +600,7 @@ const BERRIES: {[berry: string]: {t: I.TypeName; p: number}} = {
 };
 
 export const ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
+export const VANILLA_ITEMS = [[], RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV_VANILLA];
 
 export class Items implements I.Items {
   private readonly gen: I.GenerationNum;
@@ -642,13 +646,22 @@ class Item implements I.Item {
 
 const ITEMS_BY_ID: Array<{[id: string]: Item}> = [];
 
-let gen = 0;
-for (const items of ITEMS) {
+function buildItemsMap(gen: number) {
   const map: {[id: string]: Item} = {};
-  for (const item of items) {
+  for (const item of ITEMS[gen]) {
     const i = new Item(item, gen);
     map[i.id] = i;
   }
-  ITEMS_BY_ID.push(map);
-  gen++;
+  ITEMS_BY_ID[gen] = map;
+}
+for (let gen = 0; gen < ITEMS.length; gen++) buildItemsMap(gen);
+
+/**
+ * A game's items for a generation: the generation's own (`fromVanilla`) or what is there now, and
+ * `add`.
+ */
+export function setGameItems(gen: number, add: string[], fromVanilla = true) {
+  const base = fromVanilla ? VANILLA_ITEMS[gen] : ITEMS[gen];
+  ITEMS[gen] = base.concat(add.filter(name => !base.includes(name)));
+  buildItemsMap(gen);
 }
