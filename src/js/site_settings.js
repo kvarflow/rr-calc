@@ -145,7 +145,8 @@ var CHANGELOG = [
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
-		"Dex: any Pok\u00e9mon's types, base stats, abilities (with what they do), level-up moves from the game, " +
+		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
+			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), level-up moves from the game, " +
 			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
 			"open it there",
 		"Emulator sync (Import / Export), for mGBA 0.10+ on a computer: load the script it links in mGBA's Tools > " +

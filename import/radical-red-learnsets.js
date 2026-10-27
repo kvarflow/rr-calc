@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 /*
- * Generates src/js/data/learnsets/radicalred.js, each Pokémon's level-up moves, for the Dex (dex.js).
+ * Generates src/js/data/learnsets/radicalred.js for the Dex (dex.js): each Pokémon's level-up moves
+ * and how it evolves.
  *
  * Usage (after `node build` so calc/dist exists):
  *   node import/radical-red-learnsets.js <Pokémon Radical Red 4.1 ROM>
@@ -10,6 +11,10 @@
  * the ids radical_red_save_data.js names); each learnset is 3-byte entries (u16 move id, u8 level)
  * ended by level 0xFF. The same table gives route trainers their moves (rr-rom's
  * analysis/progression/route_trainers.js).
+ *
+ * Evolutions come from CFRU's gEvolutionTable, repointed to 0x097CD9B0 (as the encounters importer
+ * reads it): 16 entries a species id of {u16 method, u16 parameter, u16 target, u16 extra}. The
+ * methods are CFRU's (include/constants/pokemon.h), checked against the evolutions they give here.
  */
 
 const fs = require('fs');
@@ -20,6 +25,71 @@ const {resolve} = require('./rom-names');
 const OUTPUT = path.resolve(__dirname, '../src/js/data/learnsets/radicalred.js');
 const ROM_BASE = 0x08000000;
 const LEARNSETS = 0x0980175C;
+const EVOLUTIONS = 0x097CD9B0;
+const EVOLUTIONS_PER_SPECIES = 16;
+// CFRU's type ids (Fairy after the "???" gap).
+const TYPES = {0: 'Normal', 1: 'Fighting', 2: 'Flying', 3: 'Poison', 4: 'Ground', 5: 'Rock', 6: 'Bug', 7: 'Ghost',
+	8: 'Steel', 10: 'Fire', 11: 'Water', 12: 'Grass', 13: 'Electric', 14: 'Psychic', 15: 'Ice', 16: 'Dragon', 17: 'Dark',
+	23: 'Fairy'};
+const hour = h => String(h).padStart(2, '0') + ':00';
+
+// The game's own item names (the save data names only items a Pokémon can hold): its item table is
+// FireRed's layout, 0x2C bytes an item starting with a 14-byte name, moved and grown by the hack (the
+// last table whose item 1 is "Master Ball", as import/radical-red-item-descriptions.js finds it).
+const ITEM_SIZE = 0x2C;
+const TEXT = {0x00: ' ', 0x1B: 'é', 0xAD: '.', 0xAE: '-', 0xB4: '’', 0xBA: '/'};
+for (let i = 0; i < 26; i++) {
+	TEXT[0xBB + i] = String.fromCharCode(65 + i);
+	TEXT[0xD5 + i] = String.fromCharCode(97 + i);
+}
+for (let i = 0; i < 10; i++) TEXT[0xA1 + i] = String(i);
+const CODES = Object.fromEntries(Object.entries(TEXT).map(([code, char]) => [char, +code]));
+let itemTable = null;
+
+function romItemName(rom, id) {
+	if (itemTable === null) itemTable = rom.lastIndexOf(Buffer.from([...'Master Ball'].map(c => CODES[c]).concat(0xFF))) - ITEM_SIZE;
+	let name = '';
+	for (let i = 0; i < 14; i++) {
+		const b = rom[itemTable + id * ITEM_SIZE + i];
+		if (b === 0xFF) break;
+		name += TEXT[b] !== undefined ? TEXT[b] : '';
+	}
+	return resolve('item', name) || name;
+}
+
+// How a method reads, given its parameter, extra value and names for items, moves and species.
+function describeEvolution(method, param, extra, names) {
+	switch (method) {
+	case 1: return 'High friendship';
+	case 2: return 'High friendship by day';
+	case 3: return 'High friendship at night';
+	case 4: return 'Level ' + param;
+	case 5: return 'Trade';
+	case 6: return 'Trade holding ' + names.item(param);
+	case 7: return 'Use ' + names.item(param);
+	case 8: return 'Level ' + param + ' with Attack higher than Defense';
+	case 9: return 'Level ' + param + ' with Attack equal to Defense';
+	case 10: return 'Level ' + param + ' with Attack lower than Defense';
+	case 11: case 12: return 'Level ' + param + ' (by personality)';
+	case 13: return 'Level ' + param;
+	case 14: return 'Level ' + param + ' with a free party slot and a Pok\u00e9 Ball';
+	case 15: return 'High beauty';
+	case 16: return 'Level ' + param + ' in rain or fog';
+	case 17: return 'Level up knowing a ' + TYPES[param] + '-type move';
+	case 18: return 'Level ' + param + ' with a ' + TYPES[extra] + '-type Pok\u00e9mon in the party';
+	case 20: return 'Level ' + param + ' (male)';
+	case 21: return 'Level ' + param + ' (female)';
+	case 22: return 'Level ' + param + ' at night';
+	case 23: return 'Level ' + param + ' by day';
+	case 26: return 'Level up knowing ' + names.move(param);
+	case 27: return 'Level up with ' + names.species(param) + ' in the party';
+	case 28: return 'Level ' + param + ' from ' + hour(extra >> 8) + ' to ' + hour(extra & 0xFF);
+	case 30: return 'Level ' + param + ' with an Amped nature';
+	case 31: return 'Level ' + param + ' with a Low Key nature';
+	case 0xFE: return 'Mega Evolves holding ' + names.item(param);
+	default: return null;
+	}
+}
 
 function loadSaveData() {
 	const context = {};
@@ -52,11 +122,42 @@ function main() {
 		}
 		if (moves.length) learnsets[species] = moves;
 	});
+	const names = {
+		item: id => resolve('item', data.items[id]) || data.items[id] || romItemName(rom, id) || 'an item',
+		move: id => resolve('move', data.moves[id]) || data.moves[id] || 'a move',
+		species: id => data.species[id] || 'another Pok\u00e9mon',
+	};
+	// {species: [[into, how]]}, each once (a species' formes can share a name: Burmy's cloaks).
+	const evolutions = {};
+	const unknown = new Set();
+	data.species.forEach((species, id) => {
+		if (!species) return;
+		for (let k = 0; k < EVOLUTIONS_PER_SPECIES; k++) {
+			const at = EVOLUTIONS - ROM_BASE + (id * EVOLUTIONS_PER_SPECIES + k) * 8;
+			const method = rom.readUInt16LE(at);
+			const into = data.species[rom.readUInt16LE(at + 4)];
+			// (A Mega's entry back to its base form, with no item, is not an evolution.)
+			if (!method || !into || into === species || (method === 0xFE && !rom.readUInt16LE(at + 2))) continue;
+			const how = describeEvolution(method, rom.readUInt16LE(at + 2), rom.readUInt16LE(at + 6), names);
+			if (!how) {
+				unknown.add(method);
+				continue;
+			}
+			// Two ways to the same Pokémon (Onix: Metal Coat, or a trade holding it) on one line.
+			const list = evolutions[species] = evolutions[species] || [];
+			const same = list.find(e => e[0] === into);
+			if (!same) list.push([into, how]);
+			else if (same[1].split(' or ').indexOf(how) === -1) same[1] += ' or ' + how.charAt(0).toLowerCase() + how.slice(1);
+		}
+	});
 	fs.writeFileSync(OUTPUT,
-		'/* Each Pokémon\'s level-up moves as [level, move] (level 0: on evolving), read from the Radical Red\n' +
-		' * 4.1 ROM by import/radical-red-learnsets.js; do not edit by hand. Loaded when the Dex opens. */\n' +
-		'var LEARNSETS = ' + JSON.stringify(learnsets) + ';\n');
-	console.log(`${Object.keys(learnsets).length} learnsets` + (unresolved ? `, ${unresolved} moves without a name` : ''));
+		'/* For the Dex, read from the Radical Red 4.1 ROM by import/radical-red-learnsets.js; do not edit by\n' +
+		' * hand. Loaded when the Dex opens. LEARNSETS: each Pokémon\'s level-up moves as [level, move]\n' +
+		' * (level 0: on evolving). EVOLUTIONS: what each evolves into and how, as [species, how]. */\n' +
+		'var LEARNSETS = ' + JSON.stringify(learnsets) + ';\n' +
+		'var EVOLUTIONS = ' + JSON.stringify(evolutions) + ';\n');
+	console.log(`${Object.keys(learnsets).length} learnsets, ${Object.keys(evolutions).length} Pokémon that evolve` +
+		(unresolved ? `, ${unresolved} moves without a name` : '') + (unknown.size ? `; methods not described: ${[...unknown].join(', ')}` : ''));
 }
 
 main();

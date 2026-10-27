@@ -94,6 +94,7 @@
         "showSheet": false,
         "openSheet": false,
         "LEARNSETS": false,
+        "EVOLUTIONS": false,
         "getSetData": false,
         "getMastersheetLevel": false,
         "encounterLabel": false,

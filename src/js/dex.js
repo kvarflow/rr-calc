@@ -1,8 +1,9 @@
 /*
  * The Dex (a sheet, sheets.js): one Pokémon at a time, as this game has it: types, base stats,
- * abilities (with what they do), its level-up moves (from the game: data/learnsets/<game>.js,
- * loaded the first time the Dex opens), where to catch it and which trainers use it. Opens on the
- * Pokémon in Pokémon 2, or on one tapped in the other sheets.
+ * abilities (with what they do), its evolution line with how each stage evolves and its level-up
+ * moves (both from the game: data/learnsets/<game>.js, loaded the first time the Dex opens), where
+ * to catch it and which trainers use it. Opens on the Pokémon in Pokémon 2, or on one tapped in the
+ * other sheets.
  */
 
 var DEX_SPECIES_KEY = "dexSpecies";
@@ -103,6 +104,57 @@ function buildDexAbilities(name, species) {
 		list.append(item);
 	});
 	return list;
+}
+
+// The Pokémon a species evolves from (EVOLUTIONS lists what each evolves into).
+function getPreEvolution(name) {
+	for (var from in EVOLUTIONS) {
+		if (EVOLUTIONS[from].some(function (evolution) {
+			return evolution[0] === name;
+		})) return from;
+	}
+	return null;
+}
+
+// One Pokémon of the line and, under it, what it evolves into and how.
+function buildEvolutionNode(name, current, seen) {
+	seen[name] = true;
+	var node = $('<div class="dex-evo-node"></div>');
+	$('<button type="button" class="dex-evo-mon"></button>').toggleClass("dex-evo-current", name === current)
+		.attr("title", name === current ? name : "Open " + name + " in the Dex")
+		.append(createSpriteImage(name, function () {
+			$(this).remove();
+		}), $('<span class="dex-evo-name"></span>').text(name))
+		.click(function () {
+			if (name !== current && pokedex[name]) openDex(name);
+		}).appendTo(node);
+	(EVOLUTIONS[name] || []).forEach(function (evolution) {
+		if (seen[evolution[0]]) return;
+		$('<div class="dex-evo-branch"></div>').append(
+			$('<div class="dex-evo-how"></div>').text(evolution[1]),
+			buildEvolutionNode(evolution[0], current, seen)).appendTo(node);
+	});
+	return node;
+}
+
+// The whole line, from its first stage, with how each one evolves (from the game).
+function buildDexEvolutions(name) {
+	var section = $('<div class="dex-evolutions"></div>');
+	loadLearnsets(function () {
+		if (typeof EVOLUTIONS === "undefined") {
+			section.append('<p class="dex-none">No evolution data for this game yet.</p>');
+			return;
+		}
+		var root = name;
+		var guard = 0;
+		for (var from = getPreEvolution(root); from && guard < 10; from = getPreEvolution(root), guard++) root = from;
+		if (root === name && !EVOLUTIONS[name]) {
+			section.append('<p class="dex-none">Does not evolve.</p>');
+			return;
+		}
+		section.append(buildEvolutionNode(root, name, {}));
+	});
+	return section;
 }
 
 function buildDexMoves(name) {
@@ -221,6 +273,7 @@ function renderDex(container) {
 		return $('<section class="dex-card"></section>').append($("<h3></h3>").text(title), content).appendTo(grid);
 	};
 	card("Base stats", buildDexStats(species));
+	card("Evolution", buildDexEvolutions(name));
 	if (gen >= 3) card("Abilities", buildDexAbilities(name, species));
 	card("Level-up moves", buildDexMoves(name));
 	if (hasGameFeature("encounters")) card("In the wild", buildDexWild(name));
