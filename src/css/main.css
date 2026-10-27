@@ -1888,7 +1888,8 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
 .ss-quick-mon {
     position: relative;
 }
-.box-rank-value {
+.box-rank-value,
+.ss-quick-dmg {
     position: absolute;
     right: 1px;
     bottom: 1px;
@@ -3767,4 +3768,9 @@ html.small-screen #emulator-sync-panel {
     color: #fff;
     font-weight: bold;
     cursor: default;
+}
+/* The Box's best damage on Pokémon 2 (Battle tab), bottom left: KO counts take the right. */
+.ss-quick-dmg {
+    right: auto;
+    left: 1px;
 }

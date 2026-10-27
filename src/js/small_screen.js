@@ -393,6 +393,38 @@ function markRunOnTeam(card, p1Set) {
 		.click(toggleYourFaint));
 }
 
+/*
+ * The Box on the Battle tab, the Pokémon with the most damaging move against Pokémon 2 first (the
+ * matchups the color coding works out, color_coding.js), unless you rank the Box another way (Box
+ * tab: box_ranking.js), whose order it keeps. Without matchups (color coding off) the Box's order.
+ */
+function sortByDamageDealt(mons) {
+	if (typeof getBoxRank === "function" && getBoxRank()) return mons;
+	var rows = mons.get().map(function (element, index) {
+		var matchup = $(element).data("matchup");
+		return {element: element, index: index, value: matchup ? matchup.dealt.bestMaxPercent : -1};
+	});
+	rows.sort(function (a, b) {
+		return b.value - a.value || a.index - b.index;
+	});
+	return $(rows.map(function (row) {
+		return row.element;
+	}));
+}
+
+// Each one's best damage on Pokémon 2, under its sprite (the Box's ranking shows its own).
+function labelDamageDealt(card, mons) {
+	if (typeof getBoxRank === "function" && getBoxRank()) return;
+	card.find(".ss-quick-mon").each(function (i) {
+		var matchup = $(mons[i]).data("matchup");
+		if (!matchup) return;
+		var dealt = matchup.dealt;
+		$(this).append($('<span class="ss-quick-dmg"></span>').text(formatRankPercent(dealt.bestMaxPercent)))
+			.attr("title", $(this).attr("title") + " \u2014 up to " + formatRankPercent(dealt.bestMaxPercent) +
+				(dealt.bestMove ? " with " + dealt.bestMove : ""));
+	});
+}
+
 function renderQuickStrips() {
 	if (!$("html").hasClass("small-screen")) return;
 	var quick = $("#ss-quick").empty();
@@ -408,13 +440,14 @@ function renderQuickStrips() {
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
-	// The Box (and Box 2) under the teams.
+	// The Box (and Box 2) under the teams, hardest hitter on Pokémon 2 first.
 	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
-		var mons = $('.box-dropzone[data-section="' + box.section + '"] .box-pokemon');
+		var mons = sortByDamageDealt($('.box-dropzone[data-section="' + box.section + '"] .box-pokemon'));
 		if (!mons.length) return;
 		var card = buildTeamCard(box.label, mons, mons.map(function () {
 			return $(this).attr("data-set-id");
 		}).get().indexOf(p1Set)).addClass("ss-quick-box");
+		labelDamageDealt(card, mons);
 		if (typeof getRunMon === "function") markRunOnMons(card);
 		quick.append(card);
 	});

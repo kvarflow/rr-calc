@@ -76,6 +76,8 @@
         "registerSheet": false,
         "openTrainerInCalc": false,
         "getStoryIndex": false,
+        "formatRankPercent": false,
+        "getBoxRank": false,
         "readSharedTrainerKOs": false,
         "getArcs": false,
         "getProgressArc": false,
