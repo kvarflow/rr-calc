@@ -204,6 +204,8 @@ function renderFragsheet(container) {
 					td.append(createSpriteImage(row.species, function () {
 						$(this).remove();
 					}));
+				} else if (column.key === "species") {
+					td.append($('<span class="fs-species" role="button" tabindex="0" title="In the Dex"></span>').attr("data-species", row.species).text(row.species));
 				} else if (column.key === "status") {
 					td.append($('<span class="fs-status"></span>').attr("data-status", row.status).text(row.status === "Fainted" ? "✝ Fainted" : row.status));
 				} else {

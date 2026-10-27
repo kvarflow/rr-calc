@@ -138,6 +138,9 @@ function renderGamePage(template, game, mode, testGame) {
 		(game.data ? script('js/data/games/' + game.data + '.js') : '');
 	const links = game.links || {};
 	const fill = {
+		// Fetched when the Dex first opens (dex.js); listed so the browser keeps it for offline use.
+		PREFETCH_LINKS: game.features.learnsets ?
+			'    <link rel="prefetch" data-learnsets="" href="./js/data/learnsets/' + game.id + '.js?" />\n' : '',
 		GAME_ID: game.id,
 		TITLE: htmlText(game.title || game.name + ' Damage Calculator'),
 		GEN: String(game.gen),

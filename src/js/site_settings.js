@@ -142,6 +142,9 @@ var CHANGELOG = [
 			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
+		"Dex: any Pok\u00e9mon's types, base stats, abilities (with what they do), level-up moves from the game, " +
+			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
+			"open it there",
 		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
 			"cap that covers them, and the ones before the same fight come a place at a time"
 	]}

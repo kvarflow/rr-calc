@@ -3359,3 +3359,178 @@ html.sheet-open body {
         flex-basis: 100%;
     }
 }
+
+/* The Dex (dex.js). */
+.dex-tools {
+    margin-bottom: 12px;
+}
+.dex-search {
+    width: 100%;
+    max-width: 360px;
+    padding: 6px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 8px;
+    background: var(--sh-card);
+    color: inherit;
+}
+.dex-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+.dex-sprite img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.dex-title h2 {
+    margin: 0 0 4px;
+    font-size: 1.5em;
+}
+.dex-weight {
+    margin-left: 8px;
+    color: var(--sh-muted);
+    font-size: 0.9em;
+}
+.dex-types {
+    display: inline-flex;
+    gap: 4px;
+}
+.dex-type {
+    display: inline-block;
+    min-width: 58px;
+    padding: 1px 6px;
+    border-radius: 4px;
+    background: #888;
+    color: #fff;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-align: center;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+}
+.dex-type[data-type="Normal"] { background: #9fa19f; }
+.dex-type[data-type="Fighting"] { background: #ff8000; }
+.dex-type[data-type="Flying"] { background: #81b9ef; }
+.dex-type[data-type="Poison"] { background: #9141cb; }
+.dex-type[data-type="Ground"] { background: #915121; }
+.dex-type[data-type="Rock"] { background: #afa981; }
+.dex-type[data-type="Bug"] { background: #91a119; }
+.dex-type[data-type="Ghost"] { background: #704170; }
+.dex-type[data-type="Steel"] { background: #60a1b8; }
+.dex-type[data-type="Fire"] { background: #e62829; }
+.dex-type[data-type="Water"] { background: #2980ef; }
+.dex-type[data-type="Grass"] { background: #3fa129; }
+.dex-type[data-type="Electric"] { background: #e6b800; }
+.dex-type[data-type="Psychic"] { background: #ef4179; }
+.dex-type[data-type="Ice"] { background: #3dcef3; }
+.dex-type[data-type="Dragon"] { background: #5060e1; }
+.dex-type[data-type="Dark"] { background: #624d4e; }
+.dex-type[data-type="Fairy"] { background: #ef70ef; }
+.dex-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 10px;
+    align-items: start;
+}
+.dex-card {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid var(--sh-line);
+    background: var(--sh-card);
+    min-width: 0;
+}
+.dex-card h3 {
+    margin: 0 0 8px;
+    font-size: 1em;
+}
+.dex-stat {
+    display: grid;
+    grid-template-columns: 44px 36px 1fr;
+    align-items: center;
+    gap: 6px;
+    margin: 3px 0;
+}
+.dex-stat-name {
+    color: var(--sh-muted);
+}
+.dex-stat-value {
+    text-align: right;
+    font-weight: bold;
+}
+.dex-stat-bar {
+    height: 8px;
+    border-radius: 4px;
+    background: rgba(127, 127, 127, 0.15);
+    overflow: hidden;
+}
+.dex-stat-bar span {
+    display: block;
+    height: 100%;
+}
+.dex-stat-total {
+    border-top: 1px solid var(--sh-line);
+    padding-top: 3px;
+}
+.dex-ability {
+    margin: 4px 0;
+    font-size: 0.9em;
+}
+.dex-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9em;
+}
+.dex-table th, .dex-table td {
+    padding: 3px 6px;
+    border-bottom: 1px solid var(--sh-line);
+    text-align: left;
+}
+.dex-table th {
+    color: var(--sh-muted);
+    font-size: 0.85em;
+}
+.dex-table .dex-numeric {
+    text-align: right;
+}
+.dex-table .dex-type {
+    min-width: 0;
+}
+.dex-trainers {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+.dex-trainer {
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    padding: 4px 8px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.9em;
+    text-align: left;
+    cursor: pointer;
+}
+.dex-trainer:hover {
+    border-color: var(--sh-accent);
+}
+.dex-trainer-defeated {
+    opacity: 0.55;
+}
+.dex-none {
+    color: var(--sh-muted);
+    margin: 0;
+}
+.ms-wild-mon, .fs-species {
+    cursor: pointer;
+}
+.fs-species:hover, .ms-wild-mon:hover .ms-wild-name {
+    text-decoration: underline;
+}
+@media (max-width: 600px) {
+    .dex-grid {
+        grid-template-columns: 1fr;
+    }
+}
