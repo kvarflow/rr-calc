@@ -4511,7 +4511,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 10
+   "before": 51
   },
   "variants": [
    {
@@ -4622,7 +4622,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 32
+   "before": 34
   },
   "variants": [
    {
@@ -4644,7 +4644,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 32
+   "before": 34
   },
   "variants": [
    {
@@ -4824,7 +4824,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 21
+   "before": 25
   },
   "variants": [
    {
@@ -4847,7 +4847,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 21
+   "before": 25
   },
   "variants": [
    {
@@ -5178,7 +5178,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 53
   },
   "variants": [
    {
@@ -6548,7 +6548,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 32
+   "before": 34
   },
   "variants": [
    {
@@ -8412,7 +8412,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8475,7 +8475,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8497,7 +8497,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8539,7 +8539,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8560,7 +8560,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8581,7 +8581,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8604,7 +8604,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -8625,7 +8625,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 39
+   "before": 40
   },
   "variants": [
    {
@@ -9004,7 +9004,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 32
+   "before": 34
   },
   "variants": [
    {
@@ -9180,7 +9180,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9473,7 +9473,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": 102
   },
   "variants": [
    {
@@ -9496,7 +9496,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9518,7 +9518,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": 102
   },
   "variants": [
    {
@@ -9541,7 +9541,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9562,7 +9562,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9585,7 +9585,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9610,7 +9610,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": 102
   },
   "variants": [
    {
@@ -9632,7 +9632,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9654,7 +9654,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -9676,7 +9676,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": 102
   },
   "variants": [
    {
@@ -9699,7 +9699,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": 102
   },
   "variants": [
    {
@@ -9723,7 +9723,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -10364,7 +10364,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -10409,7 +10409,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {
@@ -10431,7 +10431,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 85
+   "before": null
   },
   "variants": [
    {

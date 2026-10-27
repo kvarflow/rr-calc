@@ -628,7 +628,8 @@ function applyRomFixes(order, setdex) {
  * the fights already there keep their places (saved KOs are kept by place), each with the boss fight
  * it comes before in Previous / Next (route.before): the gym leader where it stands (its gym), else
  * the first boss there (a Silph Co. floor, Victory Road), else the first boss past where it stands
- * in the game's order of places. Trainers with custom moves (the game's
+ * in the game's order of places; a team above that fight's level cap goes before the first required
+ * fight at a cap that covers it. Trainers with custom moves (the game's
  * pseudo-bosses, whose sets come from its EV spreads) are not added yet.
  */
 // Kanto and the Sevii Islands in the order the game takes you through them (FireRed's), the
@@ -691,6 +692,18 @@ function addRouteTrainers(order, setdex) {
 		let before = order.findIndex((t, i) => bossPlaces[i] === where && GYM_LEADERS.indexOf(t.name) !== -1);
 		if (before === -1) before = bossPlaces.indexOf(where);
 		if (before === -1 && rank(where) !== -1) before = progress.findIndex(p => p >= rank(where));
+		// A team above that fight's level cap is for later (Route 4's Lass Crissy, Lv 59, across the
+		// ledge): before the first required fight at a cap that covers it.
+		const highest = Math.max(...trainer.team.map(mon => mon.level));
+		const capAt = i => parseInt(order[i].levelCap) || 0;
+		const arcCap = i => {
+			for (let j = i; j < order.length; j++) if (!order[j].optional && capAt(j)) return capAt(j);
+			return Infinity;
+		};
+		if (before !== -1 && highest > arcCap(before)) {
+			const later = order.findIndex((t, i) => i > before && !t.optional && !t.route && capAt(i) >= highest);
+			before = later;
+		}
 		const name = (CLASS_NAMES[trainer.className] || trainer.className) + ' ' + trainer.name;
 		const sets = trainer.team.filter(mon => SPECIES[mon.species]).map(mon => {
 			setdex[mon.species] = setdex[mon.species] || {};

@@ -136,7 +136,14 @@ var CHANGELOG = [
 			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten",
 		"Getting ready for more games: a game picker beside the mode buttons (under More on small screens), with " +
 			"Run & Bun, Emerald Kaizo and Platinum Kaizo coming. Each game will have its own box, runs and settings, " +
-			"and follow its own generation's rules (critical hit odds included)"
+			"and follow its own generation's rules (critical hit odds included)",
+		"Mastersheet (from the Progress box): the whole game in order, arc by arc and place by place, with every " +
+			"trainer's team (level, item, ability, nature, moves) and the wild Pok\u00e9mon there, your Nuzlocke dupes " +
+			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it",
+		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
+			"KOs and who made it faint. Sort by any column, or export it as a CSV",
+		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
+			"cap that covers them, and the ones before the same fight come a place at a time"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

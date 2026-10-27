@@ -405,6 +405,16 @@ function getTrainerNavOrder(all) {
 		var before = trainer.route.before === null ? "end" : trainer.route.before;
 		(routes[before] = routes[before] || []).push(index);
 	});
+	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's).
+	Object.keys(routes).forEach(function (before) {
+		var places = [];
+		routes[before].forEach(function (index) {
+			if (places.indexOf(TRAINER_ORDER[index].location) === -1) places.push(TRAINER_ORDER[index].location);
+		});
+		routes[before].sort(function (a, b) {
+			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) || a - b;
+		});
+	});
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
 		if (routes[index]) order = order.concat(routes[index]);
