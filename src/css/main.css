@@ -3570,10 +3570,35 @@ html.sheet-open body {
     }
 }
 
-/* Emulator sync (emulator_sync.js). */
+/* Emulator sync (emulator_sync.js): a quiet box of steps under the buttons. */
 .emulator-sync-panel {
-    margin: 6px 0;
-    font-size: 0.9em;
+    margin: 8px 0;
+    padding: 8px 10px;
+    border-radius: 10px;
+    background: rgba(127, 127, 127, 0.08);
+    font-size: 0.85em;
+    line-height: 1.4;
+    text-align: left;
+}
+#emulator-sync-status {
+    display: inline-block;
+    margin-bottom: 4px;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: rgba(178, 106, 0, 0.12);
+    font-weight: 600;
+}
+#emulator-sync-status.emulator-sync-connected {
+    background: rgba(30, 123, 57, 0.12);
+}
+.emulator-sync-how a {
+    display: inline-block;
+    margin-top: 2px;
+    padding: 1px 10px;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    text-decoration: none;
+    white-space: nowrap;
 }
 #emulator-sync[aria-pressed="true"] {
     font-weight: bold;
@@ -3589,10 +3614,8 @@ html.sheet-open body {
     opacity: 0.75;
 }
 
-/* Emulator sync needs mGBA's scripting, which only the computer versions have. */
-html.small-screen #emulator-sync,
-html.small-screen #emulator-sync-panel {
-    display: none !important;
+.emulator-sync-how {
+    margin: 4px 0;
 }
 
 /* Mastersheet folding: places under their name, trainers' teams as small sprites. */

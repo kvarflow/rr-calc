@@ -1,7 +1,8 @@
 /* global Uint8Array */ // a browser built-in the ES5 lint config does not know
 /*
  * Emulator sync, after hzla's Dynamic Calc: with Radical Red running in mGBA on a computer and
- * emulator/radicalred_sync.lua loaded there, the calc follows the battle. Once a second it reads
+ * emulator/radicalred_sync.lua loaded there, or in RetroArch (the Thor, a phone, a computer) with
+ * emulator/retroarch_sync.py running beside it, the calc follows the battle. Once a second it reads
  * http://127.0.0.1:31125/state and, in a trainer battle, opens that trainer, loads the Pokémon each
  * side has out (yours from your box, by personality value, so import your .sav first) and sets each
  * one's HP, stat changes and status as the game has them. Single battles only.
@@ -11,7 +12,7 @@
 
 var EMULATOR_SYNC_KEY = "emulatorSync";
 var EMULATOR_URL = "http://127.0.0.1:31125/state";
-var EMULATOR_SCRIPT = "emulator/radicalred_sync.lua";
+var EMULATOR_SCRIPTS = {mgba: "emulator/radicalred_sync.lua", retroarch: "emulator/retroarch_sync.py"};
 var EMULATOR_STAT_ROWS = [null, "at", "df", "sp", "sa", "sd"];
 var emulatorSync = {timer: null, busy: false, applied: {}, lastRaw: ""};
 
@@ -83,6 +84,7 @@ function applyEmulatorBattler(panel, battler) {
 }
 
 function setEmulatorStatus(text, connected) {
+	if (connected && emulatorSync.via) text = text.replace(/^Connected/, "Connected to " + emulatorSync.via);
 	$("#emulator-sync-status").text(text).toggleClass("emulator-sync-connected", !!connected);
 }
 
@@ -149,14 +151,19 @@ function pollEmulator() {
 			if (raw === emulatorSync.lastRaw) return;
 			emulatorSync.lastRaw = raw;
 			try {
-				applyEmulatorState(JSON.parse(raw));
+				var state = JSON.parse(raw);
+				emulatorSync.via = state.via === "retroarch" ? "RetroArch" : "mGBA";
+				applyEmulatorState(state);
 			} catch (e) {
 				setEmulatorStatus("Connected, but could not read the game: " + e.message, true);
 			}
 		})
-		.fail(function () {
+		.fail(function (xhr) {
 			emulatorSync.lastRaw = "";
-			setEmulatorStatus("Waiting for mGBA: load " + EMULATOR_SCRIPT.split("/").pop() + " in Tools > Scripting", false);
+			emulatorSync.via = null;
+			// The RetroArch script is running but RetroArch is not answering it: it says why.
+			setEmulatorStatus(xhr.status === 503 && xhr.responseText ? xhr.responseText :
+				"Waiting for the emulator: start its sync script (below)", false);
 		})
 		.always(function () {
 			emulatorSync.busy = false;
@@ -180,15 +187,21 @@ function setEmulatorSync(on) {
 $(document).ready(function () {
 	if (getCurrentGame().features.saveImport !== "cfru" || !$("#import-save").length) return;
 	var button = $('<button type="button" id="emulator-sync" class="bs-btn bs-btn-default" aria-pressed="false" ' +
-		'title="Follow the battle in mGBA on this computer"></button>').click(function () {
+		'title="Follow the battle in RetroArch or mGBA"></button>').click(function () {
 		setEmulatorSync(!isEmulatorSyncOn());
 	});
+	var how = function (title, script, steps) {
+		return $('<div class="emulator-sync-how"></div>').append($("<b></b>").text(title + ": "), document.createTextNode(steps + " "),
+			$('<a target="_blank" rel="noopener"></a>').text("Get " + script.split("/").pop()).attr({href: "./" + script, download: ""}));
+	};
 	var panel = $('<div id="emulator-sync-panel" class="emulator-sync-panel"></div>').append(
-		$('<span id="emulator-sync-status"></span>'),
-		" ",
-		$('<a target="_blank" rel="noopener">Get the mGBA script</a>').attr({href: "./" + EMULATOR_SCRIPT, download: ""}),
-		$('<span class="emulator-sync-help"></span>').text(" For mGBA 0.10+ on a computer: Tools > Scripting, File > Load script. " +
-			"Import your .sav first so your Pokémon are in your box."));
+		$('<div id="emulator-sync-status"></div>'),
+		how("RetroArch (the Thor, phones, computers)", EMULATOR_SCRIPTS.retroarch,
+			"with the mGBA core, turn on Settings > Network > Network Commands, then run this script on the same " +
+			"device: on Android in Termux (pkg install python, termux-setup-storage, then " +
+			"python ~/storage/downloads/retroarch_sync.py), on a computer with python3."),
+		how("mGBA 0.10+ on a computer", EMULATOR_SCRIPTS.mgba, "Tools > Scripting, File > Load script, and pick it."),
+		$('<div class="emulator-sync-help"></div>').text("Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now."));
 	$("#import-save").after(button);
 	button.closest(".import-actions").after(panel);
 	setEmulatorSync(isEmulatorSyncOn());
