@@ -247,13 +247,16 @@ function renderMastersheet(container) {
 	var tools = $('<div class="ms-tools"></div>').appendTo(container);
 	var search = $('<input type="search" class="ms-search" placeholder="Search trainers, places, Pokémon" aria-label="Search the Mastersheet" />').appendTo(tools);
 	var jump = $('<select class="ms-jump" aria-label="Jump to an arc"></select>').appendTo(tools);
+	// Filters as chips, lit while on.
 	var toggle = function (key, label) {
-		return $('<label class="ms-filter"></label>').append(
+		var chip = $('<label class="ms-filter"></label>').toggleClass("ms-filter-on", !!filters[key]);
+		return chip.append(
 			$('<input type="checkbox" />').prop("checked", !!filters[key]).change(function () {
 				filters[key] = this.checked;
+				chip.toggleClass("ms-filter-on", this.checked);
 				writeMastersheetFilters(filters);
 				rebuild();
-			}), " " + label);
+			}), document.createTextNode(label));
 	};
 	tools.append(toggle("routes", "Route trainers"), hasWildData() ? toggle("wild", "Wild Pokémon") : "", toggle("hideDefeated", "Hide defeated"));
 	var list = $('<div class="ms-arcs"></div>').appendTo(container);
