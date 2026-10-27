@@ -3534,3 +3534,22 @@ html.sheet-open body {
         grid-template-columns: 1fr;
     }
 }
+
+/* Emulator sync (emulator_sync.js). */
+.emulator-sync-panel {
+    margin: 6px 0;
+    font-size: 0.9em;
+}
+#emulator-sync[aria-pressed="true"] {
+    font-weight: bold;
+}
+#emulator-sync-status {
+    color: #b26a00;
+}
+#emulator-sync-status.emulator-sync-connected {
+    color: #1e7b39;
+}
+.emulator-sync-help {
+    display: block;
+    opacity: 0.75;
+}
