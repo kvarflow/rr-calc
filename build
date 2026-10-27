@@ -109,7 +109,8 @@ const TEST_GAMES = [
 ];
 
 function loadGames() {
-	const context = {};
+	// games.js also sets up the game picker when the page is ready: nothing to do here.
+	const context = {$: () => ({ready() {}}), document: {}};
 	vm.createContext(context);
 	vm.runInContext(fs.readFileSync(path.resolve(rootDir, 'src/js/games.js'), 'utf8') + ';this.GAMES = GAMES;', context);
 	return context.GAMES;
