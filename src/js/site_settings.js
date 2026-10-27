@@ -152,8 +152,9 @@ var CHANGELOG = [
 			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), level-up moves from the game, " +
 			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
 			"open it there",
-		"Emulator sync (Import / Export), for mGBA 0.10+ on a computer: load the script it links in mGBA's Tools > " +
-			"Scripting and the calc follows your battles: the trainer, both Pok\u00e9mon out, their levels, HP, stat " +
+		"Emulator sync (Import / Export): the calc follows your battles in RetroArch (the Thor, phones, computers: " +
+			"turn on Network Commands and run its small script, in Termux on Android) or in mGBA 0.10+ on a computer " +
+			"(load its script under Tools > Scripting): the trainer, both Pok\u00e9mon out, their levels, HP, stat " +
 			"changes and status. Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now",
 		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
 			"cap that covers them, and the ones before the same fight come a place at a time"
