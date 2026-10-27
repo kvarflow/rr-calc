@@ -146,6 +146,9 @@ var CHANGELOG = [
 		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +
 			"It puts first the Pok\u00e9mon with the most damaging move against Pok\u00e9mon 2, each with its best damage, and " +
 			"reorders when Pok\u00e9mon 2 changes (ranking the Box another way on the Box tab keeps that order)",
+		"What a draining move (Giga Drain, Drain Punch...) or Shell Bell heals, in HP and as a share of yours, under " +
+			"the damage and on the Battle tab's result card. It comes from the damage dealt, so never more than the " +
+			"target had left; Big Root adds 30% as in Radical Red",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
 		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +

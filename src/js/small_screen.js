@@ -528,6 +528,8 @@ function renderResultSummary() {
 				.toggleClass("ss-ko-1", /OHKO/.test(ko)).toggleClass("ss-ko-2", /2HKO/.test(ko)) : "",
 			$('<span class="ss-result-pct"></span>').text(formatDamageRange(parts[5] + " - " + parts[6] + "%"))),
 		$('<div class="ss-result-who"></div>').text(who.join(" \u00B7 ")),
+		// What a draining move or Shell Bell heals (index_randoms_controls.js).
+		$("#healingResult").text() ? $('<div class="ss-result-heal"></div>').text("\u2665 " + $("#healingResult").text()) : "",
 		rolls ? $('<div class="ss-result-rolls" title="Tap to copy the rolls"></div>').text("Rolls: " + rolls) : "");
 }
 

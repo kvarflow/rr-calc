@@ -3797,3 +3797,16 @@ html.sheet-open body {
     right: auto;
     left: 1px;
 }
+
+/* What a draining move or Shell Bell heals, under the damage (desktop) and on the result card. */
+.healing-result {
+    margin-top: 2px;
+    color: #1e7b39;
+    font-weight: 600;
+}
+.ss-result-heal {
+    margin-top: 2px;
+    color: var(--ss-good, #1e7b39);
+    font-size: 12px;
+    font-weight: 600;
+}

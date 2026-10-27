@@ -118,8 +118,9 @@ export function getRecovery(
 
   const ignoresShellBell =
     gen.num === 3 && move.named('Doom Desire', 'Future Sight');
+  // Healing comes from the damage dealt, which is no more than the target's HP left.
   if (attacker.hasItem('Shell Bell') && !ignoresShellBell) {
-    const max = Math.round(defender.maxHP() / 8);
+    const max = Math.round(defender.curHP() / 8);
     for (let i = 0; i < minD.length; i++) {
       recovery[0] += Math.min(Math.round(minD[i] * move.hits / 8), max);
       recovery[1] += Math.min(Math.round(maxD[i] * move.hits / 8), max);
@@ -135,13 +136,15 @@ export function getRecovery(
 
   if (move.drain) {
     const percentHealed = move.drain[0] / move.drain[1];
-    const max = Math.round(defender.maxHP() * percentHealed);
     for (let i = 0; i < minD.length; i++) {
       const range = [minD[i], maxD[i]];
       for (const j in recovery) {
-        let drained = Math.round(range[j] * percentHealed);
-        if (attacker.hasItem('Big Root')) drained = Math.trunc(drained * 5324 / 4096);
-        recovery[j] += Math.min(drained * move.hits, max);
+        // A share of the damage dealt (no more than the target had left), then Big Root's boost.
+        const dealt = Math.min(range[j] * move.hits, defender.curHP());
+        let drained = Math.round(dealt * percentHealed);
+        // Radical Red (CFRU) multiplies by 130 / 100.
+        if (attacker.hasItem('Big Root')) drained = Math.trunc(drained * 130 / 100);
+        recovery[j] += drained;
       }
     }
   }
