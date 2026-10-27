@@ -408,7 +408,7 @@ function renderQuickStrips() {
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
-	// Upright phones have room under the teams for the Box (and Box 2) too; the CSS shows them only there.
+	// The Box (and Box 2) under the teams.
 	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
 		var mons = $('.box-dropzone[data-section="' + box.section + '"] .box-pokemon');
 		if (!mons.length) return;

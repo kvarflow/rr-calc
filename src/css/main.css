@@ -1605,10 +1605,13 @@ html.small-screen[data-ss-tab="results"] .ss-quick {
     gap: 8px;
     margin-top: 8px;
 }
-/* The Box under the teams: only on upright phones (below), where there is room for it. */
+/* The Box (and Box 2) under the teams, the width of both: eight to a row on the Thor, six on an
+   upright phone (below). */
 .ss-quick-side.ss-quick-box {
-    display: none;
     flex-basis: 100%;
+}
+.ss-quick-box .ss-quick-grid {
+    grid-template-columns: repeat(8, 1fr);
 }
 .ss-quick-side {
     flex: 1 1 calc(50% - 4px);
@@ -2331,9 +2334,6 @@ html.small-screen #importedSetsOptions {
 /* Phones held upright: narrow and tall. The tabs move to the bottom, within thumb reach; the
    You and Foe details go under the stats, two to a row; Results uses slightly smaller text. */
 @media (max-width: 500px) and (orientation: portrait) {
-    html.small-screen .ss-quick-side.ss-quick-box {
-        display: block;
-    }
     html.small-screen .ss-quick-box .ss-quick-grid {
         grid-template-columns: repeat(6, 1fr);
     }

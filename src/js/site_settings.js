@@ -143,6 +143,7 @@ var CHANGELOG = [
 			"Tap a place to fold it away; beaten trainers fold their team to small sprites under their name (the arrow " +
 			"opens it again), their Pok\u00e9mon crossed out as on the Battle tab. What you fold is remembered",
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
+		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
 		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
