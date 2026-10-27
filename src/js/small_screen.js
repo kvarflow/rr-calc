@@ -354,6 +354,7 @@ function buildSettingsCard() {
 		return this.nodeType === 3; // its "Layout" label: the row has its own
 	}).remove();
 	var card = $('<fieldset id="ss-settings" class="ss-settings" data-ss-part="more"><legend align="center">Settings</legend></fieldset>').append(
+		row("Game", page.find(".gameSelection")),
 		row("Mode", segmentedSelector(page.find(".modeSelection"))),
 		row("Damage as", segmentedSelector(page.find(".notationSelection"))),
 		row("Layout", layout),

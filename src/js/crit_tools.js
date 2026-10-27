@@ -3,10 +3,15 @@
  * the chance that move crits (click it to toggle Crit), and every result row at the top gets
  * a Crit button of its own, kept in step with the move's.
  *
- * Chances use the Gen 7+ table Radical Red follows: 1/24, 1/8, 1/2, then always, by stage.
+ * Chances by stage follow the game's generation: from Gen 7 (Radical Red) 1/24, 1/8, 1/2, then
+ * always; Gen 6 1/16, 1/8, 1/2, always; Gens 2 to 5 1/16, 1/8, 1/4, 1/3, 1/2.
  */
 
-var CRIT_STAGE_CHANCES = [1 / 24, 1 / 8, 1 / 2, 1];
+var CRIT_STAGE_CHANCES = {7: [1 / 24, 1 / 8, 1 / 2, 1], 6: [1 / 16, 1 / 8, 1 / 2, 1], 2: [1 / 16, 1 / 8, 1 / 4, 1 / 3, 1 / 2]};
+
+function getCritStageChances() {
+	return gen >= 7 ? CRIT_STAGE_CHANCES[7] : gen === 6 ? CRIT_STAGE_CHANCES[6] : CRIT_STAGE_CHANCES[2];
+}
 var SHOW_CRIT_RATES_KEY = "showCritRates";
 // Moves with a raised critical hit ratio (+1 stage).
 var HIGH_CRIT_MOVES = [
@@ -38,7 +43,8 @@ function getCritChance(attacker, defender, move, focusEnergy) {
 	if (/^(Farfetch’d|Sirfetch’d)/.test(attacker.name) && (attacker.item === "Leek" || attacker.item === "Leek Stick")) stage += 2;
 	if (attacker.name === "Chansey" && attacker.item === "Lucky Punch") stage += 2;
 	if (focusEnergy) stage += 2;
-	return CRIT_STAGE_CHANCES[Math.min(stage, CRIT_STAGE_CHANCES.length - 1)];
+	var chances = getCritStageChances();
+	return chances[Math.min(stage, chances.length - 1)];
 }
 
 function formatCritChance(chance) {

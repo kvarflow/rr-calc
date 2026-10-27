@@ -730,6 +730,8 @@ function bindTrainerEvents() {
 }
 
 $(document).ready(function () {
+	// A game with no boss fights yet (games.js) has no trainer panel.
+	if (!TRAINER_ORDER.length) return;
 	$("#p2").after(buildTrainerPanel());
 	placeTrainerPanel(readSetting(TRAINER_ON_TOP_KEY) === "true");
 	$(".field-info legend").after('<div id="battle-effect-lock" class="battle-effect-lock"></div>');

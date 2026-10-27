@@ -4,6 +4,7 @@
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
+const vm = require('vm');
 
 const rootDir = '.';
 
@@ -94,6 +95,90 @@ function cpdir(src, dest) {
 	}
 }
 
+/*
+ * Every game's pages (src/js/games.js) from the one page template (src/game.template.html): each
+ * mode's page with its title, generation, mode buttons, sets, game data and trainers. `--test-games`
+ * also writes pages for vanilla Gen 3 and Gen 4 test games (no data of their own), for the tests;
+ * they are never published.
+ */
+const TEST_GAMES = [
+	{id: 'test-gen3', name: 'Test Gen 3', title: 'Test Gen 3 Calculator', gen: 3, status: 'ready',
+		modes: [{id: 'test-gen3', label: 'Test Gen 3', page: 'test-gen3'}], features: {}},
+	{id: 'test-gen4', name: 'Test Gen 4', title: 'Test Gen 4 Calculator', gen: 4, status: 'ready',
+		modes: [{id: 'test-gen4', label: 'Test Gen 4', page: 'test-gen4'}], features: {}},
+];
+
+function loadGames() {
+	const context = {};
+	vm.createContext(context);
+	vm.runInContext(fs.readFileSync(path.resolve(rootDir, 'src/js/games.js'), 'utf8') + ';this.GAMES = GAMES;', context);
+	return context.GAMES;
+}
+
+const htmlText = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+const script = src => '    <script type="text/javascript" src="./' + src + '?"></script>\n';
+
+function renderGamePage(template, game, mode, testGame) {
+	const radios = (game.oneVsOne ? [{id: 'one-vs-one', label: 'One vs One'}] : []).concat(game.modes);
+	const modeRadios = radios.map((m, i) => {
+		const position = radios.length === 1 ? 'btn-left btn-right' : i === 0 ? 'btn-left' : i === radios.length - 1 ? 'btn-right' : 'btn-mid';
+		return '            <input class="mode visually-hidden" type="radio" name="mode" id="' + m.id + '"' +
+			(m.id === mode.id ? ' checked="checked"' : '') + ' /><label class="btn ' + position + '" for="' + m.id + '">' +
+			htmlText(m.label) + '</label>\n';
+	}).join('');
+	// The mode's own sets, then Showdown's for the other generations (its own generation's only when
+	// the mode has none).
+	let sets = mode.sets ? script('js/data/sets/' + mode.sets + '.js') : '';
+	for (let gen = 9; gen >= 1; gen--) {
+		if (gen === game.gen && mode.sets) continue;
+		sets += script('js/data/sets/gen' + gen + '.js');
+	}
+	const gameData = (testGame ? '    <script type="text/javascript">GAMES.push(' + JSON.stringify(game) + ');</script>\n' : '') +
+		(game.data ? script('js/data/games/' + game.data + '.js') : '');
+	const links = game.links || {};
+	const fill = {
+		GAME_ID: game.id,
+		TITLE: htmlText(game.title || game.name + ' Damage Calculator'),
+		GEN: String(game.gen),
+		MODE_RADIOS: modeRadios,
+		SETS_SCRIPTS: sets,
+		GAME_DATA_SCRIPTS: gameData,
+		// A game with no boss fights yet: no trainers, and no trainer panel.
+		TRAINERS_SCRIPTS: mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') :
+			'    <script type="text/javascript">var TRAINER_ORDER = [];</script>\n',
+		DEX_LINK: links.dex ? '        <li><a class="button" href="' + links.dex + '">Pok&eacute;dex</a></li>\n' : '',
+		PLAY_LINK: links.play ? '    <ul class="nav nav-play">\n        <li><a class="button greenbutton nav-first nav-last" href="' +
+			links.play + '">Play</a></li>\n    </ul>\n' : '',
+	};
+	return template.replace(/\{\{([A-Z_]+)\}\}/g, (match, key) => {
+		if (!(key in fill)) throw new Error('game.template.html: no value for {{' + key + '}}');
+		return fill[key];
+	});
+}
+
+function makeGamePages(withTestGames) {
+	const template = fs.readFileSync(path.resolve(rootDir, 'dist/game.template.html'), 'utf8');
+	const pages = [];
+	const games = loadGames().filter(game => game.status === 'ready').map(game => ({game, test: false}))
+		.concat(TEST_GAMES.map(game => ({game, test: true})));
+	for (const {game, test} of games) {
+		for (const mode of game.modes) {
+			const output = 'dist/' + mode.page + '.html';
+			if (test && !withTestGames) {
+				// A test page from an earlier build is not left to be published.
+				for (const file of [output, 'dist/' + mode.page + '.template.html']) {
+					if (fs.existsSync(path.resolve(rootDir, file))) fs.unlinkSync(path.resolve(rootDir, file));
+				}
+				continue;
+			}
+			fs.writeFileSync(path.resolve(rootDir, 'dist/' + mode.page + '.template.html'), renderGamePage(template, game, mode, test));
+			makeCachebuster('dist/' + mode.page + '.template.html', output);
+			if (!test) pages.push(mode.page + '.html');
+		}
+	}
+	return pages;
+}
+
 if (process.argv[2] !== 'view') {
 	require('child_process').execSync('npm --prefix calc/ run compile', {stdio: 'inherit'});
 }
@@ -102,6 +187,5 @@ cpdir('src', 'dist');
 cpdir('calc/dist', 'dist/calc');
 makeCachebuster('dist/honkalculate.template.html', 'dist/honkalculate.html');
 makeCachebuster('dist/index.template.html', 'dist/index.html');
-makeCachebuster('dist/normal.template.html', 'dist/normal.html');
-makeCachebuster('dist/hardcore.template.html', 'dist/hardcore.html');
-makeServiceWorker(['index.html', 'normal.html', 'hardcore.html']);
+const gamePages = makeGamePages(process.argv.includes('--test-games'));
+makeServiceWorker(['index.html'].concat(gamePages));

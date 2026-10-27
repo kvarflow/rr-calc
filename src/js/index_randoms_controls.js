@@ -191,8 +191,14 @@ $(".mode").change(function () {
 	}
 });
 
-// The page serving each mode. Other modes (One vs All, All vs One) live on honkalculate.
-var MODE_PAGES = {"one-vs-one": "index", normal: "normal", hardcore: "hardcore"};
+// The page serving each mode: every game's (games.js) and One vs One. Other modes (One vs All, All vs
+// One) live on honkalculate.
+var MODE_PAGES = {"one-vs-one": "index"};
+GAMES.forEach(function (game) {
+	game.modes.forEach(function (mode) {
+		MODE_PAGES[mode.id] = mode.page;
+	});
+});
 var LAST_MODE_KEY = "lastMode";
 // Modes that have been removed, and the mode old links to them now open.
 var RETIRED_MODES = {randoms: "normal"};

@@ -325,10 +325,20 @@ th {
     background: #ffff99;
 }
 
-.genSelection, .notationSelection, .modeSelection {
+.genSelection, .notationSelection, .modeSelection, .gameSelection {
     display: inline-block;
     position: relative;
     top: -8px;
+}
+/* The game picker (games.js). */
+.gameSelection {
+    margin-right: 0.5em;
+}
+#game-picker {
+    width: auto;
+    max-width: 11em;
+    padding: 2px 4px;
+    font-size: 0.9em;
 }
 
 /* header */

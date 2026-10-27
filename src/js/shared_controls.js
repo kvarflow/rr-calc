@@ -1275,7 +1275,8 @@ $(".gen").change(function () {
 	gen = ~~$(this).val() || 9;
 	GENERATION = calc.Generations.get(gen);
 	var params = new URLSearchParams(window.location.search);
-	if (gen === 9) {
+	// The page's own generation (its game's, games.js) needs no ?gen= in the address.
+	if (gen === getPageGen()) {
 		params.delete('gen');
 		params = '' + params;
 		if (window.history && window.history.replaceState) {
@@ -1615,9 +1616,16 @@ function loadCustomList(id) {
 	});
 }
 
+// The generation the page opens in: its game's (the gen button the page is written with checked).
+function getPageGen() {
+	return ~~$("input.gen[checked]").val() || 9;
+}
+
 $(document).ready(function () {
 	var params = new URLSearchParams(window.location.search);
-	var g = GENERATION[params.get('gen')] || 9;
+	// A ?gen= this page has a button for; else the page's own.
+	var g = GENERATION[params.get('gen')];
+	if (!g || !$("#gen" + g).length) g = getPageGen();
 	$("#gen" + g).prop("checked", true);
 	$("#gen" + g).change();
 	$("#percentage").prop("checked", true);

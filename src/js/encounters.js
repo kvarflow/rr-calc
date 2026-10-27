@@ -29,8 +29,9 @@ var NUZLOCKE_ENCOUNTERS_KEY = "nuzlockeEncounters";
 var RUN_SPECIES_KEY = "runSpecies";
 
 // A tab of the small-screen layout, so not on desktop.
+// The Wild tab: on small screens, for a game with encounter data (games.js).
 function isWildTabShown() {
-	return document.documentElement.classList.contains("small-screen");
+	return document.documentElement.classList.contains("small-screen") && hasGameFeature("encounters");
 }
 
 function encounterLabel(location) {

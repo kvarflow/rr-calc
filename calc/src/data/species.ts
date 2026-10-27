@@ -10698,9 +10698,13 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   },
 };
 
-const SV: {[name: string]: SpeciesData} = extend(true, {}, SS, SV_PATCH, PLA_PATCH, RR_PATCH);
+const SV_VANILLA: {[name: string]: SpeciesData} = extend(true, {}, SS, SV_PATCH, PLA_PATCH);
+const SV: {[name: string]: SpeciesData} = extend(true, {}, SV_VANILLA, RR_PATCH);
 
 export const SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
+// Each generation's own data, without Radical Red's (gen 9): another game's data goes on top of these
+// (setGameSpecies).
+export const VANILLA_SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV_VANILLA];
 
 export class Species implements I.Species {
   private readonly gen: I.GenerationNum;
@@ -10764,13 +10768,33 @@ if (!this.otherFormes.length) this.otherFormes = undefined;
 const SPECIES_BY_ID: Array<{[id: string]: Specie}> = [];
 
 let gen = 0;
-for (const species of SPECIES) {
+function buildSpeciesMap(g: number) {
+  gen = g;
+  const species = SPECIES[g] as {[name: string]: SpeciesData};
   const map: {[id: string]: Specie} = {};
   for (const specie in species) {
-    if (gen >= 2 && species[specie].bs.sl) delete species[specie].bs.sl;
+    if (gen >= 2 && species[specie].bs.sl) delete (species[specie].bs as any).sl;
     const m = new Specie(specie, species[specie]);
     map[m.id] = m;
   }
-  SPECIES_BY_ID.push(map);
-  gen++;
+  SPECIES_BY_ID[g] = map;
+}
+for (let g = 0; g < SPECIES.length; g++) buildSpeciesMap(g);
+
+/**
+ * A game's own Pokémon for a generation: its entries (full records; null takes one out) on top of
+ * that generation's own data (`fromVanilla`, the default) or what is there now. Replaces the table,
+ * so it is for before a page reads SPECIES.
+ */
+export function setGameSpecies(
+  g: number, entries: {[name: string]: SpeciesData | null}, fromVanilla = true
+) {
+  const table: {[name: string]: SpeciesData} = {...(fromVanilla ? VANILLA_SPECIES[g] : SPECIES[g])};
+  for (const name in entries) {
+    const data = entries[name];
+    if (data) table[name] = data;
+    else delete table[name];
+  }
+  SPECIES[g] = table;
+  buildSpeciesMap(g);
 }

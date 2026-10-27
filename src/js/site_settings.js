@@ -133,7 +133,10 @@ var CHANGELOG = [
 			"Protect, as the game does), their class's IVs, and the nature and ability the game works out from their " +
 			"name. Previous / Next take you through them before the boss fight they lead up to (Cerulean City's " +
 			"trainers before Misty), at that fight's level cap; untick \u201cRoute trainers in Previous / Next\u201d " +
-			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten"
+			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten",
+		"Getting ready for more games: a game picker beside the mode buttons (under More on small screens), with " +
+			"Run & Bun, Emerald Kaizo and Platinum Kaizo coming. Each game will have its own box, runs and settings, " +
+			"and follow its own generation's rules (critical hit odds included)"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

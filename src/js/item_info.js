@@ -13,6 +13,8 @@ function updateItemInfo(panel) {
 }
 
 $(document).ready(function () {
+	// The descriptions are the game's (games.js): none yet for other games.
+	if (!hasGameFeature("itemText")) return;
 	$(".poke-info").each(function () {
 		var panel = $(this);
 		var select = panel.find("select.item");

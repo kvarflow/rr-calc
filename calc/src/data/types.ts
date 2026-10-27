@@ -468,11 +468,19 @@ class Type implements I.Type {
 
 const TYPES_BY_ID: Array<{[id: string]: Type}> = [];
 
-for (const typeChart of TYPE_CHART) {
+function buildTypesMap(gen: number) {
+  const typeChart = TYPE_CHART[gen];
   const map: {[id: string]: Type} = {};
   for (const type in typeChart) {
     const t = new Type(type, {...typeChart[type as I.TypeName]!});
     map[t.id] = t;
   }
-  TYPES_BY_ID.push(map);
+  TYPES_BY_ID[gen] = map;
+}
+for (let gen = 0; gen < TYPE_CHART.length; gen++) buildTypesMap(gen);
+
+/** A game's own type chart for a generation (a Gen 3 hack with the Fairy type). */
+export function setGameTypeChart(gen: number, chart: TypeChart) {
+  TYPE_CHART[gen] = chart;
+  buildTypesMap(gen);
 }
