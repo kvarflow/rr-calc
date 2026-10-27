@@ -3532,6 +3532,48 @@ html.sheet-open body {
 .dex-table .dex-type {
     min-width: 0;
 }
+.dex-move-row {
+    cursor: pointer;
+}
+.dex-move-row:hover .dex-move-name, .dex-move-row:focus-visible .dex-move-name {
+    color: var(--sh-accent);
+}
+.dex-move-row:focus-visible {
+    outline: 2px solid var(--sh-accent);
+    outline-offset: -2px;
+}
+.dex-move-name::after {
+    content: "\25BE";
+    margin-left: 4px;
+    color: var(--sh-muted);
+    font-size: 0.8em;
+}
+.dex-move-row[aria-expanded="true"] .dex-move-name::after {
+    content: "\25B4";
+}
+.dex-move-row[aria-expanded="true"] td {
+    border-bottom: 0;
+}
+.dex-table .dex-move-info td {
+    padding: 0 6px 6px;
+}
+.dex-move-text, .dex-move-facts {
+    margin: 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--sh-chip, rgba(127, 127, 127, 0.12));
+    font-size: 0.92em;
+    line-height: 1.35;
+}
+.dex-move-facts {
+    padding-top: 0;
+    border-radius: 0 0 8px 8px;
+    color: var(--sh-muted);
+    font-size: 0.85em;
+}
+.dex-move-text:has(+ .dex-move-facts) {
+    border-radius: 8px 8px 0 0;
+}
 .dex-trainers {
     display: flex;
     flex-direction: column;

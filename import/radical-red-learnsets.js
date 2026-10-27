@@ -15,6 +15,11 @@
  * Evolutions come from CFRU's gEvolutionTable, repointed to 0x097CD9B0 (as the encounters importer
  * reads it): 16 entries a species id of {u16 method, u16 parameter, u16 target, u16 extra}. The
  * methods are CFRU's (include/constants/pokemon.h), checked against the evolutions they give here.
+ *
+ * What each move does, for tapping a move in the Dex: the game's own descriptions (FireRed's
+ * gMoveDescriptionPointers, repointed to 0x0903DF74 and grown: a pointer for each move id from
+ * Pound, 1) and its move data (gBattleMoves, repointed to 0x091521D0: 12 bytes a move id of
+ * {effect, power, type, accuracy, PP, effect chance, target, priority, ...}).
  */
 
 const fs = require('fs');
@@ -27,6 +32,9 @@ const ROM_BASE = 0x08000000;
 const LEARNSETS = 0x0980175C;
 const EVOLUTIONS = 0x097CD9B0;
 const EVOLUTIONS_PER_SPECIES = 16;
+const MOVE_DESCRIPTIONS = 0x0903DF74;
+const BATTLE_MOVES = 0x091521D0;
+const BATTLE_MOVE_SIZE = 12;
 // CFRU's type ids (Fairy after the "???" gap).
 const TYPES = {0: 'Normal', 1: 'Fighting', 2: 'Flying', 3: 'Poison', 4: 'Ground', 5: 'Rock', 6: 'Bug', 7: 'Ghost',
 	8: 'Steel', 10: 'Fire', 11: 'Water', 12: 'Grass', 13: 'Electric', 14: 'Psychic', 15: 'Ice', 16: 'Dragon', 17: 'Dark',
@@ -37,7 +45,9 @@ const hour = h => String(h).padStart(2, '0') + ':00';
 // FireRed's layout, 0x2C bytes an item starting with a 14-byte name, moved and grown by the hack (the
 // last table whose item 1 is "Master Ball", as import/radical-red-item-descriptions.js finds it).
 const ITEM_SIZE = 0x2C;
-const TEXT = {0x00: ' ', 0x1B: 'é', 0xAD: '.', 0xAE: '-', 0xB4: '’', 0xBA: '/'};
+const TEXT = {0x00: ' ', 0x1B: 'é', 0x2D: '&', 0x2E: '+', 0x35: '=', 0x36: ';', 0x5B: '%', 0x5C: '(', 0x5D: ')',
+	0xAB: '!', 0xAC: '?', 0xAD: '.', 0xAE: '-', 0xB0: '…', 0xB1: '“', 0xB2: '”', 0xB3: '‘', 0xB4: '’', 0xB5: '♂',
+	0xB6: '♀', 0xB8: ',', 0xBA: '/', 0xF0: ':', 0xFE: '\n'};
 for (let i = 0; i < 26; i++) {
 	TEXT[0xBB + i] = String.fromCharCode(65 + i);
 	TEXT[0xD5 + i] = String.fromCharCode(97 + i);
@@ -55,6 +65,23 @@ function romItemName(rom, id) {
 		name += TEXT[b] !== undefined ? TEXT[b] : '';
 	}
 	return resolve('item', name) || name;
+}
+
+function romText(rom, at, max) {
+	let text = '';
+	for (let i = 0; i < max && at + i < rom.length && rom[at + i] !== 0xFF; i++) {
+		text += TEXT[rom[at + i]] !== undefined ? TEXT[rom[at + i]] : '';
+	}
+	// The game's line breaks: a word split over two lines ("40-\nHP") joins up again.
+	return text.replace(/-\n/g, '-').replace(/\s+/g, ' ').trim();
+}
+
+// [description, accuracy (0: never misses), PP, priority, effect chance %] for a move id.
+function romMoveInfo(rom, id) {
+	const pointer = rom.readUInt32LE(MOVE_DESCRIPTIONS - ROM_BASE + (id - 1) * 4);
+	const description = pointer >= ROM_BASE && pointer < ROM_BASE + rom.length ? romText(rom, pointer - ROM_BASE, 400) : '';
+	const at = BATTLE_MOVES - ROM_BASE + id * BATTLE_MOVE_SIZE;
+	return [description, rom[at + 3], rom[at + 4], rom.readInt8(at + 7), rom[at + 5]];
 }
 
 // How a method reads, given its parameter, extra value and names for items, moves and species.
@@ -103,6 +130,7 @@ function main() {
 	const rom = fs.readFileSync(process.argv[2]);
 	const data = loadSaveData();
 	const learnsets = {};
+	const moveInfo = {};
 	let unresolved = 0;
 	data.species.forEach((species, id) => {
 		if (!species || learnsets[species]) return;
@@ -119,6 +147,7 @@ function main() {
 				continue;
 			}
 			moves.push([level, name]);
+			if (!moveInfo[name]) moveInfo[name] = romMoveInfo(rom, moveId);
 		}
 		if (moves.length) learnsets[species] = moves;
 	});
@@ -153,10 +182,14 @@ function main() {
 	fs.writeFileSync(OUTPUT,
 		'/* For the Dex, read from the Radical Red 4.1 ROM by import/radical-red-learnsets.js; do not edit by\n' +
 		' * hand. Loaded when the Dex opens. LEARNSETS: each Pokémon\'s level-up moves as [level, move]\n' +
-		' * (level 0: on evolving). EVOLUTIONS: what each evolves into and how, as [species, how]. */\n' +
+		' * (level 0: on evolving). EVOLUTIONS: what each evolves into and how, as [species, how].\n' +
+		' * MOVE_INFO: each of those moves\' description, accuracy (0: never misses), PP, priority and\n' +
+		' * effect chance (%), as the game has them. */\n' +
 		'var LEARNSETS = ' + JSON.stringify(learnsets) + ';\n' +
-		'var EVOLUTIONS = ' + JSON.stringify(evolutions) + ';\n');
-	console.log(`${Object.keys(learnsets).length} learnsets, ${Object.keys(evolutions).length} Pokémon that evolve` +
+		'var EVOLUTIONS = ' + JSON.stringify(evolutions) + ';\n' +
+		'var MOVE_INFO = ' + JSON.stringify(moveInfo) + ';\n');
+	console.log(`${Object.keys(learnsets).length} learnsets, ${Object.keys(evolutions).length} Pokémon that evolve, ` +
+		`${Object.keys(moveInfo).length} moves described` +
 		(unresolved ? `, ${unresolved} moves without a name` : '') + (unknown.size ? `; methods not described: ${[...unknown].join(', ')}` : ''));
 }
 

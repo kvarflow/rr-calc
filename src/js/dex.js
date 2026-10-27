@@ -194,17 +194,45 @@ function buildDexMoves(name) {
 		var body = $("<tbody></tbody>").appendTo(table);
 		learnset.forEach(function (entry) {
 			var move = calc.MOVES[gen][entry[1]] || {};
-			var category = move.category || (gen <= 3 ? "" : "Physical");
-			$("<tr></tr>").append(
+			// (The calc treats a move with no category as a status move, as Gravity is.)
+			var category = move.category || (gen <= 3 || !calc.MOVES[gen][entry[1]] ? "" : "Status");
+			var row = $('<tr class="dex-move-row" tabindex="0" aria-expanded="false"></tr>').append(
 				$("<td></td>").text(entry[0] === 0 ? "Evo" : entry[0]),
-				$("<td></td>").text(entry[1]),
+				$('<td class="dex-move-name"></td>').text(entry[1]),
 				$("<td></td>").append(move.type ? buildDexTypes([move.type]) : ""),
 				$("<td></td>").text(category),
 				$('<td class="dex-numeric"></td>').text(move.bp || "—")).appendTo(body);
+			row.on("click keydown", function (event) {
+				if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+				event.preventDefault();
+				toggleDexMoveInfo(row, entry[1], move);
+			});
 		});
 		section.append(table);
 	});
 	return section;
+}
+
+// What a move does, under its row (tap again to close): the game's description and its numbers.
+function toggleDexMoveInfo(row, name, move) {
+	var open = row.next(".dex-move-info");
+	row.attr("aria-expanded", String(!open.length));
+	if (open.length) {
+		open.remove();
+		return;
+	}
+	var info = typeof MOVE_INFO !== "undefined" ? MOVE_INFO[name] : null;
+	var facts = [];
+	if (info) {
+		if (info[1]) facts.push(info[1] + "% accuracy");
+		else if (move.bp) facts.push("Never misses");
+		facts.push(info[2] + " PP");
+		if (info[3]) facts.push("Priority " + (info[3] > 0 ? "+" : "") + info[3]);
+		if (info[4] && info[4] < 100) facts.push(info[4] + "% effect chance");
+	}
+	$('<tr class="dex-move-info"></tr>').append($('<td colspan="5"></td>').append(
+		$('<p class="dex-move-text"></p>').text(info && info[0] ? info[0] : "No description for this move in this game's data."),
+		facts.length ? $('<p class="dex-move-facts"></p>').text(facts.join(" \u00b7 ")) : "")).insertAfter(row);
 }
 
 // Every wild area with this Pokémon: [{area, method, when, min, max, rate}].
