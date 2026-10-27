@@ -139,7 +139,9 @@ var CHANGELOG = [
 			"and follow its own generation's rules (critical hit odds included)",
 		"Mastersheet (from the Progress box): the whole game in order, arc by arc and place by place, with every " +
 			"trainer's team (level, item, ability, nature, moves) and the wild Pok\u00e9mon there, your Nuzlocke dupes " +
-			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it",
+			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it. " +
+			"Tap a place to fold it away; beaten trainers fold their team to small sprites under their name (the arrow " +
+			"opens it again). What you fold is remembered",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
 		"Dex: any Pok\u00e9mon's types, base stats, abilities (with what they do), level-up moves from the game, " +

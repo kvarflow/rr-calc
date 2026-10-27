@@ -3593,3 +3593,82 @@ html.small-screen #emulator-sync,
 html.small-screen #emulator-sync-panel {
     display: none !important;
 }
+
+/* Mastersheet folding: places under their name, trainers' teams as small sprites. */
+.ms-place h3 {
+    padding: 0;
+}
+.ms-place-head {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 2px 10px;
+    width: 100%;
+    padding: 2px 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+.ms-place-meta {
+    color: var(--sh-muted);
+    font-size: 0.8em;
+    font-weight: normal;
+}
+.ms-place-folded .ms-place-body {
+    display: none;
+}
+.ms-fold-icon {
+    display: inline-block;
+    width: 1em;
+    color: var(--sh-muted);
+    transition: transform 0.15s ease;
+}
+.ms-place:not(.ms-place-folded) > h3 .ms-fold-icon,
+.ms-trainer:not(.ms-trainer-folded) .ms-trainer-fold .ms-fold-icon {
+    transform: rotate(90deg);
+}
+.ms-trainer-fold {
+    border: 0;
+    padding: 0 2px;
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+.ms-trainer-folded .ms-team,
+.ms-trainer:not(.ms-trainer-folded) .ms-team-mini,
+.ms-trainer-folded .ms-variant {
+    display: none;
+}
+.ms-trainer-folded .ms-trainer-head {
+    margin-bottom: 2px;
+}
+.ms-team-mini {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px;
+}
+.ms-mini-mon {
+    padding: 0;
+    border: 1px solid transparent;
+    border-radius: 6px;
+    background: none;
+    color: inherit;
+    font-size: 0.75em;
+    cursor: pointer;
+}
+.ms-mini-mon:hover {
+    border-color: var(--sh-accent);
+}
+.ms-mini-mon img {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-trainer-defeated.ms-trainer-folded {
+    opacity: 0.75;
+}

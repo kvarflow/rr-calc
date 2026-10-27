@@ -17,6 +17,39 @@ var MASTERSHEET_PLACE_ALIASES = {
 	"Pokemon Mansion 4f": "Pokémon Mansion", "Cinnabar Island Lab": "Cinnabar Island", "Cinnabar Island Gym": "Cinnabar Island"
 };
 
+/*
+ * What you have folded, per mode: places ({"arc/place": true} folded) and trainers ({index: true}
+ * open, false folded; without one a trainer is folded once beaten).
+ */
+var MASTERSHEET_FOLDS_KEY = "mastersheetFolds";
+
+function readMastersheetFolds() {
+	var folds = {};
+	try {
+		folds = JSON.parse(readSetting(MASTERSHEET_FOLDS_KEY + ":" + getPageMode())) || {};
+	} catch (e) {}
+	return {places: folds.places || {}, trainers: folds.trainers || {}};
+}
+
+function writeMastersheetFolds(folds) {
+	writeSetting(MASTERSHEET_FOLDS_KEY + ":" + getPageMode(), JSON.stringify(folds));
+}
+
+// A new run starts with every trainer folded or open by whether it is beaten.
+$(document).on("run:new", function () {
+	writeMastersheetFolds({places: readMastersheetFolds().places, trainers: {}});
+});
+
+function isTrainerFolded(index, folds) {
+	var saved = folds.trainers[index];
+	return saved === undefined ? isTrainerDefeated(index) : !saved;
+}
+
+// A chevron that turns as its part opens.
+function buildFoldIcon() {
+	return $('<span class="ms-fold-icon" aria-hidden="true">\u25B8</span>');
+}
+
 function readMastersheetFilters() {
 	var filters = {};
 	try {
@@ -129,13 +162,26 @@ function buildMastersheetMon(index, variant, setId, slot) {
 	return cell;
 }
 
-function buildMastersheetTrainer(index) {
+// A trainer's team folded: small sprites under its name, each still loading that Pokémon.
+function buildMastersheetMiniTeam(index, variant) {
+	return $('<div class="ms-team-mini"></div>').append(variant.sets.map(function (setId, slot) {
+		return $('<button type="button" class="ms-mini-mon"></button>').attr({"data-set-id": setId, title: getPokemonName(setId)})
+			.append(createSpriteImage(getPokemonName(setId), function () {
+				$(this).replaceWith(document.createTextNode(getPokemonName(setId)));
+			})).click(function () {
+				openTrainerInCalc(index, setId, slot);
+			});
+	}));
+}
+
+function buildMastersheetTrainer(index, folds) {
 	var trainer = TRAINER_ORDER[index];
 	var variant = getTrainerVariant(trainer);
 	var defeated = isTrainerDefeated(index);
 	var card = $('<div class="ms-trainer"></div>').attr("data-index", index)
 		.toggleClass("ms-trainer-defeated", defeated).toggleClass("ms-trainer-route", !!trainer.route);
 	var head = $('<div class="ms-trainer-head"></div>').appendTo(card);
+	var fold = $('<button type="button" class="ms-trainer-fold"></button>').append(buildFoldIcon()).appendTo(head);
 	$('<button type="button" class="ms-trainer-name" title="Fight this trainer in the calc"></button>').text(trainer.name)
 		.click(function () {
 			openTrainerInCalc(index);
@@ -148,11 +194,25 @@ function buildMastersheetTrainer(index) {
 	if (trainer.levelCap && !trainer.route) tags.push("Cap " + trainer.levelCap);
 	if (tags.length) $('<span class="ms-trainer-tags"></span>').text(tags.join(" · ")).appendTo(head);
 	var team = $('<div class="ms-team"></div>').appendTo(card);
+	var mini = $("<div></div>").appendTo(card);
 	var showVariant = function (shown) {
 		team.empty().append(shown.sets.map(function (setId, slot) {
 			return buildMastersheetMon(index, shown, setId, slot);
 		}));
+		mini.replaceWith(mini = buildMastersheetMiniTeam(index, shown));
 	};
+	// Folded (beaten trainers start so): the team as small sprites under the name.
+	var setFolded = function (folded) {
+		card.toggleClass("ms-trainer-folded", folded);
+		fold.attr({"aria-expanded": !folded, "aria-label": (folded ? "Show " : "Hide ") + trainer.name + "\u2019s team"});
+	};
+	fold.click(function () {
+		var folded = !card.hasClass("ms-trainer-folded");
+		setFolded(folded);
+		var saved = readMastersheetFolds();
+		saved.trainers[index] = !folded;
+		writeMastersheetFolds(saved);
+	});
 	// A fight with several teams (the rival's by starter, Lorelei's weather): the one the calc would
 	// show, and the others to look at.
 	if (trainer.variants.length > 1) {
@@ -165,6 +225,7 @@ function buildMastersheetTrainer(index) {
 		});
 	}
 	showVariant(variant);
+	setFolded(isTrainerFolded(index, folds));
 	return card;
 }
 
@@ -219,20 +280,42 @@ function buildMastersheetArcBody(section, filters, query) {
 	var body = $('<div class="ms-arc-body"></div>');
 	var nuzlocke = typeof isNuzlockeOn === "function" && isNuzlockeOn();
 	var caught = nuzlocke ? getCaughtFamilies(getOwnedSpecies(), readNuzlockeEncounters()) : {};
-	section.places.forEach(function (place) {
+	var folds = readMastersheetFolds();
+	section.places.forEach(function (place, placeIndex) {
 		var trainers = place.trainers.filter(function (index) {
 			return (filters.routes || !TRAINER_ORDER[index].route) && !(filters.hideDefeated && isTrainerDefeated(index)) &&
 				mastersheetMatches(query, place, index);
 		});
 		var wild = filters.wild && mastersheetMatches(query, place) ? place.wild : [];
 		if (!trainers.length && !wild.length) return;
-		var block = $('<div class="ms-place"></div>').appendTo(body);
-		$("<h3></h3>").text(place.name).appendTo(block);
+		// A place folds under its name, which counts what it hides. A search shows its matches open.
+		var key = section.number + "/" + placeIndex;
+		var block = $('<div class="ms-place"></div>').toggleClass("ms-place-folded", !query && !!folds.places[key]).appendTo(body);
+		var beaten = trainers.filter(function (index) {
+			return isTrainerDefeated(index);
+		}).length;
+		var counts = [];
+		if (trainers.length) counts.push(trainers.length + (trainers.length === 1 ? " trainer" : " trainers") + (beaten ? ", " + beaten + " beaten" : ""));
+		if (wild.length) counts.push("wild Pok\u00e9mon");
+		var head = $('<button type="button" class="ms-place-head"></button>').attr("aria-expanded", !block.hasClass("ms-place-folded"))
+			.append(buildFoldIcon(), $('<span class="ms-place-name"></span>').text(place.name),
+				$('<span class="ms-place-meta"></span>').text(counts.join(" \u00b7 ")))
+			.click(function () {
+				var folded = !block.hasClass("ms-place-folded");
+				block.toggleClass("ms-place-folded", folded);
+				head.attr("aria-expanded", !folded);
+				var saved = readMastersheetFolds();
+				if (folded) saved.places[key] = true;
+				else delete saved.places[key];
+				writeMastersheetFolds(saved);
+			});
+		$("<h3></h3>").append(head).appendTo(block);
+		var inside = $('<div class="ms-place-body"></div>').appendTo(block);
 		wild.forEach(function (area) {
-			block.append(buildMastersheetWild(area, caught, nuzlocke));
+			inside.append(buildMastersheetWild(area, caught, nuzlocke));
 		});
 		trainers.forEach(function (index) {
-			block.append(buildMastersheetTrainer(index));
+			inside.append(buildMastersheetTrainer(index, folds));
 		});
 	});
 	if (!body.children().length) body.append('<p class="ms-empty">Nothing here with these filters.</p>');
