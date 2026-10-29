@@ -1764,18 +1764,6 @@ function resistsAllAtFullHealth(turn, def, atk) {
 	});
 }
 
-// OffensiveSetupMoveInMoveset: a boosting move, or an attack likely to raise an offence.
-function hasOffensiveSetupMove(side) {
-	return hasMoveWhere(side, function (m) {
-		if (has([E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2, E.EVASION_UP_2,
-			E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM], m.effect)) return true;
-		if (has([E.ATTACK_UP_HIT, E.SPECIAL_ATTACK_UP_HIT, E.SPECIAL_DEFENSE_DOWN_HIT, E.SPECIAL_DEFENSE_DOWN_2_HIT, E.DEFENSE_DOWN_HIT], m.effect)) {
-			return chanceOf(side, m) >= 50 && m.effectiveness > 0;
-		}
-		return has([E.SUPERPOWER, E.OVERHEAT], m.effect) && side.ability === "Contrary" && m.effectiveness > 0;
-	});
-}
-
 // ShouldUseWishAromatherapy (Wish), singles: only a cleric, not as the last Pokémon about to fall,
 // and someone below 65% (the benched are taken to be at full HP).
 function shouldUseWish(turn, atk, def) {
@@ -3540,7 +3528,8 @@ function switchFromLowStats(turn, justIn) {
 	return null;
 }
 
-// OffensiveSetupMoveInMoveset (the status moves; the hit-and-boost moves never count, as in CFRU).
+// OffensiveSetupMoveInMoveset (the status moves; the hit-and-boost moves never count, as in CFRU,
+// whose check for them asks for the move to be unusable).
 function hasOffensiveSetupMove(side) {
 	return hasEffect(side, [E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2,
 		E.EVASION_UP_2, E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM]);

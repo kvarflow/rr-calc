@@ -1,8 +1,8 @@
 name: Build and Deploy
+# Run by hand only (Actions > Build and Deploy > Run workflow): the site goes live when asked, as with
+# ./publish-pages, not on every merge.
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
@@ -23,6 +23,8 @@ jobs:
       run: |
         npm install
         node build
+    - name: Remove the original calculator's Google Analytics tag
+      run: sed -i '/googletagmanager\.com\/gtag/d' dist/*.html
     - name: Upload artifact for GitHub Pages
       uses: actions/upload-pages-artifact@v3
       with:

@@ -680,7 +680,8 @@ export function calculateSMSSSV(
           applyBurn,
           stabMod,
           newFinalMod,
-          protect
+          protect,
+          applyFrostbite
         );
         damageMultiplier++;
         return affectedAmount + newFinalDamage;
@@ -757,12 +758,9 @@ export function calculateBasePowerSMSSSV(
   case 'Barb Barrage':
   case 'Bitter Malice':
   case 'Infernal Parade':
+    // Radical Red: all three double against any status, as Hex does.
     // Hex deals double damage to Pokemon with Comatose (ih8ih8sn0w)
     basePower = move.bp * (defender.status || defender.hasAbility('Comatose') ? 2 : 1);
-    desc.moveBP = basePower;
-    break;
-  case 'Barb Barrage':
-    basePower = move.bp * (defender.hasStatus('psn', 'tox') ? 2 : 1);
     desc.moveBP = basePower;
     break;
   case 'Heavy Slam':

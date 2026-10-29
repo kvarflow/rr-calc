@@ -53,7 +53,7 @@ function readBoxLayout(mode) {
 }
 
 function writeBoxLayout(layout, mode) {
-	localStorage.setItem(getBoxLayoutKey(mode), JSON.stringify(layout));
+	writeSetting(getBoxLayoutKey(mode), JSON.stringify(layout));
 }
 
 // Moves the given sets to the end of a section; takes effect on the next render.

@@ -13,7 +13,13 @@
 * It will be truey and incorrectly cause the
 * dark theme to load.
 */
-var prefersDarkTheme = localStorage.getItem('darkTheme') ? localStorage.getItem('darkTheme') === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+var storedDarkTheme = null;
+try {
+	storedDarkTheme = localStorage.getItem('darkTheme');
+} catch (e) {
+	// Storage unavailable (e.g. private browsing): follow the system's theme.
+}
+var prefersDarkTheme = storedDarkTheme ? storedDarkTheme === 'true' : window.matchMedia('(prefers-color-scheme: dark)').matches;
 var darkThemeButton = document.getElementById('dark-theme-toggle');
 darkThemeButton.innerText = prefersDarkTheme ? 'Click for Light Theme' : 'Click for Dark Theme';
 if (prefersDarkTheme) {
@@ -33,7 +39,11 @@ function toggleTheme() {
 	var darkStyles = document.getElementById('dark-theme-styles');
 	darkStyles.disabled = !darkStyles.disabled;
 
-	localStorage.setItem('darkTheme', prefersDarkTheme);
+	try {
+		localStorage.setItem('darkTheme', prefersDarkTheme);
+	} catch (e) {
+		// Storage unavailable: the theme lasts until the page reloads.
+	}
 	darkThemeButton.innerText = prefersDarkTheme ? 'Click for Light Theme' : 'Click for Dark Theme';
 }
 

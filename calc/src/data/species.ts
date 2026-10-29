@@ -10036,7 +10036,7 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
     abilities: {0: 'Stance Change'},
   },
   'Abomasnow-Mega': {bs: {df: 105, sd: 105, sp: 60}},
-  'Absol-Mega': {types: ['Dark', 'Fairy'], abilities: {0: 'Blademaster'}},
+  'Absol-Mega': {types: ['Dark', 'Fairy'], abilities: {0: 'Sharpness'}},
   'Alcremie': {otherFormes: ['Alcremie-Mega']},
   'Alcremie-Salted-Cream': {
     types: ['Fairy'],

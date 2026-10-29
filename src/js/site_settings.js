@@ -162,7 +162,16 @@ var CHANGELOG = [
 			"changes and status. Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now",
 		"The Dex lists status moves (Gravity, Healing Wish...) as Status, not Physical",
 		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
-			"cap that covers them, and the ones before the same fight come a place at a time"
+			"cap that covers them, and the ones before the same fight come a place at a time",
+		"The Toxic counter counts again (it was always taken as the first turn)",
+		"Frostbite halves every hit of a special multi-hit move, not just the first; Bad Dreams shows in the " +
+			"end-of-turn damage; a Kee or Maranga Berry works once over a multi-hit move; a move that lowers its " +
+			"user's stats (Draco Meteor) between hits uses the user's own stat stages",
+		"Mega Absol has Sharpness (it had an ability the game does not have)",
+		"Ability Shield, Clear Amulet and Mirror Herb say what they do (they showed Apricorn text); Heavy-Duty " +
+			"Boots and Weakness Policy show the game's own text",
+		"Move texts in the Dex no longer split words over a line break (\"in-flict\")",
+		"The calc works with site data blocked (private browsing): settings then last until the page reloads"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

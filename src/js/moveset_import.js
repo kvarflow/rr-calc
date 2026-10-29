@@ -22,9 +22,9 @@ function getCustomSetsKey(mode) {
 }
 
 function readCustomSets(mode) {
-	var stored = localStorage.getItem(getCustomSetsKey(mode));
-	if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
 	try {
+		var stored = localStorage.getItem(getCustomSetsKey(mode));
+		if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
 		return stored ? JSON.parse(stored) : {};
 	} catch (e) {
 		return {};
@@ -32,7 +32,11 @@ function readCustomSets(mode) {
 }
 
 function writeCustomSets(customsets, mode) {
-	localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	try {
+		localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	} catch (e) {
+		// Storage unavailable or full: the sets are not kept.
+	}
 	$(document).trigger("customsets:changed");
 }
 

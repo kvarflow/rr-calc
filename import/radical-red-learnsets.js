@@ -72,8 +72,22 @@ function romText(rom, at, max) {
 	for (let i = 0; i < max && at + i < rom.length && rom[at + i] !== 0xFF; i++) {
 		text += TEXT[rom[at + i]] !== undefined ? TEXT[rom[at + i]] : '';
 	}
-	// The game's line breaks: a word split over two lines ("40-\nHP") joins up again.
-	return text.replace(/-\n/g, '-').replace(/\s+/g, ' ').trim();
+	// The game's line breaks: a word split over two lines ("40-\nHP", "in-\nflict") joins up again,
+	// with its hyphen marked as a line break's until unhyphenate() decides whether to keep it.
+	return text.replace(/-\n/g, LINE_HYPHEN).replace(/\s+/g, ' ').trim();
+}
+
+const LINE_HYPHEN = '\u00AD';
+
+// Words the texts split over two lines but never write whole.
+const WHOLE_WORDS = ['chlorophyll', 'disaster', 'flowers', 'frightful', 'waterfalls'];
+
+// A hyphen at a line break stays if it is part of the word ("critical-hit"), and goes if the word
+// is written whole somewhere else in the texts ("inflict").
+function unhyphenate(texts) {
+	const words = new Set((WHOLE_WORDS.join(' ') + ' ' + texts.join(' ')).replace(new RegExp(LINE_HYPHEN, 'g'), ' ').toLowerCase().split(/[^a-z\u00e9]+/));
+	return texts.map(text => text.replace(new RegExp('([A-Za-z\u00e9]*)' + LINE_HYPHEN + '([A-Za-z\u00e9]*)', 'g'),
+		(all, a, b) => a && b && words.has((a + b).toLowerCase()) ? a + b : a + '-' + b));
 }
 
 // [description, accuracy (0: never misses), PP, priority, effect chance %] for a move id.
@@ -179,6 +193,8 @@ function main() {
 			else if (same[1].split(' or ').indexOf(how) === -1) same[1] += ' or ' + how.charAt(0).toLowerCase() + how.slice(1);
 		}
 	});
+	const descriptions = unhyphenate(Object.keys(moveInfo).map(name => moveInfo[name][0]));
+	Object.keys(moveInfo).forEach((name, i) => { moveInfo[name][0] = descriptions[i]; });
 	fs.writeFileSync(OUTPUT,
 		'/* For the Dex, read from the Radical Red 4.1 ROM by import/radical-red-learnsets.js; do not edit by\n' +
 		' * hand. Loaded when the Dex opens. LEARNSETS: each Pokémon\'s level-up moves as [level, move]\n' +

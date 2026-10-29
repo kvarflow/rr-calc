@@ -54,7 +54,11 @@
         * It will be truey and incorrectly cause the
         * dark theme to load.
         */
-        if (localStorage.getItem('darkTheme') !== 'true') {
+        var darkThemeSetting = null;
+        try {
+            darkThemeSetting = localStorage.getItem('darkTheme');
+        } catch (e) {}
+        if (darkThemeSetting !== 'true') {
             document.getElementById('dark-theme-styles').disabled = true;
         }
     </script>
