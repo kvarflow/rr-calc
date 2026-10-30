@@ -3,8 +3,9 @@
  * Base / IVs / EVs open):
  *  - Generic: a usual spread for the Pokémon's role, from its base stats and its moves (a fast
  *    attacker, a bulky attacker or a wall), with the nature that goes with it.
- *  - Fight: the spread that wins the most one-on-ones against the team of the fight you
- *    are on, worked out with the calculator: Speed to move first, attack to KO in fewer hits, HP
+ *  - Boss: the spread that wins the most one-on-ones against the team of the boss of the arc
+ *    you are on, at its level cap (retraining EVs takes a while, so once an arc), worked out
+ *    with the calculator: Speed to move first, attack to KO in fewer hits, HP
  *    and defences to take more hits, at the fewest EVs, the rest into attack and then bulk.
  * Tapping a column's heading puts its EVs in (a set from your save is unlocked first: EVs can be
  * retrained). The line underneath opens to say why.
@@ -332,12 +333,27 @@ function describeOutcome(foe, outcome) {
 		"; you KO in " + hits(outcome.dealt) + ", it needs " + hits(outcome.taken) + (foe.strongest ? " (" + foe.strongest + ")" : "");
 }
 
-// The fight's team, or null when there is no fight (One vs One) or nothing to fight.
-function getFightTeam() {
+/*
+ * The boss of the arc you are on (the trainer you look at, or the one a route trainer leads up
+ * to: Misty for Cerulean's trainers) and its team, at that fight's level cap: the EVs are worth
+ * retraining for the boss, not for every fight. Null when there is no fight (One vs One).
+ */
+var SEV_THIS_FIGHT_KEY = "suggestedEvsThisFight";
+
+// "This fight instead of the boss": for a fight you are stuck on.
+function isThisFightChosen() {
+	return readSetting(SEV_THIS_FIGHT_KEY) === "true";
+}
+
+function getBossTeam() {
 	if (typeof TRAINER_ORDER === "undefined" || !TRAINER_ORDER.length || typeof getTrainerVariant !== "function") return null;
-	var trainer = TRAINER_ORDER[currentTrainerIndex];
+	if (!TRAINER_ORDER[currentTrainerIndex]) return null;
+	var thisFight = isThisFightChosen() || typeof getArc !== "function";
+	var index = thisFight ? currentTrainerIndex : getArc(currentTrainerIndex).boss;
+	var trainer = TRAINER_ORDER[index];
 	if (!trainer) return null;
 	var variant = getTrainerVariant(trainer);
+	var level = typeof getShownLevelCap === "function" ? parseInt(getShownLevelCap(index)) || 0 : 0;
 	var team = [];
 	variant.sets.forEach(function (setId) {
 		try {
@@ -346,7 +362,22 @@ function getFightTeam() {
 			// A set the calc cannot load is left out.
 		}
 	});
-	return team.length ? {name: trainer.name, key: currentTrainerIndex + ":" + variant.label, team: team} : null;
+	return team.length ? {name: trainer.name, key: index + ":" + variant.label + ":" + level, level: level, team: team,
+		isBoss: !thisFight} : null;
+}
+
+// Pokémon 1 as the boss fight takes it: at that fight's level cap.
+function getPlanningPokemon(pokemon, fight) {
+	if (!pokemon || !fight || !fight.level || fight.level === pokemon.level) return pokemon;
+	var evs = {};
+	SEV_STATS.forEach(function (stat) {
+		evs[stat] = pokemon.evs[SEV_CALC_STAT[stat]];
+	});
+	var copy = withEvs(pokemon, evs);
+	return new calc.Pokemon(gen, copy.name, {
+		level: fight.level, ability: copy.ability, abilityOn: copy.abilityOn, item: copy.item, gender: copy.gender,
+		nature: copy.nature, ivs: copy.ivs, evs: copy.evs, teraType: copy.teraType, moves: copy.moves.slice(), overrides: copy.species
+	});
 }
 
 var sevState = {generic: null, tailored: null, tables: null, key: "", fight: null, timer: null};
@@ -393,7 +424,9 @@ function renderSuggestions() {
 	var fight = sevState.fight;
 	renderSpreadColumn("generic", generic && generic.spread);
 	renderSpreadColumn("fight", sevState.tailored);
-	$("#p1 .sev-use-fight").attr("title", fight ? "Use the EVs for " + fight.name + "'s team" : "No fight here");
+	$("#p1 .sev-use-fight").text(fight && !fight.isBoss ? "Fight" : "Boss")
+		.attr("title", !fight ? "No fight here" : "Use the EVs for " + fight.name + "'s team" + (fight.isBoss ? ", this arc's boss" : ""));
+	notes.find(".sev-this-fight").toggle(!!fight).find("input").prop("checked", isThisFightChosen());
 	var genericNote = generic ? "Generic: " + generic.role + ". Nature: " + generic.nature + "." : "";
 	var summary = notes.children("summary");
 	var body = notes.children(".sev-notes-body").empty();
@@ -417,22 +450,22 @@ function renderSuggestions() {
 			return outcome.win;
 		}).length;
 	};
-	summary.text("Fight: vs " + fight.name + ", wins " + wins(outcomes) + " of " + tables.length +
-		" one-on-ones (your EVs now: " + wins(now) + ")");
+	summary.text((fight.isBoss ? "Boss" : "Fight") + ": vs " + fight.name + (fight.level ? " at Lv " + fight.level : "") + ", wins " + wins(outcomes) +
+		" of " + tables.length + " one-on-ones (your EVs now: " + wins(now) + ")");
 	body.append(
 		$("<ul></ul>").append(tables.map(function (foe, i) {
 			return $("<li></li>").text(describeOutcome(foe, outcomes[i])).toggleClass("sev-lose", !outcomes[i].win);
 		})),
-		$('<p class="sev-small"></p>').text("Tap Generic or Fight above to use its EVs. Each foe on its own from full HP: " +
-			"your weakest roll against its strongest move's highest, no crits or priority. Your nature, level, item, " +
-			"ability and moves as set above.")
+		$('<p class="sev-small"></p>').text((fight.isBoss ? "For this arc's boss, at its level cap, so the EVs last the arc. " :
+			"For the trainer you are on, at its level cap. ") + "Tap a heading above to use its EVs. Each foe on its own from full HP: your weakest roll against its strongest move's " +
+			"highest, no crits or priority. Your nature, IVs, item, ability and moves as set above.")
 	);
 }
 
 function computeTailored() {
 	sevState.timer = null;
-	var pokemon = getPokemon1();
 	var fight = sevState.fight;
+	var pokemon = getPlanningPokemon(getPokemon1(), fight);
 	if (!pokemon || !fight) return;
 	try {
 		var tables = buildFoeTables(pokemon, fight.team);
@@ -453,7 +486,7 @@ function updateSuggestions() {
 	if (!$("#p1 .sev-notes").length) return;
 	var pokemon = getPokemon1();
 	sevState.generic = pokemon ? getGenericSpread(pokemon) : null;
-	sevState.fight = getFightTeam();
+	sevState.fight = getBossTeam();
 	if (!pokemon || !sevState.fight) {
 		sevState.tailored = null;
 		sevState.key = "";
@@ -491,14 +524,19 @@ function buildSuggestionColumns() {
 	var generic = $('<button type="button" class="sev-use sev-use-generic" title="Use the generic EVs">Gen.</button>').click(function () {
 		useSpread(sevState.generic && sevState.generic.spread);
 	});
-	var fight = $('<button type="button" class="sev-use sev-use-fight">Fight</button>').click(function () {
+	var fight = $('<button type="button" class="sev-use sev-use-fight">Boss</button>').click(function () {
 		useSpread(sevState.tailored);
 	});
 	evsHead.after($('<th scope="col" class="sev-col"></th>').append(generic), $('<th scope="col" class="sev-col"></th>').append(fight));
 	SEV_STATS.forEach(function (stat) {
 		table.find("tr." + stat + " td:has(> .evs)").after('<td class="sev-col sev-generic"></td><td class="sev-col sev-fight"></td>');
 	});
-	$('<details class="sev-notes"><summary></summary><div class="sev-notes-body"></div></details>').insertAfter(table);
+	var notes = $('<details class="sev-notes"><summary></summary><label class="sev-this-fight"><input type="checkbox" /> ' +
+		'This fight instead of the boss</label><div class="sev-notes-body"></div></details>').insertAfter(table);
+	notes.find(".sev-this-fight input").change(function () {
+		writeSetting(SEV_THIS_FIGHT_KEY, this.checked);
+		updateSuggestions();
+	});
 }
 
 $(document).ready(function () {

@@ -144,8 +144,9 @@ var CHANGELOG = [
 			"opens it again), their Pok\u00e9mon crossed out as on the Battle tab. What you fold is remembered",
 		"Suggested EVs for Pok\u00e9mon 1, beside its EVs (on small screens, with Base / IVs / EVs open): " +
 			"Generic, a usual spread for its role (a fast or bulky attacker, or a wall) with the nature to go with it; " +
-			"and one for the fight you are on, worked out with the calculator to win the most one-on-ones against that " +
-			"team (move first, KO in fewer hits, take more), with each Pok\u00e9mon's outcome underneath. Tap a " +
+			"and one for the boss of the arc you are on, at its level cap (so you retrain once an arc), worked out with the " +
+			"calculator to win the most one-on-ones against its team (move first, KO in fewer hits, take more), with each Pok\u00e9mon's outcome underneath (tick \u201cThis fight instead of the boss\u201d there for a " +
+			"fight you are stuck on). Tap a " +
 			"column's heading to use its EVs (EVs can be retrained, so a Pok\u00e9mon from your save is unlocked for it)",
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
 		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +

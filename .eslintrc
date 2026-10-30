@@ -174,7 +174,8 @@
         "loadSetIntoPokemon": false,
         "createPokemonSprite": false,
         "setSaveLock": false,
-        "MOVE_INFO": false
+        "MOVE_INFO": false,
+        "getArc": false
     },
     "extends": "eslint:recommended",
     "rules": {
