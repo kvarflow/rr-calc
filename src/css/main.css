@@ -3852,3 +3852,102 @@ html.sheet-open body {
     font-size: 12px;
     font-weight: 600;
 }
+
+/* Suggested EVs (suggested_evs.js): two read-only columns after EVs, "Use" under each. */
+.sev-table .sev-col {
+    min-width: 34px;
+    padding: 0 3px;
+    text-align: center;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.sev-table th.sev-col {
+    font-size: 10px;
+}
+.sev-head-short {
+    display: none !important;
+}
+.sev-head {
+    display: inline-block;
+    white-space: nowrap;
+}
+.sev-table td.sev-generic {
+    color: #3a6fd8;
+}
+.sev-table td.sev-fight {
+    color: #1f9d55;
+    font-weight: 600;
+}
+.sev-table td.sev-zero {
+    opacity: 0.45;
+}
+.sev-table td.sev-same {
+    text-decoration: underline dotted;
+}
+.sev-use {
+    padding: 1px 6px;
+    font-size: 11px;
+    cursor: pointer;
+}
+.sev-notes {
+    margin: 4px 0 2px;
+    font-size: 12px;
+}
+.sev-notes p,
+.sev-notes ul {
+    margin: 2px 0;
+}
+.sev-notes ul {
+    padding-left: 16px;
+}
+.sev-notes summary {
+    cursor: pointer;
+}
+.sev-notes .sev-lose {
+    opacity: 0.7;
+}
+.sev-notes .sev-small {
+    font-size: 11px;
+    opacity: 0.75;
+}
+html.small-screen .poke-info:not(.ss-stats-full) .sev-col,
+html.small-screen .poke-info:not(.ss-stats-full) .sev-table tfoot,
+html.small-screen .poke-info:not(.ss-stats-full) .sev-notes {
+    display: none !important;
+}
+html.small-screen .sev-use {
+    min-height: 26px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-card);
+    color: inherit;
+}
+html.small-screen .sev-notes {
+    color: var(--ss-muted);
+}
+/* Upright phones: the full table has no room for the stage buttons (they stay on the short view). */
+@media (max-width: 480px) {
+    html.small-screen .poke-info.ss-stats-full .sev-table td:has(> .boost),
+    html.small-screen .poke-info.ss-stats-full .sev-table td:has(> .boost-stepper) {
+        display: none;
+    }
+    html.small-screen .poke-info.ss-stats-full .sev-table th {
+        padding-right: 4px;
+    }
+    html.small-screen .poke-info.ss-stats-full .sev-table td {
+        padding: 1px 2px;
+    }
+    html.small-screen .sev-table .sev-col {
+        min-width: 26px;
+        padding: 0 1px;
+    }
+    html.small-screen .sev-table th.sev-col {
+        font-size: 9px;
+    }
+    html.small-screen .sev-head-long {
+        display: none !important;
+    }
+    html.small-screen .sev-head-short {
+        display: inline-block !important;
+    }
+}

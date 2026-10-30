@@ -172,7 +172,9 @@
         "navigateToMode": false,
         "TRAINER_ORDER": false,
         "loadSetIntoPokemon": false,
-        "createPokemonSprite": false
+        "createPokemonSprite": false,
+        "setSaveLock": false,
+        "MOVE_INFO": false
     },
     "extends": "eslint:recommended",
     "rules": {
