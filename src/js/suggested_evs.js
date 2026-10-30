@@ -3,10 +3,11 @@
  * Base / IVs / EVs open):
  *  - Generic: a usual spread for the Pokémon's role, from its base stats and its moves (a fast
  *    attacker, a bulky attacker or a wall), with the nature that goes with it.
- *  - vs <trainer>: the spread that wins the most one-on-ones against the team of the fight you
+ *  - Fight: the spread that wins the most one-on-ones against the team of the fight you
  *    are on, worked out with the calculator: Speed to move first, attack to KO in fewer hits, HP
  *    and defences to take more hits, at the fewest EVs, the rest into attack and then bulk.
- * "Use" puts a column's EVs in (a set from your save is unlocked first: EVs can be retrained).
+ * Tapping a column's heading puts its EVs in (a set from your save is unlocked first: EVs can be
+ * retrained). The line underneath opens to say why.
  * The nature, level, IVs, item, ability and moves stay as they are.
  */
 
@@ -389,19 +390,17 @@ function renderSpreadColumn(column, spread) {
 function renderSuggestions() {
 	var notes = $("#p1 .sev-notes");
 	var generic = sevState.generic;
-	renderSpreadColumn("generic", generic && generic.spread);
-	notes.find(".sev-generic-note").text(generic ? "Generic: " + generic.role + ". Nature: " + generic.nature + "." : "");
 	var fight = sevState.fight;
-	$("#p1 .sev-fight-head").attr("title", fight ? "Against " + fight.name + "'s team" : "")
-		.children(".sev-head-long").text(fight ? "vs " + fight.name.split(" ").pop() : "Fight");
+	renderSpreadColumn("generic", generic && generic.spread);
 	renderSpreadColumn("fight", sevState.tailored);
-	var why = notes.find(".sev-fight-note");
-	if (!fight) {
-		why.text("No fight to suit EVs to here.");
-		return;
-	}
-	if (!sevState.tailored) {
-		why.text(sevState.timer ? "Working out EVs for " + fight.name + "…" : "");
+	$("#p1 .sev-use-fight").attr("title", fight ? "Use the EVs for " + fight.name + "'s team" : "No fight here");
+	var genericNote = generic ? "Generic: " + generic.role + ". Nature: " + generic.nature + "." : "";
+	var summary = notes.children("summary");
+	var body = notes.children(".sev-notes-body").empty();
+	if (genericNote) body.append($("<p></p>").text(genericNote));
+	if (!fight || !sevState.tailored || !sevState.tables) {
+		summary.text(!fight ? genericNote || "Suggested EVs" :
+			sevState.timer ? "Working out EVs for " + fight.name + "\u2026" : "Suggested EVs");
 		return;
 	}
 	var pokemon = getPokemon1();
@@ -418,14 +417,15 @@ function renderSuggestions() {
 			return outcome.win;
 		}).length;
 	};
-	why.empty().append(
-		$("<summary></summary>").text("vs " + fight.name + ": wins " + wins(outcomes) + " of " + tables.length +
-			" one-on-ones (your EVs now: " + wins(now) + ")"),
+	summary.text("Fight: vs " + fight.name + ", wins " + wins(outcomes) + " of " + tables.length +
+		" one-on-ones (your EVs now: " + wins(now) + ")");
+	body.append(
 		$("<ul></ul>").append(tables.map(function (foe, i) {
 			return $("<li></li>").text(describeOutcome(foe, outcomes[i])).toggleClass("sev-lose", !outcomes[i].win);
 		})),
-		$('<p class="sev-small"></p>').text("Each Pokémon on its own from full HP: your weakest roll against its strongest " +
-			"move's highest, no crits or priority. Your nature, level, item, ability and moves as set above.")
+		$('<p class="sev-small"></p>').text("Tap Generic or Fight above to use its EVs. Each foe on its own from full HP: " +
+			"your weakest roll against its strongest move's highest, no crits or priority. Your nature, level, item, " +
+			"ability and moves as set above.")
 	);
 }
 
@@ -479,6 +479,7 @@ function useSpread(spread) {
 	});
 }
 
+// The column headings are the buttons that put a column's EVs in.
 function buildSuggestionColumns() {
 	var panel = $("#p1");
 	var table = panel.find("tr.hp").closest("table");
@@ -487,30 +488,17 @@ function buildSuggestionColumns() {
 	var evsHead = table.find("thead th").filter(function () {
 		return $(this).text() === "EVs";
 	});
-	evsHead.after('<th scope="col" class="sev-col" title="A usual spread for its role"><span class="sev-head sev-head-long">Generic</span><span class="sev-head sev-head-short">Gen.</span></th>' +
-		'<th scope="col" class="sev-col sev-fight-head"><span class="sev-head sev-head-long">Fight</span>' +
-		'<span class="sev-head sev-head-short">Fight</span></th>');
+	var generic = $('<button type="button" class="sev-use sev-use-generic" title="Use the generic EVs">Gen.</button>').click(function () {
+		useSpread(sevState.generic && sevState.generic.spread);
+	});
+	var fight = $('<button type="button" class="sev-use sev-use-fight">Fight</button>').click(function () {
+		useSpread(sevState.tailored);
+	});
+	evsHead.after($('<th scope="col" class="sev-col"></th>').append(generic), $('<th scope="col" class="sev-col"></th>').append(fight));
 	SEV_STATS.forEach(function (stat) {
 		table.find("tr." + stat + " td:has(> .evs)").after('<td class="sev-col sev-generic"></td><td class="sev-col sev-fight"></td>');
 	});
-	var foot = $("<tfoot><tr></tr></tfoot>");
-	var row = foot.find("tr");
-	row.append("<th></th>");
-	table.find("tr.hp > td").each(function () {
-		var cell = $("<td></td>").attr("class", $(this).attr("class"));
-		if ($(this).hasClass("sev-generic")) {
-			cell.append($('<button type="button" class="sev-use sev-use-generic" title="Put in the generic EVs">Use</button>').click(function () {
-				useSpread(sevState.generic && sevState.generic.spread);
-			}));
-		} else if ($(this).hasClass("sev-fight")) {
-			cell.append($('<button type="button" class="sev-use sev-use-fight" title="Put in the EVs for this fight">Use</button>').click(function () {
-				useSpread(sevState.tailored);
-			}));
-		}
-		row.append(cell);
-	});
-	table.append(foot);
-	$('<div class="sev-notes"><p class="sev-generic-note"></p><details class="sev-fight-note"></details></div>').insertAfter(table);
+	$('<details class="sev-notes"><summary></summary><div class="sev-notes-body"></div></details>').insertAfter(table);
 }
 
 $(document).ready(function () {

@@ -145,8 +145,8 @@ var CHANGELOG = [
 		"Suggested EVs for Pok\u00e9mon 1, beside its EVs (on small screens, with Base / IVs / EVs open): " +
 			"Generic, a usual spread for its role (a fast or bulky attacker, or a wall) with the nature to go with it; " +
 			"and one for the fight you are on, worked out with the calculator to win the most one-on-ones against that " +
-			"team (move first, KO in fewer hits, take more), with each Pok\u00e9mon's outcome underneath. Use puts a " +
-			"column's EVs in (EVs can be retrained, so a Pok\u00e9mon from your save is unlocked for it)",
+			"team (move first, KO in fewer hits, take more), with each Pok\u00e9mon's outcome underneath. Tap a " +
+			"column's heading to use its EVs (EVs can be retrained, so a Pok\u00e9mon from your save is unlocked for it)",
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
 		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +
 			"It puts first the Pok\u00e9mon with the most damaging move against Pok\u00e9mon 2, each with its best damage, and " +

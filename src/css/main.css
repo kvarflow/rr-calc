@@ -3853,23 +3853,13 @@ html.sheet-open body {
     font-weight: 600;
 }
 
-/* Suggested EVs (suggested_evs.js): two read-only columns after EVs, "Use" under each. */
+/* Suggested EVs (suggested_evs.js): two read-only columns after EVs, headed by the buttons that use them. */
 .sev-table .sev-col {
-    min-width: 34px;
-    padding: 0 3px;
+    min-width: 26px;
+    padding: 0 1px;
     text-align: center;
     font-size: 12px;
     font-variant-numeric: tabular-nums;
-}
-.sev-table th.sev-col {
-    font-size: 10px;
-}
-.sev-head-short {
-    display: none !important;
-}
-.sev-head {
-    display: inline-block;
-    white-space: nowrap;
 }
 .sev-table td.sev-generic {
     color: #3a6fd8;
@@ -3885,13 +3875,41 @@ html.sheet-open body {
     text-decoration: underline dotted;
 }
 .sev-use {
-    padding: 1px 6px;
-    font-size: 11px;
+    padding: 0 3px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 9px;
+    line-height: 14px;
+    white-space: nowrap;
     cursor: pointer;
 }
+.sev-use-generic {
+    color: #3a6fd8;
+}
+.sev-use-fight {
+    color: #1f9d55;
+}
+.sev-use:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
 .sev-notes {
-    margin: 4px 0 2px;
+    margin: 2px 0;
     font-size: 12px;
+}
+.sev-notes summary {
+    list-style: none;
+    cursor: pointer;
+}
+.sev-notes summary::-webkit-details-marker {
+    display: none;
+}
+.sev-notes summary::before {
+    content: "\25B8  ";
+}
+.sev-notes[open] summary::before {
+    content: "\25BE  ";
 }
 .sev-notes p,
 .sev-notes ul {
@@ -3899,9 +3917,6 @@ html.sheet-open body {
 }
 .sev-notes ul {
     padding-left: 16px;
-}
-.sev-notes summary {
-    cursor: pointer;
 }
 .sev-notes .sev-lose {
     opacity: 0.7;
@@ -3911,16 +3926,13 @@ html.sheet-open body {
     opacity: 0.75;
 }
 html.small-screen .poke-info:not(.ss-stats-full) .sev-col,
-html.small-screen .poke-info:not(.ss-stats-full) .sev-table tfoot,
 html.small-screen .poke-info:not(.ss-stats-full) .sev-notes {
     display: none !important;
 }
 html.small-screen .sev-use {
-    min-height: 26px;
-    border: 1px solid var(--ss-line);
+    min-height: 24px;
     border-radius: 8px;
-    background: var(--ss-card);
-    color: inherit;
+    font-size: 10px;
 }
 html.small-screen .sev-notes {
     color: var(--ss-muted);
@@ -3936,18 +3948,5 @@ html.small-screen .sev-notes {
     }
     html.small-screen .poke-info.ss-stats-full .sev-table td {
         padding: 1px 2px;
-    }
-    html.small-screen .sev-table .sev-col {
-        min-width: 26px;
-        padding: 0 1px;
-    }
-    html.small-screen .sev-table th.sev-col {
-        font-size: 9px;
-    }
-    html.small-screen .sev-head-long {
-        display: none !important;
-    }
-    html.small-screen .sev-head-short {
-        display: inline-block !important;
     }
 }
