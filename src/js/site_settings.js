@@ -178,7 +178,13 @@ var CHANGELOG = [
 		"Ability Shield, Clear Amulet and Mirror Herb say what they do (they showed Apricorn text); Heavy-Duty " +
 			"Boots and Weakness Policy show the game's own text",
 		"Move texts in the Dex no longer split words over a line break (\"in-flict\")",
-		"The calc works with site data blocked (private browsing): settings then last until the page reloads"
+		"The calc works with site data blocked (private browsing): settings then last until the page reloads",
+		"Trainer AI, checked again against the game: a frostbitten Pok\u00e9mon still attacks (the AI used to " +
+			"treat frostbite as freeze, so it thought yours couldn't hit it); Natural Cure and saving a sweeper " +
+			"treat frostbite as a normal status; against your Wonder Guard it stays in when it has Wish, Nightmare on " +
+			"a sleeping target, Trick with a Toxic or Flame Orb, Perish Song, Forest's Curse, Tailwind, Lucky Chant " +
+			"or an ability-ignoring move; badly poisoned for more than six turns (the Toxic counter) it switches out; " +
+			"it doesn't switch for low stats when it's about to Heart Swap"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

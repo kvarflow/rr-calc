@@ -342,9 +342,11 @@ function isAsleep(side) {
 	return side.status === "slp" && side.ability !== "Comatose";
 }
 
-// Asleep (for more than this turn), frozen: it cannot act this turn.
+// Asleep (for more than this turn): it cannot act this turn. Radical Red's IsBankIncapacitated
+// (0x090DA1C4) is sleep, recharging and Truant only: it is built with frostbite instead of freeze,
+// and a frostbitten Pokémon (the calculator's "frz") still attacks.
 function isIncapacitated(side) {
-	return isAsleep(side) || side.status === "frz";
+	return isAsleep(side);
 }
 
 function canBeChoiceLocked(side) {
@@ -974,6 +976,14 @@ function canBePoisoned(atk, def, field) {
 	if (!canBeStatused(atk, def, field) || has(["Immunity", "Pastel Veil"], defAbility(atk, def))) return false;
 	if (atk.ability === "Corrosion") return true;
 	return def.types.indexOf("Poison") === -1 && def.types.indexOf("Steel") === -1;
+}
+
+// CanTransferItem for both Pokémon and both items: Mega Stones and Z-Crystals stay put.
+function canSwapItems(atk, def) {
+	var fixed = function (item) {
+		return !!item && (calc.MEGA_STONES[item] !== undefined || / Z$/.test(item));
+	};
+	return !fixed(atk.item) && !fixed(def.item);
 }
 
 function canBeConfused(atk, def, field) {
@@ -2629,7 +2639,7 @@ function shouldPivot(turn, atk, def, i) {
 	var full = def.hp === def.maxHP;
 	var breaksSash = full && (def.item === "Focus Sash" || defAbility(atk, def) === "Sturdy" ||
 		has(["Multiscale", "Shadow Shield"], defAbility(atk, def)));
-	var hazardsOnSide = atk.sideState.sr || atk.sideState.spikes > 0;
+	var hazardsOnSide = hasHazards(atk.sideState);
 	// Pivot if its attacking stat is at -3 or worse (with both kinds of attack CFRU only looks at
 	// Sp. Atk: it compares the Attack stat's index, not its stage).
 	var weakAttacks = function () {
@@ -2832,6 +2842,11 @@ function typeEffectiveness(type, types) {
 }
 
 // GetMonEntryHazardDamage: Stealth Rock and Spikes on the AI's side of the field.
+// Any hazard on a side (CFRU's SIDE_STATUS_SPIKES: Stealth Rock, Spikes, Toxic Spikes, Sticky Web).
+function hasHazards(sideState) {
+	return !!(sideState.sr || sideState.spikes > 0 || sideState.toxicSpikes > 0 || sideState.stickyWeb);
+}
+
 function entryHazardDamage(mon, sideState, field) {
 	if (mon.ability === "Magic Guard" || mon.item === "Heavy-Duty Boots") return 0;
 	var damage = 0;
@@ -3016,7 +3031,7 @@ function scoreSwitchIns(turn) {
 		var ai = battle.ai;
 		var field = battle.field;
 		var smart = battle.flags > AI_NEGATIVES;
-		var hazardsUp = ai.sideState.sr || ai.sideState.spikes > 0;
+		var hazardsUp = hasHazards(ai.sideState);
 		var viable = 1 + battle.party.length;
 		var entries = [];
 		var best = null;
@@ -3261,6 +3276,7 @@ function switchForWonderGuard(turn) {
 	for (var i = 0; i < 4; i++) {
 		var move = ai.moves[i];
 		if (!move || !isUsable(ai, i, field)) continue;
+		if (has(ABILITY_IGNORING_MOVES, move.name)) return null;
 		if (move.split !== SPLIT_STATUS) {
 			if (isMoldBreaker(ai) || move.effectiveness > 1) return null;
 			continue;
@@ -3291,8 +3307,34 @@ function switchForWonderGuard(turn) {
 		case E.LEECH_SEED:
 			if (foe.types.indexOf("Grass") === -1) return null;
 			break;
+		case E.NIGHTMARE:
+			if (isAsleep(foe)) return null;
+			break;
 		case E.CURSE:
 			if (ai.types.indexOf("Ghost") !== -1) return null;
+			break;
+		// (The calculator doesn't know of a Perish Song count, a pending Wish or Lucky Chant: none.)
+		case E.PERISH_SONG:
+		case E.WISH:
+			return null;
+		case E.TRICK:
+			if (move.name === "Trick" && canSwapItems(ai, foe)) {
+				if (ai.item === "Toxic Orb" && canBePoisoned(ai, foe, field)) return null;
+				if (ai.item === "Flame Orb" && canBeBurned(ai, foe, field)) return null;
+				if (ai.item === "Black Sludge" && foe.types.indexOf("Poison") === -1) return null;
+				if (ai.item === "Sticky Barb") return null;
+			}
+			break;
+		case E.SKILL_SWAP:
+			if (move.name !== "Skill Swap") return null;
+			break;
+		case E.TYPE_CHANGES:
+			if ((move.name === "Trick-or-Treat" && foe.types.indexOf("Ghost") === -1) ||
+				(move.name === "Forest's Curse" && foe.types.indexOf("Grass") === -1)) return null;
+			break;
+		case E.TEAM_EFFECTS:
+			// (As CFRU: Tailwind counts when your side already has it.)
+			if ((move.name === "Tailwind" && ai.sideState.tailwind) || move.name === "Lucky Chant") return null;
 			break;
 		case E.SPIKES:
 			if ((move.name === "Stealth Rock" && !foe.sideState.sr) || (move.name === "Toxic Spikes" && foe.sideState.toxicSpikes < 2) ||
@@ -3406,7 +3448,8 @@ function switchToHeal(turn) {
 	var field = battle.field;
 	if (ai.ability === "Natural Cure") {
 		if (hazardsHurt(ai, 4, field)) return null;
-		if (!(isAsleep(ai) || ai.status === "frz" || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
+		// (Radical Red has frostbite, not freeze: only sleep makes it switch at any HP.)
+		if (!(isAsleep(ai) || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
 	} else if (ai.ability === "Regenerator") {
 		if (ai.hp > Math.floor(ai.maxHP / 2) || hazardsHurt(ai, 3, field)) return null;
 		var predicted = turn.predicted(foe);
@@ -3442,17 +3485,27 @@ function switchWhileAsleep(turn, justIn) {
 	return {mon: null};
 }
 
-// IsTakingAnnoyingSecondaryDamage: Leech Seed (a quarter of the time).
+// IsTakingAnnoyingSecondaryDamage: Leech Seed (a quarter of the time), or badly poisoned for more
+// than six turns (urgent: any switch will do). Nightmare, Curse and a lost Poison Heal, its other
+// urgent reasons, are not things the calculator knows.
 function switchFromLeechSeed(turn) {
 	var battle = turn.battle;
 	var ai = battle.ai;
 	var foe = battle.player;
 	if (ai.ability === "Magic Guard" || canKnockOut(turn, ai, foe) || battle.flags <= AI_NEGATIVES) return null;
-	if (!ai.seeded || !turn.coin("seedQuarter", 0.25) || usefulOffenseRaised(ai) || canKnockOut(turn, ai, foe)) return null;
+	var urgent = false;
+	if (ai.seeded && turn.coin("seedQuarter", 0.25) && !usefulOffenseRaised(ai) && !canKnockOut(turn, ai, foe)) {
+		urgent = false;
+	} else if (ai.status === "tox" && ai.toxicCounter > 6 && ai.ability !== "Poison Heal") {
+		urgent = true;
+	} else {
+		return null;
+	}
 	if (hazardsHurt(ai, 4, battle.field)) return null;
 	var scored = scoreSwitchIns(turn);
 	var good = function (entry) {
 		if (!entry) return false;
+		if (urgent) return true;
 		var flags = entry.flags;
 		if ((flags & SWITCH_FLAG.OUTSPEEDS) && ((flags & SWITCH_FLAG.KO_FOE) ||
 			((flags & SWITCH_FLAG.CAN_2HKO) && !(flags & SWITCH_FLAG.FAINTS))) && predictedHitIsSafe(turn, entry.mon, flags)) return true;
@@ -3506,6 +3559,8 @@ function switchFromLowStats(turn, justIn) {
 	var spa = stage(ai, "spa");
 	var acc = stage(ai, "acc");
 	if (!(atk <= OFFENSIVE_STAT_MIN || spa <= OFFENSIVE_STAT_MIN || acc <= OFFENSIVE_STAT_MIN)) return null;
+	// It is about to trade the drops away.
+	if (turn.aiPrediction && turn.aiPrediction.name === "Heart Swap") return null;
 	var physical = false;
 	var special = false;
 	ai.moves.forEach(function (move, i) {
@@ -3555,7 +3610,8 @@ function switchToSaveSweeper(turn, justIn) {
 	var ai = battle.ai;
 	var foe = battle.player;
 	var field = battle.field;
-	if (justIn || battle.flags <= AI_NEGATIVES || ai.status === "frz") return null;
+	// (CFRU's "don't save a frozen sweeper" is compiled out in Radical Red, which has frostbite.)
+	if (justIn || battle.flags <= AI_NEGATIVES) return null;
 	if (ai.status === "par" && !has(["Quick Feet", "Guts"], ai.ability)) return null;
 	if (!isDamager(styleOf(turn, ai))) return null;
 	var predicted = turn.predicted(foe);
@@ -3600,7 +3656,8 @@ function switchToSaveSweeper(turn, justIn) {
  * ShouldSwitch's checks for the Pokémon on the field, in order; the first that says so decides.
  * `justSwitchedIn`: it came in this turn (after a KO or a switch), when most of them wait a turn.
  * Not modelled (the calculator doesn't know them): passing a Wish, Perish Song, a Yawn, your Fly or
- * Dig in progress, a Choice lock, Toxic's turn count.
+ * Dig in progress, a Choice lock, Toxic Spikes and Sticky Web (no setting for them). Toxic's turn
+ * count comes from the Toxic counter beside Pokémon 2's status.
  */
 function switchChecks(turn) {
 	var battle = turn.battle;
@@ -3846,6 +3903,7 @@ function buildAISide(key, pokemon, results, foe, options) {
 		abilityOn: pokemon.abilityOn,
 		item: pokemon.item || "",
 		status: pokemon.status || "",
+		toxicCounter: pokemon.toxicCounter || 0,
 		level: pokemon.level,
 		gender: pokemon.gender || "",
 		hp: pokemon.curHP(),
