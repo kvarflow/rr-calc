@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 'use strict';
 /*
- * Generates src/js/data/learnsets/radicalred.js for the Dex (dex.js): each Pokémon's level-up moves
- * and how it evolves.
+ * Generates src/js/data/learnsets/radicalred.js for the Dex (dex.js): each Pokémon's level-up, TM,
+ * tutor and egg moves, and how it evolves.
  *
  * Usage (after `node build` so calc/dist exists):
  *   node import/radical-red-learnsets.js <Pokémon Radical Red 4.1 ROM>
@@ -33,6 +33,22 @@ const LEARNSETS = 0x0980175C;
 const EVOLUTIONS = 0x097CD9B0;
 const EVOLUTIONS_PER_SPECIES = 16;
 const MOVE_DESCRIPTIONS = 0x0903DF74;
+// CFRU reads these through pointers at fixed addresses (its src/item.c and include/new/item.h):
+// the TM/HM moves (u16 a TM, TM01-TM120 then HM01-HM08), the tutor moves, and for each species
+// id a 16-byte bit field of which TMs/HMs, and of which tutor moves, it can learn (bit i: byte
+// i >> 3, bit i & 7).
+const TM_MOVES_POINTER = 0x08125A8C;
+const TUTOR_MOVES_POINTER = 0x08120BE4;
+const TM_LEARNSETS_POINTER = 0x08043C68;
+const TUTOR_LEARNSETS_POINTER = 0x08120C30;
+const TMS = 120;
+const HMS = 8;
+const TUTORS = 128;
+const BITS_SIZE = 16;
+// FireRed's gEggMoves, repointed and grown to 0x097CB0E4 (GetEggMoves loads it): u16s, a species
+// as 20000 + its id followed by its egg moves, ended by 0xFFFF.
+const EGG_MOVES = 0x097CB0E4;
+const EGG_SPECIES_OFFSET = 20000;
 const BATTLE_MOVES = 0x091521D0;
 const BATTLE_MOVE_SIZE = 12;
 // CFRU's type ids (Fairy after the "???" gap).
@@ -165,6 +181,47 @@ function main() {
 		}
 		if (moves.length) learnsets[species] = moves;
 	});
+	const moveName = id => resolve('move', data.moves[id]) || data.moves[id] || '';
+	const describe = (id, name) => {
+		if (name && !moveInfo[name]) moveInfo[name] = romMoveInfo(rom, id);
+	};
+	// TMs, HMs and tutor moves: the moves, then each species' bit field as hex.
+	const pointer = address => rom.readUInt32LE(address - ROM_BASE) - ROM_BASE;
+	const moveList = (address, count) => Array.from({length: count}, (_, i) => rom.readUInt16LE(pointer(address) + i * 2));
+	const tmIds = moveList(TM_MOVES_POINTER, TMS + HMS);
+	const tutorIds = moveList(TUTOR_MOVES_POINTER, TUTORS);
+	const tmMoves = tmIds.map(moveName);
+	const tutorMoves = tutorIds.map(moveName);
+	tmIds.forEach((id, i) => describe(id, tmMoves[i]));
+	tutorIds.forEach((id, i) => describe(id, tutorMoves[i]));
+	const bitFields = (address, count) => {
+		const fields = {};
+		data.species.forEach((species, id) => {
+			if (!species || fields[species] !== undefined) return;
+			const bytes = rom.subarray(pointer(address) + id * BITS_SIZE, pointer(address) + (id + 1) * BITS_SIZE);
+			// (Bits past the last move are left out.)
+			const hex = Buffer.from(bytes.map((b, k) => k * 8 + 8 > count ? b & ((1 << Math.max(0, count - k * 8)) - 1) : b)).toString('hex');
+			if (/[^0]/.test(hex)) fields[species] = hex.replace(/(00)+$/, '');
+		});
+		return fields;
+	};
+	const tms = bitFields(TM_LEARNSETS_POINTER, TMS + HMS);
+	const tutors = bitFields(TUTOR_LEARNSETS_POINTER, TUTORS);
+	// Egg moves, by the species that hatches.
+	const eggMoves = {};
+	for (let at = EGG_MOVES - ROM_BASE, species = null; at + 2 <= rom.length; at += 2) {
+		const value = rom.readUInt16LE(at);
+		if (value === 0xFFFF) break;
+		if (value > EGG_SPECIES_OFFSET) {
+			species = data.species[value - EGG_SPECIES_OFFSET] || null;
+			if (species && !eggMoves[species]) eggMoves[species] = [];
+			else species = null; // a forme's own entry after the first: the Dex shows one list a name
+		} else if (species) {
+			const name = moveName(value);
+			if (name && eggMoves[species].indexOf(name) === -1) eggMoves[species].push(name);
+			describe(value, name);
+		}
+	}
 	const names = {
 		item: id => resolve('item', data.items[id]) || data.items[id] || romItemName(rom, id) || 'an item',
 		move: id => resolve('move', data.moves[id]) || data.moves[id] || 'a move',
@@ -199,13 +256,21 @@ function main() {
 		'/* For the Dex, read from the Radical Red 4.1 ROM by import/radical-red-learnsets.js; do not edit by\n' +
 		' * hand. Loaded when the Dex opens. LEARNSETS: each Pokémon\'s level-up moves as [level, move]\n' +
 		' * (level 0: on evolving). EVOLUTIONS: what each evolves into and how, as [species, how].\n' +
-		' * MOVE_INFO: each of those moves\' description, accuracy (0: never misses), PP, priority and\n' +
-		' * effect chance (%), as the game has them. */\n' +
+		' * TM_MOVES: TM01-TM120 then HM01-HM08; TUTOR_MOVES: the move tutors\' moves. TMS and TUTORS:\n' +
+		' * which of those each Pokémon learns, as hex bytes (move i: byte i >> 3, bit i & 7). EGG_MOVES:\n' +
+		' * each first-stage Pokémon\'s egg moves. MOVE_INFO: each of those moves\' description, accuracy\n' +
+		' * (0: never misses), PP, priority and effect chance (%), as the game has them. */\n' +
 		'var LEARNSETS = ' + JSON.stringify(learnsets) + ';\n' +
 		'var EVOLUTIONS = ' + JSON.stringify(evolutions) + ';\n' +
+		'var TM_MOVES = ' + JSON.stringify(tmMoves) + ';\n' +
+		'var TUTOR_MOVES = ' + JSON.stringify(tutorMoves) + ';\n' +
+		'var TMS = ' + JSON.stringify(tms) + ';\n' +
+		'var TUTORS = ' + JSON.stringify(tutors) + ';\n' +
+		'var EGG_MOVES = ' + JSON.stringify(eggMoves) + ';\n' +
 		'var MOVE_INFO = ' + JSON.stringify(moveInfo) + ';\n');
 	console.log(`${Object.keys(learnsets).length} learnsets, ${Object.keys(evolutions).length} Pokémon that evolve, ` +
-		`${Object.keys(moveInfo).length} moves described` +
+		`${Object.keys(tms).length} with TMs, ${Object.keys(tutors).length} with tutor moves, ` +
+		`${Object.keys(eggMoves).length} with egg moves, ${Object.keys(moveInfo).length} moves described` +
 		(unresolved ? `, ${unresolved} moves without a name` : '') + (unknown.size ? `; methods not described: ${[...unknown].join(', ')}` : ''));
 }
 

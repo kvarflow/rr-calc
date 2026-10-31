@@ -158,8 +158,9 @@ var CHANGELOG = [
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
 		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
-			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), level-up moves from the game (tap one for what it does, " +
-			"its accuracy, PP and priority, from the game), " +
+			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), its moves from the game: level-up, TM/HM, tutor and " +
+			"egg moves (egg moves from the first stage of its line), each list under its own pill with a count; tap a " +
+			"move for what it does, its accuracy, PP and priority, from the game; " +
 			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
 			"open it there",
 		"Emulator sync (Import / Export): the calc follows your battles in RetroArch (the Thor, phones, computers: " +

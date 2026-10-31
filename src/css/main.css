@@ -3596,6 +3596,38 @@ html.sheet-open body {
 .dex-trainer-defeated {
     opacity: 0.55;
 }
+/* Moves: Level-up / TM/HM / Tutor / Egg pills, each with its count. */
+.dex-move-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 8px;
+}
+.dex-move-tab {
+    padding: 4px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+.dex-move-tab[aria-selected="true"] {
+    border-color: var(--sh-accent);
+    background: var(--sh-accent);
+    color: #fff;
+}
+.dex-move-count {
+    margin-left: 2px;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+.dex-move-note {
+    margin: 0 0 6px;
+    color: var(--sh-muted);
+    font-size: 12px;
+}
 .dex-none {
     color: var(--sh-muted);
     margin: 0;

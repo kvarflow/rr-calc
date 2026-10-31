@@ -182,33 +182,141 @@ function buildDexEvolutions(name) {
 	return section;
 }
 
+var DEX_MOVE_TAB_KEY = "dexMoveTab";
+var DEX_MOVE_TABS = [
+	{key: "level", label: "Level-up", first: "Lv", none: "No level-up moves"},
+	{key: "tm", label: "TM/HM", first: "TM", none: "No TMs or HMs"},
+	{key: "tutor", label: "Tutor", first: "", none: "No tutor moves"},
+	{key: "egg", label: "Egg", first: "", none: "No egg moves"}
+];
+
+// The moves of a TMS / TUTORS bit field (hex bytes; move i is byte i >> 3, bit i & 7) from `moves`.
+function getDexBitMoves(hex, moves) {
+	var found = [];
+	if (!hex) return found;
+	for (var k = 0; k < hex.length / 2; k++) {
+		var byte = parseInt(hex.substr(k * 2, 2), 16);
+		for (var bit = 0; bit < 8; bit++) {
+			var index = k * 8 + bit;
+			if ((byte & (1 << bit)) && moves[index]) found.push(index);
+		}
+	}
+	return found;
+}
+
+// Its own entry in a learnset table, else its base forme's (Megas and other formes share them).
+function getDexEntry(table, name) {
+	if (typeof table === "undefined") return undefined;
+	return table[name] || table[(pokedex[name] || {}).baseSpecies];
+}
+
+// The Pokémon its egg moves come from: the first stage of its line (EVOLUTIONS lists Megas too).
+function getDexEggSpecies(name) {
+	var root = name;
+	var seen = {};
+	while (!seen[root] && getPreEvolution(root)) {
+		seen[root] = true;
+		root = getPreEvolution(root);
+	}
+	if (!getDexEntry(EGG_MOVES, root) && (pokedex[root] || {}).baseSpecies) root = pokedex[root].baseSpecies;
+	return root;
+}
+
+// Each list as [first column, move name] rows, with a note for egg moves of an evolved Pokémon.
+function getDexMoveRows(name, tab) {
+	if (tab === "level") {
+		return {rows: (getDexEntry(LEARNSETS, name) || []).map(function (entry) {
+			return [entry[0] === 0 ? "Evo" : entry[0], entry[1]];
+		})};
+	}
+	if (tab === "tm") {
+		return {rows: getDexBitMoves(getDexEntry(TMS, name), TM_MOVES).map(function (index) {
+			return [index < 120 ? "TM" + (index + 1) : "HM" + (index - 119), TM_MOVES[index]];
+		})};
+	}
+	if (tab === "tutor") {
+		return {rows: getDexBitMoves(getDexEntry(TUTORS, name), TUTOR_MOVES).map(function (index) {
+			return ["", TUTOR_MOVES[index]];
+		}).sort(function (a, b) {
+			return a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0;
+		})};
+	}
+	var root = getDexEggSpecies(name);
+	return {rows: (getDexEntry(EGG_MOVES, root) || []).map(function (move) {
+		return ["", move];
+	}), note: root !== name ? "Bred as " + root + ": these are " + root + "'s egg moves." : ""};
+}
+
+function buildDexMoveTable(rows, first) {
+	var table = $('<table class="dex-table"><thead><tr>' + (first ? "<th></th>" : "") +
+		'<th>Move</th><th>Type</th><th>Cat.</th><th class="dex-numeric">Power</th></tr></thead></table>');
+	if (first) table.find("th").first().text(first);
+	var body = $("<tbody></tbody>").appendTo(table);
+	rows.forEach(function (entry) {
+		var move = calc.MOVES[gen][entry[1]] || {};
+		// (The calc treats a move with no category as a status move, as Gravity is.)
+		var category = move.category || (gen <= 3 || !calc.MOVES[gen][entry[1]] ? "" : "Status");
+		var row = $('<tr class="dex-move-row" tabindex="0" aria-expanded="false"></tr>').append(
+			first ? $("<td></td>").text(entry[0]) : "",
+			$('<td class="dex-move-name"></td>').text(entry[1]),
+			$("<td></td>").append(move.type ? buildDexTypes([move.type]) : ""),
+			$("<td></td>").text(category),
+			$('<td class="dex-numeric"></td>').text(move.bp || "\u2014")).appendTo(body);
+		row.on("click keydown", function (event) {
+			if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+			event.preventDefault();
+			toggleDexMoveInfo(row, entry[1], move);
+		});
+	});
+	return table;
+}
+
+// Level-up, TM/HM, tutor and egg moves, one list at a time under pills with their counts.
 function buildDexMoves(name) {
 	var section = $('<div class="dex-moves"></div>');
 	loadLearnsets(function () {
-		var learnset = typeof LEARNSETS !== "undefined" ? LEARNSETS[name] || LEARNSETS[(pokedex[name] || {}).baseSpecies] : null;
-		if (!learnset) {
-			section.append('<p class="dex-none">No level-up moves for this Pokémon in this game\'s data.</p>');
+		if (typeof LEARNSETS === "undefined") {
+			section.append('<p class="dex-none">No moves for this Pokémon in this game\'s data.</p>');
 			return;
 		}
-		var table = $('<table class="dex-table"><thead><tr><th>Lv</th><th>Move</th><th>Type</th><th>Cat.</th><th class="dex-numeric">Power</th></tr></thead></table>');
-		var body = $("<tbody></tbody>").appendTo(table);
-		learnset.forEach(function (entry) {
-			var move = calc.MOVES[gen][entry[1]] || {};
-			// (The calc treats a move with no category as a status move, as Gravity is.)
-			var category = move.category || (gen <= 3 || !calc.MOVES[gen][entry[1]] ? "" : "Status");
-			var row = $('<tr class="dex-move-row" tabindex="0" aria-expanded="false"></tr>').append(
-				$("<td></td>").text(entry[0] === 0 ? "Evo" : entry[0]),
-				$('<td class="dex-move-name"></td>').text(entry[1]),
-				$("<td></td>").append(move.type ? buildDexTypes([move.type]) : ""),
-				$("<td></td>").text(category),
-				$('<td class="dex-numeric"></td>').text(move.bp || "—")).appendTo(body);
-			row.on("click keydown", function (event) {
-				if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
-				event.preventDefault();
-				toggleDexMoveInfo(row, entry[1], move);
-			});
+		var hasLists = typeof TMS !== "undefined";
+		var tabs = DEX_MOVE_TABS.filter(function (tab) {
+			return tab.key === "level" || hasLists;
 		});
-		section.append(table);
+		var lists = {};
+		tabs.forEach(function (tab) {
+			lists[tab.key] = getDexMoveRows(name, tab.key);
+		});
+		var current = readSetting(DEX_MOVE_TAB_KEY);
+		if (!lists[current]) current = "level";
+		var pills = $('<div class="dex-move-tabs" role="tablist"></div>');
+		var body = $('<div class="dex-move-list"></div>');
+		var show = function (key) {
+			current = key;
+			pills.children().each(function () {
+				$(this).attr("aria-selected", $(this).attr("data-tab") === key);
+			});
+			var tab = tabs.filter(function (t) {
+				return t.key === key;
+			})[0];
+			var list = lists[key];
+			body.empty();
+			if (list.note) body.append($('<p class="dex-move-note"></p>').text(list.note));
+			body.append(list.rows.length ? buildDexMoveTable(list.rows, tab.first) :
+				$('<p class="dex-none"></p>').text(tab.none + " for this Pok\u00e9mon in this game's data."));
+		};
+		tabs.forEach(function (tab) {
+			$('<button type="button" class="dex-move-tab" role="tab"></button>')
+				.attr("data-tab", tab.key)
+				.append(document.createTextNode(tab.label + " "), $('<span class="dex-move-count"></span>').text(lists[tab.key].rows.length))
+				.click(function () {
+					writeSetting(DEX_MOVE_TAB_KEY, tab.key);
+					show(tab.key);
+				})
+				.appendTo(pills);
+		});
+		section.append(tabs.length > 1 ? pills : "", body);
+		show(current);
 	});
 	return section;
 }
@@ -328,7 +436,7 @@ function renderDex(container) {
 	card("Base stats", buildDexStats(species));
 	card("Evolution", buildDexEvolutions(name));
 	if (gen >= 3) card("Abilities", buildDexAbilities(name, species));
-	card("Level-up moves", buildDexMoves(name));
+	card("Moves", buildDexMoves(name));
 	if (hasGameFeature("encounters")) card("In the wild", buildDexWild(name));
 	if (TRAINER_ORDER.length) card("Trainers with it", buildDexTrainers(name));
 }

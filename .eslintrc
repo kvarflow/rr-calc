@@ -175,7 +175,12 @@
         "createPokemonSprite": false,
         "setSaveLock": false,
         "MOVE_INFO": false,
-        "getArc": false
+        "getArc": false,
+        "TMS": false,
+        "TUTORS": false,
+        "TM_MOVES": false,
+        "TUTOR_MOVES": false,
+        "EGG_MOVES": false
     },
     "extends": "eslint:recommended",
     "rules": {
