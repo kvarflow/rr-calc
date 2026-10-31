@@ -1207,6 +1207,8 @@ function goodIdeaToLower(turn, def, atk, move, stat) {
 // caller's limit, a Defence/Sp. Def exception, and no set-up into Focus Sash or Sturdy.)
 function shouldTrySetUp(turn, atk, def, move, stat) {
 	var field = turn.battle.field;
+	// Radical Red's "any stat" (0xFF, Spectral Thief): just whether the move affects the foe.
+	if (stat === "any") return move.effectiveness !== 0;
 	if (def.ability === "Unaware" && !hasMoveNamed(atk, ["Stored Power", "Power Trip"]) &&
 		!(stat === "def" && hasMoveNamed(atk, ["Body Press"]))) return false;
 	if (willFaintFromChip(atk, field)) return false;
@@ -1428,6 +1430,13 @@ function scoreNegatives(turn, atk, def, i, score) {
 	}
 	if (move.name === "Laser Focus" && has(["Battle Armor", "Shell Armor"], ability)) return down(8);
 	if (move.name === "Torment" && def.item === "Mental Herb") return down(6);
+	// Synchronoise (Radical Red's effect 254): it only hits a target sharing a type with the user.
+	if (move.name === "Synchronoise") {
+		if (def.item === "Ring Target" || atk.types.some(function (type) {
+			return def.types.indexOf(type) !== -1;
+		})) return standardDamage();
+		return down(10);
+	}
 
 	switch (effect) {
 	case E.SLEEP:
@@ -1692,6 +1701,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.LEECH_SEED:
 		if (def.types.indexOf("Grass") !== -1 || def.seeded || ability === "Liquid Ooze") down(10);
 		return score;
+	case E.PSYCH_UP:
+		// Spectral Thief and Soul Robbery are attacks; Psych Up gets Haze's rule.
+		if (move.name !== "Psych Up") return standardDamage();
+		/* falls through */
 	case E.HAZE:
 		if (goodAI && usefulStatChanges(def, 1) + usefulStatChanges(atk, -1) < usefulStatChanges(def, -1) + usefulStatChanges(atk, 1)) down(10);
 		else if (!goodAI && Object.keys(atk.boosts).some(function (stat) {
@@ -1756,6 +1769,15 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.FOLLOW_ME:
 	case E.INSTRUCT_AFTER_YOU_QUASH:
 		down(10);
+		return score;
+	case E.TOPSY_TURVY_ELECTRIFY:
+		if (move.name === "Electrify") {
+			if (!hitsFirst(turn, atk, move, def) || (predicted && predicted.type === "Electric")) down(10);
+			return score;
+		}
+		// Topsy-Turvy: nothing to flip (-10), or it would flip more drops than boosts (-5).
+		if (!statStageTotal(def, 1)) return down(10);
+		if (statStageTotal(def, -1) > statStageTotal(def, 1)) down(5);
 		return score;
 	case E.SEMI_INVULNERABLE:
 		// Radical Red: Fly, Dig and the like aren't treated as charging moves.
@@ -1854,6 +1876,19 @@ function shouldCourtChange(side, foe) {
 	});
 }
 
+// CountBanksPositiveStatStages / NegativeStatStages: the side's raised (sign 1) or lowered (sign -1)
+// stages, all stats.
+function statStageTotal(side, sign) {
+	return Object.keys(side.boosts).reduce(function (total, stat) {
+		return total + Math.max(0, side.boosts[stat] * sign);
+	}, 0);
+}
+
+// GoodIdeaToSwapStatStages: at least two useful stages better off after swapping.
+function goodIdeaToSwapStages(atk, def) {
+	return usefulStatChanges(def, 1) + usefulStatChanges(atk, -1) - (usefulStatChanges(def, -1) + usefulStatChanges(atk, 1)) >= 2;
+}
+
 // CountUsefulStatChanges: raised (sign 1) or lowered (sign -1) stages of the stats the side uses.
 function usefulStatChanges(side, sign) {
 	var total = 0;
@@ -1895,6 +1930,99 @@ function scorePositives(turn, atk, def, i, score) {
 	var recoverBonus = function () {
 		if (style === STYLE.STALL || style === STYLE.PHAZING) up(8);
 		else status(3);
+	};
+	// IncreasePsychUpViability: when swapping stages is worth it, the first stat (offence first) the
+	// foe has higher, if the AI uses it. (CFRU passes the score for Attack's stat; read as Attack.)
+	var psychUpBonus = function () {
+		if (!goodIdeaToSwapStages(atk, def)) return;
+		var stats = ["atk", "spa", "spe", "acc", "eva", "def", "spd"];
+		for (var s = 0; s < stats.length; s++) {
+			var stat = stats[s];
+			var difference = stage(def, stat) - stage(atk, stat);
+			if (difference <= 0) continue;
+			if ((stat === "atk" && hasRealPhysical(atk)) || (stat === "spa" && hasSpecial(atk)) ||
+				stat === "spe" || stat === "acc" || stat === "eva" || style === STYLE.STALL) {
+				up(statBonus(turn, atk, def, move, stat, 8, difference));
+				return;
+			}
+		}
+	};
+	// Trick / Switcheroo: what handing over the AI's item (or taking the foe's) does.
+	var trickBonus = function () {
+		var item = atk.item;
+		if (/^Choice /.test(item)) {
+			if (item === "Choice Scarf" || !(item === "Choice Band" ? hasPhysical(def) : hasSpecial(def))) status(2);
+		} else if (item === "Toxic Orb") {
+			if (!goodIdeaToStatusSelf(atk, "psn", field) && !badIdeaToStatus(atk, def, "psn", field)) status(2);
+		} else if (item === "Flame Orb") {
+			if (!goodIdeaToStatusSelf(atk, "brn", field) && !badIdeaToStatus(atk, def, "brn", field)) status(2);
+		} else if (item === "Black Sludge") {
+			if (def.types.indexOf("Poison") === -1) status(3);
+		} else if (item === "Iron Ball") {
+			if (!hasMoveNamed(def, ["Fling"]) || !isGrounded(def, field)) status(2);
+		} else if (item === "Lagging Tail" || item === "Sticky Barb") {
+			status(3);
+		} else if (item === "Utility Umbrella") {
+			if (!has(["Solar Power", "Dry Skin"], atk.ability) &&
+				((def.ability === "Swift Swim" && /Rain/.test(field.weather || "")) ||
+				(has(["Chlorophyll", "Flower Gift"], def.ability) && /Sun/.test(field.weather || "")))) status(3);
+		} else if (item === "Assault Vest") {
+			if (styleOf(turn, def) === STYLE.STALL && hasMoveWhere(def, function (m) {
+				return m.split === SPLIT_STATUS;
+			})) status(2);
+		} else if (!item && move.name !== "Bestow") {
+			var theirs = def.item;
+			if (/^Choice /.test(theirs) || theirs === "Lagging Tail" || theirs === "Sticky Barb") return;
+			if (theirs === "Toxic Orb") {
+				if (goodIdeaToStatusSelf(atk, "psn", field)) status(2);
+			} else if (theirs === "Flame Orb") {
+				if (goodIdeaToStatusSelf(atk, "brn", field)) status(2);
+			} else if (theirs === "Black Sludge") {
+				if (atk.types.indexOf("Poison") !== -1) status(3);
+			} else if (theirs === "Iron Ball") {
+				if (hasMoveNamed(atk, ["Fling"])) status(2);
+			} else {
+				status(1);
+			}
+		}
+	};
+	// The stat swaps and splits (Radical Red's Heart Swap is CFRU's older rule).
+	var statSwapBonus = function () {
+		var higher = function (stat) {
+			return stage(def, stat) > stage(atk, stat);
+		};
+		var noLower = function (stat) {
+			return stage(def, stat) >= stage(atk, stat);
+		};
+		switch (move.name) {
+		case "Guard Swap":
+			if ((higher("def") && noLower("spd")) || (higher("spd") && noLower("def"))) status(1);
+			break;
+		case "Power Swap":
+			if ((higher("atk") && noLower("spa")) || (higher("spa") && noLower("atk"))) status(1);
+			break;
+		case "Power Trick":
+			if (atk.stats.def > atk.stats.atk && hasRealPhysical(atk)) status(2);
+			break;
+		case "Heart Swap":
+			if (!["atk", "def", "spa", "spd", "spe", "acc", "eva"].some(function (stat) {
+				return stage(def, stat) < stage(atk, stat);
+			}) && ["atk", "def", "spa", "spd", "spe", "acc", "eva"].some(higher)) status(1);
+			break;
+		case "Speed Swap":
+			if (def.speed > atk.speed) status(3);
+			break;
+		case "Guard Split":
+			var newDef = Math.floor((atk.stats.def + def.stats.def) / 2);
+			var newSpd = Math.floor((atk.stats.spd + def.stats.spd) / 2);
+			if ((newDef > atk.stats.def && newSpd >= atk.stats.spd) || (newSpd > atk.stats.spd && newDef >= atk.stats.def)) status(1);
+			break;
+		case "Power Split":
+			var newAtk = Math.floor((atk.stats.atk + def.stats.atk) / 2);
+			var newSpa = Math.floor((atk.stats.spa + def.stats.spa) / 2);
+			if ((newAtk > atk.stats.atk && newSpa >= atk.stats.spa) || (newSpa > atk.stats.spa && newAtk >= atk.stats.atk)) status(1);
+			break;
+		}
 	};
 	// The Cosmic Power logic (Defend Order, Stockpile, Contrary Shell Smash): Defence (its "1"
 	// raises Attack, as in the game), else Sp. Def.
@@ -2345,6 +2473,32 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.REFRESH:
 		if (move.name !== "Psycho Shift" && atk.status) status(3);
+		break;
+	case E.PSYCH_UP:
+		if (move.name !== "Spectral Thief") {
+			psychUpBonus();
+		} else if (atk.ability !== "Contrary") {
+			// Spectral Thief: worth it against a foe at +2 in anything.
+			if (Object.keys(def.boosts).some(function (stat) {
+				return stage(def, stat) >= 8;
+			})) {
+				if (isDamager(style)) up(statBonus(turn, atk, def, move, "any", 12, 3));
+				else up(3);
+			}
+		}
+		break;
+	case E.TRICK:
+		trickBonus();
+		break;
+	case E.STAT_SWAP_SPLIT:
+		statSwapBonus();
+		break;
+	case E.TOPSY_TURVY_ELECTRIFY:
+		if (move.name === "Electrify") {
+			if (predicted && predicted.type === "Normal" && has(["Volt Absorb", "Motor Drive", "Lightning Rod"], atk.ability)) status(3);
+		} else if (statStageTotal(def, 1) > statStageTotal(def, -1)) {
+			status(1);
+		}
 		break;
 	case E.LOCK_ON:
 		// Radical Red: only Laser Focus, when the AI can't KO now and survives to use the crit.

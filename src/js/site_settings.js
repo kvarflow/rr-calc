@@ -190,7 +190,11 @@ var CHANGELOG = [
 			"as the Z-Move, and Battle shows \u201cZ\u201d with the share used as one (tap and hold for the Z-Move's " +
 			"name). It holds the Z back when the move KOs anyway and you have more Pok\u00e9mon, when you are expected " +
 			"to Protect, or into a Disguise; recharging and charging moves always become Z-Moves. Eevee's Last " +
-			"Resort with Eevium Z becomes Extreme Evoboost. Taken as not used yet this battle"
+			"Resort with Eevium Z becomes Extreme Evoboost. Taken as not used yet this battle",
+		"Trainer AI: the last move cases from the game's AI: Synchronoise only against a shared type (or Ring " +
+			"Target), Psych Up (copies a boosted foe; not when it would lose its own boosts) and Spectral Thief, Trick " +
+			"and Switcheroo (handing over a Black Sludge, Toxic Orb, Iron Ball...), the stat swaps and splits (Speed " +
+			"Swap, Guard / Power Split...), Topsy-Turvy and Electrify"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
