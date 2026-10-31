@@ -184,7 +184,13 @@ var CHANGELOG = [
 			"treat frostbite as a normal status; against your Wonder Guard it stays in when it has Wish, Nightmare on " +
 			"a sleeping target, Trick with a Toxic or Flame Orb, Perish Song, Forest's Curse, Tailwind, Lucky Chant " +
 			"or an ability-ignoring move; badly poisoned for more than six turns (the Toxic counter) it switches out; " +
-			"it doesn't switch for low stats when it's about to Heart Swap"
+			"it doesn't switch for low stats when it's about to Heart Swap",
+		"Trainer AI, Hardcore: Z-Moves, as the game's AI uses them (Hardcore trainers can use one; in Normal only " +
+			"after the game is cleared, so not against these bosses). A move it would turn into its Z-Move is scored " +
+			"as the Z-Move, and Battle shows \u201cZ\u201d with the share used as one (tap and hold for the Z-Move's " +
+			"name). It holds the Z back when the move KOs anyway and you have more Pok\u00e9mon, when you are expected " +
+			"to Protect, or into a Disguise; recharging and charging moves always become Z-Moves. Eevee's Last " +
+			"Resort with Eevium Z becomes Extreme Evoboost. Taken as not used yet this battle"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";

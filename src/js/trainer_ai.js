@@ -143,6 +143,67 @@ var WIND_MOVES = ["Air Cutter", "Bleakwind Storm", "Blizzard", "Fairy Wind", "Gu
 	"Petal Blizzard", "Sandstorm", "Sandsear Storm", "Springtide Storm", "Twister", "Whirlwind", "Wildbolt Storm", "Sonic Slash"];
 // Moves that ignore the target's ability, like Mold Breaker.
 var ABILITY_IGNORING_MOVES = ["Moongeist Beam", "Shell Side Arm", "Photon Geyser", "Sunsteel Strike"];
+
+/*
+ * Z-Moves. Radical Red's CanUseZMove (0x090BD7D0) lets trainers use them in Hardcore (and in Normal
+ * only once the game is cleared, so never against a boss here), without checking for a Z-Power
+ * Ring; not while Mega Evolved. A damaging move becomes the Z-Move of its crystal's type, or the
+ * item's own Z-Move for its Pokémon and move. Their data is Radical Red's (move table ids 848-900):
+ * the typed ones hit, never miss and make no contact; the special ones as listed
+ * ([effect, power, secondary chance, target]).
+ */
+var Z_CRYSTAL_TYPES = {"Normalium Z": "Normal", "Fightinium Z": "Fighting", "Flyinium Z": "Flying", "Poisonium Z": "Poison",
+	"Groundium Z": "Ground", "Rockium Z": "Rock", "Buginium Z": "Bug", "Ghostium Z": "Ghost", "Steelium Z": "Steel",
+	"Firium Z": "Fire", "Waterium Z": "Water", "Grassium Z": "Grass", "Electrium Z": "Electric", "Psychium Z": "Psychic",
+	"Icium Z": "Ice", "Dragonium Z": "Dragon", "Darkinium Z": "Dark", "Fairium Z": "Fairy"};
+var TYPED_Z_MOVES = {Normal: "Breakneck Blitz", Fighting: "All-Out Pummeling", Flying: "Supersonic Skystrike",
+	Poison: "Acid Downpour", Ground: "Tectonic Rage", Rock: "Continental Crush", Bug: "Savage Spin-Out",
+	Ghost: "Never-Ending Nightmare", Steel: "Corkscrew Crash", Fire: "Inferno Overdrive", Water: "Hydro Vortex",
+	Grass: "Bloom Doom", Electric: "Gigavolt Havoc", Psychic: "Shattered Psyche", Ice: "Subzero Slammer",
+	Dragon: "Devastating Drake", Dark: "Black Hole Eclipse", Fairy: "Twinkle Tackle"};
+var SPECIAL_Z_MOVES = [
+	{item: "Eevium Z", move: "Last Resort", species: /^Eevee/, z: "Extreme Evoboost"},
+	{item: "Pikanium Z", move: "Volt Tackle", species: /^Pikachu/, z: "Catastropika"},
+	{item: "Pikashunium Z", move: "Thunderbolt", species: /^Pikachu-/, z: "10,000,000 Volt Thunderbolt"},
+	{item: "Aloraichium Z", move: "Thunderbolt", species: /^Raichu-Alola/, z: "Stoked Sparksurfer"},
+	{item: "Snorlium Z", move: "Giga Impact", species: /^Snorlax/, z: "Pulverizing Pancake"},
+	{item: "Mewnium Z", move: "Psychic", species: /^Mew$/, z: "Genesis Supernova"},
+	{item: "Decidium Z", move: "Spirit Shackle", species: /^Decidueye/, z: "Sinister Arrow Raid"},
+	{item: "Incinium Z", move: "Darkest Lariat", species: /^Incineroar/, z: "Malicious Moonsault"},
+	{item: "Primarium Z", move: "Sparkling Aria", species: /^Primarina/, z: "Oceanic Operetta"},
+	{item: "Lycanium Z", move: "Stone Edge", species: /^Lycanroc/, z: "Splintered Stormshards"},
+	{item: "Mimikium Z", move: "Play Rough", species: /^Mimikyu/, z: "Let's Snuggle Forever"},
+	{item: "Kommonium Z", move: "Clanging Scales", species: /^Kommo-o/, z: "Clangorous Soulblaze"},
+	{item: "Tapunium Z", move: "Nature's Madness", species: /^Tapu /, z: "Guardian of Alola"},
+	{item: "Solganium Z", move: "Sunsteel Strike", species: /^(Solgaleo|Necrozma-Dusk-Mane)/, z: "Searing Sunraze Smash"},
+	{item: "Lunalium Z", move: "Moongeist Beam", species: /^(Lunala|Necrozma-Dawn-Wings)/, z: "Menacing Moonraze Maelstrom"},
+	{item: "Ultranecrozium Z", move: "Photon Geyser", species: /^Necrozma-Ultra/, z: "Light That Burns the Sky"},
+	{item: "Marshadium Z", move: "Spectral Thief", species: /^Marshadow/, z: "Soul-Stealing 7-Star Strike"}
+];
+var SPECIAL_Z_DATA = {
+	"Catastropika": [0, 210, 0, 0], "10,000,000 Volt Thunderbolt": [43, 195, 0, 0], "Stoked Sparksurfer": [6, 175, 100, 0],
+	"Pulverizing Pancake": [0, 210, 0, 0], "Genesis Supernova": [140, 185, 100, 0], "Sinister Arrow Raid": [0, 180, 0, 0],
+	"Malicious Moonsault": [0, 180, 0, 0], "Oceanic Operetta": [0, 195, 0, 0], "Splintered Stormshards": [243, 190, 0, 0],
+	"Let's Snuggle Forever": [0, 190, 0, 0], "Clangorous Soulblaze": [140, 185, 100, 8],
+	// (Its damage, three quarters of the target's HP, is the calculator's.)
+	"Guardian of Alola": [0, 1, 0, 0], "Searing Sunraze Smash": [0, 200, 0, 0], "Menacing Moonraze Maelstrom": [0, 200, 0, 0],
+	"Light That Burns the Sky": [0, 200, 0, 0], "Soul-Stealing 7-Star Strike": [0, 195, 0, 0],
+	// Eevee's Last Resort becomes a status move: +2 to every stat.
+	"Extreme Evoboost": [207, 0, 0, 16]
+};
+// Your predicted move that makes it hold its Z-Move back (Radical Red adds Silk Trap to CFRU's list).
+var Z_PROTECT_MOVES = ["Protect", "King's Shield", "Spiky Shield", "Obstruct", "Silk Trap"];
+
+// The Z-Move a damaging move would become, or "".
+function zMoveNameFor(species, item, move) {
+	if (!move || move.split === SPLIT_STATUS || /-(Mega|Primal)/.test(species)) return "";
+	for (var i = 0; i < SPECIAL_Z_MOVES.length; i++) {
+		var special = SPECIAL_Z_MOVES[i];
+		if (special.item === item && special.move === move.name && special.species.test(species)) return special.z;
+	}
+	var type = /^Hidden Power/.test(move.name) ? "Normal" : move.type;
+	return Z_CRYSTAL_TYPES[item] && Z_CRYSTAL_TYPES[item] === type ? TYPED_Z_MOVES[type] : "";
+}
 var RECOIL_QUARTER = ["Take Down", "Submission", "Wild Charge", "Head Charge", "Volt Tackle"];
 var RECOIL_THIRD = ["Double-Edge", "Flare Blitz", "Brave Bird", "Wood Hammer", "Draco Barrage", "Wave Crash"];
 var RECOIL_HALF = ["Head Smash", "Light of Ruin", "Chloroblast"];
@@ -2614,6 +2675,48 @@ function substituteBonus(turn, atk, def) {
 	return {1: 0, 2: 8, 3: statusBonus(turn, atk, def, 2), 5: 5, 6: 4, 7: 4, 4: 3, 8: 3, 9: 5, 10: 3}[styleOf(turn, atk)] || 0;
 }
 
+// CalcShouldAIUseZMove for a damaging move (one Z-Move a battle, taken as not used yet).
+function shouldUseZMove(turn, atk, def, i) {
+	var move = atk.moves[i];
+	var z = atk.zMoves && atk.zMoves[i];
+	if (!move || !z) return false;
+	var field = turn.battle.field;
+	var predicted = turn.predicted(def);
+	if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) return false;
+	if (predicted && predicted.effect === E.SUBSTITUTE && !hitsFirst(turn, atk, z, def) && atk.ability !== "Infiltrator") return false;
+	if (defAbility(atk, def) === "Disguise" && /^Mimikyu/.test(def.name) && !/Busted/.test(def.name)) return false;
+	if (predicted && has(Z_PROTECT_MOVES, predicted.name)) return false;
+	if (has([E.RECHARGE, E.SEMI_INVULNERABLE, E.SKY_ATTACK, E.SKULL_BASH, E.SOLARBEAM, E.SKY_DROP], move.effect)) return true;
+	// The move KOs anyway (and is sure enough to hit), with more of your Pokémon to come: keep the Z.
+	if (move.effect !== E.OVERHEAT && (move.effect !== E.SUPERPOWER || atk.ability === "Contrary") &&
+		(atk.ability === "Magic Guard" || !isRecoilMove(move)) && knocksOut(turn, atk, def, i, 1) &&
+		(moveWillHit(atk, def, move, field) || accuracyOf(atk, def, move, field) >= 90) && def.monsLeft >= 2) return false;
+	if (atk.item === "Normalium Z" && hasEffect(atk, [E.FAIRY_LOCK_HAPPY_HOUR])) return false;
+	if (move.name === "Spectral Thief" && anyUsefulStatRaised(def, atk)) return false;
+	return true;
+}
+
+// The battle with each move the AI would turn into a Z-Move replaced by it (TryReplaceMoveWithZMove),
+// for everything it works out this turn; `zSlots` says which.
+function withZMoves(turn, battle) {
+	var ai = battle.ai;
+	if (!ai.zMoves || battle.mega) return battle;
+	var saved = turn.battle;
+	var savedCache = turn.cache;
+	turn.battle = battle;
+	turn.cache = {};
+	var zSlots = ai.moves.map(function (move, i) {
+		return shouldUseZMove(turn, ai, battle.player, i);
+	});
+	turn.battle = saved;
+	turn.cache = savedCache;
+	if (!zSlots.some(Boolean)) return battle;
+	var moves = ai.moves.map(function (move, i) {
+		return zSlots[i] ? ai.zMoves[i] : move;
+	});
+	return $.extend({}, battle, {ai: $.extend({}, ai, {moves: moves, zSlots: zSlots})});
+}
+
 function shouldUseFakeOut(turn, atk, def, move) {
 	if (!atk.firstTurn || isAsleep(def) || has(["Inner Focus", "Shield Dust"], defAbility(atk, def))) return false;
 	if (!hitsFirst(turn, atk, move, def)) return false;
@@ -3812,10 +3915,13 @@ var SWITCH_REASONS = ["to take your move with its ability", "against your Wonder
 function predictAIMoves(battle) {
 	var party = battle.party || [];
 	var reasons = SWITCH_REASONS.length;
+	// Where the shares of moves used as Z-Moves go, after the switches.
+	var zBase = 4 + party.length * reasons;
 	var outcomes = enumerateChances(function (rng) {
 		var turn = new AITurn(rng, megaPhaseBattle(battle, false));
 		var outcome = [0, 0, 0, 0];
 		predictPlayer(turn);
+		turn.battle = withZMoves(turn, turn.battle);
 		if (party.length) {
 			predictAISelf(turn);
 			turn.phase = "w";
@@ -3838,9 +3944,13 @@ function predictAIMoves(battle) {
 		}
 		turn.phase = "a";
 		turn.cache = {};
-		turn.battle = megaPhaseBattle(battle, true);
+		turn.battle = withZMoves(turn, megaPhaseBattle(battle, true));
 		var shares = chooseShares(runScripts(turn, turn.battle.ai, turn.battle.player, battle.flags, true), battle.ai.moves);
-		for (var i = 0; i < 4; i++) outcome[i] = shares[i];
+		var zSlots = turn.battle.ai.zSlots || [];
+		for (var i = 0; i < 4; i++) {
+			outcome[i] = shares[i];
+			if (zSlots[i]) outcome[zBase + i] = shares[i];
+		}
 		return outcome;
 	}, 20000);
 	var switches = party.map(function (mon, p) {
@@ -3861,6 +3971,9 @@ function predictAIMoves(battle) {
 	return {
 		shares: [0, 1, 2, 3].map(function (i) {
 			return outcomes[i] || 0;
+		}),
+		zShares: [0, 1, 2, 3].map(function (i) {
+			return outcomes[zBase + i] || 0;
 		}),
 		switches: switches,
 		switchShare: switches.reduce(function (sum, entry) {
@@ -4105,6 +4218,7 @@ function readAIBattle() {
 		speed: getBattleSpeed(p2, "p2"), monsLeft: countFoeMonsLeft(), firstTurn: p2.curHP() === p2.maxHP(),
 		sideState: readSideState("R"), focusEnergy: focus.p2, critChance: critChance(p2, p1, "p2"), critDamage: critDamage(1)
 	});
+	ai.zMoves = readZMoves(ai);
 	var party = readAIParty(p1, damageResults[0][0].field, field,
 		{monsLeft: ai.monsLeft, sideState: ai.sideState, playerFocus: focus.p1});
 	// It came in this turn, after a KO or a switch (the lead at full HP did not): the switching
@@ -4115,6 +4229,39 @@ function readAIBattle() {
 		party: party, justSwitchedIn: justSwitchedIn};
 	battle.mega = readPendingMega(p1, p2, field, damageResults[0][0].field, {ai: ai, player: player, focus: focus});
 	return battle;
+}
+
+// In Hardcore, each of the AI's moves as its Z-Move against you (the calculator's damage), or null.
+function readZMoves(ai) {
+	if (typeof getPageMode !== "function" || getPageMode() !== "hardcore") return null;
+	var any = false;
+	var zMoves = ai.moves.map(function (move, i) {
+		var name = zMoveNameFor(ai.name, ai.item, move);
+		var result = damageResults[1][i];
+		if (!name || !result) return null;
+		var special = SPECIAL_Z_DATA[name];
+		any = true;
+		if (special && special[0] === E.EXTREME_EVOBOOST) {
+			return $.extend({}, move, {name: name, zBase: move.name, bp: 0, power: 0, effect: special[0], accuracy: 0,
+				chance: 0, target: special[3], priority: 0, flags: 0, split: SPLIT_STATUS, hits: 1, recoil: undefined,
+				drain: undefined, maxDamage: 0, maxCritDamage: 0, effectiveness: 1});
+		}
+		var zMove;
+		var range;
+		try {
+			zMove = new calc.Move(gen, move.name, {useZ: true, item: ai.item, species: ai.name, ability: ai.ability});
+			range = calc.calculate(gen, result.attacker, result.defender, zMove, result.field).range();
+		} catch (e) {
+			return null;
+		}
+		return $.extend({}, move, {
+			name: name, zBase: move.name, bp: zMove.bp, power: special && special[1] > 1 ? special[1] : zMove.bp,
+			effect: special ? special[0] : E.HIT, accuracy: 0, chance: special ? special[2] : 0,
+			target: special ? special[3] : 0, priority: 0, flags: 0, hits: 1, recoil: undefined, drain: undefined,
+			sound: false, bullet: false, maxDamage: range[1], maxCritDamage: range[1]
+		});
+	});
+	return any ? zMoves : null;
 }
 
 /*
@@ -4208,9 +4355,14 @@ function markFoeLikelyMoves() {
 		var label = labels.eq(i);
 		var move = battle.ai.moves[i];
 		if (!move || i >= labels.length) return;
-		label.attr("data-ai", formatAIShare(share));
-		var ko = move.maxDamage >= hp && hp > 0 && share > 0;
-		var title = "The trainer's AI uses this " + formatAIShare(share) + " of the time" + (ko ? "; it can KO you" : "");
+		// Used as its Z-Move (Hardcore) for some or all of that share.
+		var zShare = prediction.zShares[i];
+		var zMove = zShare > 0 && battle.ai.zMoves ? battle.ai.zMoves[i] : null;
+		label.attr("data-ai", formatAIShare(share) + (zMove ? " Z" : ""));
+		var damage = zMove ? Math.max(move.maxDamage, zMove.maxDamage) : move.maxDamage;
+		var ko = damage >= hp && hp > 0 && share > 0;
+		var title = "The trainer's AI uses this " + formatAIShare(share) + " of the time" +
+			(zMove ? " (" + formatAIShare(zShare) + " as " + zMove.name + ", its Z-Move)" : "") + (ko ? "; it can KO you" : "");
 		label.attr("title", title);
 		if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
 	});
