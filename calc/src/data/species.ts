@@ -4290,7 +4290,7 @@ const BW_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   },
   Jellicent: {
     types: ['Water', 'Ghost'],
-    bs: {hp: 100, at: 60, df: 80, sa: 75, sd: 105, sp: 60},
+    bs: {hp: 100, at: 60, df: 70, sa: 85, sd: 105, sp: 60},
     weightkg: 135,
     abilities: {0: 'Water Absorb'},
   },
@@ -6691,7 +6691,6 @@ const SM_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
     bs: {hp: 46, at: 65, df: 65, sa: 55, sd: 35, sp: 34},
     weightkg: 8,
     gender: 'N',
-    nfe: true,
     abilities: {0: 'Magnet Pull'},
   },
   'Meowth-Alola': {
@@ -8770,6 +8769,10 @@ delete SS['Toxtricity-Low-Key-Gmax']
 var i = SS['Urshifu'].otherFormes?.indexOf('Urshifu-Rapid-Strike-Gmax')
 if (i != undefined && i != -1) SS['Urshifu'].otherFormes?.splice(i, 1)
 delete SS['Urshifu-Rapid-Strike-Gmax']
+// A species whose only other forme was its Gigantamax one has none left.
+gmaxes.forEach(function (p) {
+  if (SS[p].otherFormes?.length === 0) delete (SS[p] as any).otherFormes;
+});
 
 const PLA_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   Arcanine: {otherFormes: ['Arcanine-Hisui']},
@@ -10029,6 +10032,10 @@ const SV_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
 };
 
 const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
+  // Radical Red's Jellicent (its base stats table): Defense 80, Sp. Atk 75.
+  Jellicent: {bs: {df: 80, sa: 75}},
+  // Meltan evolves (with a Metal Coat) in Radical Red, so Eviolite works on it.
+  Meltan: {nfe: true},
   Aegislash: {
     types: ['Steel', 'Ghost'],
     bs: {hp: 60, at: 50, df: 140, sa: 50, sd: 140, sp: 60},

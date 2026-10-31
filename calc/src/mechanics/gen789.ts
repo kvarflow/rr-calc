@@ -1460,7 +1460,8 @@ export function calculateDefenseSMSSSV(
     desc.weather = field.weather;
   }
 
-  if (move.named('Explosion', 'Self-Destruct', 'Misty Explosion')) {
+  // Radical Red (CFRU's OLD_EXPLOSION_BOOST): the exploding moves halve the target's defence.
+  if (gen.num >= 9 && move.named('Explosion', 'Self-Destruct', 'Misty Explosion')) {
     defense = pokeRound(defense / 2);
   }
 

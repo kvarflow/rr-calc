@@ -9,71 +9,86 @@ const pkmn = {Generations: new Generations(Dex)};
 
 const gens = [1, 2, 3, 4, 5, 6, 7, 8, 9] as I.GenerationNum[];
 
-describe('Generations', () => {
-  test('abilities', () => {
-    for (const gen of gens) {
-      const p = Array.from(pkmn.Generations.get(gen).abilities);
-      const c = new Map<I.ID, I.Ability>();
-      for (const ability of calc.Generations.get(gen).abilities) c.set(ability.id, ability);
+/*
+ * Where this calc's tables knowingly differ from Pokémon Showdown's (@pkmn/dex), all inherited from
+ * the Radical Red calc this one is built on: Radical Red's Mega Stones from Gen 6 on, the Stick
+ * as the Leek, Let's Go's moves and the Cosplay Pikachus kept, and no Gigantamax formes. Gen 9 is
+ * compared without Radical Red's own changes (setGameData(9, {})), which are tested elsewhere.
+ * Anything else that differs fails.
+ */
+const RR_MEGA_STONES = ['Alcremite', 'Appletunite', 'Butterfrite', 'Centiskite', 'Coalossite',
+  'Copperajite', 'Drednawite', 'Duraludonite', 'Flapplite', 'Garbodorite', 'Kinglerite',
+  'Laprasite', 'Machampite', 'Orbeetlite', 'Sandacondite', 'Snorlaxite', 'Toxtricitite',
+  'Toxtricitite Low Key'];
+const LGPE_MOVES = ['Baddy Bad', 'Bouncy Bubble', 'Buzzy Buzz', 'Freezy Frost', 'Glitzy Glow',
+  'Sappy Seed', 'Sizzly Slide', 'Sparkly Swirl', 'Zippy Zap', 'Floaty Fall', 'Pika Papow',
+  'Splishy Splash', 'Veevee Volley'];
+const COSPLAY_PIKACHU = ['Pikachu-Cosplay', 'Pikachu-Rock-Star', 'Pikachu-Belle', 'Pikachu-PhD',
+  'Pikachu-Pop-Star', 'Pikachu-Libre'];
 
-      expect(Array.from(c.values()).map(s => s.name).sort()).toEqual(p.map(s => s.name).sort());
-      for (const ability of p) {
-        expect(c.get(ability.id)).toEqual(ability);
-        c.delete(ability.id);
+function knownDifferences(kind: string, gen: number) {
+  const added: string[] = [];
+  const removed: string[] = [];
+  if (kind === 'items') {
+    if (gen >= 2) removed.push('Stick');
+    if (gen >= 6) added.push(...RR_MEGA_STONES);
+    if (gen >= 8) added.push('Leek Stick');
+  } else if (kind === 'moves') {
+    if (gen >= 8) added.push(...LGPE_MOVES);
+  } else if (kind === 'species') {
+    if (gen >= 7) added.push(...COSPLAY_PIKACHU);
+    if (gen >= 8) {
+      for (const specie of pkmn.Generations.get(gen as I.GenerationNum).species) {
+        if (specie.name.endsWith('-Gmax')) removed.push(specie.name);
       }
-      expect(c.size).toBe(0);
     }
-  });
+  }
+  return {added, removed};
+}
 
-  test('items', () => {
-    for (const gen of gens) {
-      const p = Array.from(pkmn.Generations.get(gen).items);
-      const c = new Map<I.ID, I.Item>();
-      for (const item of calc.Generations.get(gen).items) c.set(item.id, item);
+// Showdown's entry as this calc should have it: no Gigantamax formes among the other formes.
+function expectedEntry(kind: string, entry: any) {
+  if (kind !== 'species' || !entry.otherFormes) return entry;
+  const otherFormes = entry.otherFormes.filter((name: string) => !name.endsWith('-Gmax'));
+  const expected = {...entry, otherFormes: otherFormes.length ? otherFormes : undefined};
+  if (!otherFormes.length) delete expected.otherFormes;
+  return expected;
+}
 
-      expect(Array.from(c.values()).map(s => s.name).sort()).toEqual(p.map(s => s.name).sort());
-      for (const item of p) {
-        expect(c.get(item.id)).toEqual(item);
-        c.delete(item.id);
-      }
-      expect(c.size).toBe(0);
+function compareTables(kind: 'abilities' | 'items' | 'moves' | 'species', loose = false) {
+  for (const gen of gens) {
+    if (gen === 9) calc.setGameData(9, {});
+    const {added, removed} = knownDifferences(kind, gen);
+    const p = Array.from((pkmn.Generations.get(gen) as any)[kind] as Iterable<any>)
+      .filter(entry => !removed.includes(entry.name));
+    const c = new Map<I.ID, any>();
+    for (const entry of (calc.Generations.get(gen) as any)[kind]) {
+      if (!added.includes(entry.name)) c.set(entry.id, entry);
     }
-  });
 
-  test('moves', () => {
-    for (const gen of gens) {
-      const p = Array.from(pkmn.Generations.get(gen).moves);
-      const c = new Map<I.ID, I.Move>();
-      for (const move of calc.Generations.get(gen).moves) c.set(move.id, move);
-
-      expect(Array.from(c.values()).map(s => s.name).sort()).toEqual(p.map(s => s.name).sort());
-      for (const move of p) {
+    expect(Array.from(c.values()).map(s => s.name).sort()).toEqual(p.map(s => s.name).sort());
+    for (const entry of p) {
+      const expected = expectedEntry(kind, entry);
+      if (loose) {
         // Formerly toEqual, relax a bit so the calc can have properties aren't in pkmn/dex.
-        for (const [k, v] of Object.entries(move)) {
-          if (v === undefined) {
-            delete (move as any)[k];
-          }
+        for (const [k, v] of Object.entries(expected)) {
+          if (v === undefined) delete expected[k];
         }
-        expect(c.get(move.id)).toMatchObject(move);
-        c.delete(move.id);
+        expect(c.get(entry.id)).toMatchObject(expected);
+      } else {
+        expect(c.get(entry.id)).toEqual(expected);
       }
-      expect(c.size).toBe(0);
+      c.delete(entry.id);
     }
-  });
+    expect(c.size).toBe(0);
+  }
+}
 
-  test('species', () => {
-    for (const gen of gens) {
-      const p = Array.from(pkmn.Generations.get(gen).species);
-      const c = new Map<I.ID, I.Specie>();
-      for (const specie of calc.Generations.get(gen).species) c.set(specie.id, specie);
-      expect(Array.from(c.values()).map(s => s.name).sort()).toEqual(p.map(s => s.name).sort());
-      for (const specie of p) {
-        expect(c.get(specie.id)).toEqual(specie);
-        c.delete(specie.id);
-      }
-      expect(c.size).toBe(0);
-    }
-  });
+describe('Generations', () => {
+  test('abilities', () => compareTables('abilities'));
+  test('items', () => compareTables('items'));
+  test('moves', () => compareTables('moves', true));
+  test('species', () => compareTables('species'));
 
   test('types', () => {
     for (const gen of gens) {

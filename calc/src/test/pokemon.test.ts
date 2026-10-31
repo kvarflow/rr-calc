@@ -113,9 +113,14 @@ describe('Pokemon', () => {
     expect(p.hasType('Ice')).toBe(false);
   });
 
-  test('Gigantamx weights', () => {
-    expect(new Pokemon(8, 'Venusaur-Gmax').weightkg).toBe(100);
-    expect(new Pokemon(8, 'Venusaur-Gmax', {isDynamaxed: true}).weightkg).toBe(0);
-    expect(new Pokemon(8, 'Venusaur-Gmax', {overrides: {weightkg: 50}}).weightkg).toBe(50);
+  // A forme with no weight of its own (as Gigantamax formes have) takes its base species' weight
+  // unless Dynamaxed. This calc has no Gigantamax formes (see data.test.ts), so a weightless
+  // Venusaur-Mega stands in.
+  test('Gigantamax weights', () => {
+    const weightless = {weightkg: 0};
+    expect(new Pokemon(8, 'Venusaur-Mega', {overrides: weightless}).weightkg).toBe(100);
+    const dynamaxed = new Pokemon(8, 'Venusaur-Mega', {overrides: weightless, isDynamaxed: true});
+    expect(dynamaxed.weightkg).toBe(0);
+    expect(new Pokemon(8, 'Venusaur-Mega', {overrides: {weightkg: 50}}).weightkg).toBe(50);
   });
 });

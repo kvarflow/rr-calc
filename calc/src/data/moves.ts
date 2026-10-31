@@ -1753,7 +1753,7 @@ const XY_PATCH: {[name: string]: DeepPartial<MoveData>} = {
   Lick: {bp: 30},
   'Low Sweep': {bp: 65},
   'Meteor Mash': {bp: 90},
-  'Muddy Water': {bp: 95},
+  'Muddy Water': {bp: 90},
   Octazooka: {isBullet: true},
   Overheat: {bp: 130},
   'Pin Missile': {bp: 25},
@@ -3892,7 +3892,7 @@ const SS_PATCH: {[name: string]: DeepPartial<MoveData>} = {
   'Leaf Blade': {maxPower: 130},
   'Leaf Storm': {maxPower: 140},
   'Leaf Tornado': {maxPower: 120},
-  'Leech Life': {zp: 100, maxPower: 130},
+  'Leech Life': {maxPower: 130},
   'Let\'s Snuggle Forever': {maxPower: 1},
   Lick: {maxPower: 90},
   'Light of Ruin': {maxPower: 140},
@@ -4185,7 +4185,6 @@ const SV_PATCH: {[name: string]: DeepPartial<MoveData>} = {
     maxPower: 130,
     secondaries: true,
     isSound: true,
-    makesContact: true,
   },
   'Aqua Step': {
     bp: 80,
@@ -4581,7 +4580,6 @@ const SV_PATCH: {[name: string]: DeepPartial<MoveData>} = {
     category: 'Physical',
     zp: 160,
     maxPower: 130,
-    isPulse: true,
     // Sheer Force boost implemented in gen789.ts
   },
   'Psychic Noise': {
@@ -4899,6 +4897,8 @@ const SV_PATCH: {[name: string]: DeepPartial<MoveData>} = {
 };
 
 const RR_PATCH: {[name: string]: DeepPartial<MoveData>} = {
+  // Radical Red keeps Gen 3-5's Muddy Water (95 BP in its move table).
+  'Muddy Water': {bp: 95},
   'Aerial Ace': {isSlicing: false},
   'Aqua Step': {isKick: true, zp: 140, maxPower: 120},
   'Armor Cannon': {isPulse: true},
