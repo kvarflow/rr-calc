@@ -415,7 +415,9 @@ function getTrainerNavOrder(all) {
 		var before = trainer.route.before === null ? "end" : trainer.route.before;
 		(routes[before] = routes[before] || []).push(index);
 	});
-	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's).
+	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's), unless the
+	// order has been put right by hand (getTrainerOrderFixes).
+	var fixes = getTrainerOrderFixes();
 	Object.keys(routes).forEach(function (before) {
 		var places = [];
 		routes[before].forEach(function (index) {
@@ -424,6 +426,16 @@ function getTrainerNavOrder(all) {
 		routes[before].sort(function (a, b) {
 			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) || a - b;
 		});
+		var fix = fixes[getRouteGroupKey(before)];
+		if (fix) {
+			var position = function (index) {
+				var at = fix.indexOf(getTrainerKey(index));
+				return at === -1 ? fix.length + routes[before].indexOf(index) : at;
+			};
+			routes[before].sort(function (a, b) {
+				return position(a) - position(b);
+			});
+		}
 	});
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
@@ -435,6 +447,105 @@ function getTrainerNavOrder(all) {
 		});
 	});
 	return order.concat(routes.end || []);
+}
+
+/*
+ * Route trainers in the order you meet them. The game's data only says which boss fight a trainer
+ * comes before and where it stands, so within a place (a gym, a building) they come in id order;
+ * you can move one earlier or later (the Mastersheet's arrows), saved per mode, on top of the fixes
+ * that come with the calc (TRAINER_ORDER_FIXES). A group's order is kept as its trainers' keys.
+ */
+var TRAINER_ORDER_FIXES_KEY = "trainerOrderFixes";
+
+// A trainer as the order fixes name it: name, place and its first id in the game's trainer table.
+function getTrainerKey(index) {
+	var trainer = TRAINER_ORDER[index];
+	var ids = (trainer.variants[0] && trainer.variants[0].trainerIds) || [];
+	return trainer.name + "|" + (trainer.location || "") + "|" + (ids[0] || "");
+}
+
+// The route trainers before one fight (its index, or "end" for those after the last).
+function getRouteGroupKey(before) {
+	return before === "end" || before === null || before === undefined ? "end" : getTrainerKey(+before);
+}
+
+function readOwnTrainerOrderFixes() {
+	try {
+		return JSON.parse(readSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode())) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function getTrainerOrderFixes() {
+	var builtIn = typeof TRAINER_ORDER_FIXES !== "undefined" ? TRAINER_ORDER_FIXES[getPageMode()] || {} : {};
+	return $.extend({}, builtIn, readOwnTrainerOrderFixes());
+}
+
+// The route trainers before the same fight as this one, in the order they come.
+function getRouteGroup(index) {
+	var before = TRAINER_ORDER[index].route.before;
+	return getTrainerNavOrder(true).filter(function (other) {
+		return TRAINER_ORDER[other].route && TRAINER_ORDER[other].route.before === before;
+	});
+}
+
+// Moves a route trainer one place earlier (-1) or later (+1) among those before the same fight.
+function moveRouteTrainer(index, step) {
+	var group = getRouteGroup(index);
+	var at = group.indexOf(index);
+	var to = at + step;
+	if (at === -1 || to < 0 || to >= group.length) return false;
+	group[at] = group[to];
+	group[to] = index;
+	var fixes = readOwnTrainerOrderFixes();
+	fixes[getRouteGroupKey(TRAINER_ORDER[index].route.before)] = group.map(getTrainerKey);
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify(fixes));
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
+	return true;
+}
+
+function resetTrainerOrderFixes() {
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify({}));
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
+}
+
+// Your order changes as text to send in, to become the calc's own fixes.
+function describeTrainerOrderFixes() {
+	var fixes = readOwnTrainerOrderFixes();
+	if (!Object.keys(fixes).length) return "";
+	var out = {};
+	out[getPageMode()] = fixes;
+	return JSON.stringify(out, null, 1);
+}
+
+var TRAINER_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/";
+
+// The trainer's Showdown sprites (one for each trainer of a fight), from its ids in the game's trainer table.
+function getTrainerSpriteUrls(trainer) {
+	if (typeof TRAINER_SPRITES === "undefined" || !trainer) return [];
+	var variant = getTrainerVariant(trainer);
+	return ((variant && variant.trainerIds) || []).filter(function (id) {
+		return TRAINER_SPRITES[id];
+	}).map(function (id) {
+		return TRAINER_SPRITE_URL + TRAINER_SPRITES[id] + ".png";
+	});
+}
+
+function buildTrainerSprites(trainer, className) {
+	return getTrainerSpriteUrls(trainer).map(function (url) {
+		return $("<img />").attr({src: url, alt: "", loading: "lazy"}).addClass(className).on("error", function () {
+			$(this).remove();
+		});
+	});
+}
+
+function updateTrainerNavButtons() {
+	var order = getTrainerNavOrder();
+	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
+	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
 }
 
 function stepTrainer(step) {
@@ -606,6 +717,7 @@ function showTrainer(index) {
 	applyRelativeLevels(currentTrainerIndex, variant);
 
 	$("#trainer-name").text(trainer.name);
+	$("#trainer-sprite").empty().append(buildTrainerSprites(trainer, "trainer-sprite-img"));
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
 	$("#trainer-variant")
 		.empty()
@@ -625,9 +737,7 @@ function showTrainer(index) {
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
-	var order = getTrainerNavOrder();
-	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
-	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
+	updateTrainerNavButtons();
 	currentBattleEffect = variant.battleEffect || "";
 	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
@@ -678,7 +788,7 @@ function buildTrainerPanel() {
 	var panel = $(
 		'<fieldset id="trainer-nav">' +
 		'<legend align="center">Opposing Trainer</legend>' +
-		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
+		'<div class="trainer-heading"><span id="trainer-sprite"></span><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
 		'<label id="trainer-skip-label" class="trainer-skip"><input type="checkbox" id="trainer-skip" /> Skip for now' +
 		'<span id="trainer-skip-where"></span></label>' +

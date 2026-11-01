@@ -3988,3 +3988,63 @@ html.small-screen .sev-notes {
         padding: 1px 2px;
     }
 }
+
+/* Trainer sprites (Pokémon Showdown's, trainer_controls.js) beside the trainer's name. */
+.trainer-sprite-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+    vertical-align: middle;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-trainer-sprite {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+/* Mastersheet: moving a route trainer earlier or later. */
+.ms-move-buttons {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 2px;
+}
+.ms-move {
+    min-width: 28px;
+    min-height: 26px;
+    padding: 0 4px;
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font-size: 11px;
+    cursor: pointer;
+}
+.ms-move:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+.ms-order-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 12px;
+}
+.ms-order-note {
+    flex: 1 1 200px;
+    color: var(--sh-muted);
+}
+.ms-order-copy,
+.ms-order-reset {
+    padding: 4px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    cursor: pointer;
+}

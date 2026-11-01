@@ -180,7 +180,14 @@
         "TUTORS": false,
         "TM_MOVES": false,
         "TUTOR_MOVES": false,
-        "EGG_MOVES": false
+        "EGG_MOVES": false,
+        "TRAINER_ORDER_FIXES": false,
+        "TRAINER_SPRITES": false,
+        "buildTrainerSprites": false,
+        "describeTrainerOrderFixes": false,
+        "getRouteGroup": false,
+        "moveRouteTrainer": false,
+        "resetTrainerOrderFixes": false
     },
     "extends": "eslint:recommended",
     "rules": {
