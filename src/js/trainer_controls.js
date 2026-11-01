@@ -403,6 +403,15 @@ function areRouteTrainersShown() {
  * The order Previous and Next follow: the document's, with skipped fights after their group and
  * route trainers before the boss fight they lead up to (`all`: every route trainer, shown or not).
  */
+// Steps into the game at which a route trainer is met, from its map (TRAINER_WALK); one behind a
+// puzzle the walk does not solve comes after the rest of its place.
+function getTrainerWalk(index) {
+	if (typeof TRAINER_WALK === "undefined") return 0;
+	var ids = (TRAINER_ORDER[index].variants[0] || {}).trainerIds || [];
+	var steps = TRAINER_WALK[ids[0]];
+	return steps === undefined ? Infinity : steps;
+}
+
 function getTrainerNavOrder(all) {
 	var ends = getParallelGroupEnds();
 	var waiting = {};
@@ -415,8 +424,9 @@ function getTrainerNavOrder(all) {
 		var before = trainer.route.before === null ? "end" : trainer.route.before;
 		(routes[before] = routes[before] || []).push(index);
 	});
-	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's), unless the
-	// order has been put right by hand (getTrainerOrderFixes).
+	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's), each place's in
+	// the order you walk to them on the game's maps (getTrainerWalk), unless the order has been put
+	// right by hand (getTrainerOrderFixes).
 	var fixes = getTrainerOrderFixes();
 	Object.keys(routes).forEach(function (before) {
 		var places = [];
@@ -424,7 +434,8 @@ function getTrainerNavOrder(all) {
 			if (places.indexOf(TRAINER_ORDER[index].location) === -1) places.push(TRAINER_ORDER[index].location);
 		});
 		routes[before].sort(function (a, b) {
-			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) || a - b;
+			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) ||
+				getTrainerWalk(a) - getTrainerWalk(b) || a - b;
 		});
 		var fix = fixes[getRouteGroupKey(before)];
 		if (fix) {

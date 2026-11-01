@@ -149,8 +149,9 @@ var CHANGELOG = [
 			"fight you are stuck on). Tap a " +
 			"column's heading to use its EVs (EVs can be retrained, so a Pok\u00e9mon from your save is unlocked for it)",
 		"Trainer sprites beside each trainer (Pok\u00e9mon Showdown's, by the trainer's class): on the trainer panel and on the " +
-			"Mastersheet. And put route trainers in the order you meet them: on the Mastersheet, tick Reorder and move a " +
-			"route trainer up or down among the ones before the same fight (Celadon's gym before Erika). Previous / Next " +
+			"Mastersheet. Route trainers come in the order you meet them, walked on the game's maps from the way you come in " +
+			"(Celadon Gym: Beauty Bridget and Lass Kay at the door, Lass Lisa by Erika). Where that is still wrong, tick Reorder on the Mastersheet and move a " +
+			"route trainer up or down among the ones before the same fight. Previous / Next " +
 			"follow it, each mode keeps its own order, and \u201cCopy order changes\u201d gives you them to send in",
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
 		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +

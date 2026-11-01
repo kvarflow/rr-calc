@@ -183,6 +183,7 @@
         "EGG_MOVES": false,
         "TRAINER_ORDER_FIXES": false,
         "TRAINER_SPRITES": false,
+        "TRAINER_WALK": false,
         "buildTrainerSprites": false,
         "describeTrainerOrderFixes": false,
         "getRouteGroup": false,
