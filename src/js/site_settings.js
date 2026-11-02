@@ -73,6 +73,7 @@ var CHANGELOG = [
 		"Genders as in the game (for Rivalry); a ♂ / ♀ button on small screens",
 		"Battle tab: the foe's likely switch-in marked on its team (⇄ 75%, ↪ next)",
 		"Battle tab: drag between your team and the Box",
+		"Fainted section in the Box: your dead stay out of the team, boxes and Pok\u00e9mon 1's list, even after a new .sav import",
 		"Draining moves and Shell Bell show what they heal",
 		"Trainer AI: Z-Moves (Hardcore) and the last move cases",
 		"Emulator sync with RetroArch and mGBA",

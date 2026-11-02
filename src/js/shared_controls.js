@@ -1398,6 +1398,8 @@ function getSetOptions(sets) {
 	var pokeNames = Object.keys(setsHolder);
 	pokeNames.sort();
 	var setOptions = [];
+	// Your fainted Pokémon (the Box's Fainted section) are not offered.
+	var faintedSets = typeof getFaintedSetIds === "function" ? getFaintedSetIds() : {};
 	for (var i = 0; i < pokeNames.length; i++) {
 		var pokeName = pokeNames[i];
 		setOptions.push({
@@ -1418,6 +1420,7 @@ function getSetOptions(sets) {
 				var setNames = Object.keys(setdex[pokeName]);
 				for (var j = 0; j < setNames.length; j++) {
 					var setName = setNames[j];
+					if (faintedSets[pokeName + " (" + setName + ")"]) continue;
 					setOptions.push({
 						pokemon: pokeName,
 						set: setName,

@@ -237,7 +237,9 @@ function decodeSaveMon(bytes, offset, isParty) {
 		// Met level, game of origin, ball and OT gender, set when it was caught.
 		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
-		pid: pid
+		pid: pid,
+		// A party Pokémon's HP now (0: fainted); the boxes don't keep HP.
+		hp: isParty ? view.getUint16(0x56, true) : null
 	};
 }
 
@@ -457,12 +459,22 @@ function importSaveIntoBox(save) {
 	var partyIds = addSaveMons(save.party);
 	var boxIds = addSaveMons(save.boxes);
 	var layout = readBoxLayout();
-	var userPlaced = (layout.box2 || []).concat(layout.trash || []);
-	moveSetsToSection(partyIds, "team");
+	var userPlaced = (layout.box2 || []).concat(layout.trash || []).concat(layout.fainted || []);
+	moveSetsToSection(partyIds.filter(function (id) {
+		return (layout.fainted || []).indexOf(id) === -1;
+	}), "team");
 	moveSetsToSection(boxIds.filter(function (id) {
 		return userPlaced.indexOf(id) === -1;
 	}), "box");
 	updateDex(customsets);
+	// Your dead stay dead: a party Pokémon saved at 0 HP has fainted, and every Pokémon the run has
+	// as fainted goes to the Fainted section wherever the game has it now (run_record.js).
+	if (typeof setYourFaint === "function") {
+		save.party.forEach(function (mon, i) {
+			if (mon.hp === 0 && !getRunMon(partyIds[i]).fainted) setYourFaint(partyIds[i], true, "", undefined, "team");
+		});
+		moveFaintedToSection();
+	}
 	$(allPokemon("#importedSetsOptions")).css("display", "inline");
 }
 
