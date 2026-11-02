@@ -614,6 +614,24 @@ function bindTabSwipe() {
 	}, {passive: true});
 }
 
+// The gender (♂ / ♀) beside Base / IVs / EVs, as the game has it where the calc knows it
+// (pokemon_genders.js); tap to switch. Hidden for a genderless Pokémon.
+function bindGenderPill(panel, toggle) {
+	var select = panel.find("select.gender");
+	var pill = $('<button type="button" class="ss-gender-pill"></button>').insertBefore(toggle).click(function () {
+		select.val(select.val() === "Female" ? "Male" : "Female").change();
+	});
+	var update = function () {
+		var genderless = select.parent().css("display") === "none" || !select.val();
+		var female = select.val() === "Female";
+		pill.toggle(!genderless).text(female ? "\u2640" : "\u2642").toggleClass("female", female)
+			.attr("aria-label", (female ? "Female" : "Male") + " (tap to switch)");
+	};
+	select.on("change", update);
+	panel.find(".set-selector").on("change", function () { setTimeout(update, 0); });
+	update();
+}
+
 function toggleFullscreen() {
 	if (document.fullscreenElement) {
 		document.exitFullscreen();
@@ -668,7 +686,10 @@ $(document).ready(function () {
 				$(this).attr("aria-expanded", full);
 			})
 			.appendTo(panel.children(".panel-toggles"));
-		if (isSmallScreenOn()) compactPokemonPanel(panel, toggle);
+		if (isSmallScreenOn()) {
+			compactPokemonPanel(panel, toggle);
+			bindGenderPill(panel, toggle);
+		}
 	});
 	if (isSmallScreenOn()) {
 		// Advanced: your progress first, then the trainer you face.

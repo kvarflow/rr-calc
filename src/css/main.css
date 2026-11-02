@@ -4048,3 +4048,25 @@ html.small-screen .sev-notes {
     font: inherit;
     cursor: pointer;
 }
+
+/* The gender pill beside Base / IVs / EVs on small screens. */
+.ss-gender-pill {
+    display: none;
+}
+html.small-screen .ss-panel-head .ss-gender-pill {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: #2f6fd6;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 26px;
+}
+html.small-screen .ss-panel-head .ss-gender-pill.female {
+    color: #d6407a;
+}

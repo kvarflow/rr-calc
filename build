@@ -151,7 +151,8 @@ function renderGamePage(template, game, mode, testGame) {
 		TRAINERS_SCRIPTS: (mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') :
 			'    <script type="text/javascript">var TRAINER_ORDER = [];</script>\n') +
 			(game.features.trainerSprites ? script('js/data/trainer_sprites/' + game.id + '.js') : '') +
-			(game.features.trainerOrderFixes ? script('js/data/trainer_walk/' + game.id + '.js') + script('js/data/trainer_order_fixes/' + game.id + '.js') : ''),
+			(game.features.trainerOrderFixes ? script('js/data/trainer_walk/' + game.id + '.js') + script('js/data/trainer_order_fixes/' + game.id + '.js') : '') +
+			(game.features.genders ? script('js/data/genders/' + game.id + '.js') : ''),
 		DEX_LINK: links.dex ? '        <li><a class="button" href="' + links.dex + '">Pok&eacute;dex</a></li>\n' : '',
 		PLAY_LINK: links.play ? '    <ul class="nav nav-play">\n        <li><a class="button greenbutton nav-first nav-last" href="' +
 			links.play + '">Play</a></li>\n    </ul>\n' : '',

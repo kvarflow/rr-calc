@@ -153,6 +153,10 @@ var CHANGELOG = [
 			"(Celadon Gym: Beauty Bridget and Lass Kay at the door, Lass Lisa by Erika). Where that is still wrong, tick Reorder on the Mastersheet and move a " +
 			"route trainer up or down among the ones before the same fight. Previous / Next " +
 			"follow it, each mode keeps its own order, and \u201cCopy order changes\u201d gives you them to send in",
+		"Genders as in the game, for Rivalry (and Attract, Captivate): every trainer's Pok\u00e9mon from the personality the game " +
+			"gives it (bosses keep theirs with their set natures), and yours from your .sav. On small screens a \u2642 / \u2640 " +
+			"button beside Base / IVs / EVs shows it; tap it to switch",
+		"Rivalry weakens moves against the other gender (0.75\u00d7) as well as strengthening them against the same (1.25\u00d7)",
 		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
 		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +
 			"It puts first the Pok\u00e9mon with the most damaging move against Pok\u00e9mon 2, each with its best damage, and " +

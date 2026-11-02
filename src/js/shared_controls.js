@@ -770,7 +770,12 @@ $(".set-selector").change(function () {
 		if (pokemon.gender === "N") {
 			pokeObj.find(".gender").parent().hide();
 			pokeObj.find(".gender").val("");
-		} else pokeObj.find(".gender").parent().show();
+		} else {
+			pokeObj.find(".gender").parent().show();
+			// As in the game, where the calc knows it (pokemon_genders.js): a trainer's, or yours from a .sav.
+			var knownGender = typeof getKnownGenderOption === "function" && regSets ? getKnownGenderOption(pokemonName, setName, set) : null;
+			if (knownGender !== null) pokeObj.find(".gender").val(knownGender || "Male");
+		}
 	}
 });
 
@@ -1013,10 +1018,12 @@ function createPokemon(pokeInfo) {
 			});
 		}
 
+		var knownGender = !isRandoms && typeof getKnownGender === "function" ? getKnownGender(name, setName, set) : null;
 		return new calc.Pokemon(gen, name, {
 			level: set.level,
 			ability: set.ability,
 			abilityOn: true,
+			gender: knownGender || undefined,
 			item: set.item && typeof set.item !== "undefined" && (set.item === "Eviolite" || set.item.indexOf("ite") < 0) ? set.item : "",
 			nature: set.nature,
 			ivs: ivs,

@@ -56,4 +56,14 @@ describe('review fixes', () => {
     expect(gen.species.get('absolmega' as any)!.abilities![0]).toBe('Sharpness');
     expect(gen.abilities.get('sharpness' as any)).toBeTruthy();
   });
+
+  test('Rivalry: 1.25x against the same gender, 0.75x against the other', () => {
+    const hit = (mine: 'M' | 'F', theirs: 'M' | 'F' | 'N') => calculate(gen,
+      new Pokemon(gen, 'Beautifly', {ability: 'Rivalry', gender: mine}),
+      new Pokemon(gen, theirs === 'N' ? 'Magnemite' : 'Snorlax', {gender: theirs}),
+      new Move(gen, 'Bug Buzz')).rawDesc;
+    expect(hit('F', 'F').rivalry).toBe('buffed');
+    expect(hit('F', 'M').rivalry).toBe('nerfed');
+    expect(hit('M', 'N').rivalry).toBeUndefined();
+  });
 });
