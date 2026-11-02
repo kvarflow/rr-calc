@@ -78,6 +78,7 @@ var CHANGELOG = [
 		"Emulator sync with RetroArch and mGBA",
 		"A game picker, ready for more games"
 	], fixes: [
+		"An Unburden Pok\u00e9mon in your box showed as faster than it is (Speed doubled as if its item were gone)",
 		"Rivalry now weakens moves against the other gender (0.75×)",
 		"Trainer AI treated frostbite as freeze",
 		"The Toxic counter always counted as turn one",
