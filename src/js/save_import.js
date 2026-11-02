@@ -238,8 +238,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
 		pid: pid,
-		// A party Pokémon's HP now (0: fainted); the boxes don't keep HP.
-		hp: isParty ? view.getUint16(0x56, true) : null
+		// A party Pokémon's HP now (0 with a max HP: fainted); the boxes don't keep HP.
+		hp: isParty && view.getUint16(0x58, true) > 0 ? view.getUint16(0x56, true) : null
 	};
 }
 

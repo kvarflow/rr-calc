@@ -42,15 +42,21 @@ function buildSheetView() {
 	return view.appendTo("body");
 }
 
+// The tabs at the top of the page and of the sheet view: the one showing.
+function markActiveTab(key) {
+	$(".page-tabs .sheet-tab, #sheet-view .sheet-tab").each(function () {
+		var active = $(this).attr("data-sheet") === key;
+		$(this).toggleClass("sheet-tab-active", active).attr("aria-selected", active);
+	});
+}
+
 function showSheet(key) {
 	var sheet = getSheet(key) || SHEETS[0];
 	var view = $("#sheet-view").length ? $("#sheet-view") : buildSheetView();
 	openSheetKey = sheet.key;
 	writeSetting(SHEET_KEY, sheet.key);
-	view.attr("aria-label", sheet.label).find(".sheet-tab").each(function () {
-		var active = $(this).attr("data-sheet") === sheet.key;
-		$(this).toggleClass("sheet-tab-active", active).attr("aria-selected", active);
-	});
+	markActiveTab(sheet.key);
+	view.attr("aria-label", sheet.label);
 	var body = view.find(".sheet-body").empty().scrollTop(0);
 	sheet.render(body);
 }
@@ -68,6 +74,7 @@ function openSheet(key) {
 function closeSheet(fromHistory) {
 	if (!openSheetKey) return;
 	openSheetKey = null;
+	markActiveTab("calc");
 	$("html").removeClass("sheet-open");
 	$("#sheet-view").hide();
 	if (fromHistory !== true && window.history.state && window.history.state.sheet) window.history.back();
