@@ -254,6 +254,11 @@ $(".percent-hp").on("keyup input", function () {
 	calcCurrentHP($(this).parent(), max, percent);
 });
 
+// Abilities that only work once something happens (Unburden after its item is gone, Flash Fire
+// after a Fire hit...): off until ticked on a Pokémon panel, and off for the Pokémon the calc builds
+// from a set (the Box's colors and ranking, the trainer AI's benched Pokémon, suggested EVs).
+var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Teraform Zero', 'Bull Rush', 'Quill Rush', 'Illusion'];
+
 // Multi-hit moves: Skill Link always hits 5 times; Radical Red's Loaded Dice 5 times two times in
 // three (4 otherwise), so 5 too (pick 4 in the hits list for the unlucky case); else 3.
 $(".ability").bind("keyup change", function () {
@@ -263,8 +268,6 @@ $(".ability").bind("keyup change", function () {
 	$(this).closest(".poke-info").find(".move-hits").val(moveHits);
 
 	var ability = $(this).closest(".poke-info").find(".ability").val();
-
-	var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Teraform Zero', 'Bull Rush', 'Quill Rush', 'Illusion'];
 
 	if (TOGGLE_ABILITIES.indexOf(ability) >= 0) {
 		$(this).closest(".poke-info").find(".abilityToggle").show();
@@ -1022,7 +1025,7 @@ function createPokemon(pokeInfo) {
 		return new calc.Pokemon(gen, name, {
 			level: set.level,
 			ability: set.ability,
-			abilityOn: true,
+			abilityOn: TOGGLE_ABILITIES.indexOf(set.ability) === -1,
 			gender: knownGender || undefined,
 			item: set.item && typeof set.item !== "undefined" && (set.item === "Eviolite" || set.item.indexOf("ite") < 0) ? set.item : "",
 			nature: set.nature,
