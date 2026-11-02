@@ -4531,14 +4531,23 @@ function shortMonName(mon) {
 var aiSwitchMarks = null;
 
 function markAISwitchesOnTeam() {
-	var mons = $(".ss-quick-trainer .ss-quick-mon");
-	mons.removeClass("ss-quick-switch ss-quick-next-in").find(".ss-quick-ai").remove();
+	// The Battle tab's trainer card, and the Opposing Trainer panel's team (desktop).
+	var teams = [$(".ss-quick-trainer .ss-quick-mon"), $("#trainer-team .pokemon-sprite")];
+	teams.forEach(function (mons) {
+		mons.removeClass("ss-quick-switch ss-quick-next-in").find(".ss-quick-ai").remove();
+		mons.each(function () {
+			if ($(this).attr("data-ai-title") !== undefined) $(this).attr("title", $(this).attr("data-ai-title")).removeAttr("data-ai-title");
+		});
+	});
 	if (!aiSwitchMarks) return;
 	var badge = function (slot, className, text, title) {
-		var mon = mons.eq(slot);
-		if (!mon.length) return;
-		mon.addClass(className).append($('<span class="ss-quick-ai"></span>').addClass(className + "-badge").text(text))
-			.attr("title", mon.attr("data-set-id") + " \u2014 " + title);
+		teams.forEach(function (mons) {
+			var mon = mons.eq(slot);
+			if (!mon.length) return;
+			if (mon.attr("data-ai-title") === undefined) mon.attr("data-ai-title", mon.attr("title") || "");
+			mon.addClass(className).append($('<span class="ss-quick-ai"></span>').addClass(className + "-badge").text(text))
+				.attr("title", (mon.attr("data-set-id") || mon.attr("data-ai-title")) + " \u2014 " + title);
+		});
 	};
 	aiSwitchMarks.next.forEach(function (entry) {
 		badge(entry.slot, "ss-quick-next-in", "\u21AA" + (aiSwitchMarks.next.length > 1 ? formatAIShare(entry.share) : ""),
@@ -4599,3 +4608,9 @@ function renderAISwitch(battle, prediction) {
 	aiSwitchMarks = marks;
 	markAISwitchesOnTeam();
 }
+
+// Desktop too: the AI's chances on the foe's moves and its switches (small_screen.js binds the
+// small layout's).
+$(document).on("calc:done", function () {
+	if (!$("html").hasClass("small-screen") && typeof TRAINER_ORDER !== "undefined" && TRAINER_ORDER.length) markFoeLikelyMoves();
+});

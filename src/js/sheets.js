@@ -27,6 +27,9 @@ function buildSheetView() {
 	var view = $('<div id="sheet-view" class="sheet-view" role="dialog" aria-modal="true"></div>');
 	var bar = $('<div class="sheet-bar"></div>').appendTo(view);
 	var tabs = $('<div class="sheet-tabs" role="tablist"></div>').appendTo(bar);
+	$('<button type="button" class="sheet-tab" role="tab" data-sheet="calc">Calculator</button>').click(function () {
+		closeSheet();
+	}).appendTo(tabs);
 	SHEETS.forEach(function (sheet) {
 		$('<button type="button" class="sheet-tab" role="tab"></button>').attr("data-sheet", sheet.key).text(sheet.label)
 			.click(function () {
@@ -98,7 +101,32 @@ $(document).on("keydown", function (ev) {
 	if (ev.key === "Escape" && openSheetKey && !$(".box-dialog-backdrop").length) closeSheet();
 });
 
+// Desktop: the calculator and the sheets as tabs at the top of the page (the same tabs head a
+// sheet once it is open, Calculator taking you back).
+function buildPageTabs() {
+	var bar = $('<nav class="page-tabs" role="tablist" aria-label="Views"></nav>');
+	$('<button type="button" class="sheet-tab sheet-tab-active" role="tab" aria-selected="true" data-sheet="calc">Calculator</button>')
+		.appendTo(bar);
+	SHEETS.forEach(function (sheet) {
+		$('<button type="button" class="sheet-tab" role="tab" aria-selected="false"></button>').attr("data-sheet", sheet.key)
+			.text(sheet.label).click(function () {
+				openSheet(sheet.key);
+			}).appendTo(bar);
+	});
+	return bar;
+}
+
 $(document).ready(function () {
-	if (!SHEETS.length || !$("#run-progress").length) return;
-	$("#run-progress").append(buildSheetButtons());
+	if (!SHEETS.length) return;
+	if ($("#run-progress").length) $("#run-progress").append(buildSheetButtons());
+	$('.wrapper > div[aria-label="Settings"]').first().after(buildPageTabs());
+	// The header's Pokédex opens the calc's own Dex.
+	if (getSheet("dex")) {
+		$("nav .header a.button").filter(function () {
+			return /Pok.dex/.test($(this).text());
+		}).attr("title", "The Dex, here in the calc").click(function (ev) {
+			ev.preventDefault();
+			openSheet("dex");
+		});
+	}
 });

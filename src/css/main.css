@@ -4111,3 +4111,73 @@ html.small-screen .ss-panel-head .ss-gender-pill {
 html.small-screen .ss-panel-head .ss-gender-pill.female {
     color: #d6407a;
 }
+
+/* Desktop: the calculator and the sheets as tabs under the title (sheets.js buildPageTabs). */
+.page-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 2px;
+    --sh-accent: var(--ss-accent, #d63031);
+}
+html.small-screen .page-tabs {
+    display: none;
+}
+.page-tabs .sheet-tab {
+    padding: 5px 16px;
+    font-size: 13px;
+}
+.page-tabs .sheet-tab:not(.sheet-tab-active):hover,
+.sheet-bar .sheet-tab:not(.sheet-tab-active):hover {
+    border-color: var(--ss-accent, #d63031);
+}
+
+/* Desktop: the trainer AI's chance on each of the foe's moves (markFoeLikelyMoves), the likeliest
+   with a red stripe and KO when it can knock you out; a move it won't pick is greyed. */
+html:not(.small-screen) .move-result-subgroup .btn {
+    position: relative;
+}
+html:not(.small-screen) .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"])::after {
+    content: attr(data-ai);
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #888;
+}
+html:not(.small-screen) .move-result-subgroup .btn[data-ai="0%"] {
+    color: #999;
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-ai-likely {
+    background-image: linear-gradient(to right, #c0392b 4px, transparent 4px);
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-ai-likely::after {
+    color: #c0392b;
+    font-weight: 800;
+}
+html:not(.small-screen) .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
+    color: inherit;
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-threat-ko::before {
+    content: "KO";
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    font-size: 8px;
+    font-weight: 800;
+    color: #c0392b;
+}
+/* Desktop: the switch marks on the Opposing Trainer's team, as on the Battle tab. */
+.trainer-team .pokemon-sprite {
+    position: relative;
+}
+.trainer-team .pokemon-sprite.ss-quick-switch {
+    background: rgba(214, 64, 64, 0.14);
+    outline: 1px dashed #c0392b;
+}
+.trainer-team .pokemon-sprite.ss-quick-next-in:not(.ss-quick-switch) {
+    outline: 1px dashed #888;
+}
