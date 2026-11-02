@@ -1448,13 +1448,41 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]
 .ai-switch-next {
     color: var(--ss-muted, #667085);
 }
-/* Battle has to fit the Thor's screen: on small screens it sits in the foe's header, after the
-   name, on one line (the whole of it in its tooltip). */
+/* Small screens show it on the trainer's team instead (the marks below), not in the foe's header. */
 html.small-screen .result-move-header #ai-switch {
-    display: inline;
-    margin: 0 0 0 6px;
-    font-size: 10px;
-    font-weight: 600;
+    display: none !important;
+}
+/* The trainer's team on Battle: who the AI switches to (and how often), and who comes out next
+   after a KO. */
+.ss-quick-mon.ss-quick-switch {
+    background: rgba(214, 64, 64, 0.14);
+    border-style: dashed;
+    border-color: var(--ss-danger, #c0392b);
+}
+.ss-quick-mon.ss-quick-next-in:not(.ss-quick-switch) {
+    box-shadow: inset 0 0 0 1px var(--ss-muted, #667085);
+}
+.ss-quick-ai {
+    position: absolute;
+    top: 1px;
+    padding: 0 3px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 12px;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.ss-quick-switch-badge {
+    right: 1px;
+    background: var(--ss-danger, #c0392b);
+    color: #fff;
+}
+.ss-quick-next-in-badge {
+    left: 1px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
 }
 html.small-screen #ai-switch > div {
     display: inline;

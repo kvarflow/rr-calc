@@ -185,6 +185,7 @@
         "TRAINER_SPRITES": false,
         "TRAINER_WALK": false,
         "POKEMON_GENDERS": false,
+        "markAISwitchesOnTeam": false,
         "getKnownGender": false,
         "getKnownGenderOption": false,
         "getGenderFromPersonality": false,

@@ -4526,9 +4526,35 @@ function shortMonName(mon) {
 	return (mon.name || "").replace(/-Mega.*$/, "");
 }
 
+// The switches as marks on the trainer's team on Battle (small screens): who it switches to (and
+// how often), and who it sends out next if you KO the one out now. Kept for the team's redraws.
+var aiSwitchMarks = null;
+
+function markAISwitchesOnTeam() {
+	var mons = $(".ss-quick-trainer .ss-quick-mon");
+	mons.removeClass("ss-quick-switch ss-quick-next-in").find(".ss-quick-ai").remove();
+	if (!aiSwitchMarks) return;
+	var badge = function (slot, className, text, title) {
+		var mon = mons.eq(slot);
+		if (!mon.length) return;
+		mon.addClass(className).append($('<span class="ss-quick-ai"></span>').addClass(className + "-badge").text(text))
+			.attr("title", mon.attr("data-set-id") + " \u2014 " + title);
+	};
+	aiSwitchMarks.next.forEach(function (entry) {
+		badge(entry.slot, "ss-quick-next-in", "\u21AA" + (aiSwitchMarks.next.length > 1 ? formatAIShare(entry.share) : ""),
+			"sent out next if you KO the one out now" + (aiSwitchMarks.next.length > 1 ? " (" + formatAIShare(entry.share) + ")" : ""));
+	});
+	aiSwitchMarks.switches.forEach(function (entry) {
+		badge(entry.slot, "ss-quick-switch", "\u21C4" + formatAIShare(entry.share),
+			"the AI switches to it " + formatAIShare(entry.share) + " of the time (" + aiSwitchMarks.why + ")");
+	});
+}
+
 // Under the foe's moves: its chance of switching out and to whom (with why), and who it sends out
-// next if you KO it now.
+// next if you KO it now. On small screens these are marks on the trainer's team instead
+// (markAISwitchesOnTeam), so the foe's header stays clean.
 function renderAISwitch(battle, prediction) {
+	aiSwitchMarks = null;
 	var box = $("#ai-switch");
 	if (!box.length) box = $('<div id="ai-switch" class="ai-switch" aria-live="polite"></div>');
 	// Small screens: in the foe's header (Battle has to fit the screen); otherwise under its moves.
@@ -4537,9 +4563,11 @@ function renderAISwitch(battle, prediction) {
 	box.empty().removeAttr("title");
 	if (!battle || !battle.party || !battle.party.length) {
 		box.hide();
+		markAISwitchesOnTeam();
 		return;
 	}
 	var lines = [];
+	var marks = {switches: [], next: [], why: ""};
 	if (prediction.switchShare > 0) {
 		var why = [];
 		var line = $('<div class="ai-switch-out"></div>')
@@ -4549,12 +4577,17 @@ function renderAISwitch(battle, prediction) {
 						var text = SWITCH_REASONS[r];
 						if (why.indexOf(text) === -1) why.push(text);
 					});
+					marks.switches.push({slot: entry.mon.slot, share: entry.share});
 					return shortMonName(entry.mon) + (prediction.switches.length > 1 ? " " + formatAIShare(entry.share) : "");
 				}).join(" \u00b7 ")));
 		line.attr("title", "The trainer's AI switches out " + why.join(", or ") + ".");
+		marks.why = why.join(", or ");
 		lines.push(line);
 	}
 	var next = predictReplacement(battle);
+	next.forEach(function (entry) {
+		marks.next.push({slot: entry.mon.slot, share: entry.share});
+	});
 	if (next.length) {
 		lines.push($('<div class="ai-switch-next"></div>').text("Next \u2192 " + next.map(function (entry) {
 			return shortMonName(entry.mon) + (next.length > 1 ? " " + formatAIShare(entry.share) : "");
@@ -4563,4 +4596,6 @@ function renderAISwitch(battle, prediction) {
 	box.append(lines).toggle(lines.length > 0).attr("title", lines.map(function (line) {
 		return line.attr("title") ? line.text() + ": " + line.attr("title") : line.text();
 	}).join("\n"));
+	aiSwitchMarks = marks;
+	markAISwitchesOnTeam();
 }

@@ -518,6 +518,7 @@ function renderQuickStrips() {
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
 	if ($("#trainer-team .pokemon-sprite").length) quick.append(buildTrainerCard());
+	if (typeof markAISwitchesOnTeam === "function") markAISwitchesOnTeam();
 	// The Box (and Box 2) under the teams, hardest hitter on Pokémon 2 first.
 	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
 		var mons = sortByDamageDealt($('.box-dropzone[data-section="' + box.section + '"] .box-pokemon'));
