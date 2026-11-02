@@ -1925,6 +1925,19 @@ html.small-screen .run-record {
     outline: 2px dashed var(--ss-accent, #3a6fd8);
     outline-offset: 1px;
 }
+/* A Box's card on the Battle tab: held a moment, then it drags (onto your team or the other Box). */
+.ss-quick-box .ss-quick-mon {
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+.ss-quick-mon.ss-drag-ready {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.25);
+}
+.ss-quick-side.ss-drop-card {
+    outline: 2px dashed var(--ss-accent, #3a6fd8);
+    outline-offset: -2px;
+}
 /* Bigger controls for touch. */
 html.small-screen select,
 html.small-screen input[type="text"],

@@ -153,6 +153,8 @@ var CHANGELOG = [
 			"(Celadon Gym: Beauty Bridget and Lass Kay at the door, Lass Lisa by Erika). Where that is still wrong, tick Reorder on the Mastersheet and move a " +
 			"route trainer up or down among the ones before the same fight. Previous / Next " +
 			"follow it, each mode keeps its own order, and \u201cCopy order changes\u201d gives you them to send in",
+		"Battle tab: drag your team's Pok\u00e9mon into the Box below and the Box's onto your team (hold one a moment on a touch " +
+			"screen, so the page still scrolls). Onto a full team it swaps places with the one you drop it on",
 		"Genders as in the game, for Rivalry (and Attract, Captivate): every trainer's Pok\u00e9mon from the personality the game " +
 			"gives it (bosses keep theirs with their set natures), and yours from your .sav. On small screens a \u2642 / \u2640 " +
 			"button beside Base / IVs / EVs shows it; tap it to switch",

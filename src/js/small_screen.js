@@ -131,18 +131,81 @@ function moveTeamMember(from, to) {
 	renderBox();
 }
 
-// (jQuery 1.9 does not copy pointer events' fields, so these read the browser's event.)
+// The most Pokémon you can carry, as in the game.
+var TEAM_LIMIT = 6;
+
+/*
+ * Moves a set between your team and the Boxes from the Battle tab: before the Pokémon dropped on
+ * (or at the end of that card). Onto a full team from a Box, it swaps places with the one dropped
+ * on. Returns false when nothing moved (a full team, dropped on no one).
+ */
+function moveQuickMon(setId, toSection, beforeId) {
+	var layout = readBoxLayout();
+	var from = ["team", "box", "box2"].filter(function (key) {
+		return (layout[key] || []).indexOf(setId) !== -1;
+	})[0];
+	if (!from || setId === beforeId) return false;
+	layout[toSection] = layout[toSection] || [];
+	if (toSection === "team" && from !== "team" && layout.team.length >= TEAM_LIMIT) {
+		var at = layout.team.indexOf(beforeId);
+		if (at === -1) return false;
+		layout[from][layout[from].indexOf(setId)] = beforeId;
+		layout.team[at] = setId;
+	} else {
+		layout[from].splice(layout[from].indexOf(setId), 1);
+		var before = layout[toSection].indexOf(beforeId);
+		if (from === toSection && before !== -1 && before >= layout[toSection].length) before = -1;
+		if (before === -1) layout[toSection].push(setId);
+		else layout[toSection].splice(before, 0, setId);
+	}
+	writeBoxLayout(layout);
+	renderBox();
+	return true;
+}
+
+/*
+ * Drag your Pokémon on the Battle tab: your team's into order or into a Box, a Box's onto your
+ * team (or the other Box). Your team's cards drag straight away; a Box's, with a mouse straight away
+ * and on a touch screen after holding it a moment, so the page still scrolls under your finger.
+ * (jQuery 1.9 does not copy pointer events' fields, so these read the browser's event.)
+ */
 function bindTeamDrag(quick) {
 	var drag = null;
-	// The browser's own image drag would cancel the pointer.
-	quick.on("dragstart", function (ev) {
+	var HOLD_MS = 300;
+	var dropCards = ".ss-quick-team, .ss-quick-box";
+	// The browser's own image drag (and a long press's menu) would cancel the pointer.
+	quick.on("dragstart contextmenu", ".ss-quick-mon", function (ev) {
 		ev.preventDefault();
 	});
-	quick.on("pointerdown", ".ss-quick-team .ss-quick-mon", function (event) {
+	quick.on("pointerdown", ".ss-quick-team .ss-quick-mon, .ss-quick-box .ss-quick-mon", function (event) {
 		var ev = event.originalEvent;
 		if (ev.button !== 0) return;
-		drag = {card: $(this), x: ev.clientX, y: ev.clientY, moving: false, pointer: ev.pointerId};
+		var card = $(this);
+		var fromBox = card.closest(".ss-quick-box").length > 0;
+		drag = {card: card, x: ev.clientX, y: ev.clientY, moving: false, pointer: ev.pointerId,
+			held: !(fromBox && ev.pointerType === "touch")};
+		if (!drag.held) {
+			var started = drag;
+			drag.timer = setTimeout(function () {
+				if (drag !== started) return;
+				drag.held = true;
+				card.addClass("ss-drag-ready");
+				if (navigator.vibrate) navigator.vibrate(15);
+			}, HOLD_MS);
+		}
 	});
+	var end = function () {
+		if (!drag) return;
+		clearTimeout(drag.timer);
+		drag.card.removeClass("ss-dragging ss-drag-ready").css("transform", "");
+		quick.find(".ss-drop-target").removeClass("ss-drop-target");
+		quick.find(".ss-drop-card").removeClass("ss-drop-card");
+		drag = null;
+	};
+	// Once a Box's card is held, the finger drags it instead of scrolling the page.
+	document.addEventListener("touchmove", function (ev) {
+		if (drag && drag.held && !drag.card.closest(".ss-quick-team").length) ev.preventDefault();
+	}, {passive: false});
 	$(document).on("pointermove", function (event) {
 		var ev = event.originalEvent;
 		if (!drag || ev.pointerId !== drag.pointer) return;
@@ -150,33 +213,47 @@ function bindTeamDrag(quick) {
 		var dy = ev.clientY - drag.y;
 		if (!drag.moving) {
 			if (Math.abs(dx) + Math.abs(dy) < 8) return;
+			// Moved before the hold: a scroll, not a drag.
+			if (!drag.held) return end();
 			drag.moving = true;
 			drag.card.addClass("ss-dragging");
 		}
 		ev.preventDefault();
 		drag.card.css("transform", "translate(" + dx + "px, " + dy + "px)");
-		var under = $(document.elementFromPoint(ev.clientX, ev.clientY)).closest(".ss-quick-team .ss-quick-mon");
+		var point = $(document.elementFromPoint(ev.clientX, ev.clientY));
+		var under = point.closest(".ss-quick-mon").filter(function () {
+			return $(this).closest(dropCards).length > 0;
+		});
 		quick.find(".ss-drop-target").removeClass("ss-drop-target");
+		quick.find(".ss-drop-card").removeClass("ss-drop-card");
 		if (under.length && under[0] !== drag.card[0]) under.addClass("ss-drop-target");
+		else if (!under.length) point.closest(dropCards).addClass("ss-drop-card");
 	});
 	$(document).on("pointerup pointercancel", function (event) {
 		var ev = event.originalEvent;
 		if (!drag || ev.pointerId !== drag.pointer) return;
 		var moved = drag.moving;
+		var card = drag.card;
 		var target = quick.find(".ss-drop-target");
-		var cards = quick.find(".ss-quick-team .ss-quick-mon");
-		var from = cards.index(drag.card);
-		var to = target.length && ev.type === "pointerup" ? cards.index(target) : -1;
-		drag.card.removeClass("ss-dragging").css("transform", "");
-		target.removeClass("ss-drop-target");
-		drag = null;
+		var targetCard = target.length ? target.closest(dropCards) : quick.find(".ss-drop-card");
+		var dropped = moved && ev.type === "pointerup" && targetCard.length;
+		end();
 		if (!moved) return;
 		// The click that follows the drag must not load the Pokémon.
 		dragJustEnded = true;
 		setTimeout(function () {
 			dragJustEnded = false;
 		}, 0);
-		if (to !== -1) moveTeamMember(from, to);
+		if (!dropped) return;
+		var fromTeam = card.closest(".ss-quick-team").length > 0;
+		var toSection = targetCard.attr("data-section");
+		if (fromTeam && toSection === "team") {
+			var cards = quick.find(".ss-quick-team .ss-quick-mon");
+			if (target.length) moveTeamMember(cards.index(card), cards.index(target));
+			else moveTeamMember(cards.index(card), cards.length - 1);
+			return;
+		}
+		moveQuickMon(card.attr("data-set-id"), toSection, target.attr("data-set-id"));
 	});
 }
 
@@ -432,10 +509,11 @@ function renderQuickStrips() {
 	var p1Set = $("#p1 input.set-selector").val();
 	var yours = buildTeamCard("Your team", team, team.map(function () {
 		return $(this).attr("data-set-id");
-	}).get().indexOf(p1Set)).addClass("ss-quick-team");
-	if (!team.length) yours.append('<p class="ss-quick-empty">Import your .sav under More to see your team here.</p>');
+	}).get().indexOf(p1Set)).addClass("ss-quick-team").attr("data-section", "team");
+	if (!team.length) yours.append('<p class="ss-quick-empty">Import your .sav under More to see your team here' +
+		($('.box-dropzone .box-pokemon').length ? ', or drag one up from the Box.' : '.') + '</p>');
 	else yours.find(".ss-quick-mon").attr("title", function (i, title) {
-		return title + " (drag to reorder)";
+		return title + " (drag to reorder, or into the Box)";
 	});
 	if (typeof getRunMon === "function") markRunOnTeam(yours, p1Set);
 	quick.append(yours);
@@ -443,10 +521,15 @@ function renderQuickStrips() {
 	// The Box (and Box 2) under the teams, hardest hitter on Pokémon 2 first.
 	[{section: "box", label: "Box"}, {section: "box2", label: "Box 2"}].forEach(function (box) {
 		var mons = sortByDamageDealt($('.box-dropzone[data-section="' + box.section + '"] .box-pokemon'));
-		if (!mons.length) return;
+		// An empty Box still shows (to drag into) once you have a team; Box 2 only when it has some.
+		if (!mons.length && (box.section !== "box" || !team.length)) return;
 		var card = buildTeamCard(box.label, mons, mons.map(function () {
 			return $(this).attr("data-set-id");
-		}).get().indexOf(p1Set)).addClass("ss-quick-box");
+		}).get().indexOf(p1Set)).addClass("ss-quick-box").attr("data-section", box.section);
+		if (!mons.length) card.append('<p class="ss-quick-empty">Drag one of your team here to box it.</p>');
+		else card.find(".ss-quick-mon").attr("title", function (i, title) {
+			return title + " (hold and drag onto your team)";
+		});
 		labelDamageDealt(card, mons);
 		if (typeof getRunMon === "function") markRunOnMons(card);
 		quick.append(card);
@@ -597,7 +680,7 @@ function bindTabSwipe() {
 	var start = null;
 	document.addEventListener("touchstart", function (ev) {
 		var skip = ev.touches.length !== 1 || $(ev.target).closest("input[type=range], textarea, .select2-drop, " +
-			".select2-search, .ss-quick-team, .ss-tabs, .box-dialog-backdrop").length;
+			".select2-search, .ss-quick-team, .ss-quick-box, .ss-tabs, .box-dialog-backdrop").length;
 		start = skip ? null : {x: ev.touches[0].clientX, y: ev.touches[0].clientY, time: Date.now()};
 	}, {passive: true});
 	document.addEventListener("touchend", function (ev) {
