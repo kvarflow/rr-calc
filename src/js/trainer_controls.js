@@ -412,6 +412,53 @@ function getTrainerWalk(index) {
 	return steps === undefined ? Infinity : steps;
 }
 
+/*
+ * Route trainers that stand where boss fights do (Viridian Forest's Bug Catchers, with Brendan,
+ * Lass Anne and Ace Nelle there): each goes before the nearest of those bosses it is met before on
+ * the maps (TRAINER_WALK), or past the one it was put before when it is met after it, rather than
+ * before the first boss of the place. Bosses whose spot the maps don't give (Brendan's battle is an event) are left out.
+ * Runs once, as the page loads.
+ */
+function placeRouteTrainersAmongBosses() {
+	if (typeof TRAINER_WALK === "undefined" || typeof TRAINER_ORDER === "undefined") return;
+	var bossesAt = {};
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.route || trainer.duplicate || getTrainerWalk(index) === Infinity) return;
+		(bossesAt[trainer.location] = bossesAt[trainer.location] || []).push(index);
+	});
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (!trainer.route) return;
+		var bosses = bossesAt[trainer.location];
+		var walk = getTrainerWalk(index);
+		var before = trainer.route.before;
+		// Only route trainers grouped with a fight in their own place (not ones moved on for the level cap).
+		if (!bosses || walk === Infinity || (before !== null && TRAINER_ORDER[before].location !== trainer.location)) return;
+		// Only among fights of the same part of the game (the level cap of the one it was put before):
+		// Fuchsia City's Power Plant fight comes much later than Koga.
+		var sameCap = function (other) {
+			return before === null || String(TRAINER_ORDER[other].levelCap) === String(TRAINER_ORDER[before].levelCap);
+		};
+		var next = null;
+		bosses.forEach(function (boss) {
+			if (sameCap(boss) && getTrainerWalk(boss) > walk && (next === null || getTrainerWalk(boss) < getTrainerWalk(next))) next = boss;
+		});
+		if (next !== null) {
+			trainer.route.before = next;
+			return;
+		}
+		// Met after the fight it was put before (Route 3's last trainers, after Lass Sally): before
+		// the next fight. Not when that fight's spot is unknown (Koga, at the end of his gym).
+		if (before === null || getTrainerWalk(before) >= walk) return;
+		for (var after = before + 1; after < TRAINER_ORDER.length; after++) {
+			if (!TRAINER_ORDER[after].route && !TRAINER_ORDER[after].duplicate) {
+				if (sameCap(after)) trainer.route.before = after;
+				return;
+			}
+		}
+	});
+}
+placeRouteTrainersAmongBosses();
+
 function getTrainerNavOrder(all) {
 	var ends = getParallelGroupEnds();
 	var waiting = {};
