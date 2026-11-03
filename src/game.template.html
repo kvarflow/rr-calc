@@ -19,6 +19,9 @@
                 // The accent color chosen under More (red unless changed), before the first paint.
                 document.documentElement.setAttribute("data-accent", localStorage.getItem("accentColor") || "red");
                 document.documentElement.style.setProperty("--ss-zoom", (parseInt(localStorage.getItem("textSize")) || 100) / 100);
+            } else if (localStorage.getItem("desktopStyle") !== "classic") {
+                // The modern desktop look (desktop.css), unless Settings > Desktop style is Classic.
+                document.documentElement.className += " modern-desk";
             }
         } catch (e) {}
     </script>
@@ -31,6 +34,7 @@
 {{PREFETCH_LINKS}}    <link type="text/css" rel="stylesheet" href="./js/vendor/select2/select2.css" />
     <link type="text/css" rel="stylesheet" href="./css/main.css?" />
     <link type="text/css" rel="stylesheet" href="./css/vendor/bootstrap.css" />
+    <link type="text/css" rel="stylesheet" href="./css/desktop.css?" />
     <link type="text/css" rel="stylesheet" href="./css/dark-theme.css?" id="dark-theme-styles">
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=UA-26211653-3"></script>
@@ -1602,6 +1606,7 @@
     <script type="text/javascript" src="./js/dex.js?"></script>
     <script type="text/javascript" src="./js/emulator_sync.js?"></script>
     <script type="text/javascript" src="./js/small_screen.js?"></script>
+    <script type="text/javascript" src="./js/desktop.js?"></script>
     <script type="text/javascript" src="./js/offline.js?"></script>
 </div>
 

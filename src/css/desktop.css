@@ -1,0 +1,527 @@
+/*
+ * The modern desktop look (html.modern-desk, set in the page's <head> unless Settings > Desktop
+ * style is Classic; never with the small-screen layout). It reuses the small-screen layout's
+ * colors (--ss-*, main.css), which dark-theme.css switches for the dark theme, so the desktop,
+ * the Thor and the sheets look alike:
+ *  - a slim header: title, the Calculator / sheet tabs, the game, notation and mode;
+ *  - the move results and the main result as cards across the top;
+ *  - three columns, You | Field and tools | Foe, made of cards instead of fieldsets;
+ *  - the same rounded inputs, buttons and segmented controls as the Thor.
+ * Only skin and layout: no element is added or removed, so the calc's scripts are unchanged.
+ */
+
+/* Colors and type ------------------------------------------------------------------------- */
+html.modern-desk {
+    --ss-bg: var(--ss-dark-bg, #eef1f6);
+    --ss-card: var(--ss-dark-card, #ffffff);
+    --ss-text: var(--ss-dark-text, #1d2330);
+    --ss-muted: var(--ss-dark-muted, #667085);
+    --ss-line: var(--ss-dark-line, #dde2ea);
+    --ss-btn: var(--ss-dark-btn, #f3f5f9);
+    --ss-accent: var(--ss-dark-accent, var(--ss-a));
+    --ss-accent-soft: var(--ss-dark-accent-soft, var(--ss-a-soft));
+    --ss-accent-text: var(--ss-dark-accent-text, var(--ss-a-text));
+    --ss-good: var(--ss-dark-good, #1e7b39);
+    --ss-danger: var(--ss-dark-danger, #c0392b);
+    --ss-shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 1px 3px rgba(16, 24, 40, 0.05);
+    --md-radius: 12px;
+    --md-control: 26px;
+    --md-gap: 14px;
+    --ss-a: #d63031;
+    --ss-a-soft: #fde8e8;
+    --ss-a-text: #c0262d;
+    --ss-a-dark: #f06363;
+    --ss-a-dark-soft: #4a2426;
+    --ss-a-dark-text: #ffb3b3;
+}
+html.modern-desk,
+html.modern-desk body {
+    background: var(--ss-bg);
+    color: var(--ss-text);
+    min-width: 1180px; /* the three columns' least */
+}
+html.modern-desk body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.35;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Header ---------------------------------------------------------------------------------- */
+/* Showdown's links: the Dex tab and the title replace them. */
+html.modern-desk body > nav {
+    display: none;
+}
+html.modern-desk .wrapper {
+    max-width: 1560px;
+    padding: 0 20px;
+}
+html.modern-desk #ss-page-settings {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 10px 14px;
+    flex-wrap: wrap;
+    margin: 0 -20px 16px;
+    padding: 10px 20px;
+    background: var(--ss-card);
+    border-bottom: 1px solid var(--ss-line);
+    box-shadow: var(--ss-shadow);
+}
+html.modern-desk #ss-page-settings > span {
+    padding-right: 0;
+}
+html.modern-desk .title-text {
+    margin: 0 !important;
+    top: 0;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+}
+html.modern-desk .title-text::before {
+    content: "";
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-right: 8px;
+    border-radius: 50%;
+    background: var(--ss-accent);
+    box-shadow: 0 0 0 3px var(--ss-accent-soft);
+    vertical-align: 1px;
+}
+html.modern-desk .genSelection,
+html.modern-desk .notationSelection,
+html.modern-desk .modeSelection,
+html.modern-desk .gameSelection {
+    top: 0;
+    margin: 0;
+}
+html.modern-desk .genSelection {
+    display: none;
+}
+/* The tabs sit in the header (desktop.js moves them), between the title and the switches. */
+html.modern-desk #ss-page-settings .page-tabs {
+    flex: 1;
+    margin: 0 0 0 12px;
+    gap: 2px;
+    padding: 3px;
+    background: var(--ss-btn);
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    flex-grow: 0;
+}
+html.modern-desk #ss-page-settings .page-tabs .sheet-tab {
+    border: 0;
+    padding: 4px 14px;
+    font-size: 13px;
+    color: var(--ss-muted);
+    font-weight: 600;
+}
+html.modern-desk #ss-page-settings .page-tabs .sheet-tab:hover:not(.sheet-tab-active) {
+    color: var(--ss-text);
+}
+html.modern-desk #ss-page-settings .page-tabs .sheet-tab-active {
+    background: var(--ss-card);
+    color: var(--ss-text);
+    box-shadow: var(--ss-shadow);
+}
+html.modern-desk .header-spacer {
+    flex: 1;
+}
+html.modern-desk .wrapper > hr {
+    display: none;
+}
+
+/* Segmented controls: notation and mode. */
+html.modern-desk .notationSelection,
+html.modern-desk .modeSelection {
+    display: inline-flex;
+    padding: 3px;
+    gap: 2px;
+    background: var(--ss-btn);
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+}
+html.modern-desk .notationSelection .btn,
+html.modern-desk .modeSelection .btn {
+    width: auto;
+    margin: 0;
+    padding: 4px 12px;
+    border: 0;
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ss-muted);
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+html.modern-desk .modeSelection .btn br {
+    display: none;
+}
+html.modern-desk .notationSelection .visually-hidden:checked + .btn,
+html.modern-desk .modeSelection .visually-hidden:checked + .btn {
+    background: var(--ss-card);
+    color: var(--ss-text);
+    box-shadow: var(--ss-shadow);
+}
+html.modern-desk .modeSelection .visually-hidden:checked + .btn {
+    background: var(--ss-accent);
+    color: #fff;
+}
+
+/* Results across the top ------------------------------------------------------------------ */
+html.modern-desk .move-result-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--md-gap);
+    min-width: 0;
+    margin: 0 0 var(--md-gap);
+}
+html.modern-desk .move-result-subgroup {
+    float: none;
+    width: auto;
+    padding: 12px 14px;
+    background: var(--ss-card);
+    border: 1px solid var(--ss-line);
+    border-radius: var(--md-radius);
+    box-shadow: var(--ss-shadow);
+}
+html.modern-desk .result-move-header {
+    margin: 0 0 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ss-muted);
+}
+html.modern-desk .move-result-subgroup > div:not(.result-move-header):not(.ai-switch) {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 30px;
+    border-top: 1px solid var(--ss-line);
+}
+html.modern-desk .move-result-subgroup > .result-move-header + div {
+    border-top: 0;
+}
+html.modern-desk .move-result-subgroup .btn {
+    flex: 0 0 11em;
+    margin: 2px 0;
+    padding: 4px 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--ss-text);
+    text-align: left;
+    font-weight: 600;
+}
+html.modern-desk .move-result-subgroup .btn:hover {
+    background: var(--ss-btn);
+    border-color: var(--ss-line);
+}
+html.modern-desk .move-result-subgroup .visually-hidden:checked + .btn {
+    background: var(--ss-accent-soft);
+    border-color: var(--ss-accent);
+    color: var(--ss-accent-text);
+}
+html.modern-desk .move-result-subgroup .btn + span {
+    font-variant-numeric: tabular-nums;
+    color: var(--ss-text);
+}
+/* The trainer AI's chance badge and stripe (main.css) read on the left-aligned buttons too. */
+html.modern-desk .move-result-subgroup .btn.ss-ai-likely {
+    background-image: linear-gradient(to right, var(--ss-danger) 3px, transparent 3px);
+}
+html.modern-desk .move-result-subgroup .btn.ss-threat-ko::before {
+    left: auto;
+    right: 38px;
+}
+html.modern-desk .ai-switch {
+    margin-top: 8px;
+    color: var(--ss-muted);
+}
+html.modern-desk .main-result-group {
+    margin: 0 0 var(--md-gap);
+    padding: 12px 16px 12px 18px;
+    background: var(--ss-card);
+    border: 1px solid var(--ss-line);
+    border-left: 4px solid var(--ss-accent);
+    border-radius: var(--md-radius);
+    box-shadow: var(--ss-shadow);
+}
+html.modern-desk .big-text {
+    margin: 0 0 4px;
+    font-size: 15px;
+    font-weight: 650;
+}
+html.modern-desk .main-result-group .small-text {
+    font-size: 12px;
+    color: var(--ss-muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* Three columns of cards ------------------------------------------------------------------ */
+html.modern-desk .wrapper {
+    display: grid;
+    grid-template-columns: minmax(400px, 1fr) minmax(330px, 0.85fr) minmax(400px, 1fr);
+    column-gap: var(--md-gap);
+    align-items: start;
+}
+html.modern-desk .wrapper > * {
+    grid-column: 1 / -1;
+}
+html.modern-desk .wrapper > .panel {
+    grid-column: auto;
+    float: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--md-gap);
+    min-width: 0;
+}
+html.modern-desk .wrapper > .panel > div {
+    display: flex;
+    flex-direction: column;
+    gap: var(--md-gap);
+}
+html.modern-desk .wrapper fieldset,
+html.modern-desk .panel fieldset {
+    float: none;
+    width: auto;
+    min-width: 0;
+    margin: 0;
+    padding: 12px 16px 14px;
+    background: var(--ss-card);
+    border: 1px solid var(--ss-line);
+    border-radius: var(--md-radius);
+    box-shadow: var(--ss-shadow);
+    text-align: left;
+}
+/* Legends become card headings: floated so the card's border runs above them. */
+html.modern-desk .panel fieldset > legend {
+    float: left;
+    width: 100%;
+    margin: 0 0 10px;
+    padding: 0 0 8px;
+    border-bottom: 1px solid var(--ss-line);
+    text-align: left;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ss-muted);
+}
+html.modern-desk .panel fieldset > legend + * {
+    clear: both;
+}
+html.modern-desk .panel fieldset > legend .header-sprite img,
+html.modern-desk .panel fieldset > legend img {
+    vertical-align: middle;
+}
+html.modern-desk .panel fieldset hr {
+    border: 0;
+    border-top: 1px solid var(--ss-line);
+    margin: 10px 0;
+}
+html.modern-desk .field-info,
+html.modern-desk .poke-import {
+    text-align: center;
+}
+
+/* Controls -------------------------------------------------------------------------------- */
+html.modern-desk input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]),
+html.modern-desk select,
+html.modern-desk textarea {
+    border: 1px solid var(--ss-line);
+    border-radius: 6px;
+    background-color: var(--ss-card);
+    color: var(--ss-text);
+    font-family: inherit;
+}
+/* Sizes stay the calc's own (its widths are in ems of each control's font size). */
+html.modern-desk input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
+    height: 20px;
+    padding: 1px 3px;
+}
+html.modern-desk select {
+    height: 24px;
+    padding: 0 2px;
+}
+html.modern-desk textarea {
+    padding: 8px 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+html.modern-desk input:focus,
+html.modern-desk select:focus,
+html.modern-desk textarea:focus {
+    outline: 2px solid var(--ss-accent-soft);
+    border-color: var(--ss-accent);
+}
+html.modern-desk input[type="checkbox"],
+html.modern-desk input[type="radio"]:not(.visually-hidden) {
+    accent-color: var(--ss-accent);
+}
+html.modern-desk .btn {
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+}
+html.modern-desk .btn:hover,
+html.modern-desk .visually-hidden:focus + .btn {
+    border-color: var(--ss-muted);
+    background: var(--ss-btn);
+}
+html.modern-desk .visually-hidden:checked + .btn {
+    background: var(--ss-accent-soft);
+    border-color: var(--ss-accent);
+    color: var(--ss-accent-text);
+}
+html.modern-desk .visually-hidden:disabled + .btn {
+    opacity: 0.45;
+}
+html.modern-desk .panel button:not(.sheet-tab):not(.sheet-open-button):not(.ss-quick-mon),
+html.modern-desk .credits button {
+    padding: 3px 10px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+html.modern-desk .panel button:not(.sheet-tab):not(.sheet-open-button):hover:not(:disabled),
+html.modern-desk .credits button:hover {
+    border-color: var(--ss-muted);
+}
+html.modern-desk .panel button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+html.modern-desk .sheet-open-button {
+    border-color: var(--ss-line);
+    background: var(--ss-btn);
+}
+/* Select2's set pickers. */
+html.modern-desk .select2-container .select2-choice {
+    height: 32px;
+    line-height: 30px;
+    border: 1px solid var(--ss-line);
+    border-radius: 8px;
+    background: var(--ss-card);
+    background-image: none;
+    color: var(--ss-text);
+    box-shadow: none;
+}
+html.modern-desk .select2-container .select2-choice .select2-arrow {
+    border-left: 0;
+    border-radius: 0 8px 8px 0;
+    background: transparent;
+    background-image: none;
+}
+html.modern-desk .select2-container.small-select .select2-choice {
+    height: 24px;
+    line-height: 22px;
+    border-radius: 6px;
+}
+html.modern-desk .select2-container-active .select2-choice {
+    border-color: var(--ss-accent);
+    box-shadow: 0 0 0 2px var(--ss-accent-soft);
+}
+html.modern-desk .select2-drop {
+    border-color: var(--ss-line);
+    border-radius: 0 0 8px 8px;
+    background: var(--ss-card);
+    color: var(--ss-text);
+}
+
+/* Pokémon panels -------------------------------------------------------------------------- */
+html.modern-desk .poke-info {
+    width: auto;
+}
+html.modern-desk .poke-info table th {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+}
+html.modern-desk .poke-info td {
+    padding: 1px 2px;
+    font-variant-numeric: tabular-nums;
+}
+html.modern-desk .panel-toggle {
+    border-radius: 999px;
+}
+html.modern-desk .hpbar,
+html.modern-desk .hp-bar {
+    border-radius: 999px;
+}
+
+/* The move rows' type and category: a touch wider for the system font. */
+html.modern-desk .poke-info .move-type {
+    width: 6.2em;
+}
+html.modern-desk .poke-info .move-cat {
+    width: 6.8em;
+}
+
+/* Narrower desktops: a tighter header so it stays on one line. */
+@media (max-width: 1400px) {
+    html.modern-desk .wrapper {
+        padding: 0 14px;
+        --md-gap: 12px;
+    }
+    html.modern-desk #ss-page-settings {
+        margin: 0 -14px 14px;
+        padding: 8px 14px;
+        gap: 8px 10px;
+    }
+    html.modern-desk .title-text {
+        font-size: 14px;
+    }
+    html.modern-desk #ss-page-settings .page-tabs {
+        margin-left: 4px;
+    }
+    html.modern-desk #ss-page-settings .page-tabs .sheet-tab,
+    html.modern-desk .notationSelection .btn,
+    html.modern-desk .modeSelection .btn {
+        padding: 4px 9px;
+    }
+    html.modern-desk .panel fieldset {
+        padding: 10px 12px 12px;
+    }
+}
+
+/* Footer ---------------------------------------------------------------------------------- */
+html.modern-desk .credits {
+    background: transparent;
+    max-width: 1520px;
+    margin: 6px auto 24px;
+    padding: 14px 20px;
+    color: var(--ss-muted);
+    font-size: 12px;
+}
+html.modern-desk .credits ul {
+    display: flex;
+    gap: 14px;
+    padding: 0;
+    margin: 6px 0 10px;
+    list-style: none;
+}
+html.modern-desk .site-settings {
+    padding: 10px 14px;
+    background: var(--ss-card);
+    border: 1px solid var(--ss-line);
+    border-radius: var(--md-radius);
+    color: var(--ss-text);
+}
+html.modern-desk .box-dialog {
+    border-radius: var(--md-radius);
+    background: var(--ss-card);
+    color: var(--ss-text);
+    border: 1px solid var(--ss-line);
+}

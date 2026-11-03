@@ -63,6 +63,7 @@ var CHANGELOG = [
 		"Trainer AI: the rest of Radical Red's move scoring"
 	]},
 	{version: "1.8", notes: [
+		"Desktop: a modern look (cards, a slim header with the tabs), as on the Thor; Settings > Desktop style switches back to Classic",
 		"Route trainers: every trainer in the game, before the boss they lead to",
 		"Route trainers in the order you walk to them; Reorder on the Mastersheet to fix any",
 		"Trainer sprites on the trainer panel and Mastersheet",
