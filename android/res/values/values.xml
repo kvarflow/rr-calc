@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RR Calc</string>
+    <color name="icon_background">#D63031</color>
+    <color name="background">#EEF1F6</color>
+    <style name="AppTheme" parent="@android:style/Theme.DeviceDefault.Light.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">#D63031</item>
+    </style>
+</resources>
