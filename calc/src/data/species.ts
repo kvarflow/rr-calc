@@ -8757,18 +8757,24 @@ delete SS['Pikachu-Starter'];
 delete SS['Eevee-Starter'];
 
 // remove gmax forms from extra formes
-var gmaxes = ["Alcremie", "Appletun", "Blastoise", "Butterfree", "Centiskorch", "Charizard", "Cinderace", "Coalossal", "Copperajah", "Corviknight", "Drednaw", "Duraludon", "Eevee", "Flapple", "Garbodor", "Gengar", "Grimmsnarl", "Hatterene", "Inteleon", "Kingler", "Lapras", "Machamp", "Melmetal", "Meowth", "Orbeetle", "Pikachu", "Rillaboom", "Sandaconda", "Snorlax", "Toxtricity", "Urshifu", "Venusaur"]
-gmaxes.forEach(function(p) {
-  var i = SS[p].otherFormes?.indexOf(`${p}-Gmax`)
-  if (i != undefined && i != -1) SS[p].otherFormes?.splice(i, 1)
-  delete SS[`${p}-Gmax`]
-})
-var i = SS['Toxtricity'].otherFormes?.indexOf('Toxtricity-Low-Key-Gmax')
-if (i != undefined && i != -1) SS['Toxtricity'].otherFormes?.splice(i, 1)
-delete SS['Toxtricity-Low-Key-Gmax']
-var i = SS['Urshifu'].otherFormes?.indexOf('Urshifu-Rapid-Strike-Gmax')
-if (i != undefined && i != -1) SS['Urshifu'].otherFormes?.splice(i, 1)
-delete SS['Urshifu-Rapid-Strike-Gmax']
+const gmaxes = [
+  'Alcremie', 'Appletun', 'Blastoise', 'Butterfree', 'Centiskorch', 'Charizard', 'Cinderace',
+  'Coalossal', 'Copperajah', 'Corviknight', 'Drednaw', 'Duraludon', 'Eevee', 'Flapple', 'Garbodor',
+  'Gengar', 'Grimmsnarl', 'Hatterene', 'Inteleon', 'Kingler', 'Lapras', 'Machamp', 'Melmetal',
+  'Meowth', 'Orbeetle', 'Pikachu', 'Rillaboom', 'Sandaconda', 'Snorlax', 'Toxtricity', 'Urshifu',
+  'Venusaur',
+];
+gmaxes.forEach(function (p) {
+  const i = SS[p].otherFormes?.indexOf(`${p}-Gmax`);
+  if (i !== undefined && i !== -1) SS[p].otherFormes?.splice(i, 1);
+  delete SS[`${p}-Gmax`];
+});
+let i = SS['Toxtricity'].otherFormes?.indexOf('Toxtricity-Low-Key-Gmax');
+if (i !== undefined && i !== -1) SS['Toxtricity'].otherFormes?.splice(i, 1);
+delete SS['Toxtricity-Low-Key-Gmax'];
+i = SS['Urshifu'].otherFormes?.indexOf('Urshifu-Rapid-Strike-Gmax');
+if (i !== undefined && i !== -1) SS['Urshifu'].otherFormes?.splice(i, 1);
+delete SS['Urshifu-Rapid-Strike-Gmax'];
 // A species whose only other forme was its Gigantamax one has none left.
 gmaxes.forEach(function (p) {
   if (SS[p].otherFormes?.length === 0) delete (SS[p] as any).otherFormes;
@@ -10031,6 +10037,7 @@ const SV_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   },
 };
 
+/* eslint-disable max-len */
 const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   // Radical Red's Jellicent (its base stats table): Defense 80, Sp. Atk 75.
   Jellicent: {bs: {df: 80, sa: 75}},
@@ -10057,7 +10064,7 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   'Altaria-Mega': {bs: {hp: 85}},
   'Ampharos-Mega': {abilities: {0: 'Thick Fat'}},
   'Appletun': {otherFormes: ['Appletun-Mega']},
-  'Arbok': {types: ['Poison', 'Dark'],bs: {hp: 75, df: 75}},
+  'Arbok': {types: ['Poison', 'Dark'], bs: {hp: 75, df: 75}},
   'Arcanine-Hisui': {bs: {at: 125, sa: 85}},
   'Arctovish': {bs: {sa: 55, sp: 80}},
   'Ariados': {bs: {at: 95, sp: 70}},
@@ -10081,7 +10088,7 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   'Braviary-Hisui': {bs: {hp: 115, at: 58, df: 80, sd: 80}},
   'Butterfree': {bs: {sa: 95}, otherFormes: ['Butterfree-Mega']},
   'Cacturne': {bs: {at: 120, sa: 120}},
-  'Camerupt' : {bs: {hp: 90}},
+  'Camerupt': {bs: {hp: 90}},
   'Camerupt-Mega': {bs: {hp: 90, at: 100, df: 110, sd: 115}},
   'Capsakid': {bs: {hp: 52}},
   'Carnivine': {bs: {hp: 89, df: 82, sd: 82, sa: 55}, otherFormes: ['Carnivine-Sevii']},
@@ -10239,7 +10246,7 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
   'Perrserker': {bs: {hp: 90, sa: 30}},
   'Persian': {bs: {at: 80, sa: 60}},
   'Persian-Alola': {bs: {sa: 55}},
-  'Pikachu': {otherFormes: ['Pikachu-Belle','Pikachu-Cosplay','Pikachu-Libre','Pikachu-PhD','Pikachu-Pop-Star','Pikachu-Rock-Star','Pikachu-Flying','Pikachu-Surfing']},
+  'Pikachu': {otherFormes: ['Pikachu-Belle', 'Pikachu-Cosplay', 'Pikachu-Libre', 'Pikachu-PhD', 'Pikachu-Pop-Star', 'Pikachu-Rock-Star', 'Pikachu-Flying', 'Pikachu-Surfing']},
   'Pikachu-Belle': {
     types: ['Electric', 'Ice'],
     bs: {hp: 35, at: 55, df: 40, sa: 50, sd: 50, sp: 90},
@@ -10704,30 +10711,31 @@ const RR_PATCH: {[name: string]: DeepPartial<SpeciesData>} = {
     baseSpecies: 'Zebstrika',
   },
 };
+/* eslint-enable max-len */
 
 const SV_VANILLA: {[name: string]: SpeciesData} = extend(true, {}, SS, SV_PATCH, PLA_PATCH);
 const SV: {[name: string]: SpeciesData} = extend(true, {}, SV_VANILLA, RR_PATCH);
 
 export const SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV];
-// Each generation's own data, without Radical Red's (gen 9): another game's data goes on top of these
-// (setGameSpecies).
+// Each generation's own data, without Radical Red's (gen 9): another game's data goes on top
+// of these (setGameSpecies).
 export const VANILLA_SPECIES = [{}, RBY, GSC, ADV, DPP, BW, XY, SM, SS, SV_VANILLA];
 
 export class Species implements I.Species {
   private readonly gen: I.GenerationNum;
 
   constructor(gen: I.GenerationNum) {
-this.gen = gen;
+    this.gen = gen;
   }
 
   get(id: I.ID) {
-return SPECIES_BY_ID[this.gen][id];
+    return SPECIES_BY_ID[this.gen][id];
   }
 
   *[Symbol.iterator]() {
-for (const id in SPECIES_BY_ID[this.gen]) {
-  yield this.get(id as I.ID)!;
-}
+    for (const id in SPECIES_BY_ID[this.gen]) {
+      yield this.get(id as I.ID)!;
+    }
   }
 }
 
@@ -10747,24 +10755,24 @@ class Specie implements I.Specie {
   private static readonly EXCLUDE = new Set(['bs', 'otherFormes']);
 
   constructor(name: string, data: SpeciesData) {
-this.kind = 'Species';
-this.id = toID(name);
-this.name = name as I.SpeciesName;
+    this.kind = 'Species';
+    this.id = toID(name);
+    this.name = name as I.SpeciesName;
 
-const baseStats: Partial<I.StatsTable> = {};
-baseStats.hp = data.bs.hp;
-baseStats.atk = data.bs.at;
-baseStats.def = data.bs.df;
-baseStats.spa = gen >= 2 ? data.bs.sa : data.bs.sl;
-baseStats.spd = gen >= 2 ? data.bs.sd : data.bs.sl;
-baseStats.spe = data.bs.sp;
-this.baseStats = baseStats as I.StatsTable;
-// Hack for getting Gmax pokemon out of existence in Gen 9+
-if (data.otherFormes) {
-  this.otherFormes = data.otherFormes as I.SpeciesName[];
-  if (gen >= 9 && !['toxtricity', 'urshifu'].includes(this.id)) {
-this.otherFormes = this.otherFormes.filter(f => !f.endsWith('-Gmax'));
-if (!this.otherFormes.length) this.otherFormes = undefined;
+    const baseStats: Partial<I.StatsTable> = {};
+    baseStats.hp = data.bs.hp;
+    baseStats.atk = data.bs.at;
+    baseStats.def = data.bs.df;
+    baseStats.spa = gen >= 2 ? data.bs.sa : data.bs.sl;
+    baseStats.spd = gen >= 2 ? data.bs.sd : data.bs.sl;
+    baseStats.spe = data.bs.sp;
+    this.baseStats = baseStats as I.StatsTable;
+    // Hack for getting Gmax pokemon out of existence in Gen 9+
+    if (data.otherFormes) {
+      this.otherFormes = data.otherFormes as I.SpeciesName[];
+      if (gen >= 9 && !['toxtricity', 'urshifu'].includes(this.id)) {
+        this.otherFormes = this.otherFormes.filter(f => !f.endsWith('-Gmax'));
+        if (!this.otherFormes.length) this.otherFormes = undefined;
         if (this.otherFormes) this.otherFormes = [...new Set(this.otherFormes)];
       }
     }
