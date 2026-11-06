@@ -4,8 +4,8 @@
 # Pages serves (repo Settings > Pages > Deploy from a branch > gh-pages, / (root)).
 #
 # The gh-pages branch only ever holds the latest build: each run replaces it with a
-# single fresh commit. The original calculator's Google Analytics tag is removed so
-# visits to this copy are not reported to it.
+# single fresh commit. (The original calculator's Google Analytics tag is no longer in
+# the pages, so there is nothing to strip.)
 
 rev=$(git rev-parse --short HEAD)
 remote=$(git remote get-url origin)
@@ -19,7 +19,6 @@ cd "$site"
 # Build inputs and test/type files are not needed on the site.
 rm -rf calc/test oms.html
 find . \( -name '*.template.html' -o -name '*.map' -o -name '*.d.ts' \) -delete
-sed -i '/googletagmanager\.com\/gtag/d' ./*.html
 # Serve files as-is instead of running them through Jekyll.
 touch .nojekyll
 

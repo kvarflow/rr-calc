@@ -86,8 +86,11 @@ Each trainer's AI flags and every move's effect come from the ROM
 - **Trainer pictures**: Pokémon Showdown's trainer sprites, matched to each trainer's class and id
   in the ROM (`import/radical-red-trainers/trainer_sprites.js`).
 - **Item icons**: [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (CC0; the art is The
-  Pokémon Company's), matched by `import/item-icons.js`. `node build` lists them, the trainer
-  pictures and Professor Oak in `dist/offline-assets.json` for apps that pack the calc.
+  Pokémon Company's), matched by `import/item-icons.js`.
+- **Every image is kept in this repo** (`src/img/`: Pokémon sprites, trainer pictures, item icons,
+  Professor Oak), copied in by `import/vendor-images.sh` from pinned versions of their sources, so
+  the calc loads nothing from other sites (and works offline as a whole, as the Pcalc app packs it).
+  Re-run the script after the trainer sprites or item icons change.
 - **Save format**: [PKForge](https://github.com/sofianeelhor/PKForge)'s Radical Red engine; id
   tables from [Rad-Red-4.1-Team-Exporter](https://github.com/eliyahu1702/Rad-Red-4.1-Team-Exporter)
   and growth rates from [PokéAPI](https://github.com/PokeAPI/pokeapi).
@@ -126,8 +129,9 @@ The engine's own documentation (installing and using `@smogon/calc` as a package
   toggles, base stat overrides and the trainer panel are ported from SylmarDev's
   [syl-rnb-calc](https://github.com/SylmarDev/syl-rnb-calc) (MIT).
 - The Mastersheet and Frag sheet follow hzla's Dynamic Calc.
-- Sprites: [May8th1995/sprites](https://github.com/May8th1995/sprites); Professor Oak from
-  [smogon/sprites](https://github.com/smogon/sprites).
+- Sprites: [May8th1995/sprites](https://github.com/May8th1995/sprites); trainer pictures from
+  Pokémon Showdown; Professor Oak from [smogon/sprites](https://github.com/smogon/sprites). All are
+  Nintendo / Game Freak / The Pokémon Company's artwork, kept in `src/img/`.
 - Further features by kvarflow.
 
 ## License

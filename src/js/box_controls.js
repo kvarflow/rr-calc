@@ -112,14 +112,15 @@ function resolveBoxLayout(customsets, savedLayout) {
 // Sprites come from the set Run & Bun's calculator uses, named like the calc's species
 // ("Charizard-Mega-X.png", with Flabébé's accents decomposed). Radical Red-only formes
 // (Sevii formes, new Megas) have none, so those fall back to the base species' sprite.
-var SPRITE_BASE_URL = "https://raw.githubusercontent.com/May8th1995/sprites/master/";
+// They are kept in src/img/sprites (import/vendor-images.sh), so the calc loads nothing from other sites.
+var SPRITE_BASE_URL = "./img/sprites/";
 
 function getSpriteUrls(pokemonName) {
 	var species = calc.SPECIES[gen][pokemonName];
 	var names = [pokemonName];
 	if (species && species.baseSpecies && species.baseSpecies !== pokemonName) names.push(species.baseSpecies);
 	return names.map(function (name) {
-		return SPRITE_BASE_URL + encodeURIComponent(name.normalize("NFD")) + ".png";
+		return SPRITE_BASE_URL + encodeURIComponent(name.normalize("NFC")) + ".png";
 	});
 }
 
