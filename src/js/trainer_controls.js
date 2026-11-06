@@ -598,6 +598,15 @@ function toggleMegaForm() {
 	updateMegaFormButton();
 }
 
+// The trainer's picture (data/trainer_sprites.js, from Smogon's sprite archive), found by the label
+// their sets carry ("Leader Bugsy"), or null when there is none.
+function getTrainerSpriteUrl(variant) {
+	if (typeof TRAINER_SPRITES === "undefined" || !variant || !variant.sets.length) return null;
+	var match = /\(\*?([^)]+)\)$/.exec(variant.sets[0]);
+	var label = match ? match[1].replace(/ Set \d+$/, "").trim() : "";
+	return TRAINER_SPRITES[label] ? TRAINER_SPRITE_BASE + TRAINER_SPRITES[label] : null;
+}
+
 function showTrainer(index) {
 	currentTrainerIndex = Math.max(0, Math.min(index, TRAINER_ORDER.length - 1));
 	writeSetting(getTrainerIndexKey(), currentTrainerIndex);
@@ -606,6 +615,8 @@ function showTrainer(index) {
 	applyRelativeLevels(currentTrainerIndex, variant);
 
 	$("#trainer-name").text(trainer.name);
+	var sprite = getTrainerSpriteUrl(variant);
+	$("#trainer-sprite").attr("src", sprite || "").toggle(!!sprite);
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
 	$("#trainer-variant")
 		.empty()
@@ -678,7 +689,7 @@ function buildTrainerPanel() {
 	var panel = $(
 		'<fieldset id="trainer-nav">' +
 		'<legend align="center">Opposing Trainer</legend>' +
-		'<div class="trainer-heading"><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
+		'<div class="trainer-heading"><img id="trainer-sprite" class="trainer-sprite" alt="" /><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
 		'<label id="trainer-skip-label" class="trainer-skip"><input type="checkbox" id="trainer-skip" /> Skip for now' +
 		'<span id="trainer-skip-where"></span></label>' +
@@ -702,6 +713,10 @@ function buildTrainerPanel() {
 			$(this).replaceWith("↺");
 		})
 		.appendTo(panel.find("#reset-trainer"));
+	// A trainer whose picture can't load (offline, before it was ever seen) shows just their name.
+	panel.find("#trainer-sprite").hide().on("error", function () {
+		$(this).hide();
+	});
 	return panel;
 }
 

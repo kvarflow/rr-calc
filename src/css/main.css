@@ -740,6 +740,19 @@ legend:has(> .header-sprite)::before {
 .trainer-heading {
     margin-bottom: 4px;
 }
+/* The trainer's picture (64 px pixel art), beside their name. */
+.trainer-sprite {
+    height: 48px;
+    margin-right: 6px;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+.ss-trainer-sprite {
+    height: 32px;
+    margin-right: 6px;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
 #trainer-details {
     font-size: 0.85em;
 }
