@@ -118,7 +118,7 @@ function loadGames() {
 
 /*
  * dist/offline-assets.json: every image the calculator loads from a fixed address elsewhere
- * (trainer pictures, Professor Oak), so an app that packs the calculator (kvarflow/Pcalc) can pack
+ * (trainer pictures, item icons, Professor Oak), so an app that packs the calculator (kvarflow/Pcalc) can pack
  * them too and work offline. Pokémon sprites are left out: their addresses follow a pattern
  * (box_controls.js SPRITE_BASE_URL) and the app packs the whole set.
  */
@@ -127,6 +127,8 @@ function writeOfflineAssets() {
 	const sandbox = {};
 	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/trainer_sprites.js'), 'utf8'), sandbox);
 	for (const file of Object.values(sandbox.TRAINER_SPRITES)) urls.add(sandbox.TRAINER_SPRITE_BASE + file);
+	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/item_icons.js'), 'utf8'), sandbox);
+	for (const file of Object.values(sandbox.ITEM_ICONS)) urls.add(sandbox.ITEM_ICON_BASE + file);
 	const oak = /var OAK_SPRITE_URL = "([^"]+)"/.exec(fs.readFileSync(path.resolve(rootDir, 'src/js/trainer_controls.js'), 'utf8'));
 	if (oak) urls.add(oak[1]);
 	const list = [...urls].sort();

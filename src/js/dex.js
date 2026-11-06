@@ -317,13 +317,17 @@ function renderDex(container) {
 	var page = $('<div class="dex-page"></div>').appendTo(container);
 	var head = $('<div class="dex-head"></div>').appendTo(page);
 	$('<span class="dex-sprite"></span>').append(createSpriteImage(name, function () {
-		$(this).remove();
+		$(this).parent().addClass("dex-sprite-none").attr("title", "No sprite for " + name).text("?");
 	})).appendTo(head);
 	$('<div class="dex-title"></div>').append($("<h2></h2>").text(name), buildDexTypes(species.types),
 		species.weightkg ? $('<span class="dex-weight"></span>').text(species.weightkg + " kg") : "").appendTo(head);
 	var grid = $('<div class="dex-grid"></div>').appendTo(page);
 	var card = function (title, content) {
-		return $('<section class="dex-card"></section>').append($("<h3></h3>").text(title), content).appendTo(grid);
+		var section = $('<section class="dex-card"></section>').appendTo(grid);
+		var head = $("<h3></h3>").text(title).appendTo(section);
+		$('<div class="dex-card-body"></div>').append(content).appendTo(section);
+		makeFoldable(section, head, "dex:" + title);
+		return section;
 	};
 	card("Base stats", buildDexStats(species));
 	card("Evolution", buildDexEvolutions(name));

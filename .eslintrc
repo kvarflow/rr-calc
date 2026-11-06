@@ -74,6 +74,7 @@
         "getGameModeLabels": false,
         "hasGameFeature": false,
         "registerSheet": false,
+        "makeFoldable": false,
         "openTrainerInCalc": false,
         "getStoryIndex": false,
         "formatRankPercent": false,
@@ -173,6 +174,8 @@
         "TRAINER_ORDER": false,
         "TRAINER_SPRITES": false,
         "TRAINER_SPRITE_BASE": false,
+        "ITEM_ICONS": false,
+        "ITEM_ICON_BASE": false,
         "loadSetIntoPokemon": false,
         "createPokemonSprite": false
     },

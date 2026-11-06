@@ -3427,11 +3427,27 @@ html.sheet-open body {
     gap: 12px;
     margin-bottom: 12px;
 }
+.dex-sprite {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+}
 .dex-sprite img {
     width: 96px;
     height: 96px;
     object-fit: contain;
     image-rendering: pixelated;
+}
+/* A Pokémon with no sprite in the set (Chillet): a "?" in its place, so every entry lines up. */
+.dex-sprite-none {
+    border: 2px dashed rgba(128, 128, 128, 0.35);
+    border-radius: 12px;
+    color: var(--sh-muted);
+    font-size: 2em;
+    font-weight: bold;
 }
 .dex-title h2 {
     margin: 0 0 4px;
@@ -3699,29 +3715,6 @@ html.sheet-open body {
 .ms-place-folded .ms-place-body {
     display: none;
 }
-.ms-fold-icon {
-    display: inline-block;
-    width: 1em;
-    color: var(--sh-muted);
-    transition: transform 0.15s ease;
-}
-.ms-place:not(.ms-place-folded) > h3 .ms-fold-icon,
-.ms-trainer:not(.ms-trainer-folded) .ms-trainer-fold .ms-fold-icon {
-    transform: rotate(90deg);
-}
-.ms-trainer-fold {
-    border: 0;
-    padding: 0 2px;
-    background: none;
-    color: inherit;
-    font: inherit;
-    cursor: pointer;
-}
-.ms-trainer-folded .ms-team,
-.ms-trainer:not(.ms-trainer-folded) .ms-team-mini,
-.ms-trainer-folded .ms-variant {
-    display: none;
-}
 .ms-trainer-folded .ms-trainer-head {
     margin-bottom: 2px;
 }
@@ -3864,4 +3857,84 @@ html.sheet-open body {
     color: var(--ss-good, #1e7b39);
     font-size: 12px;
     font-weight: 600;
+}
+
+/* An icon before each Pokémon's item (item_icons.js). */
+.item-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 4px;
+    vertical-align: middle;
+    image-rendering: pixelated;
+}
+
+/* Type badges beside each side's Pokémon on the small layout's Battle tab (the Dex's, smaller). */
+.ss-types {
+    margin-left: 6px;
+    vertical-align: middle;
+}
+.ss-types .dex-type {
+    min-width: 0;
+    font-size: 0.65em;
+}
+
+/* Sections that fold when their header is tapped (sheets.js makeFoldable; the Mastersheet's places
+ * and trainers): no arrow, the header is the control. A folded one dims a little. */
+.sheet-fold-head {
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 8px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+.sheet-fold-head:hover,
+.ms-place-head:hover {
+    background-color: rgba(128, 128, 128, 0.08);
+}
+.sheet-fold-head:active,
+.ms-place-head:active {
+    background-color: rgba(128, 128, 128, 0.16);
+}
+.sheet-fold-head:focus-visible {
+    outline: 2px solid var(--sh-accent);
+    outline-offset: 2px;
+}
+.sheet-folded > .sheet-fold-head,
+.ms-place-folded .ms-place-name,
+.ms-trainer-folded .ms-trainer-tags {
+    color: var(--sh-muted);
+}
+.dex-card > h3.sheet-fold-head {
+    margin: -4px -6px 8px;
+    padding: 4px 6px;
+}
+.dex-card.sheet-folded > h3.sheet-fold-head {
+    margin-bottom: -4px;
+}
+.dex-card.sheet-folded > .dex-card-body {
+    display: none;
+}
+.fs-group-head th {
+    padding: 10px 8px 6px;
+    background: var(--sh-card);
+    text-align: left;
+    font-size: 1em;
+}
+.fs-group-name {
+    font-weight: bold;
+}
+.fs-group-count {
+    margin-left: 8px;
+    padding: 0 8px;
+    border-radius: 10px;
+    background: rgba(128, 128, 128, 0.15);
+    color: var(--sh-muted);
+    font-size: 0.8em;
+    font-weight: bold;
+}
+.fs-group.sheet-folded > tr:not(.fs-group-head) {
+    display: none;
+}
+.fs-group.sheet-folded .fs-group-name {
+    color: var(--sh-muted);
 }
