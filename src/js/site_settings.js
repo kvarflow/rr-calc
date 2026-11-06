@@ -163,6 +163,18 @@ var CHANGELOG = [
 		"The Dex lists status moves (Gravity, Healing Wish...) as Status, not Physical",
 		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
 			"cap that covers them, and the ones before the same fight come a place at a time"
+	]},
+	{version: "1.9", notes: [
+		"Trainer pictures beside the trainer's name and on the Battle tab: every gym leader, rival, " +
+			"champion and the Elite Four as themselves, everyone else as their trainer class",
+		"Item icons before each Pok\u00e9mon's item, and type badges beside each side's Pok\u00e9mon on the Battle tab",
+		"Tap a heading in the Dex, Mastersheet or Frag sheet to fold it away (it stays folded); the Frag " +
+			"sheet now groups your Pok\u00e9mon under Team, Box and Fainted",
+		"Backup (under Import / Export): save everything, every mode's box, runs and settings, as one " +
+			"file, and restore it on this or another device",
+		"In the Pcalc app for Android: RetroArch emulator sync built in, and automatic backups to a folder on the device"
+	], fixes: [
+		"A Pok\u00e9mon with no sprite keeps its place in the Dex instead of its name jumping across"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
@@ -170,7 +182,8 @@ var LAST_CHANGELOG_KEY = "lastChangelogVersion";
 var CREDITS = [
 	"Original calculator by Honko, maintained by Austin and Kris; Radical Red edition by Karthik.",
 	"Team/Box, color coding, crit chances, Range Compare, Export All and more ported from SylmarDev's syl-rnb-calc (MIT).",
-	"Pokémon sprites from May8th1995/sprites; Professor Oak from smogon/sprites.",
+	"Pokémon sprites from May8th1995/sprites; trainer pictures and Professor Oak from smogon/sprites; " +
+		"item icons from PokéAPI's sprites (CC0).",
 	".sav names from Rad-Red-4.1-Team-Exporter; growth rates from PokéAPI.",
 	"Trainer data from the Radical Red 4.1 Default and Hardcore Mode boss documents, checked against the game.",
 	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",
