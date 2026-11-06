@@ -98,10 +98,16 @@ describe('calc', () => {
           expect(result.desc()).toBe(
             '0 Atk burned Mew Explosion vs. 0 HP / 0 Def Vulpix on a critical hit: 364-429 (167.7 - 197.6%) -- guaranteed OHKO'
           );
-        } else if (gen >= 6) {
+        } else if (gen >= 6 && gen < 9) {
           expect(result.range()).toEqual([273, 321]);
           expect(result.desc()).toBe(
             '0 Atk burned Mew Explosion vs. 0 HP / 0 Def Vulpix on a critical hit: 273-321 (125.8 - 147.9%) -- guaranteed OHKO'
+          );
+        } else if (gen === 9) {
+          // Radical Red: Explosion is 150 BP and halves the target's Defense.
+          expect(result.range()).toEqual([327, 385]);
+          expect(result.desc()).toBe(
+            '0 Atk burned Mew Explosion vs. 0 HP / 0 Def Vulpix on a critical hit: 327-385 (150.6 - 177.4%) -- guaranteed OHKO'
           );
         }
         explosion.isCrit = false;
@@ -112,8 +118,10 @@ describe('calc', () => {
           expect(result.range()).toEqual([149, 176]);
         } else if (gen > 2 && gen < 5) {
           expect(result.range()).toEqual([182, 215]);
-        } else {
+        } else if (gen < 9) {
           expect(result.range()).toEqual([91, 107]);
+        } else {
+          expect(result.range()).toEqual([109, 128]);
         }
       });
     });
@@ -137,6 +145,7 @@ describe('calc', () => {
               adv: {range: [346, 408], desc: '(149.7 - 176.6%) -- guaranteed OHKO'},
               dpp: {range: [342, 404], desc: '(148 - 174.8%) -- guaranteed OHKO'},
               modern: {range: [344, 408], desc: '(148.9 - 176.6%) -- guaranteed OHKO'},
+              rr: {range: [404, 476], desc: '(174.8 - 206%) -- guaranteed OHKO'},
             },
           },
           {
@@ -144,6 +153,7 @@ describe('calc', () => {
               adv: {range: [86, 102], desc: '(37.2 - 44.1%) -- guaranteed 3HKO'},
               dpp: {range: [85, 101], desc: '(36.7 - 43.7%) -- guaranteed 3HKO'},
               modern: {range: [86, 102], desc: '(37.2 - 44.1%) -- guaranteed 3HKO'},
+              rr: {range: [101, 119], desc: '(43.7 - 51.5%) -- 8.2% chance to 2HKO'},
             },
           },
           {
@@ -159,6 +169,10 @@ describe('calc', () => {
               modern: {
                 range: [77, 91],
                 desc: '(33.3 - 39.3%) -- guaranteed 3HKO after sandstorm damage',
+              },
+              rr: {
+                range: [90, 106],
+                desc: '(38.9 - 45.8%) -- guaranteed 3HKO after sandstorm damage',
               },
             },
           },
@@ -176,12 +190,17 @@ describe('calc', () => {
                 range: [230, 272],
                 desc: '(99.5 - 117.7%) -- 93.8% chance to OHKO',
               },
+              rr: {
+                range: [270, 318],
+                desc: '(116.8 - 137.6%) -- guaranteed OHKO',
+              },
             },
           },
         ];
 
         for (const {weather, type, damage} of weathers) {
-          const dmg = gen === 3 ? damage.adv : gen === 4 ? damage.dpp : damage.modern;
+          // Radical Red's Castform has 85 in every stat.
+          const dmg = gen === 3 ? damage.adv : gen === 4 ? damage.dpp : gen === 9 ? damage.rr : damage.modern;
           const [atk, def] = gen === 3 && type === 'Rock' ? ['Atk', 'Def'] : ['SpA', 'SpD'];
 
           const result = calculate(
@@ -243,8 +262,10 @@ describe('calc', () => {
       test(`Iron Ball negates levitate (gen ${gen})`, () => {
         const result = calculate(Pokemon('Poliwrath'), Pokemon('Mismagius', {item: 'Iron Ball'}), Move('Mud Shot'));
         expect(result.range()).toEqual([29, 35]);
+        // Radical Red's Mismagius has 70 HP.
+        const percent = gen === 9 ? '(10.3 - 12.4%) -- possible 9HKO' : '(11.1 - 13.4%) -- possible 8HKO';
         expect(result.desc()).toBe(
-          '0 SpA Poliwrath Mud Shot vs. 0 HP / 0 SpD Mismagius: 29-35 (11.1 - 13.4%) -- possible 8HKO'
+          '0 SpA Poliwrath Mud Shot vs. 0 HP / 0 SpD Mismagius: 29-35 ' + percent
         );
       });
     });
@@ -345,10 +366,16 @@ describe('calc', () => {
           expect(result.desc()).toBe(
             '+2 252 SpA Mewtwo Psystrike vs. 248 HP / 184+ Def Marvel Scale Milotic in Psychic Terrain: 331-391 (84.2 - 99.4%) -- guaranteed 2HKO after burn damage'
           );
-        } else {
+        } else if (gen < 9) {
           expect(result.range()).toEqual([288, 339]);
           expect(result.desc()).toBe(
             '+2 252 SpA Mewtwo Psystrike vs. 248 HP / 184+ Def Marvel Scale Milotic in Psychic Terrain: 288-339 (73.2 - 86.2%) -- guaranteed 2HKO after burn damage'
+          );
+        } else {
+          // Radical Red's Milotic has 84 Defense.
+          expect(result.range()).toEqual([276, 325]);
+          expect(result.desc()).toBe(
+            '+2 252 SpA Mewtwo Psystrike vs. 248 HP / 184+ Def Marvel Scale Milotic in Psychic Terrain: 276-325 (70.2 - 82.6%) -- guaranteed 2HKO after burn damage'
           );
         }
         result = calculate(Mewtwo, Milotic, sPunch, field);

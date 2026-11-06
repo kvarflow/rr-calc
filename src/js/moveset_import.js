@@ -22,9 +22,9 @@ function getCustomSetsKey(mode) {
 }
 
 function readCustomSets(mode) {
-	var stored = localStorage.getItem(getCustomSetsKey(mode));
-	if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
 	try {
+		var stored = localStorage.getItem(getCustomSetsKey(mode));
+		if (stored === null) stored = localStorage.getItem(LEGACY_CUSTOM_SETS_KEY);
 		return stored ? JSON.parse(stored) : {};
 	} catch (e) {
 		return {};
@@ -32,7 +32,11 @@ function readCustomSets(mode) {
 }
 
 function writeCustomSets(customsets, mode) {
-	localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	try {
+		localStorage.setItem(getCustomSetsKey(mode), JSON.stringify(customsets));
+	} catch (e) {
+		// Storage unavailable or full: the sets are not kept.
+	}
 	$(document).trigger("customsets:changed");
 }
 
@@ -292,9 +296,10 @@ function addToDex(poke, customsets) {
 	}
 }
 
-// Every generation's set list; imported sets are added to all of them.
+// Every generation's set list (SETDEX, shared_controls.js: empty for one the page doesn't load);
+// imported sets are added to all of them.
 function getAllSetdexes() {
-	return [SETDEX_SV, SETDEX_SS, SETDEX_SM, SETDEX_XY, SETDEX_BW, SETDEX_DPP, SETDEX_ADV, SETDEX_GSC, SETDEX_RBY];
+	return SETDEX.slice(1);
 }
 
 function updateDex(customsets) {

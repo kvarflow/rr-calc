@@ -585,7 +585,8 @@ export function calculateSMSSSV(
     checkMultihitBoost(gen, child, defender, move, field, desc);
     childDamage = calculateSMSSSV(gen, child, defender, move, field).damage as number[];
     desc.attackerAbility = attacker.ability;
-  } else if (attacker.hasAbility('ORAORAORAORA') && move.hits === 1 && move.flags.punch && !isSpread) {
+  } else if (attacker.hasAbility('ORAORAORAORA') &&
+    move.hits === 1 && move.flags.punch && !isSpread) {
     const child = attacker.clone();
     child.ability = 'ORAORAORAORA (Child)' as AbilityName;
     checkMultihitBoost(gen, child, defender, move, field, desc);
@@ -595,8 +596,9 @@ export function calculateSMSSSV(
 
   let damage = [];
   for (let i = 0; i < 16; i++) {
-    damage[i] =
-      getFinalDamage(baseDamage, i, typeEffectiveness, applyBurn, stabMod, finalMod, protect, applyFrostbite);
+    damage[i] = getFinalDamage(
+      baseDamage, i, typeEffectiveness, applyBurn, stabMod, finalMod, protect, applyFrostbite
+    );
   }
 
   desc.attackBoost =
@@ -680,7 +682,8 @@ export function calculateSMSSSV(
           applyBurn,
           stabMod,
           newFinalMod,
-          protect
+          protect,
+          applyFrostbite
         );
         damageMultiplier++;
         return affectedAmount + newFinalDamage;
@@ -757,12 +760,9 @@ export function calculateBasePowerSMSSSV(
   case 'Barb Barrage':
   case 'Bitter Malice':
   case 'Infernal Parade':
+    // Radical Red: all three double against any status, as Hex does.
     // Hex deals double damage to Pokemon with Comatose (ih8ih8sn0w)
     basePower = move.bp * (defender.status || defender.hasAbility('Comatose') ? 2 : 1);
-    desc.moveBP = basePower;
-    break;
-  case 'Barb Barrage':
-    basePower = move.bp * (defender.hasStatus('psn', 'tox') ? 2 : 1);
     desc.moveBP = basePower;
     break;
   case 'Heavy Slam':
@@ -784,7 +784,8 @@ export function calculateBasePowerSMSSSV(
     desc.moveBP = basePower;
     break;
   case 'Assurance':
-    basePower = move.bp * (defender.hasAbility('Parental Bond (Child)', 'ORAORAORAORA (Child)') ? 2 : 1);
+    basePower = move.bp *
+      (defender.hasAbility('Parental Bond (Child)', 'ORAORAORAORA (Child)') ? 2 : 1);
     // NOTE: desc.attackerAbility = 'Parental Bond' will already reflect this boost
     break;
   case 'Wake-Up Slap':
@@ -1149,8 +1150,11 @@ export function calculateBPModsSMSSSV(
     if (attacker.gender === defender.gender) {
       bpMods.push(5120);
       desc.rivalry = 'buffed';
-      desc.attackerAbility = attacker.ability;
+    } else {
+      bpMods.push(3072);
+      desc.rivalry = 'nerfed';
     }
+    desc.attackerAbility = attacker.ability;
   }
 
   // The -ate abilities already changed move typing earlier, so most checks are done and desc is set
@@ -1160,8 +1164,9 @@ export function calculateBPModsSMSSSV(
   }
 
   if ((attacker.hasAbility('Reckless') && (
-        move.recoil || move.hasCrashDamage || move.named('Explosion', 'Misty Explosion', 'Self-Destruct')
-      )) ||
+    move.recoil || move.hasCrashDamage ||
+    move.named('Explosion', 'Misty Explosion', 'Self-Destruct')
+  )) ||
       (attacker.hasAbility('Liquid Voice') && move.flags.sound)
   ) {
     bpMods.push(4915);
@@ -1401,7 +1406,8 @@ export function calculateAtModsSMSSSV(
     desc.attackerAbility = attacker.ability;
   }
 
-  if (attacker.hasAbility('Bull Rush', 'Quill Rush') && move.category === 'Physical' && attacker.abilityOn) {
+  if (attacker.hasAbility('Bull Rush', 'Quill Rush') &&
+    move.category === 'Physical' && attacker.abilityOn) {
     atMods.push(4915);
     desc.attackerAbility = attacker.ability;
   }
@@ -1462,7 +1468,8 @@ export function calculateDefenseSMSSSV(
     desc.weather = field.weather;
   }
 
-  if (move.named('Explosion', 'Self-Destruct', 'Misty Explosion')) {
+  // Radical Red (CFRU's OLD_EXPLOSION_BOOST): the exploding moves halve the target's defence.
+  if (gen.num >= 9 && move.named('Explosion', 'Self-Destruct', 'Misty Explosion')) {
     defense = pokeRound(defense / 2);
   }
 
@@ -1657,7 +1664,8 @@ export function calculateFinalModsSMSSSV(
       defender.curHP() === defender.maxHP() &&
       hitCount === 0 &&
       (!field.defenderSide.isSR && (!field.defenderSide.spikes || defender.hasType('Flying')) ||
-      defender.hasItem('Heavy-Duty Boots')) && !attacker.hasAbility('Parental Bond (Child)', 'ORAORAORAORA (Child)')
+      defender.hasItem('Heavy-Duty Boots')) &&
+      !attacker.hasAbility('Parental Bond (Child)', 'ORAORAORAORA (Child)')
   ) {
     finalMods.push(2048);
     desc.defenderAbility = defender.ability;

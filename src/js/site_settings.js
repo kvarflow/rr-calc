@@ -9,172 +9,52 @@ var SITE_SETTINGS = [
 	{key: "showCritRates", label: "Show crit chances", hideClass: "hide-crit-rates"}
 ];
 
-// Newest last. Bump the version to show "What's new" again.
-// Versions grouped by what they cover (earlier releases 1.0 to 1.15 were merged into these).
+// Newest last. Bump the version to show "What's new" again; keep each entry to a few short lines.
 var CHANGELOG = [
 	{version: "1.0", notes: [
-		"Team / Box / Box 2 / Trash panel with sprites, kept separately for Normal and Hardcore Mode",
-		"Import your party and PC boxes from your .sav: Pok\u00e9mon keep the save's type, stats, level " +
-			"and ability, locked (\"Edit anyway\" unlocks them), and your starter is set from the save",
-		"Importing another save of the same game just says how many Pok\u00e9mon came in",
-		"Matchup color coding for your box against Pok\u00e9mon 2, on unless you turn it off"
-	], fixes: [
-		"A Basculin from your .sav is the right stripe, with its own abilities, and Pumpkaboo and " +
-			"Gourgeist keep their size"
+		"Team / Box panel and .sav import, with matchup colour coding"
 	]},
 	{version: "1.1", notes: [
-		"Previous / Next Trainer through every boss fight, checked against the game, with Professor Oak to " +
-			"start a new run",
-		"Every rival fight has his team for each starter, taken from the game, with its own battle effect",
-		"Boss battle effects (Brock's sand, Lt. Surge's terrain, swamps quartering Speed...) are set on the Field " +
-			"and locked for the fight; a trainer's weather and terrain stay up when it switches out",
-		"\"Base form\" for a trainer's Mega before it Mega Evolves"
-	], fixes: [
-		"A trainer's Hidden Power could change type after its first load (Catcher Sammy's Volbeat " +
-			"showed Hidden Power Rock instead of Bug)"
+		"Previous / Next through every boss, rival teams per starter, Professor Oak's new run"
 	]},
 	{version: "1.2", notes: [
-		"Trick Room and Focus Energy on the Field; each move's crit chance and Crit buttons on the damage results",
-		"Range Compare: how much HP a Pok\u00e9mon has left after several hits",
-		"Export All, click the damage rolls to copy them, Escape clears the box search",
-		"Fold away parts of the Pok\u00e9mon panels; save base stat and type overrides; Fight Notes",
-		"A ? beside each Pok\u00e9mon's ability says what it does, in the game's own words where the game has them",
-		"A note when Simple or Contrary changes how stat boosts add up",
-		"Trainer above Pok\u00e9mon 2, and the footer settings"
+		"Crit chances, Range Compare, Export All, Fight Notes and ability info"
 	]},
 	{version: "1.3", notes: [
-		"Small-screen layout for a handheld's second screen (the AYN Thor's) and phones: tabs for Battle, You, " +
-			"Foe, Advanced, Box, Wild and More, on by itself on small screens (Layout in the footer settings forces it)",
-		"Battle: both sides' moves on one screen, drag your team into order, KO the trainer's Pok\u00e9mon and go on " +
-			"to the next trainer; double-tap a move to make it a crit",
-		"Battle updates the moment you change something on another tab; swipe to change tabs; Text size and " +
-			"accent colors under More",
-		"Wild tab: every location's wild Pok\u00e9mon by method, day and night, read from the game, in the order " +
-			"you reach them; tick Nuzlocke for one encounter per location, filled in from your .sav, with dupes " +
-			"blacked out",
-		"Works offline once opened online, and installs as an app (full screen, opening on the mode you used last)"
-	], fixes: [
-		"Typing HP on an on-screen keyboard did not update the results until you left the field",
-		"Loading a Pok\u00e9mon from the Box recalculated many times over"
+		"Small-screen layout for the Thor and phones, the Wild tab, offline and install"
 	]},
 	{version: "1.4", notes: [
-		"Trainer AI: on Battle, each of the foe's moves shows how often the trainer picks it, from the " +
-			"game's own battle AI (Complete Fire Red Upgrade's) with every move's data read from the game; the " +
-			"likeliest move gets the red stripe, tagged KO when it can knock you out, and the move that hits you " +
-			"hardest is marked too",
-		"Switching: how often the foe switches out and to whom (the reason in the tooltip), and who it sends " +
-			"out next after a KO",
-		"Checked line by line against the game's AI code, decompiled from the game: every trainer uses the " +
-			"full AI; KOs, the strongest move, set-up (+2 going first, +3 going second), Taunt, screens, " +
-			"hazards, Protect, Counter, multi-hit moves, Sucker Punch, Pursuit, Quick Claw and the turn a boss " +
-			"Mega Evolves follow the game, including its coin flips (switch checks skipped a quarter of turns, " +
-			"Low Sweep's bonus half the time)"
-	], fixes: [
-		"The Route 22 rival and a few optional trainers were treated as the basic AI",
-		"A slower foe used Tackle while the calculator said Low Sweep 100%"
+		"Trainer AI: how likely each move is, and when the foe switches"
 	]},
 	{version: "1.5", notes: [
-		"KO'd and Defeated tracking with level-cap arc and game progress bars; Fainted and KOs credited to your " +
-			"Pok\u00e9mon, with your top fraggers, the fallen, your personal best and past runs",
-		"Importing a .sav marks every boss fight you have won as Defeated (the game keeps a flag for each " +
-			"trainer beaten), with the team you actually fought, and a save from a new game starts a new run " +
-			"with Professor Oak first",
-		"Trainers' Pok\u00e9mon whose level follows yours (\"Highest Lv -3\" in the boss documents) take it from " +
-			"your highest-level party Pok\u00e9mon in the last .sav; a beaten fight keeps the levels it had",
-		"The level cap shown follows your badges or the gym leaders you mark Defeated",
-		"\"Skip for now\" on fights you can do before or after a gym (Nugget Bridge to the S.S. Anne around " +
-			"Misty, Route 9 to the Celadon gym around Lt. Surge, the rematches around Sabrina): Previous / Next " +
-			"bring it up after the rest of its group, at the cap after the gym",
-		"Teams the documents leave out, read from the game: Bugsy's after Lt. Surge (picked by your Thunder " +
-			"Badge), and the three teams Jasmine (Default) and Pryce (Hardcore) pick from at random"
-	], fixes: [
-		"KOs and fainting stay with a Pok\u00e9mon after you change its nature or ability"
+		"KO and fight tracking, run progress, level caps from your save"
 	]},
 	{version: "1.6", notes: [
-		"Protean: picking a Protean Pok\u00e9mon's move turns it into that move's type, so the other side's moves " +
-			"hit it as that type (Misty's Frogadier); Reset type brings its own back. Its own damage already has " +
-			"STAB on every move",
-		"Nuzlocke dupes last the whole run: a Pok\u00e9mon that fainted, went to the Trash, was deleted or was " +
-			"released still makes its family a dupe until Professor Oak starts a new run",
-		"Echoed Voice, Fury Cutter, Rollout and Ice Ball: pick which use in a row it is (and Defense Curl) " +
-			"and the base power follows, as in the game",
-		"Upright phones: your Box (and Box 2) under your team on the Battle tab, tap one to load it; the " +
-			"trainer card's buttons no longer run off the screen",
-		"Small screens: a neater result card (the move and its damage, the KO chance, then who is fighting " +
-			"and the rolls in small print) and damage ranges with one decimal on both ends",
-		"Battle: Previous trainer and Next trainer spelled out at the bottom of the trainer card",
-		"The arc bar follows your progress: beating Misty moves you on to Lt. Surge's arc, fights you left for " +
-			"later move on with you, and a fight counts in the arc you beat it in (Bugsy after Misty: Lt. Surge's)",
-		"A ? beside the item says what it does, from the game's own item text",
-		"Result card: the KO chance stays on the move's line and the HP range is gone (the rolls show it)",
-		"This run: top fraggers and the fainted as a grid of sprites; on small screens your progress sits above the trainer",
-		"Rank the box against the foe: by damage dealt, damage taken or Speed, each Pok\u00e9mon's figure on its " +
-			"sprite (an idea from hzla's Dynamic Calc), optionally as if your box were at the level cap",
-		"Normal: the Route 22 rival's Darmanitan has its 4 EVs in Sp. Def, as in the game",
-		"Loaded Dice: multi-hit moves count 5 hits (the game's Loaded Dice hits 5 times two times in three, " +
-			"4 otherwise); it was 4. The box colors and the trainer AI count it too",
-		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
-			"cap you are at",
-		"The level cap follows the fights you have beaten, story fights included (Archer at Mt. Moon, the first " +
-			"Giovanni, Silph Co.), not just badges",
-		"Levels that follow yours follow your progress too: a fight you left for later (Bugsy after Lt. Surge) " +
-			"comes at the cap you are at, a fight ahead at its own cap, a beaten one keeps the level and cap it was " +
-			"beaten at"
+		"Protean, consecutive-use moves, box ranking and item info"
 	]},
 	{version: "1.7", notes: [
-		"Trainer AI: the last part of the game's move scoring, checked against the game's code: Reflect and " +
-			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
-			"Shed Tail, burns, paralysis and poison (with Hex and Venoshock), Sheer Force and Serene Grace chances, " +
-			"draining moves, Rest and Wish, trapping moves and Salt Cure, Defog and Rapid Spin, and many more"
+		"Trainer AI: the rest of Radical Red's move scoring"
 	]},
 	{version: "1.8", notes: [
-		"Route trainers: every other trainer in the game (over 300 in each mode), with the team the game gives " +
-			"them: their level, the last four moves they learn by then (Hardcore leaves out setup moves, hazards and " +
-			"Protect, as the game does), their class's IVs, and the nature and ability the game works out from their " +
-			"name. Previous / Next take you through them before the boss fight they lead up to (Cerulean City's " +
-			"trainers before Misty), at that fight's level cap; untick \u201cRoute trainers in Previous / Next\u201d " +
-			"to go boss to boss. They are not counted in the progress bars, and a .sav marks the ones you have beaten",
-		"Getting ready for more games: a game picker beside the mode buttons (under More on small screens), with " +
-			"Run & Bun, Emerald Kaizo and Platinum Kaizo coming. Each game will have its own box, runs and settings, " +
-			"and follow its own generation's rules (critical hit odds included)",
-		"Mastersheet (from the Progress box): the whole game in order, arc by arc and place by place, with every " +
-			"trainer's team (level, item, ability, nature, moves) and the wild Pok\u00e9mon there, your Nuzlocke dupes " +
-			"crossed out. Search by trainer, place or Pok\u00e9mon; tap a trainer or one of its Pok\u00e9mon to load it. " +
-			"Tap a place to fold it away; beaten trainers fold their team to small sprites under their name (the arrow " +
-			"opens it again), their Pok\u00e9mon crossed out as on the Battle tab. What you fold is remembered",
-		"A fight you can leave for later loses \u201cSkip for now\u201d once beaten, and goes back to its place in Previous / Next",
-		"The Box (and Box 2) under the two teams on the Battle tab on the Thor too, as on phones; tap one to load it. " +
-			"It puts first the Pok\u00e9mon with the most damaging move against Pok\u00e9mon 2, each with its best damage, and " +
-			"reorders when Pok\u00e9mon 2 changes (ranking the Box another way on the Box tab keeps that order)",
-		"What a draining move (Giga Drain, Drain Punch...) or Shell Bell heals, in HP and as a share of yours, under " +
-			"the damage and on the Battle tab's result card. It comes from the damage dealt, so never more than the " +
-			"target had left; Big Root adds 30% as in the game",
-		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
-			"KOs and who made it faint. Sort by any column, or export it as a CSV",
-		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
-			"trade, friendship, time of day, Mega Stone...), abilities (with what they do), level-up moves from the game (tap one for what it does, " +
-			"its accuracy, PP and priority, from the game), " +
-			"where to catch it and which trainers use it (tap one to fight it). Tap a Pok\u00e9mon in the other sheets to " +
-			"open it there",
-		"Emulator sync (Import / Export): the calc follows your battles in RetroArch (the Thor, phones, computers: " +
-			"turn on Network Commands and run its small script, in Termux on Android) or in mGBA 0.10+ on a computer " +
-			"(load its script under Tools > Scripting): the trainer, both Pok\u00e9mon out, their levels, HP, stat " +
-			"changes and status. Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now",
-		"The Dex lists status moves (Gravity, Healing Wish...) as Status, not Physical",
-		"Route trainers whose team is above the level cap where they stand (Route 4's Lass Crissy) come later, at a " +
-			"cap that covers them, and the ones before the same fight come a place at a time"
+		"Every trainer in the order you walk to them, with sprites",
+		"Mastersheet, Frag sheet and Dex",
+		"Suggested EVs, and genders as in the game",
+		"Battle tab: the foe's likely switch-in, and drag between team and Box",
+		"Fainted section: your dead stay out after a .sav import",
+		"Desktop: a modern look (Classic under Settings)"
+	], fixes: [
+		"Rivalry against the other gender, Unburden in the box, frostbite and the Toxic counter"
 	]},
 	{version: "1.9", notes: [
-		"Trainer pictures beside the trainer's name and on the Battle tab: every gym leader, rival, " +
-			"champion and the Elite Four as themselves, everyone else as their trainer class",
-		"Item icons before each Pok\u00e9mon's item, and type badges beside each side's Pok\u00e9mon on the Battle tab",
-		"Tap a heading in the Dex, Mastersheet or Frag sheet to fold it away (it stays folded); the Frag " +
-			"sheet now groups your Pok\u00e9mon under Team, Box and Fainted",
-		"Backup (under Import / Export): save everything, every mode's box, runs and settings, as one " +
-			"file, and restore it on this or another device",
-		"In the Pcalc app for Android: RetroArch emulator sync built in, and automatic backups to a folder on the device"
+		"Faster: calculations and trainer changes in about half the time, and half as much to load",
+		"Backup (Import / Export): everything as one file, to restore here or on another device",
+		"Trainer pictures on the Battle tab, item icons, and type badges",
+		"Tap a heading in the Dex, Mastersheet or Frag sheet to fold it; the Frag sheet groups Team, Box and Fainted",
+		"In the Pcalc app: RetroArch sync built in, and automatic backups"
 	], fixes: [
-		"A Pok\u00e9mon with no sprite keeps its place in the Dex instead of its name jumping across"
+		"Small screens: Rivalry never applied (genders were read as genderless)",
+		"Small screens: Metronome's use count was ignored on the Battle tab",
+		"A Pok\u00e9mon with no sprite keeps its place in the Dex"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

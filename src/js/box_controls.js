@@ -30,6 +30,10 @@ var BOX_SECTIONS = [
 	{key: "team", label: "Team"},
 	{key: "box", label: "Box"},
 	{key: "box2", label: "Box 2"},
+	// Your Pokémon that have fainted (a Nuzlocke's dead): out of the team and the boxes, and not
+	// offered as Pokémon 1. The run record (run_record.js) keeps them here, and a .sav import puts
+	// them back here wherever the game has them.
+	{key: "fainted", label: "Fainted"},
 	// Sets waiting to be deleted with "Delete Pokémon in Trash". They are not transferred
 	// to the other mode.
 	{key: "trash", label: "Trash"}
@@ -53,7 +57,7 @@ function readBoxLayout(mode) {
 }
 
 function writeBoxLayout(layout, mode) {
-	localStorage.setItem(getBoxLayoutKey(mode), JSON.stringify(layout));
+	writeSetting(getBoxLayoutKey(mode), JSON.stringify(layout));
 }
 
 // Moves the given sets to the end of a section; takes effect on the next render.
@@ -64,7 +68,7 @@ function moveSetsToSection(setIds, sectionKey) {
 			return setIds.indexOf(id) === -1;
 		});
 	});
-	layout[sectionKey] = layout[sectionKey].concat(setIds);
+	layout[sectionKey] = (layout[sectionKey] || []).concat(setIds);
 	writeBoxLayout(layout);
 }
 
@@ -300,6 +304,8 @@ function bindBoxEvents() {
 	panel.on("drop", ".box-dropzone", function (ev) {
 		if (!dragged) return;
 		ev.preventDefault();
+		var from = dragged.closest(".box-dropzone").attr("data-section");
+		var to = $(this).attr("data-section");
 		// Dropping onto another sprite places the dragged one just before it.
 		var target = $(ev.target).closest(".box-pokemon");
 		if (target.length && target[0] !== dragged[0]) {
@@ -308,13 +314,26 @@ function bindBoxEvents() {
 			$(this).append(dragged);
 		}
 		saveBoxLayoutFromPage();
+		// Into or out of Fainted: the run record follows (run_record.js).
+		if (from !== to && (from === "fainted" || to === "fainted")) {
+			$(document).trigger("box:faintedMoved", [dragged.attr("data-set-id"), to === "fainted", from]);
+		}
 	});
 }
 
 // Every set in a mode's box except those in the Trash.
 function getTransferableSetIds(mode) {
 	var layout = resolveBoxLayout(readCustomSets(mode), readBoxLayout(mode));
-	return [].concat(layout.team, layout.box, layout.box2);
+	return [].concat(layout.team, layout.box, layout.box2, layout.fainted);
+}
+
+// The sets in the Fainted section ({set id: true}).
+function getFaintedSetIds() {
+	var fainted = {};
+	(readBoxLayout().fainted || []).forEach(function (id) {
+		fainted[id] = true;
+	});
+	return fainted;
 }
 
 /*

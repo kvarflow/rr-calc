@@ -356,10 +356,10 @@ export function checkMultihitBoost(
   const atkSimple = attacker.hasAbility('Simple') ? 2 : 1;
   const defSimple = defender.hasAbility('Simple') ? 2 : 1;
 
-  if ((!defenderUsedItem) &&
-    (defender.hasItem('Luminous Moss') && move.hasType('Water')) ||
+  if (!defenderUsedItem &&
+    ((defender.hasItem('Luminous Moss') && move.hasType('Water')) ||
     (defender.hasItem('Maranga Berry') && move.category === 'Special') ||
-    (defender.hasItem('Kee Berry') && move.category === 'Physical')) {
+    (defender.hasItem('Kee Berry') && move.category === 'Physical'))) {
     const defStat = defender.hasItem('Kee Berry') ? 'def' : 'spd';
     if (attacker.hasAbility('Unaware')) {
       desc.attackerAbility = attacker.ability;
@@ -447,7 +447,7 @@ export function checkMultihitBoost(
       }
 
       attacker.boosts[stat] = boosts;
-      attacker.stats[stat] = getModifiedStat(attacker.rawStats[stat], defender.boosts[stat], gen);
+      attacker.stats[stat] = getModifiedStat(attacker.rawStats[stat], attacker.boosts[stat], gen);
     }
   }
 

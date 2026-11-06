@@ -69,6 +69,12 @@ function tidy(text) {
 		.replace(/^./, c => c.toUpperCase());
 }
 
+// The hack put some new items (Clear Amulet, Ability Shield, Mirror Herb) in old Apricorn slots and
+// kept the Apricorns' text; there are no Apricorns in the game, so that text is never right.
+function isLeftoverText(text) {
+	return /\bApricorn\b/.test(text);
+}
+
 function main() {
 	const rom = fs.readFileSync(process.argv[2]);
 	const table = findItemTable(rom);
@@ -78,7 +84,7 @@ function main() {
 		if (pointer < ROM_BASE || pointer >= ROM_BASE + rom.length) break;
 		const name = resolve('item', decode(rom, offset, 14));
 		const text = tidy(decode(rom, pointer - ROM_BASE, 400));
-		if (name && text && !fromRom[name]) fromRom[name] = text;
+		if (name && text && !isLeftoverText(text) && !fromRom[name]) fromRom[name] = text;
 	}
 	const descriptions = {};
 	let showdown = 0;

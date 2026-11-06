@@ -90,10 +90,10 @@ function validate(obj, min, max) {
 	obj.val(Math.max(min, Math.min(max, ~~obj.val())));
 }
 
-$("input:radio[name='format']").change(function () {
-	var gameType = $("input:radio[name='format']:checked").val();
+$("input[type=radio][name='format']").change(function () {
+	var gameType = $("input[type=radio][name='format']:checked").val();
 	if (gameType === 'Singles') {
-		$("input:checkbox[name='ruin']:checked").prop("checked", false);
+		$("input[type=checkbox][name='ruin']:checked").prop("checked", false);
 	}
 	$(".format-specific." + gameType.toLowerCase()).each(function () {
 		if ($(this).hasClass("gen-specific") && !$(this).hasClass("g" + gen)) {
@@ -105,8 +105,8 @@ $("input:radio[name='format']").change(function () {
 });
 
 var defaultLevel = 100;
-$("input:radio[name='defaultLevel']").change(function () {
-	defaultLevel = $("input:radio[name='defaultLevel']:checked").val();
+$("input[type=radio][name='defaultLevel']").change(function () {
+	defaultLevel = $("input[type=radio][name='defaultLevel']:checked").val();
 	$("#levelL1").val(defaultLevel);
 	$("#levelR1").val(defaultLevel);
 	$("#levelL1").trigger("change");
@@ -254,6 +254,11 @@ $(".percent-hp").on("keyup input", function () {
 	calcCurrentHP($(this).parent(), max, percent);
 });
 
+// Abilities that only work once something happens (Unburden after its item is gone, Flash Fire
+// after a Fire hit...): off until ticked on a Pokémon panel, and off for the Pokémon the calc builds
+// from a set (the Box's colors and ranking, the trainer AI's benched Pokémon, suggested EVs).
+var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Teraform Zero', 'Bull Rush', 'Quill Rush', 'Illusion'];
+
 // Multi-hit moves: Skill Link always hits 5 times; Radical Red's Loaded Dice 5 times two times in
 // three (4 otherwise), so 5 too (pick 4 in the hits list for the unlucky case); else 3.
 $(".ability").bind("keyup change", function () {
@@ -263,8 +268,6 @@ $(".ability").bind("keyup change", function () {
 	$(this).closest(".poke-info").find(".move-hits").val(moveHits);
 
 	var ability = $(this).closest(".poke-info").find(".ability").val();
-
-	var TOGGLE_ABILITIES = ['Flash Fire', 'Intimidate', 'Minus', 'Plus', 'Slow Start', 'Unburden', 'Stakeout', 'Teraform Zero', 'Bull Rush', 'Quill Rush', 'Illusion'];
 
 	if (TOGGLE_ABILITIES.indexOf(ability) >= 0) {
 		$(this).closest(".poke-info").find(".abilityToggle").show();
@@ -290,8 +293,8 @@ $(".ability").bind("keyup change", function () {
 });
 
 function autosetQP(pokemon) {
-	var currentWeather = $("input:radio[name='weather']:checked").val();
-	var currentTerrain = $("input:checkbox[name='terrain']:checked").val() || "No terrain";
+	var currentWeather = $("input[type=radio][name='weather']:checked").val();
+	var currentTerrain = $("input[type=checkbox][name='terrain']:checked").val() || "No terrain";
 
 	var item = pokemon.find(".item").val();
 	var ability = pokemon.find(".ability").val();
@@ -336,7 +339,7 @@ function getBattleSpeed(pokemon, side) {
 }
 function autosetWeather(ability, i, item) {
 	if (lockedField.weather) return;
-	var currentWeather = $("input:radio[name='weather']:checked").val();
+	var currentWeather = $("input[type=radio][name='weather']:checked").val();
 	if (lastAutoWeather.indexOf(currentWeather) === -1) {
 		lastManualWeather = currentWeather;
 		lastAutoWeather[1 - i] = "";
@@ -399,7 +402,7 @@ function autosetWeather(ability, i, item) {
 	default:
 		lastAutoWeather[i] = "";
 		var newWeather = lastAutoWeather[1 - i] !== "" ? lastAutoWeather[1 - i] : "";
-		$("input:radio[name='weather'][value='" + newWeather + "']").prop("checked", true);
+		$("input[type=radio][name='weather'][value='" + newWeather + "']").prop("checked", true);
 		break;
 	}
 }
@@ -415,13 +418,13 @@ var lastManualTerrain = "";
 var lastAutoTerrain = ["", ""];
 function autosetTerrain(ability, i) {
 	if (lockedField.terrain) return;
-	var currentTerrain = $("input:checkbox[name='terrain']:checked").val() || "No terrain";
+	var currentTerrain = $("input[type=checkbox][name='terrain']:checked").val() || "No terrain";
 	if (lastAutoTerrain.indexOf(currentTerrain) === -1) {
 		lastManualTerrain = currentTerrain;
 		lastAutoTerrain[1 - i] = "";
 	}
 	// terrain input uses checkbox instead of radio, need to uncheck all first
-	$("input:checkbox[name='terrain']:checked").prop("checked", false);
+	$("input[type=checkbox][name='terrain']:checked").prop("checked", false);
 	switch (ability) {
 	case "Electric Surge":
 	case "Hadron Engine":
@@ -444,7 +447,7 @@ function autosetTerrain(ability, i) {
 		lastAutoTerrain[i] = "";
 		var newTerrain = lastAutoTerrain[1 - i] !== "" ? lastAutoTerrain[1 - i] : lastManualTerrain;
 		if ("No terrain" !== newTerrain) {
-			$("input:checkbox[name='terrain'][value='" + newTerrain + "']").prop("checked", true);
+			$("input[type=checkbox][name='terrain'][value='" + newTerrain + "']").prop("checked", true);
 		}
 		break;
 	}
@@ -493,7 +496,6 @@ $(".teraType").change(function () {
 	stellarButtonsVisibility(pokeObj, $(this).val() === "Stellar" && checked);
 });
 
-var lockerMove = "";
 // auto-update move details on select
 $(".move-selector").change(function () {
 	var moveName = $(this).val();
@@ -770,7 +772,12 @@ $(".set-selector").change(function () {
 		if (pokemon.gender === "N") {
 			pokeObj.find(".gender").parent().hide();
 			pokeObj.find(".gender").val("");
-		} else pokeObj.find(".gender").parent().show();
+		} else {
+			pokeObj.find(".gender").parent().show();
+			// As in the game, where the calc knows it (pokemon_genders.js): a trainer's, or yours from a .sav.
+			var knownGender = typeof getKnownGenderOption === "function" && regSets ? getKnownGenderOption(pokemonName, setName, set) : null;
+			if (knownGender !== null) pokeObj.find(".gender").val(knownGender || "Male");
+		}
 	}
 });
 
@@ -852,7 +859,7 @@ $(".teraToggle").change(function () {
 	stellarButtonsVisibility(pokeObj, pokeObj.find(".teraType").val() === "Stellar" && this.checked);
 	var forme = $(this).parent().siblings().find(".forme");
 	var curForme = forme.val();
-	if (forme.is(":hidden")) return;
+	if (!isShown(forme)) return;
 	var container = $(this).closest(".info-group").siblings();
 	// Ogerpon mechs
 	if (!startsWith(curForme, "Ogerpon")) return;
@@ -973,6 +980,23 @@ function correctHiddenPower(pokemon) {
 	return pokemon;
 }
 
+// A control inside a Pokémon panel or move row, found once and then kept: the panels' controls are
+// never replaced, and createPokemon reads some forty of them on every calculation.
+function panelFind(container, selector) {
+	var el = container[0];
+	if (!el) return container.find(selector);
+	var cache = el.rrFields || (el.rrFields = {});
+	var found = cache[selector];
+	if (!found || !found.length || !el.contains(found[0])) found = cache[selector] = container.find(selector);
+	return found;
+}
+
+// Whether a control is switched on (not display: none itself), whichever tab or section it is in;
+// unlike :visible, a hidden small-screen tab doesn't count, and it needs no layout.
+function isShown(control) {
+	return control.length > 0 && control.css("display") !== "none";
+}
+
 function createPokemon(pokeInfo) {
 	if (typeof pokeInfo === "string") { // in this case, pokeInfo is the id of an individual setOptions value whose moveset's tier matches the selected tier(s)
 		var name = pokeInfo.substring(0, pokeInfo.indexOf(" ("));
@@ -1013,10 +1037,12 @@ function createPokemon(pokeInfo) {
 			});
 		}
 
+		var knownGender = !isRandoms && typeof getKnownGender === "function" ? getKnownGender(name, setName, set) : null;
 		return new calc.Pokemon(gen, name, {
 			level: set.level,
 			ability: set.ability,
-			abilityOn: true,
+			abilityOn: TOGGLE_ABILITIES.indexOf(set.ability) === -1,
+			gender: knownGender || undefined,
 			item: set.item && typeof set.item !== "undefined" && (set.item === "Eviolite" || set.item.indexOf("ite") < 0) ? set.item : "",
 			nature: set.nature,
 			ivs: ivs,
@@ -1024,14 +1050,14 @@ function createPokemon(pokeInfo) {
 			moves: pokemonMoves
 		});
 	} else {
-		var setName = pokeInfo.find("input.set-selector").val();
+		var setName = panelFind(pokeInfo, "input.set-selector").val();
 		var name;
 		if (setName.indexOf("(") === -1) {
 			name = setName;
 		} else {
 			var pokemonName = setName.substring(0, setName.indexOf(" ("));
 			var species = pokedex[pokemonName];
-			name = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? pokeInfo.find(".forme").val() : pokemonName;
+			name = (species.otherFormes || (species.baseSpecies && species.baseSpecies !== pokemonName)) ? panelFind(pokeInfo, ".forme").val() : pokemonName;
 		}
 
 		var baseStats = {};
@@ -1040,17 +1066,17 @@ function createPokemon(pokeInfo) {
 		var boosts = {};
 		for (var i = 0; i < LEGACY_STATS[gen].length; i++) {
 			var stat = legacyStatToStat(LEGACY_STATS[gen][i]);
-			baseStats[stat === 'spc' ? 'spa' : stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .base").val();
-			ivs[stat] = gen > 2 ? ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .ivs").val() : ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .dvs").val() * 2 + 1;
-			evs[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .evs").val();
-			boosts[stat] = ~~pokeInfo.find("." + LEGACY_STATS[gen][i] + " .boost").val();
+			baseStats[stat === 'spc' ? 'spa' : stat] = ~~panelFind(pokeInfo, "." + LEGACY_STATS[gen][i] + " .base").val();
+			ivs[stat] = gen > 2 ? ~~panelFind(pokeInfo, "." + LEGACY_STATS[gen][i] + " .ivs").val() : ~~panelFind(pokeInfo, "." + LEGACY_STATS[gen][i] + " .dvs").val() * 2 + 1;
+			evs[stat] = ~~panelFind(pokeInfo, "." + LEGACY_STATS[gen][i] + " .evs").val();
+			boosts[stat] = ~~panelFind(pokeInfo, "." + LEGACY_STATS[gen][i] + " .boost").val();
 		}
 		if (gen === 1) baseStats.spd = baseStats.spa;
 
-		var ability = pokeInfo.find(".ability").val();
-		var item = pokeInfo.find(".item").val();
-		var isDynamaxed = pokeInfo.find(".max").prop("checked");
-		var teraType = pokeInfo.find(".teraToggle").is(":checked") ? pokeInfo.find(".teraType").val() : undefined;
+		var ability = panelFind(pokeInfo, ".ability").val();
+		var item = panelFind(pokeInfo, ".item").val();
+		var isDynamaxed = panelFind(pokeInfo, ".max").prop("checked");
+		var teraType = panelFind(pokeInfo, ".teraToggle").is(":checked") ? panelFind(pokeInfo, ".teraType").val() : undefined;
 		var opts = {
 			ability: ability,
 			item: item,
@@ -1059,33 +1085,35 @@ function createPokemon(pokeInfo) {
 		};
 		pokeInfo.isDynamaxed = isDynamaxed;
 		calcHP(pokeInfo);
-		var curHP = ~~pokeInfo.find(".current-hp").val();
+		var curHP = ~~panelFind(pokeInfo, ".current-hp").val();
 		// FIXME the Pokemon constructor expects non-dynamaxed HP
 		if (isDynamaxed) curHP = Math.floor(curHP / 2);
-		var types = [pokeInfo.find(".type1").val(), pokeInfo.find(".type2").val()];
+		var types = [panelFind(pokeInfo, ".type1").val(), panelFind(pokeInfo, ".type2").val()];
 		return new calc.Pokemon(gen, name, {
-			level: ~~pokeInfo.find(".level").val(),
+			level: ~~panelFind(pokeInfo, ".level").val(),
 			ability: ability,
-			abilityOn: pokeInfo.find(".abilityToggle").is(":checked"),
+			abilityOn: panelFind(pokeInfo, ".abilityToggle").is(":checked"),
 			item: item,
-			gender: pokeInfo.find(".gender").is(":visible") ? getGender(pokeInfo.find(".gender").val()) : "N",
-			nature: pokeInfo.find(".nature").val(),
+			// A genderless species empties the select (getGender: "N"). Not by whether it shows: the small
+			// screen swaps it for its own button, and a hidden tab or section would read as genderless.
+			gender: getGender(panelFind(pokeInfo, ".gender").val()),
+			nature: panelFind(pokeInfo, ".nature").val(),
 			ivs: ivs,
 			evs: evs,
 			isDynamaxed: isDynamaxed,
-			isSaltCure: pokeInfo.find(".saltcure").is(":checked"),
-			alliesFainted: parseInt(pokeInfo.find(".alliesFainted").val()),
-			boostedStat: pokeInfo.find(".boostedStat").val() || undefined,
+			isSaltCure: panelFind(pokeInfo, ".saltcure").is(":checked"),
+			alliesFainted: parseInt(panelFind(pokeInfo, ".alliesFainted").val()),
+			boostedStat: panelFind(pokeInfo, ".boostedStat").val() || undefined,
 			teraType: teraType,
 			boosts: boosts,
 			curHP: curHP,
-			status: CALC_STATUS[pokeInfo.find(".status").val()],
-			toxicCounter: status === 'Badly Poisoned' ? ~~pokeInfo.find(".toxic-counter").val() : 0,
+			status: CALC_STATUS[panelFind(pokeInfo, ".status").val()],
+			toxicCounter: panelFind(pokeInfo, ".status").val() === 'Badly Poisoned' ? ~~panelFind(pokeInfo, ".toxic-counter").val() : 0,
 			moves: [
-				getMoveDetails(pokeInfo.find(".move1"), opts),
-				getMoveDetails(pokeInfo.find(".move2"), opts),
-				getMoveDetails(pokeInfo.find(".move3"), opts),
-				getMoveDetails(pokeInfo.find(".move4"), opts),
+				getMoveDetails(panelFind(pokeInfo, ".move1"), opts),
+				getMoveDetails(panelFind(pokeInfo, ".move2"), opts),
+				getMoveDetails(panelFind(pokeInfo, ".move3"), opts),
+				getMoveDetails(panelFind(pokeInfo, ".move4"), opts),
 			],
 			overrides: {
 				baseStats: baseStats,
@@ -1102,29 +1130,30 @@ function getGender(gender) {
 }
 
 function getMoveDetails(moveInfo, opts) {
-	var moveName = moveInfo.find("select.move-selector").val();
-	var isZMove = gen > 6 && moveInfo.find("input.move-z").prop("checked");
-	var isCrit = moveInfo.find(".move-crit").prop("checked");
-	var isStellarFirstUse = moveInfo.find(".move-stellar").prop("checked");
-	var hits = +moveInfo.find(".move-hits").val();
-	var timesUsed = +moveInfo.find(".stat-drops").val();
-	var timesUsedWithMetronome = moveInfo.find(".metronome").is(':visible') ? +moveInfo.find(".metronome").val() : 1;
+	var moveName = panelFind(moveInfo, "select.move-selector").val();
+	var isZMove = gen > 6 && panelFind(moveInfo, "input.move-z").prop("checked");
+	var isCrit = panelFind(moveInfo, ".move-crit").prop("checked");
+	var isStellarFirstUse = panelFind(moveInfo, ".move-stellar").prop("checked");
+	var hits = +panelFind(moveInfo, ".move-hits").val();
+	var timesUsed = +panelFind(moveInfo, ".stat-drops").val();
+	var metronome = panelFind(moveInfo, ".metronome");
+	var timesUsedWithMetronome = isShown(metronome) ? +metronome.val() : 1;
 	var overrides = {
-		basePower: +moveInfo.find(".move-bp").val(),
-		type: moveInfo.find(".move-type").val()
+		basePower: +panelFind(moveInfo, ".move-bp").val(),
+		type: panelFind(moveInfo, ".move-type").val()
 	};
 	if (moveName === 'Tera Blast') {
 		// custom logic for stellar type tera blast
 		var isStellar = opts.teraType === 'Stellar';
-		var statDrops = moveInfo.find('.stat-drops');
-		var dropsStats = statDrops.is(':visible');
+		var statDrops = panelFind(moveInfo, '.stat-drops');
+		var dropsStats = isShown(statDrops);
 		if (isStellar !== dropsStats) {
 			// update stat drop dropdown here
 			if (isStellar) statDrops.show(); else statDrops.hide();
 		}
 		if (isStellar) overrides.self = {boosts: {atk: -1, spa: -1}};
 	}
-	if (gen >= 4) overrides.category = moveInfo.find(".move-cat").val();
+	if (gen >= 4) overrides.category = panelFind(moveInfo, ".move-cat").val();
 	return new calc.Move(gen, moveName, {
 		ability: opts.ability, item: opts.item, useZ: isZMove, species: opts.species, isCrit: isCrit, hits: hits,
 		isStellarFirstUse: isStellarFirstUse, timesUsed: timesUsed, timesUsedWithMetronome: timesUsedWithMetronome,
@@ -1133,7 +1162,7 @@ function getMoveDetails(moveInfo, opts) {
 }
 
 function createField() {
-	var gameType = $("input:radio[name='format']:checked").val();
+	var gameType = $("input[type=radio][name='format']:checked").val();
 	var isBeadsOfRuin = $("#beads").prop("checked");
 	var isTabletsOfRuin = $("#tablets").prop("checked");
 	var isSwordOfRuin = $("#sword").prop("checked");
@@ -1146,17 +1175,17 @@ function createField() {
 	var spikes;
 	if (gen === 2) {
 		spikes = [$("#gscSpikesL").prop("checked") ? 1 : 0, $("#gscSpikesR").prop("checked") ? 1 : 0];
-		weather = $("input:radio[name='gscWeather']:checked").val();
+		weather = $("input[type=radio][name='gscWeather']:checked").val();
 	} else {
-		weather = $("input:radio[name='weather']:checked").val();
-		spikes = [~~$("input:radio[name='spikesL']:checked").val(), ~~$("input:radio[name='spikesR']:checked").val()];
+		weather = $("input[type=radio][name='weather']:checked").val();
+		spikes = [~~$("input[type=radio][name='spikesL']:checked").val(), ~~$("input[type=radio][name='spikesR']:checked").val()];
 	}
 	var steelsurge = [$("#steelsurgeL").prop("checked"), $("#steelsurgeR").prop("checked")];
 	var vinelash = [$("#vinelashL").prop("checked"), $("#vinelashR").prop("checked")];
 	var wildfire = [$("#wildfireL").prop("checked"), $("#wildfireR").prop("checked")];
 	var cannonade = [$("#cannonadeL").prop("checked"), $("#cannonadeR").prop("checked")];
 	var volcalith = [$("#volcalithL").prop("checked"), $("#volcalithR").prop("checked")];
-	var terrain = ($("input:checkbox[name='terrain']:checked").val()) ? $("input:checkbox[name='terrain']:checked").val() : "";
+	var terrain = ($("input[type=checkbox][name='terrain']:checked").val()) ? $("input[type=checkbox][name='terrain']:checked").val() : "";
 	var isReflect = [$("#reflectL").prop("checked"), $("#reflectR").prop("checked")];
 	var isLightScreen = [$("#lightScreenL").prop("checked"), $("#lightScreenR").prop("checked")];
 	var isProtected = [$("#protectL").prop("checked"), $("#protectR").prop("checked")];
@@ -1193,12 +1222,12 @@ function createField() {
 
 function calcHP(poke) {
 	var total = calcStat(poke, "hp");
-	var $maxHP = poke.find(".max-hp");
+	var $maxHP = panelFind(poke, ".max-hp");
 
 	var prevMaxHP = Number($maxHP.attr('data-prev')) || total;
-	var $currentHP = poke.find(".current-hp");
+	var $currentHP = panelFind(poke, ".current-hp");
 	var prevCurrentHP = $currentHP.attr('data-set') ? Math.min(Number($currentHP.val()), prevMaxHP) : prevMaxHP;
-	// NOTE: poke.find(".percent-hp").val() is a rounded value!
+	// NOTE: panelFind(poke, ".percent-hp").val() is a rounded value!
 	var prevPercentHP = 100 * prevCurrentHP / prevMaxHP;
 
 	$maxHP.text(total);
@@ -1211,24 +1240,24 @@ function calcHP(poke) {
 }
 
 function calcStat(poke, StatID) {
-	var stat = poke.find("." + StatID);
-	var base = ~~stat.find(".base").val();
-	var level = ~~poke.find(".level").val();
+	var stat = panelFind(poke, "." + StatID);
+	var base = ~~panelFind(stat, ".base").val();
+	var level = ~~panelFind(poke, ".level").val();
 	var nature, ivs, evs;
 	if (gen < 3) {
-		ivs = ~~stat.find(".dvs").val() * 2;
+		ivs = ~~panelFind(stat, ".dvs").val() * 2;
 		evs = 252;
 	} else {
-		ivs = ~~stat.find(".ivs").val();
-		evs = ~~stat.find(".evs").val();
-		if (StatID !== "hp") nature = poke.find(".nature").val();
+		ivs = ~~panelFind(stat, ".ivs").val();
+		evs = ~~panelFind(stat, ".evs").val();
+		if (StatID !== "hp") nature = panelFind(poke, ".nature").val();
 	}
 	// Shedinja still has 1 max HP during the effect even if its Dynamax Level is maxed (DaWoblefet)
 	var total = calc.calcStat(gen, legacyStatToStat(StatID), base, ivs, evs, level, nature);
 	if (gen > 7 && StatID === "hp" && poke.isDynamaxed && total !== 1) {
 		total *= 2;
 	}
-	stat.find(".total").text(total);
+	panelFind(stat, ".total").text(total);
 	return total;
 }
 
@@ -1377,7 +1406,7 @@ function clearField() {
 	$("#batteryR").prop("checked", false);
 	$("#switchingL").prop("checked", false);
 	$("#switchingR").prop("checked", false);
-	$("input:checkbox[name='terrain']").prop("checked", false);
+	$("input[type=checkbox][name='terrain']").prop("checked", false);
 }
 
 function getSetOptions(sets) {
@@ -1388,6 +1417,8 @@ function getSetOptions(sets) {
 	var pokeNames = Object.keys(setsHolder);
 	pokeNames.sort();
 	var setOptions = [];
+	// Your fainted Pokémon (the Box's Fainted section) are not offered.
+	var faintedSets = typeof getFaintedSetIds === "function" ? getFaintedSetIds() : {};
 	for (var i = 0; i < pokeNames.length; i++) {
 		var pokeName = pokeNames[i];
 		setOptions.push({
@@ -1408,6 +1439,7 @@ function getSetOptions(sets) {
 				var setNames = Object.keys(setdex[pokeName]);
 				for (var j = 0; j < setNames.length; j++) {
 					var setName = setNames[j];
+					if (faintedSets[pokeName + " (" + setName + ")"]) continue;
 					setOptions.push({
 						pokemon: pokeName,
 						set: setName,
@@ -1473,11 +1505,12 @@ var stickyMoves = (function () {
 
 function isPokeInfoGrounded(pokeInfo) {
 	var teraType = pokeInfo.find(".teraToggle").is(":checked") ? pokeInfo.find(".teraType").val() : undefined;
+	var flying = teraType ? teraType === "Flying" :
+		pokeInfo.find(".type1").val() === "Flying" || pokeInfo.find(".type2").val() === "Flying";
 	return $("#gravity").prop("checked") || (
-		  teraType ? teraType !== "Flying" : pokeInfo.find(".type1").val() !== "Flying" &&
-        teraType ? teraType !== "Flying" : pokeInfo.find(".type2").val() !== "Flying" &&
-        pokeInfo.find(".ability").val() !== "Levitate" &&
-        pokeInfo.find(".item").val() !== "Air Balloon"
+		!flying &&
+		pokeInfo.find(".ability").val() !== "Levitate" &&
+		pokeInfo.find(".item").val() !== "Air Balloon"
 	);
 }
 
@@ -1491,7 +1524,7 @@ function getTerrainEffects() {
 	case "teraToggle":
 	case "item":
 		var id = $(this).closest(".poke-info").prop("id");
-		var terrainValue = $("input:checkbox[name='terrain']:checked").val();
+		var terrainValue = $("input[type=checkbox][name='terrain']:checked").val();
 		if (terrainValue === "Electric") {
 			$("#" + id).find("[value='Asleep']").prop("disabled", isPokeInfoGrounded($("#" + id)));
 		} else if (terrainValue === "Misty") {
@@ -1500,7 +1533,7 @@ function getTerrainEffects() {
 		break;
 	case "ability":
 		// with autoset, ability change may cause terrain change, need to consider both sides
-		var terrainValue = $("input:checkbox[name='terrain']:checked").val();
+		var terrainValue = $("input[type=checkbox][name='terrain']:checked").val();
 		if (terrainValue === "Electric") {
 			$("#p1").find(".status").prop("disabled", false);
 			$("#p2").find(".status").prop("disabled", false);
@@ -1517,7 +1550,7 @@ function getTerrainEffects() {
 		}
 		break;
 	default:
-		$("input:checkbox[name='terrain']").not(this).prop("checked", false);
+		$("input[type=checkbox][name='terrain']").not(this).prop("checked", false);
 		if ($(this).prop("checked") && $(this).val() === "Electric") {
 			// need to enable status because it may be disabled by Misty Terrain before.
 			$("#p1").find(".status").prop("disabled", false);

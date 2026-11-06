@@ -740,13 +740,7 @@ legend:has(> .header-sprite)::before {
 .trainer-heading {
     margin-bottom: 4px;
 }
-/* The trainer's picture (64 px pixel art), beside their name. */
-.trainer-sprite {
-    height: 48px;
-    margin-right: 6px;
-    vertical-align: middle;
-    image-rendering: pixelated;
-}
+/* The trainer's picture on the Battle tab's trainer card (small_screen.js). */
 .ss-trainer-sprite {
     height: 32px;
     margin-right: 6px;
@@ -1461,13 +1455,41 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]
 .ai-switch-next {
     color: var(--ss-muted, #667085);
 }
-/* Battle has to fit the Thor's screen: on small screens it sits in the foe's header, after the
-   name, on one line (the whole of it in its tooltip). */
+/* Small screens show it on the trainer's team instead (the marks below), not in the foe's header. */
 html.small-screen .result-move-header #ai-switch {
-    display: inline;
-    margin: 0 0 0 6px;
-    font-size: 10px;
-    font-weight: 600;
+    display: none !important;
+}
+/* The trainer's team on Battle: who the AI switches to (and how often), and who comes out next
+   after a KO. */
+.ss-quick-mon.ss-quick-switch {
+    background: rgba(214, 64, 64, 0.14);
+    border-style: dashed;
+    border-color: var(--ss-danger, #c0392b);
+}
+.ss-quick-mon.ss-quick-next-in:not(.ss-quick-switch) {
+    box-shadow: inset 0 0 0 1px var(--ss-muted, #667085);
+}
+.ss-quick-ai {
+    position: absolute;
+    top: 1px;
+    padding: 0 3px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 12px;
+    font-variant-numeric: tabular-nums;
+    pointer-events: none;
+    white-space: nowrap;
+}
+.ss-quick-switch-badge {
+    right: 1px;
+    background: var(--ss-danger, #c0392b);
+    color: #fff;
+}
+.ss-quick-next-in-badge {
+    left: 1px;
+    background: rgba(0, 0, 0, 0.55);
+    color: #fff;
 }
 html.small-screen #ai-switch > div {
     display: inline;
@@ -1937,6 +1959,19 @@ html.small-screen .run-record {
 .ss-quick-mon.ss-drop-target {
     outline: 2px dashed var(--ss-accent, #3a6fd8);
     outline-offset: 1px;
+}
+/* A Box's card on the Battle tab: held a moment, then it drags (onto your team or the other Box). */
+.ss-quick-box .ss-quick-mon {
+    -webkit-touch-callout: none;
+    user-select: none;
+}
+.ss-quick-mon.ss-drag-ready {
+    transform: scale(1.08);
+    box-shadow: 0 4px 12px rgba(16, 24, 40, 0.25);
+}
+.ss-quick-side.ss-drop-card {
+    outline: 2px dashed var(--ss-accent, #3a6fd8);
+    outline-offset: -2px;
 }
 /* Bigger controls for touch. */
 html.small-screen select,
@@ -3627,6 +3662,38 @@ html.sheet-open body {
 .dex-trainer-defeated {
     opacity: 0.55;
 }
+/* Moves: Level-up / TM/HM / Tutor / Egg pills, each with its count. */
+.dex-move-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 8px;
+}
+.dex-move-tab {
+    padding: 4px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+.dex-move-tab[aria-selected="true"] {
+    border-color: var(--sh-accent);
+    background: var(--sh-accent);
+    color: #fff;
+}
+.dex-move-count {
+    margin-left: 2px;
+    opacity: 0.75;
+    font-variant-numeric: tabular-nums;
+}
+.dex-move-note {
+    margin: 0 0 6px;
+    color: var(--sh-muted);
+    font-size: 12px;
+}
 .dex-none {
     color: var(--sh-muted);
     margin: 0;
@@ -3715,6 +3782,12 @@ html.sheet-open body {
     font-weight: normal;
 }
 .ms-place-folded .ms-place-body {
+    display: none;
+}
+/* A folded trainer: the team as small sprites only (and no team picker). */
+.ms-trainer-folded .ms-team,
+.ms-trainer:not(.ms-trainer-folded) .ms-team-mini,
+.ms-trainer-folded .ms-variant {
     display: none;
 }
 .ms-trainer-folded .ms-trainer-head {
@@ -3861,6 +3934,155 @@ html.sheet-open body {
     font-weight: 600;
 }
 
+/* Suggested EVs (suggested_evs.js): two read-only columns after EVs, headed by the buttons that use them. */
+.sev-table .sev-col {
+    min-width: 26px;
+    padding: 0 1px;
+    text-align: center;
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+.sev-table td.sev-generic {
+    color: #3a6fd8;
+}
+.sev-table td.sev-fight {
+    color: #1f9d55;
+    font-weight: 600;
+}
+.sev-table td.sev-zero {
+    opacity: 0.45;
+}
+.sev-table td.sev-same {
+    text-decoration: underline dotted;
+}
+.sev-use {
+    padding: 0 3px;
+    border: 1px solid currentColor;
+    border-radius: 6px;
+    background: transparent;
+    font-size: 9px;
+    line-height: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.sev-use-generic {
+    color: #3a6fd8;
+}
+.sev-use-fight {
+    color: #1f9d55;
+}
+.sev-use:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.sev-notes {
+    margin: 2px 0;
+    font-size: 12px;
+}
+.sev-notes summary {
+    list-style: none;
+    cursor: pointer;
+}
+.sev-notes summary::-webkit-details-marker {
+    display: none;
+}
+.sev-notes summary::before {
+    content: "\25B8  ";
+}
+.sev-notes[open] summary::before {
+    content: "\25BE  ";
+}
+.sev-notes p,
+.sev-notes ul {
+    margin: 2px 0;
+}
+.sev-notes ul {
+    padding-left: 16px;
+}
+.sev-this-fight {
+    display: block;
+    margin: 2px 0;
+    font-size: 12px;
+    cursor: pointer;
+}
+.sev-notes .sev-lose {
+    opacity: 0.7;
+}
+.sev-notes .sev-small {
+    font-size: 11px;
+    opacity: 0.75;
+}
+html.small-screen .poke-info:not(.ss-stats-full) .sev-col,
+html.small-screen .poke-info:not(.ss-stats-full) .sev-notes {
+    display: none !important;
+}
+html.small-screen .sev-use {
+    min-height: 24px;
+    border-radius: 8px;
+    font-size: 10px;
+}
+html.small-screen .sev-notes {
+    color: var(--ss-muted);
+}
+/* Upright phones: the full table has no room for the stage buttons (they stay on the short view). */
+@media (max-width: 480px) {
+    html.small-screen .poke-info.ss-stats-full .sev-table td:has(> .boost),
+    html.small-screen .poke-info.ss-stats-full .sev-table td:has(> .boost-stepper) {
+        display: none;
+    }
+    html.small-screen .poke-info.ss-stats-full .sev-table th {
+        padding-right: 4px;
+    }
+    html.small-screen .poke-info.ss-stats-full .sev-table td {
+        padding: 1px 2px;
+    }
+}
+
+/* Trainer sprites (Pokémon Showdown's, trainer_controls.js) beside the trainer's name. */
+.trainer-sprite-img {
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+    vertical-align: middle;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.ms-trainer-sprite {
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+/* Mastersheet: moving a route trainer earlier or later. */
+.ms-move-buttons {
+    display: inline-flex;
+    flex: 0 0 auto;
+    gap: 2px;
+}
+.ms-move {
+    min-width: 28px;
+    min-height: 26px;
+    padding: 0 4px;
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font-size: 11px;
+    cursor: pointer;
+}
+.ms-move:disabled {
+    opacity: 0.35;
+    cursor: default;
+}
+.ms-order-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 12px;
+}
 /* An icon before each Pokémon's item (item_icons.js). */
 .item-icon {
     width: 24px;
@@ -3953,6 +4175,112 @@ html.sheet-open body {
     align-items: center;
     gap: 6px;
     margin-top: 6px;
+}
+.ms-order-note {
+    flex: 1 1 200px;
+    color: var(--sh-muted);
+}
+.ms-order-copy,
+.ms-order-reset {
+    padding: 4px 10px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    cursor: pointer;
+}
+
+/* The gender pill beside Base / IVs / EVs on small screens. */
+.ss-gender-pill {
+    display: none;
+}
+html.small-screen .ss-panel-head .ss-gender-pill {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: #2f6fd6;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 26px;
+}
+html.small-screen .ss-panel-head .ss-gender-pill.female {
+    color: #d6407a;
+}
+
+/* Desktop: the calculator and the sheets as tabs under the title (sheets.js buildPageTabs). */
+.page-tabs {
+    display: flex;
+    gap: 6px;
+    margin: 10px 0 2px;
+    --sh-accent: var(--ss-accent, #d63031);
+}
+html.small-screen .page-tabs {
+    display: none;
+}
+.page-tabs .sheet-tab {
+    padding: 5px 16px;
+    font-size: 13px;
+}
+.page-tabs .sheet-tab:not(.sheet-tab-active):hover,
+.sheet-bar .sheet-tab:not(.sheet-tab-active):hover {
+    border-color: var(--ss-accent, #d63031);
+}
+
+/* Desktop: the trainer AI's chance on each of the foe's moves (markFoeLikelyMoves), the likeliest
+   with a red stripe and KO when it can knock you out; a move it won't pick is greyed. */
+html:not(.small-screen) .move-result-subgroup .btn {
+    position: relative;
+}
+html:not(.small-screen) .move-result-subgroup .btn[data-ai]:not([data-ai=""]):not([data-ai="0%"])::after {
+    content: attr(data-ai);
+    position: absolute;
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    font-size: 9px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+    color: #888;
+}
+html:not(.small-screen) .move-result-subgroup .btn[data-ai="0%"] {
+    color: #999;
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-ai-likely {
+    background-image: linear-gradient(to right, #c0392b 4px, transparent 4px);
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-ai-likely::after {
+    color: #c0392b;
+    font-weight: 800;
+}
+html:not(.small-screen) .move-result-subgroup .visually-hidden:checked + .btn[data-ai]::after {
+    color: inherit;
+}
+html:not(.small-screen) .move-result-subgroup .btn.ss-threat-ko::before {
+    content: "KO";
+    position: absolute;
+    top: 50%;
+    left: 8px;
+    transform: translateY(-50%);
+    font-size: 8px;
+    font-weight: 800;
+    color: #c0392b;
+}
+/* Desktop: the switch marks on the Opposing Trainer's team, as on the Battle tab. */
+.trainer-team .pokemon-sprite {
+    position: relative;
+}
+.trainer-team .pokemon-sprite.ss-quick-switch {
+    background: rgba(214, 64, 64, 0.14);
+    outline: 1px dashed #c0392b;
+}
+.trainer-team .pokemon-sprite.ss-quick-next-in:not(.ss-quick-switch) {
+    outline: 1px dashed #888;
 }
 .backup-list {
     flex: 1 1 12em;

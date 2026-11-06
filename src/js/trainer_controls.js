@@ -85,7 +85,7 @@ function releaseBattleEffect() {
 	$("#battle-effect-lock").hide();
 	if (locked.is("#doubles-format")) $("#singles-format").prop("checked", true).change();
 	if (hadWeather) $("#clear").prop("checked", true).change();
-	if (hadTerrain) $("input:checkbox[name='terrain']").prop("checked", false).first().change();
+	if (hadTerrain) $("input[type=checkbox][name='terrain']").prop("checked", false).first().change();
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (locked.is("#" + effect.id)) $("#" + effect.id).prop("checked", false).change();
 	});
@@ -100,15 +100,15 @@ function applyBattleEffect(text, trainerName) {
 	var weather = firstMatch(EFFECT_WEATHER, text);
 	if (weather) {
 		$("#" + weather.id).prop("checked", true).change();
-		lockFieldInputs($("input:radio[name='weather']"));
+		lockFieldInputs($("input[type=radio][name='weather']"));
 		lockedField.weather = true;
 	}
 	var terrain = firstMatch(EFFECT_TERRAIN, text);
 	if (terrain) {
 		// Terrain boxes are mutually exclusive: the change event must come from the one ticked.
-		$("input:checkbox[name='terrain']").prop("checked", false);
+		$("input[type=checkbox][name='terrain']").prop("checked", false);
 		$("#" + terrain.id).prop("checked", true).change();
-		lockFieldInputs($("input:checkbox[name='terrain']"));
+		lockFieldInputs($("input[type=checkbox][name='terrain']"));
 		lockedField.terrain = true;
 	}
 	EFFECT_TOGGLES.forEach(function (effect) {
@@ -403,6 +403,62 @@ function areRouteTrainersShown() {
  * The order Previous and Next follow: the document's, with skipped fights after their group and
  * route trainers before the boss fight they lead up to (`all`: every route trainer, shown or not).
  */
+// Steps into the game at which a route trainer is met, from its map (TRAINER_WALK); one behind a
+// puzzle the walk does not solve comes after the rest of its place.
+function getTrainerWalk(index) {
+	if (typeof TRAINER_WALK === "undefined") return 0;
+	var ids = (TRAINER_ORDER[index].variants[0] || {}).trainerIds || [];
+	var steps = TRAINER_WALK[ids[0]];
+	return steps === undefined ? Infinity : steps;
+}
+
+/*
+ * Route trainers that stand where boss fights do (Viridian Forest's Bug Catchers, with Brendan,
+ * Lass Anne and Ace Nelle there): each goes before the nearest of those bosses it is met before on
+ * the maps (TRAINER_WALK), or past the one it was put before when it is met after it, rather than
+ * before the first boss of the place. Bosses whose spot the maps don't give (Brendan's battle is an event) are left out.
+ * Runs once, as the page loads.
+ */
+function placeRouteTrainersAmongBosses() {
+	if (typeof TRAINER_WALK === "undefined" || typeof TRAINER_ORDER === "undefined") return;
+	var bossesAt = {};
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.route || trainer.duplicate || getTrainerWalk(index) === Infinity) return;
+		(bossesAt[trainer.location] = bossesAt[trainer.location] || []).push(index);
+	});
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (!trainer.route) return;
+		var bosses = bossesAt[trainer.location];
+		var walk = getTrainerWalk(index);
+		var before = trainer.route.before;
+		// Only route trainers grouped with a fight in their own place (not ones moved on for the level cap).
+		if (!bosses || walk === Infinity || (before !== null && TRAINER_ORDER[before].location !== trainer.location)) return;
+		// Only among fights of the same part of the game (the level cap of the one it was put before):
+		// Fuchsia City's Power Plant fight comes much later than Koga.
+		var sameCap = function (other) {
+			return before === null || String(TRAINER_ORDER[other].levelCap) === String(TRAINER_ORDER[before].levelCap);
+		};
+		var next = null;
+		bosses.forEach(function (boss) {
+			if (sameCap(boss) && getTrainerWalk(boss) > walk && (next === null || getTrainerWalk(boss) < getTrainerWalk(next))) next = boss;
+		});
+		if (next !== null) {
+			trainer.route.before = next;
+			return;
+		}
+		// Met after the fight it was put before (Route 3's last trainers, after Lass Sally): before
+		// the next fight. Not when that fight's spot is unknown (Koga, at the end of his gym).
+		if (before === null || getTrainerWalk(before) >= walk) return;
+		for (var after = before + 1; after < TRAINER_ORDER.length; after++) {
+			if (!TRAINER_ORDER[after].route && !TRAINER_ORDER[after].duplicate) {
+				if (sameCap(after)) trainer.route.before = after;
+				return;
+			}
+		}
+	});
+}
+placeRouteTrainersAmongBosses();
+
 function getTrainerNavOrder(all) {
 	var ends = getParallelGroupEnds();
 	var waiting = {};
@@ -415,15 +471,29 @@ function getTrainerNavOrder(all) {
 		var before = trainer.route.before === null ? "end" : trainer.route.before;
 		(routes[before] = routes[before] || []).push(index);
 	});
-	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's).
+	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's), each place's in
+	// the order you walk to them on the game's maps (getTrainerWalk), unless the order has been put
+	// right by hand (getTrainerOrderFixes).
+	var fixes = getTrainerOrderFixes();
 	Object.keys(routes).forEach(function (before) {
 		var places = [];
 		routes[before].forEach(function (index) {
 			if (places.indexOf(TRAINER_ORDER[index].location) === -1) places.push(TRAINER_ORDER[index].location);
 		});
 		routes[before].sort(function (a, b) {
-			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) || a - b;
+			return places.indexOf(TRAINER_ORDER[a].location) - places.indexOf(TRAINER_ORDER[b].location) ||
+				getTrainerWalk(a) - getTrainerWalk(b) || a - b;
 		});
+		var fix = fixes[getRouteGroupKey(before)];
+		if (fix) {
+			var position = function (index) {
+				var at = fix.indexOf(getTrainerKey(index));
+				return at === -1 ? fix.length + routes[before].indexOf(index) : at;
+			};
+			routes[before].sort(function (a, b) {
+				return position(a) - position(b);
+			});
+		}
 	});
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
@@ -435,6 +505,105 @@ function getTrainerNavOrder(all) {
 		});
 	});
 	return order.concat(routes.end || []);
+}
+
+/*
+ * Route trainers in the order you meet them. The game's data only says which boss fight a trainer
+ * comes before and where it stands, so within a place (a gym, a building) they come in id order;
+ * you can move one earlier or later (the Mastersheet's arrows), saved per mode, on top of the fixes
+ * that come with the calc (TRAINER_ORDER_FIXES). A group's order is kept as its trainers' keys.
+ */
+var TRAINER_ORDER_FIXES_KEY = "trainerOrderFixes";
+
+// A trainer as the order fixes name it: name, place and its first id in the game's trainer table.
+function getTrainerKey(index) {
+	var trainer = TRAINER_ORDER[index];
+	var ids = (trainer.variants[0] && trainer.variants[0].trainerIds) || [];
+	return trainer.name + "|" + (trainer.location || "") + "|" + (ids[0] || "");
+}
+
+// The route trainers before one fight (its index, or "end" for those after the last).
+function getRouteGroupKey(before) {
+	return before === "end" || before === null || before === undefined ? "end" : getTrainerKey(+before);
+}
+
+function readOwnTrainerOrderFixes() {
+	try {
+		return JSON.parse(readSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode())) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+function getTrainerOrderFixes() {
+	var builtIn = typeof TRAINER_ORDER_FIXES !== "undefined" ? TRAINER_ORDER_FIXES[getPageMode()] || {} : {};
+	return $.extend({}, builtIn, readOwnTrainerOrderFixes());
+}
+
+// The route trainers before the same fight as this one, in the order they come.
+function getRouteGroup(index) {
+	var before = TRAINER_ORDER[index].route.before;
+	return getTrainerNavOrder(true).filter(function (other) {
+		return TRAINER_ORDER[other].route && TRAINER_ORDER[other].route.before === before;
+	});
+}
+
+// Moves a route trainer one place earlier (-1) or later (+1) among those before the same fight.
+function moveRouteTrainer(index, step) {
+	var group = getRouteGroup(index);
+	var at = group.indexOf(index);
+	var to = at + step;
+	if (at === -1 || to < 0 || to >= group.length) return false;
+	group[at] = group[to];
+	group[to] = index;
+	var fixes = readOwnTrainerOrderFixes();
+	fixes[getRouteGroupKey(TRAINER_ORDER[index].route.before)] = group.map(getTrainerKey);
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify(fixes));
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
+	return true;
+}
+
+function resetTrainerOrderFixes() {
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify({}));
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
+}
+
+// Your order changes as text to send in, to become the calc's own fixes.
+function describeTrainerOrderFixes() {
+	var fixes = readOwnTrainerOrderFixes();
+	if (!Object.keys(fixes).length) return "";
+	var out = {};
+	out[getPageMode()] = fixes;
+	return JSON.stringify(out, null, 1);
+}
+
+var TRAINER_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/";
+
+// The trainer's Showdown sprites (one for each trainer of a fight), from its ids in the game's trainer table.
+function getTrainerSpriteUrls(trainer) {
+	if (typeof TRAINER_SPRITES === "undefined" || !trainer) return [];
+	var variant = getTrainerVariant(trainer);
+	return ((variant && variant.trainerIds) || []).filter(function (id) {
+		return TRAINER_SPRITES[id];
+	}).map(function (id) {
+		return TRAINER_SPRITE_URL + TRAINER_SPRITES[id] + ".png";
+	});
+}
+
+function buildTrainerSprites(trainer, className) {
+	return getTrainerSpriteUrls(trainer).map(function (url) {
+		return $("<img />").attr({src: url, alt: "", loading: "lazy"}).addClass(className).on("error", function () {
+			$(this).remove();
+		});
+	});
+}
+
+function updateTrainerNavButtons() {
+	var order = getTrainerNavOrder();
+	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
+	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
 }
 
 function stepTrainer(step) {
@@ -538,13 +707,13 @@ function keepFightField() {
 	if (CARRIED_WEATHER.indexOf(weather) !== -1) fightField.weather = weather;
 	if (terrain) fightField.terrain = terrain;
 	// Only when loading turned it off: weather your Pokémon set since then stays.
-	if (!lockedField.weather && !weather && fightField.weather && !$("input:radio[name='weather']:checked").val()) {
+	if (!lockedField.weather && !weather && fightField.weather && !$("input[type=radio][name='weather']:checked").val()) {
 		lastAutoWeather[1] = fightField.weather;
-		$("input:radio[name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
+		$("input[type=radio][name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
 	}
-	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input:checkbox[name='terrain']:checked").length) {
+	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input[type=checkbox][name='terrain']:checked").length) {
 		lastAutoTerrain[1] = fightField.terrain;
-		$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
+		$("input[type=checkbox][name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
 	}
 }
 
@@ -598,15 +767,6 @@ function toggleMegaForm() {
 	updateMegaFormButton();
 }
 
-// The trainer's picture (data/trainer_sprites.js, from Smogon's sprite archive), found by the label
-// their sets carry ("Leader Bugsy"), or null when there is none.
-function getTrainerSpriteUrl(variant) {
-	if (typeof TRAINER_SPRITES === "undefined" || !variant || !variant.sets.length) return null;
-	var match = /\(\*?([^)]+)\)$/.exec(variant.sets[0]);
-	var label = match ? match[1].replace(/ Set \d+$/, "").trim() : "";
-	return TRAINER_SPRITES[label] ? TRAINER_SPRITE_BASE + TRAINER_SPRITES[label] : null;
-}
-
 function showTrainer(index) {
 	currentTrainerIndex = Math.max(0, Math.min(index, TRAINER_ORDER.length - 1));
 	writeSetting(getTrainerIndexKey(), currentTrainerIndex);
@@ -615,8 +775,7 @@ function showTrainer(index) {
 	applyRelativeLevels(currentTrainerIndex, variant);
 
 	$("#trainer-name").text(trainer.name);
-	var sprite = getTrainerSpriteUrl(variant);
-	$("#trainer-sprite").attr("src", sprite || "").toggle(!!sprite);
+	$("#trainer-sprite").empty().append(buildTrainerSprites(trainer, "trainer-sprite-img"));
 	$("#trainer-details").text(describeTrainer(trainer, currentTrainerIndex));
 	$("#trainer-variant")
 		.empty()
@@ -636,9 +795,7 @@ function showTrainer(index) {
 	// Battle conditions from the boss document, e.g. "Doubles + Permanent rain".
 	$("#trainer-effect").text(variant.battleEffect ? "Battle effect: " + variant.battleEffect : "").toggle(!!variant.battleEffect);
 	$("#trainer-team").empty().append(variant.sets.map(createPokemonSprite));
-	var order = getTrainerNavOrder();
-	$("#previous-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === 0);
-	$("#next-trainer").prop("disabled", order.indexOf(currentTrainerIndex) === order.length - 1);
+	updateTrainerNavButtons();
 	currentBattleEffect = variant.battleEffect || "";
 	fightField = {weather: "", terrain: ""};
 	if (variant.sets.length) loadTrainerPokemon(variant.sets[0], 0);
@@ -689,7 +846,7 @@ function buildTrainerPanel() {
 	var panel = $(
 		'<fieldset id="trainer-nav">' +
 		'<legend align="center">Opposing Trainer</legend>' +
-		'<div class="trainer-heading"><img id="trainer-sprite" class="trainer-sprite" alt="" /><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
+		'<div class="trainer-heading"><span id="trainer-sprite"></span><b id="trainer-name"></b> <span id="trainer-details"></span></div>' +
 		'<div id="trainer-effect"></div>' +
 		'<label id="trainer-skip-label" class="trainer-skip"><input type="checkbox" id="trainer-skip" /> Skip for now' +
 		'<span id="trainer-skip-where"></span></label>' +
@@ -733,11 +890,11 @@ function bindTrainerEvents() {
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);
 	// Turning the kept weather or terrain off (it ran out) stops it coming back.
-	$("input:radio[name='weather']").change(function () {
+	$("input[type=radio][name='weather']").change(function () {
 		if (this.checked && this.value !== fightField.weather) fightField.weather = "";
 	});
-	$("input:checkbox[name='terrain']").change(function () {
-		if (!$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
+	$("input[type=checkbox][name='terrain']").change(function () {
+		if (!$("input[type=checkbox][name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
 	});
 	$("#trainer-on-top").prop("checked", readSetting(TRAINER_ON_TOP_KEY) === "true").change(function () {
 		writeSetting(TRAINER_ON_TOP_KEY, this.checked);

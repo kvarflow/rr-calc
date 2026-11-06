@@ -41,6 +41,8 @@ const ITEM_ALIASES = {
 	'Safe Goggles': 'Safety Goggles',
 	'Protect Pads': 'Protective Pads',
 	'Eter.Max Orb': 'Eternamax Orb',
+	'HeavyDBoots': 'Heavy-Duty Boots',
+	'WeaknessPol.': 'Weakness Policy',
 	// The game's Leek is the old Stick item; the calc only boosts crits for "Leek".
 	'Leek Stick': 'Leek',
 };

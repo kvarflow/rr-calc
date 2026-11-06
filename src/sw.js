@@ -10,6 +10,8 @@
  *  - Sprites (loaded from GitHub) are saved the first time they load, in a cache kept across
  *    versions; one never seen online shows as its label offline.
  */
+/* eslint-env serviceworker, es6 */
+/* global __PRECACHE__ */
 
 var VERSION = "__VERSION__";
 var PRECACHE = __PRECACHE__;

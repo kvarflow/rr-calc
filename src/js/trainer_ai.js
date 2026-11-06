@@ -88,7 +88,6 @@ var POWDER_MOVES = ["Spore", "Sleep Powder", "Stun Spore", "Poison Powder", "Rag
 var GRAVITY_BANNED = ["Fly", "Bounce", "Sky Drop", "High Jump Kick", "Jump Kick", "Splash", "Magnet Rise", "Telekinesis", "Flying Press"];
 var CHARGE_MOVES = ["Razor Wind", "Sky Attack", "Skull Bash", "Meteor Beam", "Freeze Shock", "Ice Burn", "Geomancy", "Solar Beam",
 	"Solar Blade", "Fly", "Dig", "Dive", "Bounce", "Phantom Force", "Shadow Force", "Sky Drop", "Electro Shot"];
-var HEX_MOVES = ["Hex", "Infernal Parade", "Bitter Malice", "Barb Barrage"];
 // Radical Red's DoubleDamageWithStatusMoveInMovesetThatAffects table.
 var DOUBLE_DAMAGE_MOVES = ["Bitter Malice", "Infernal Parade", "Hex", "Venoshock"];
 // The moves Sheer Force boosts (Radical Red's table), which then have no secondary effect.
@@ -124,9 +123,6 @@ var CLEAR_BODY_ABILITIES = ["Clear Body", "White Smoke", "Full Metal Body"];
 var STAT_DROP_SELF_EFFECTS = [E.SUPERPOWER, E.OVERHEAT];
 var FIXED_DAMAGE_EFFECTS = [E.LEVEL_DAMAGE, E.SUPER_FANG, E.DRAGON_RAGE, E.SONICBOOM, E.PSYWAVE, E.ENDEAVOR, E.PAIN_SPLIT];
 var SET_STATUS_EFFECTS = [E.SLEEP, E.TOXIC, E.POISON, E.PARALYZE, E.WILL_O_WISP, E.YAWN];
-var STAT_LOWER_EFFECTS = [E.ATTACK_DOWN, E.DEFENSE_DOWN, E.SPEED_DOWN, E.SPECIAL_ATTACK_DOWN, E.SPECIAL_DEFENSE_DOWN,
-	E.ACCURACY_DOWN, E.EVASION_DOWN, E.ATTACK_DOWN_2, E.DEFENSE_DOWN_2, E.SPEED_DOWN_2, E.SPECIAL_ATTACK_DOWN_2,
-	E.SPECIAL_DEFENSE_DOWN_2, E.ACCURACY_DOWN_2, E.EVASION_DOWN_2, E.TICKLE, E.PLAY_NICE, E.VENOM_DRENCH];
 // The moves that make a set "boosting" for its fighting style, as Radical Red's own code lists them:
 // unlike CFRU master, attacks that raise the user's Attack count (Power-Up Punch, Metal Claw,
 // Meteor Mash, Fell Stinger), and the effects no Radical Red boosting move uses are left out.
@@ -143,6 +139,67 @@ var WIND_MOVES = ["Air Cutter", "Bleakwind Storm", "Blizzard", "Fairy Wind", "Gu
 	"Petal Blizzard", "Sandstorm", "Sandsear Storm", "Springtide Storm", "Twister", "Whirlwind", "Wildbolt Storm", "Sonic Slash"];
 // Moves that ignore the target's ability, like Mold Breaker.
 var ABILITY_IGNORING_MOVES = ["Moongeist Beam", "Shell Side Arm", "Photon Geyser", "Sunsteel Strike"];
+
+/*
+ * Z-Moves. Radical Red's CanUseZMove (0x090BD7D0) lets trainers use them in Hardcore (and in Normal
+ * only once the game is cleared, so never against a boss here), without checking for a Z-Power
+ * Ring; not while Mega Evolved. A damaging move becomes the Z-Move of its crystal's type, or the
+ * item's own Z-Move for its Pokémon and move. Their data is Radical Red's (move table ids 848-900):
+ * the typed ones hit, never miss and make no contact; the special ones as listed
+ * ([effect, power, secondary chance, target]).
+ */
+var Z_CRYSTAL_TYPES = {"Normalium Z": "Normal", "Fightinium Z": "Fighting", "Flyinium Z": "Flying", "Poisonium Z": "Poison",
+	"Groundium Z": "Ground", "Rockium Z": "Rock", "Buginium Z": "Bug", "Ghostium Z": "Ghost", "Steelium Z": "Steel",
+	"Firium Z": "Fire", "Waterium Z": "Water", "Grassium Z": "Grass", "Electrium Z": "Electric", "Psychium Z": "Psychic",
+	"Icium Z": "Ice", "Dragonium Z": "Dragon", "Darkinium Z": "Dark", "Fairium Z": "Fairy"};
+var TYPED_Z_MOVES = {Normal: "Breakneck Blitz", Fighting: "All-Out Pummeling", Flying: "Supersonic Skystrike",
+	Poison: "Acid Downpour", Ground: "Tectonic Rage", Rock: "Continental Crush", Bug: "Savage Spin-Out",
+	Ghost: "Never-Ending Nightmare", Steel: "Corkscrew Crash", Fire: "Inferno Overdrive", Water: "Hydro Vortex",
+	Grass: "Bloom Doom", Electric: "Gigavolt Havoc", Psychic: "Shattered Psyche", Ice: "Subzero Slammer",
+	Dragon: "Devastating Drake", Dark: "Black Hole Eclipse", Fairy: "Twinkle Tackle"};
+var SPECIAL_Z_MOVES = [
+	{item: "Eevium Z", move: "Last Resort", species: /^Eevee/, z: "Extreme Evoboost"},
+	{item: "Pikanium Z", move: "Volt Tackle", species: /^Pikachu/, z: "Catastropika"},
+	{item: "Pikashunium Z", move: "Thunderbolt", species: /^Pikachu-/, z: "10,000,000 Volt Thunderbolt"},
+	{item: "Aloraichium Z", move: "Thunderbolt", species: /^Raichu-Alola/, z: "Stoked Sparksurfer"},
+	{item: "Snorlium Z", move: "Giga Impact", species: /^Snorlax/, z: "Pulverizing Pancake"},
+	{item: "Mewnium Z", move: "Psychic", species: /^Mew$/, z: "Genesis Supernova"},
+	{item: "Decidium Z", move: "Spirit Shackle", species: /^Decidueye/, z: "Sinister Arrow Raid"},
+	{item: "Incinium Z", move: "Darkest Lariat", species: /^Incineroar/, z: "Malicious Moonsault"},
+	{item: "Primarium Z", move: "Sparkling Aria", species: /^Primarina/, z: "Oceanic Operetta"},
+	{item: "Lycanium Z", move: "Stone Edge", species: /^Lycanroc/, z: "Splintered Stormshards"},
+	{item: "Mimikium Z", move: "Play Rough", species: /^Mimikyu/, z: "Let's Snuggle Forever"},
+	{item: "Kommonium Z", move: "Clanging Scales", species: /^Kommo-o/, z: "Clangorous Soulblaze"},
+	{item: "Tapunium Z", move: "Nature's Madness", species: /^Tapu /, z: "Guardian of Alola"},
+	{item: "Solganium Z", move: "Sunsteel Strike", species: /^(Solgaleo|Necrozma-Dusk-Mane)/, z: "Searing Sunraze Smash"},
+	{item: "Lunalium Z", move: "Moongeist Beam", species: /^(Lunala|Necrozma-Dawn-Wings)/, z: "Menacing Moonraze Maelstrom"},
+	{item: "Ultranecrozium Z", move: "Photon Geyser", species: /^Necrozma-Ultra/, z: "Light That Burns the Sky"},
+	{item: "Marshadium Z", move: "Spectral Thief", species: /^Marshadow/, z: "Soul-Stealing 7-Star Strike"}
+];
+var SPECIAL_Z_DATA = {
+	"Catastropika": [0, 210, 0, 0], "10,000,000 Volt Thunderbolt": [43, 195, 0, 0], "Stoked Sparksurfer": [6, 175, 100, 0],
+	"Pulverizing Pancake": [0, 210, 0, 0], "Genesis Supernova": [140, 185, 100, 0], "Sinister Arrow Raid": [0, 180, 0, 0],
+	"Malicious Moonsault": [0, 180, 0, 0], "Oceanic Operetta": [0, 195, 0, 0], "Splintered Stormshards": [243, 190, 0, 0],
+	"Let's Snuggle Forever": [0, 190, 0, 0], "Clangorous Soulblaze": [140, 185, 100, 8],
+	// (Its damage, three quarters of the target's HP, is the calculator's.)
+	"Guardian of Alola": [0, 1, 0, 0], "Searing Sunraze Smash": [0, 200, 0, 0], "Menacing Moonraze Maelstrom": [0, 200, 0, 0],
+	"Light That Burns the Sky": [0, 200, 0, 0], "Soul-Stealing 7-Star Strike": [0, 195, 0, 0],
+	// Eevee's Last Resort becomes a status move: +2 to every stat.
+	"Extreme Evoboost": [207, 0, 0, 16]
+};
+// Your predicted move that makes it hold its Z-Move back (Radical Red adds Silk Trap to CFRU's list).
+var Z_PROTECT_MOVES = ["Protect", "King's Shield", "Spiky Shield", "Obstruct", "Silk Trap"];
+
+// The Z-Move a damaging move would become, or "".
+function zMoveNameFor(species, item, move) {
+	if (!move || move.split === SPLIT_STATUS || /-(Mega|Primal)/.test(species)) return "";
+	for (var i = 0; i < SPECIAL_Z_MOVES.length; i++) {
+		var special = SPECIAL_Z_MOVES[i];
+		if (special.item === item && special.move === move.name && special.species.test(species)) return special.z;
+	}
+	var type = /^Hidden Power/.test(move.name) ? "Normal" : move.type;
+	return Z_CRYSTAL_TYPES[item] && Z_CRYSTAL_TYPES[item] === type ? TYPED_Z_MOVES[type] : "";
+}
 var RECOIL_QUARTER = ["Take Down", "Submission", "Wild Charge", "Head Charge", "Volt Tackle"];
 var RECOIL_THIRD = ["Double-Edge", "Flare Blitz", "Brave Bird", "Wood Hammer", "Draco Barrage", "Wave Crash"];
 var RECOIL_HALF = ["Head Smash", "Light of Ruin", "Chloroblast"];
@@ -157,7 +214,6 @@ var TWO_TO_FIVE_HIT_MOVES = ["Arm Thrust", "Barrage", "Bone Rush", "Bullet Seed"
 	"Surging Strikes", "Beat Up", "Triple Dive"];
 var TWO_HIT_MOVES = ["Bonemerang", "Double Hit", "Double Iron Bash", "Double Kick", "Dragon Darts", "Dual Chop", "Dual Wingbeat",
 	"Gear Grind", "Twineedle", "Twin Beam", "Tachyon Cutter"];
-var STAT_INDEX = {atk: 0, def: 1, spe: 2, spa: 3, spd: 4, acc: 5, eva: 6};
 
 function has(list, value) {
 	return list.indexOf(value) !== -1;
@@ -251,10 +307,6 @@ AITurn.prototype.predicted = function (side) {
 /* ---------------------------------------------------------------------------------------------
  * Facts about one side.
  */
-function sideHasAbility(side, names) {
-	return has(names, side.ability);
-}
-
 function ignoresAbilities(atk) {
 	return has(MOLD_BREAKERS, atk.ability);
 }
@@ -342,9 +394,11 @@ function isAsleep(side) {
 	return side.status === "slp" && side.ability !== "Comatose";
 }
 
-// Asleep (for more than this turn), frozen: it cannot act this turn.
+// Asleep (for more than this turn): it cannot act this turn. Radical Red's IsBankIncapacitated
+// (0x090DA1C4) is sleep, recharging and Truant only: it is built with frostbite instead of freeze,
+// and a frostbitten Pokémon (the calculator's "frz") still attacks.
 function isIncapacitated(side) {
-	return isAsleep(side) || side.status === "frz";
+	return isAsleep(side);
 }
 
 function canBeChoiceLocked(side) {
@@ -361,10 +415,6 @@ function isUsable(side, i, field) {
 
 function isSelfTargeting(move) {
 	return (move.target & MOVE_TARGET_USER) !== 0;
-}
-
-function isStatusAffected(def) {
-	return !!def.status;
 }
 
 function needsCharge(atk, move, field) {
@@ -905,10 +955,6 @@ function isSweeper(style) {
 	return style === STYLE.KILL || style === STYLE.SETUP_STATS || style === STYLE.SETUP_STATUS;
 }
 
-function isTeamSupport(style) {
-	return style === STYLE.BATON_PASS || style === STYLE.CLERIC || style === STYLE.SUPPORT_SCREENS || style === STYLE.PHAZING;
-}
-
 function isDamager(style) {
 	return isSweeper(style) || style === STYLE.SETUP_SCREENS;
 }
@@ -974,6 +1020,14 @@ function canBePoisoned(atk, def, field) {
 	if (!canBeStatused(atk, def, field) || has(["Immunity", "Pastel Veil"], defAbility(atk, def))) return false;
 	if (atk.ability === "Corrosion") return true;
 	return def.types.indexOf("Poison") === -1 && def.types.indexOf("Steel") === -1;
+}
+
+// CanTransferItem for both Pokémon and both items: Mega Stones and Z-Crystals stay put.
+function canSwapItems(atk, def) {
+	var fixed = function (item) {
+		return !!item && (calc.MEGA_STONES[item] !== undefined || / Z$/.test(item));
+	};
+	return !fixed(atk.item) && !fixed(def.item);
 }
 
 function canBeConfused(atk, def, field) {
@@ -1136,6 +1190,8 @@ function goodIdeaToLower(turn, def, atk, move, stat) {
 // caller's limit, a Defence/Sp. Def exception, and no set-up into Focus Sash or Sturdy.)
 function shouldTrySetUp(turn, atk, def, move, stat) {
 	var field = turn.battle.field;
+	// Radical Red's "any stat" (0xFF, Spectral Thief): just whether the move affects the foe.
+	if (stat === "any") return move.effectiveness !== 0;
 	if (def.ability === "Unaware" && !hasMoveNamed(atk, ["Stored Power", "Power Trip"]) &&
 		!(stat === "def" && hasMoveNamed(atk, ["Body Press"]))) return false;
 	if (willFaintFromChip(atk, field)) return false;
@@ -1357,6 +1413,13 @@ function scoreNegatives(turn, atk, def, i, score) {
 	}
 	if (move.name === "Laser Focus" && has(["Battle Armor", "Shell Armor"], ability)) return down(8);
 	if (move.name === "Torment" && def.item === "Mental Herb") return down(6);
+	// Synchronoise (Radical Red's effect 254): it only hits a target sharing a type with the user.
+	if (move.name === "Synchronoise") {
+		if (def.item === "Ring Target" || atk.types.some(function (type) {
+			return def.types.indexOf(type) !== -1;
+		})) return standardDamage();
+		return down(10);
+	}
 
 	switch (effect) {
 	case E.SLEEP:
@@ -1621,6 +1684,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.LEECH_SEED:
 		if (def.types.indexOf("Grass") !== -1 || def.seeded || ability === "Liquid Ooze") down(10);
 		return score;
+	case E.PSYCH_UP:
+		// Spectral Thief and Soul Robbery are attacks; Psych Up gets Haze's rule.
+		if (move.name !== "Psych Up") return standardDamage();
+		/* falls through */
 	case E.HAZE:
 		if (goodAI && usefulStatChanges(def, 1) + usefulStatChanges(atk, -1) < usefulStatChanges(def, -1) + usefulStatChanges(atk, 1)) down(10);
 		else if (!goodAI && Object.keys(atk.boosts).some(function (stat) {
@@ -1685,6 +1752,15 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.FOLLOW_ME:
 	case E.INSTRUCT_AFTER_YOU_QUASH:
 		down(10);
+		return score;
+	case E.TOPSY_TURVY_ELECTRIFY:
+		if (move.name === "Electrify") {
+			if (!hitsFirst(turn, atk, move, def) || (predicted && predicted.type === "Electric")) down(10);
+			return score;
+		}
+		// Topsy-Turvy: nothing to flip (-10), or it would flip more drops than boosts (-5).
+		if (!statStageTotal(def, 1)) return down(10);
+		if (statStageTotal(def, -1) > statStageTotal(def, 1)) down(5);
 		return score;
 	case E.SEMI_INVULNERABLE:
 		// Radical Red: Fly, Dig and the like aren't treated as charging moves.
@@ -1764,18 +1840,6 @@ function resistsAllAtFullHealth(turn, def, atk) {
 	});
 }
 
-// OffensiveSetupMoveInMoveset: a boosting move, or an attack likely to raise an offence.
-function hasOffensiveSetupMove(side) {
-	return hasMoveWhere(side, function (m) {
-		if (has([E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2, E.EVASION_UP_2,
-			E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM], m.effect)) return true;
-		if (has([E.ATTACK_UP_HIT, E.SPECIAL_ATTACK_UP_HIT, E.SPECIAL_DEFENSE_DOWN_HIT, E.SPECIAL_DEFENSE_DOWN_2_HIT, E.DEFENSE_DOWN_HIT], m.effect)) {
-			return chanceOf(side, m) >= 50 && m.effectiveness > 0;
-		}
-		return has([E.SUPERPOWER, E.OVERHEAT], m.effect) && side.ability === "Contrary" && m.effectiveness > 0;
-	});
-}
-
 // ShouldUseWishAromatherapy (Wish), singles: only a cleric, not as the last Pokémon about to fall,
 // and someone below 65% (the benched are taken to be at full HP).
 function shouldUseWish(turn, atk, def) {
@@ -1793,6 +1857,19 @@ function shouldCourtChange(side, foe) {
 	}) || ["sr", "spikes", "stickyWeb"].some(function (k) {
 		return mine[k] && !theirs[k];
 	});
+}
+
+// CountBanksPositiveStatStages / NegativeStatStages: the side's raised (sign 1) or lowered (sign -1)
+// stages, all stats.
+function statStageTotal(side, sign) {
+	return Object.keys(side.boosts).reduce(function (total, stat) {
+		return total + Math.max(0, side.boosts[stat] * sign);
+	}, 0);
+}
+
+// GoodIdeaToSwapStatStages: at least two useful stages better off after swapping.
+function goodIdeaToSwapStages(atk, def) {
+	return usefulStatChanges(def, 1) + usefulStatChanges(atk, -1) - (usefulStatChanges(def, -1) + usefulStatChanges(atk, 1)) >= 2;
 }
 
 // CountUsefulStatChanges: raised (sign 1) or lowered (sign -1) stages of the stats the side uses.
@@ -1836,6 +1913,99 @@ function scorePositives(turn, atk, def, i, score) {
 	var recoverBonus = function () {
 		if (style === STYLE.STALL || style === STYLE.PHAZING) up(8);
 		else status(3);
+	};
+	// IncreasePsychUpViability: when swapping stages is worth it, the first stat (offence first) the
+	// foe has higher, if the AI uses it. (CFRU passes the score for Attack's stat; read as Attack.)
+	var psychUpBonus = function () {
+		if (!goodIdeaToSwapStages(atk, def)) return;
+		var stats = ["atk", "spa", "spe", "acc", "eva", "def", "spd"];
+		for (var s = 0; s < stats.length; s++) {
+			var stat = stats[s];
+			var difference = stage(def, stat) - stage(atk, stat);
+			if (difference <= 0) continue;
+			if ((stat === "atk" && hasRealPhysical(atk)) || (stat === "spa" && hasSpecial(atk)) ||
+				stat === "spe" || stat === "acc" || stat === "eva" || style === STYLE.STALL) {
+				up(statBonus(turn, atk, def, move, stat, 8, difference));
+				return;
+			}
+		}
+	};
+	// Trick / Switcheroo: what handing over the AI's item (or taking the foe's) does.
+	var trickBonus = function () {
+		var item = atk.item;
+		if (/^Choice /.test(item)) {
+			if (item === "Choice Scarf" || !(item === "Choice Band" ? hasPhysical(def) : hasSpecial(def))) status(2);
+		} else if (item === "Toxic Orb") {
+			if (!goodIdeaToStatusSelf(atk, "psn", field) && !badIdeaToStatus(atk, def, "psn", field)) status(2);
+		} else if (item === "Flame Orb") {
+			if (!goodIdeaToStatusSelf(atk, "brn", field) && !badIdeaToStatus(atk, def, "brn", field)) status(2);
+		} else if (item === "Black Sludge") {
+			if (def.types.indexOf("Poison") === -1) status(3);
+		} else if (item === "Iron Ball") {
+			if (!hasMoveNamed(def, ["Fling"]) || !isGrounded(def, field)) status(2);
+		} else if (item === "Lagging Tail" || item === "Sticky Barb") {
+			status(3);
+		} else if (item === "Utility Umbrella") {
+			if (!has(["Solar Power", "Dry Skin"], atk.ability) &&
+				((def.ability === "Swift Swim" && /Rain/.test(field.weather || "")) ||
+				(has(["Chlorophyll", "Flower Gift"], def.ability) && /Sun/.test(field.weather || "")))) status(3);
+		} else if (item === "Assault Vest") {
+			if (styleOf(turn, def) === STYLE.STALL && hasMoveWhere(def, function (m) {
+				return m.split === SPLIT_STATUS;
+			})) status(2);
+		} else if (!item && move.name !== "Bestow") {
+			var theirs = def.item;
+			if (/^Choice /.test(theirs) || theirs === "Lagging Tail" || theirs === "Sticky Barb") return;
+			if (theirs === "Toxic Orb") {
+				if (goodIdeaToStatusSelf(atk, "psn", field)) status(2);
+			} else if (theirs === "Flame Orb") {
+				if (goodIdeaToStatusSelf(atk, "brn", field)) status(2);
+			} else if (theirs === "Black Sludge") {
+				if (atk.types.indexOf("Poison") !== -1) status(3);
+			} else if (theirs === "Iron Ball") {
+				if (hasMoveNamed(atk, ["Fling"])) status(2);
+			} else {
+				status(1);
+			}
+		}
+	};
+	// The stat swaps and splits (Radical Red's Heart Swap is CFRU's older rule).
+	var statSwapBonus = function () {
+		var higher = function (stat) {
+			return stage(def, stat) > stage(atk, stat);
+		};
+		var noLower = function (stat) {
+			return stage(def, stat) >= stage(atk, stat);
+		};
+		switch (move.name) {
+		case "Guard Swap":
+			if ((higher("def") && noLower("spd")) || (higher("spd") && noLower("def"))) status(1);
+			break;
+		case "Power Swap":
+			if ((higher("atk") && noLower("spa")) || (higher("spa") && noLower("atk"))) status(1);
+			break;
+		case "Power Trick":
+			if (atk.stats.def > atk.stats.atk && hasRealPhysical(atk)) status(2);
+			break;
+		case "Heart Swap":
+			if (!["atk", "def", "spa", "spd", "spe", "acc", "eva"].some(function (stat) {
+				return stage(def, stat) < stage(atk, stat);
+			}) && ["atk", "def", "spa", "spd", "spe", "acc", "eva"].some(higher)) status(1);
+			break;
+		case "Speed Swap":
+			if (def.speed > atk.speed) status(3);
+			break;
+		case "Guard Split":
+			var newDef = Math.floor((atk.stats.def + def.stats.def) / 2);
+			var newSpd = Math.floor((atk.stats.spd + def.stats.spd) / 2);
+			if ((newDef > atk.stats.def && newSpd >= atk.stats.spd) || (newSpd > atk.stats.spd && newDef >= atk.stats.def)) status(1);
+			break;
+		case "Power Split":
+			var newAtk = Math.floor((atk.stats.atk + def.stats.atk) / 2);
+			var newSpa = Math.floor((atk.stats.spa + def.stats.spa) / 2);
+			if ((newAtk > atk.stats.atk && newSpa >= atk.stats.spa) || (newSpa > atk.stats.spa && newAtk >= atk.stats.atk)) status(1);
+			break;
+		}
 	};
 	// The Cosmic Power logic (Defend Order, Stockpile, Contrary Shell Smash): Defence (its "1"
 	// raises Attack, as in the game), else Sp. Def.
@@ -2287,6 +2457,32 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.REFRESH:
 		if (move.name !== "Psycho Shift" && atk.status) status(3);
 		break;
+	case E.PSYCH_UP:
+		if (move.name !== "Spectral Thief") {
+			psychUpBonus();
+		} else if (atk.ability !== "Contrary") {
+			// Spectral Thief: worth it against a foe at +2 in anything.
+			if (Object.keys(def.boosts).some(function (stat) {
+				return stage(def, stat) >= 8;
+			})) {
+				if (isDamager(style)) up(statBonus(turn, atk, def, move, "any", 12, 3));
+				else up(3);
+			}
+		}
+		break;
+	case E.TRICK:
+		trickBonus();
+		break;
+	case E.STAT_SWAP_SPLIT:
+		statSwapBonus();
+		break;
+	case E.TOPSY_TURVY_ELECTRIFY:
+		if (move.name === "Electrify") {
+			if (predicted && predicted.type === "Normal" && has(["Volt Absorb", "Motor Drive", "Lightning Rod"], atk.ability)) status(3);
+		} else if (statStageTotal(def, 1) > statStageTotal(def, -1)) {
+			status(1);
+		}
+		break;
 	case E.LOCK_ON:
 		// Radical Red: only Laser Focus, when the AI can't KO now and survives to use the crit.
 		if (move.name === "Laser Focus" && !canKnockOut(turn, atk, def) &&
@@ -2616,6 +2812,48 @@ function substituteBonus(turn, atk, def) {
 	return {1: 0, 2: 8, 3: statusBonus(turn, atk, def, 2), 5: 5, 6: 4, 7: 4, 4: 3, 8: 3, 9: 5, 10: 3}[styleOf(turn, atk)] || 0;
 }
 
+// CalcShouldAIUseZMove for a damaging move (one Z-Move a battle, taken as not used yet).
+function shouldUseZMove(turn, atk, def, i) {
+	var move = atk.moves[i];
+	var z = atk.zMoves && atk.zMoves[i];
+	if (!move || !z) return false;
+	var field = turn.battle.field;
+	var predicted = turn.predicted(def);
+	if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) return false;
+	if (predicted && predicted.effect === E.SUBSTITUTE && !hitsFirst(turn, atk, z, def) && atk.ability !== "Infiltrator") return false;
+	if (defAbility(atk, def) === "Disguise" && /^Mimikyu/.test(def.name) && !/Busted/.test(def.name)) return false;
+	if (predicted && has(Z_PROTECT_MOVES, predicted.name)) return false;
+	if (has([E.RECHARGE, E.SEMI_INVULNERABLE, E.SKY_ATTACK, E.SKULL_BASH, E.SOLARBEAM, E.SKY_DROP], move.effect)) return true;
+	// The move KOs anyway (and is sure enough to hit), with more of your Pokémon to come: keep the Z.
+	if (move.effect !== E.OVERHEAT && (move.effect !== E.SUPERPOWER || atk.ability === "Contrary") &&
+		(atk.ability === "Magic Guard" || !isRecoilMove(move)) && knocksOut(turn, atk, def, i, 1) &&
+		(moveWillHit(atk, def, move, field) || accuracyOf(atk, def, move, field) >= 90) && def.monsLeft >= 2) return false;
+	if (atk.item === "Normalium Z" && hasEffect(atk, [E.FAIRY_LOCK_HAPPY_HOUR])) return false;
+	if (move.name === "Spectral Thief" && anyUsefulStatRaised(def, atk)) return false;
+	return true;
+}
+
+// The battle with each move the AI would turn into a Z-Move replaced by it (TryReplaceMoveWithZMove),
+// for everything it works out this turn; `zSlots` says which.
+function withZMoves(turn, battle) {
+	var ai = battle.ai;
+	if (!ai.zMoves || battle.mega) return battle;
+	var saved = turn.battle;
+	var savedCache = turn.cache;
+	turn.battle = battle;
+	turn.cache = {};
+	var zSlots = ai.moves.map(function (move, i) {
+		return shouldUseZMove(turn, ai, battle.player, i);
+	});
+	turn.battle = saved;
+	turn.cache = savedCache;
+	if (!zSlots.some(Boolean)) return battle;
+	var moves = ai.moves.map(function (move, i) {
+		return zSlots[i] ? ai.zMoves[i] : move;
+	});
+	return $.extend({}, battle, {ai: $.extend({}, ai, {moves: moves, zSlots: zSlots})});
+}
+
 function shouldUseFakeOut(turn, atk, def, move) {
 	if (!atk.firstTurn || isAsleep(def) || has(["Inner Focus", "Shield Dust"], defAbility(atk, def))) return false;
 	if (!hitsFirst(turn, atk, move, def)) return false;
@@ -2641,7 +2879,7 @@ function shouldPivot(turn, atk, def, i) {
 	var full = def.hp === def.maxHP;
 	var breaksSash = full && (def.item === "Focus Sash" || defAbility(atk, def) === "Sturdy" ||
 		has(["Multiscale", "Shadow Shield"], defAbility(atk, def)));
-	var hazardsOnSide = atk.sideState.sr || atk.sideState.spikes > 0;
+	var hazardsOnSide = hasHazards(atk.sideState);
 	// Pivot if its attacking stat is at -3 or worse (with both kinds of attack CFRU only looks at
 	// Sp. Atk: it compares the Attack stat's index, not its stage).
 	var weakAttacks = function () {
@@ -2844,6 +3082,11 @@ function typeEffectiveness(type, types) {
 }
 
 // GetMonEntryHazardDamage: Stealth Rock and Spikes on the AI's side of the field.
+// Any hazard on a side (CFRU's SIDE_STATUS_SPIKES: Stealth Rock, Spikes, Toxic Spikes, Sticky Web).
+function hasHazards(sideState) {
+	return !!(sideState.sr || sideState.spikes > 0 || sideState.toxicSpikes > 0 || sideState.stickyWeb);
+}
+
 function entryHazardDamage(mon, sideState, field) {
 	if (mon.ability === "Magic Guard" || mon.item === "Heavy-Duty Boots") return 0;
 	var damage = 0;
@@ -3028,7 +3271,7 @@ function scoreSwitchIns(turn) {
 		var ai = battle.ai;
 		var field = battle.field;
 		var smart = battle.flags > AI_NEGATIVES;
-		var hazardsUp = ai.sideState.sr || ai.sideState.spikes > 0;
+		var hazardsUp = hasHazards(ai.sideState);
 		var viable = 1 + battle.party.length;
 		var entries = [];
 		var best = null;
@@ -3273,6 +3516,7 @@ function switchForWonderGuard(turn) {
 	for (var i = 0; i < 4; i++) {
 		var move = ai.moves[i];
 		if (!move || !isUsable(ai, i, field)) continue;
+		if (has(ABILITY_IGNORING_MOVES, move.name)) return null;
 		if (move.split !== SPLIT_STATUS) {
 			if (isMoldBreaker(ai) || move.effectiveness > 1) return null;
 			continue;
@@ -3303,8 +3547,34 @@ function switchForWonderGuard(turn) {
 		case E.LEECH_SEED:
 			if (foe.types.indexOf("Grass") === -1) return null;
 			break;
+		case E.NIGHTMARE:
+			if (isAsleep(foe)) return null;
+			break;
 		case E.CURSE:
 			if (ai.types.indexOf("Ghost") !== -1) return null;
+			break;
+		// (The calculator doesn't know of a Perish Song count, a pending Wish or Lucky Chant: none.)
+		case E.PERISH_SONG:
+		case E.WISH:
+			return null;
+		case E.TRICK:
+			if (move.name === "Trick" && canSwapItems(ai, foe)) {
+				if (ai.item === "Toxic Orb" && canBePoisoned(ai, foe, field)) return null;
+				if (ai.item === "Flame Orb" && canBeBurned(ai, foe, field)) return null;
+				if (ai.item === "Black Sludge" && foe.types.indexOf("Poison") === -1) return null;
+				if (ai.item === "Sticky Barb") return null;
+			}
+			break;
+		case E.SKILL_SWAP:
+			if (move.name !== "Skill Swap") return null;
+			break;
+		case E.TYPE_CHANGES:
+			if ((move.name === "Trick-or-Treat" && foe.types.indexOf("Ghost") === -1) ||
+				(move.name === "Forest's Curse" && foe.types.indexOf("Grass") === -1)) return null;
+			break;
+		case E.TEAM_EFFECTS:
+			// (As CFRU: Tailwind counts when your side already has it.)
+			if ((move.name === "Tailwind" && ai.sideState.tailwind) || move.name === "Lucky Chant") return null;
 			break;
 		case E.SPIKES:
 			if ((move.name === "Stealth Rock" && !foe.sideState.sr) || (move.name === "Toxic Spikes" && foe.sideState.toxicSpikes < 2) ||
@@ -3418,7 +3688,8 @@ function switchToHeal(turn) {
 	var field = battle.field;
 	if (ai.ability === "Natural Cure") {
 		if (hazardsHurt(ai, 4, field)) return null;
-		if (!(isAsleep(ai) || ai.status === "frz" || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
+		// (Radical Red has frostbite, not freeze: only sleep makes it switch at any HP.)
+		if (!(isAsleep(ai) || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
 	} else if (ai.ability === "Regenerator") {
 		if (ai.hp > Math.floor(ai.maxHP / 2) || hazardsHurt(ai, 3, field)) return null;
 		var predicted = turn.predicted(foe);
@@ -3454,17 +3725,27 @@ function switchWhileAsleep(turn, justIn) {
 	return {mon: null};
 }
 
-// IsTakingAnnoyingSecondaryDamage: Leech Seed (a quarter of the time).
+// IsTakingAnnoyingSecondaryDamage: Leech Seed (a quarter of the time), or badly poisoned for more
+// than six turns (urgent: any switch will do). Nightmare, Curse and a lost Poison Heal, its other
+// urgent reasons, are not things the calculator knows.
 function switchFromLeechSeed(turn) {
 	var battle = turn.battle;
 	var ai = battle.ai;
 	var foe = battle.player;
 	if (ai.ability === "Magic Guard" || canKnockOut(turn, ai, foe) || battle.flags <= AI_NEGATIVES) return null;
-	if (!ai.seeded || !turn.coin("seedQuarter", 0.25) || usefulOffenseRaised(ai) || canKnockOut(turn, ai, foe)) return null;
+	var urgent = false;
+	if (ai.seeded && turn.coin("seedQuarter", 0.25) && !usefulOffenseRaised(ai) && !canKnockOut(turn, ai, foe)) {
+		urgent = false;
+	} else if (ai.status === "tox" && ai.toxicCounter > 6 && ai.ability !== "Poison Heal") {
+		urgent = true;
+	} else {
+		return null;
+	}
 	if (hazardsHurt(ai, 4, battle.field)) return null;
 	var scored = scoreSwitchIns(turn);
 	var good = function (entry) {
 		if (!entry) return false;
+		if (urgent) return true;
 		var flags = entry.flags;
 		if ((flags & SWITCH_FLAG.OUTSPEEDS) && ((flags & SWITCH_FLAG.KO_FOE) ||
 			((flags & SWITCH_FLAG.CAN_2HKO) && !(flags & SWITCH_FLAG.FAINTS))) && predictedHitIsSafe(turn, entry.mon, flags)) return true;
@@ -3518,6 +3799,8 @@ function switchFromLowStats(turn, justIn) {
 	var spa = stage(ai, "spa");
 	var acc = stage(ai, "acc");
 	if (!(atk <= OFFENSIVE_STAT_MIN || spa <= OFFENSIVE_STAT_MIN || acc <= OFFENSIVE_STAT_MIN)) return null;
+	// It is about to trade the drops away.
+	if (turn.aiPrediction && turn.aiPrediction.name === "Heart Swap") return null;
 	var physical = false;
 	var special = false;
 	ai.moves.forEach(function (move, i) {
@@ -3540,7 +3823,8 @@ function switchFromLowStats(turn, justIn) {
 	return null;
 }
 
-// OffensiveSetupMoveInMoveset (the status moves; the hit-and-boost moves never count, as in CFRU).
+// OffensiveSetupMoveInMoveset (the status moves; the hit-and-boost moves never count, as in CFRU,
+// whose check for them asks for the move to be unusable).
 function hasOffensiveSetupMove(side) {
 	return hasEffect(side, [E.ATTACK_UP, E.SPECIAL_ATTACK_UP, E.EVASION_UP, E.ATTACK_UP_2, E.SPEED_UP_2, E.SPECIAL_ATTACK_UP_2,
 		E.EVASION_UP_2, E.ATK_SPATK_UP, E.ATK_ACC_UP, E.BULK_UP, E.CALM_MIND, E.DRAGON_DANCE, E.BELLY_DRUM]);
@@ -3566,7 +3850,8 @@ function switchToSaveSweeper(turn, justIn) {
 	var ai = battle.ai;
 	var foe = battle.player;
 	var field = battle.field;
-	if (justIn || battle.flags <= AI_NEGATIVES || ai.status === "frz") return null;
+	// (CFRU's "don't save a frozen sweeper" is compiled out in Radical Red, which has frostbite.)
+	if (justIn || battle.flags <= AI_NEGATIVES) return null;
 	if (ai.status === "par" && !has(["Quick Feet", "Guts"], ai.ability)) return null;
 	if (!isDamager(styleOf(turn, ai))) return null;
 	var predicted = turn.predicted(foe);
@@ -3611,7 +3896,8 @@ function switchToSaveSweeper(turn, justIn) {
  * ShouldSwitch's checks for the Pokémon on the field, in order; the first that says so decides.
  * `justSwitchedIn`: it came in this turn (after a KO or a switch), when most of them wait a turn.
  * Not modelled (the calculator doesn't know them): passing a Wish, Perish Song, a Yawn, your Fly or
- * Dig in progress, a Choice lock, Toxic's turn count.
+ * Dig in progress, a Choice lock, Toxic Spikes and Sticky Web (no setting for them). Toxic's turn
+ * count comes from the Toxic counter beside Pokémon 2's status.
  */
 function switchChecks(turn) {
 	var battle = turn.battle;
@@ -3766,10 +4052,13 @@ var SWITCH_REASONS = ["to take your move with its ability", "against your Wonder
 function predictAIMoves(battle) {
 	var party = battle.party || [];
 	var reasons = SWITCH_REASONS.length;
+	// Where the shares of moves used as Z-Moves go, after the switches.
+	var zBase = 4 + party.length * reasons;
 	var outcomes = enumerateChances(function (rng) {
 		var turn = new AITurn(rng, megaPhaseBattle(battle, false));
 		var outcome = [0, 0, 0, 0];
 		predictPlayer(turn);
+		turn.battle = withZMoves(turn, turn.battle);
 		if (party.length) {
 			predictAISelf(turn);
 			turn.phase = "w";
@@ -3792,9 +4081,13 @@ function predictAIMoves(battle) {
 		}
 		turn.phase = "a";
 		turn.cache = {};
-		turn.battle = megaPhaseBattle(battle, true);
+		turn.battle = withZMoves(turn, megaPhaseBattle(battle, true));
 		var shares = chooseShares(runScripts(turn, turn.battle.ai, turn.battle.player, battle.flags, true), battle.ai.moves);
-		for (var i = 0; i < 4; i++) outcome[i] = shares[i];
+		var zSlots = turn.battle.ai.zSlots || [];
+		for (var i = 0; i < 4; i++) {
+			outcome[i] = shares[i];
+			if (zSlots[i]) outcome[zBase + i] = shares[i];
+		}
 		return outcome;
 	}, 20000);
 	var switches = party.map(function (mon, p) {
@@ -3815,6 +4108,9 @@ function predictAIMoves(battle) {
 	return {
 		shares: [0, 1, 2, 3].map(function (i) {
 			return outcomes[i] || 0;
+		}),
+		zShares: [0, 1, 2, 3].map(function (i) {
+			return outcomes[zBase + i] || 0;
 		}),
 		switches: switches,
 		switchShare: switches.reduce(function (sum, entry) {
@@ -3857,6 +4153,7 @@ function buildAISide(key, pokemon, results, foe, options) {
 		abilityOn: pokemon.abilityOn,
 		item: pokemon.item || "",
 		status: pokemon.status || "",
+		toxicCounter: pokemon.toxicCounter || 0,
 		level: pokemon.level,
 		gender: pokemon.gender || "",
 		hp: pokemon.curHP(),
@@ -3943,7 +4240,7 @@ function countFoeMonsLeft() {
 function readSideState(suffix) {
 	return {
 		sr: $("#sr" + suffix).prop("checked"),
-		spikes: ~~$("input:radio[name='spikes" + suffix + "']:checked").val(),
+		spikes: ~~$("input[type=radio][name='spikes" + suffix + "']:checked").val(),
 		toxicSpikes: 0,
 		stickyWeb: false,
 		reflect: $("#reflect" + suffix).prop("checked"),
@@ -4058,6 +4355,7 @@ function readAIBattle() {
 		speed: getBattleSpeed(p2, "p2"), monsLeft: countFoeMonsLeft(), firstTurn: p2.curHP() === p2.maxHP(),
 		sideState: readSideState("R"), focusEnergy: focus.p2, critChance: critChance(p2, p1, "p2"), critDamage: critDamage(1)
 	});
+	ai.zMoves = readZMoves(ai);
 	var party = readAIParty(p1, damageResults[0][0].field, field,
 		{monsLeft: ai.monsLeft, sideState: ai.sideState, playerFocus: focus.p1});
 	// It came in this turn, after a KO or a switch (the lead at full HP did not): the switching
@@ -4068,6 +4366,39 @@ function readAIBattle() {
 		party: party, justSwitchedIn: justSwitchedIn};
 	battle.mega = readPendingMega(p1, p2, field, damageResults[0][0].field, {ai: ai, player: player, focus: focus});
 	return battle;
+}
+
+// In Hardcore, each of the AI's moves as its Z-Move against you (the calculator's damage), or null.
+function readZMoves(ai) {
+	if (typeof getPageMode !== "function" || getPageMode() !== "hardcore") return null;
+	var any = false;
+	var zMoves = ai.moves.map(function (move, i) {
+		var name = zMoveNameFor(ai.name, ai.item, move);
+		var result = damageResults[1][i];
+		if (!name || !result) return null;
+		var special = SPECIAL_Z_DATA[name];
+		any = true;
+		if (special && special[0] === E.EXTREME_EVOBOOST) {
+			return $.extend({}, move, {name: name, zBase: move.name, bp: 0, power: 0, effect: special[0], accuracy: 0,
+				chance: 0, target: special[3], priority: 0, flags: 0, split: SPLIT_STATUS, hits: 1, recoil: undefined,
+				drain: undefined, maxDamage: 0, maxCritDamage: 0, effectiveness: 1});
+		}
+		var zMove;
+		var range;
+		try {
+			zMove = new calc.Move(gen, move.name, {useZ: true, item: ai.item, species: ai.name, ability: ai.ability});
+			range = calc.calculate(gen, result.attacker, result.defender, zMove, result.field).range();
+		} catch (e) {
+			return null;
+		}
+		return $.extend({}, move, {
+			name: name, zBase: move.name, bp: zMove.bp, power: special && special[1] > 1 ? special[1] : zMove.bp,
+			effect: special ? special[0] : E.HIT, accuracy: 0, chance: special ? special[2] : 0,
+			target: special ? special[3] : 0, priority: 0, flags: 0, hits: 1, recoil: undefined, drain: undefined,
+			sound: false, bullet: false, maxDamage: range[1], maxCritDamage: range[1]
+		});
+	});
+	return any ? zMoves : null;
 }
 
 /*
@@ -4161,9 +4492,14 @@ function markFoeLikelyMoves() {
 		var label = labels.eq(i);
 		var move = battle.ai.moves[i];
 		if (!move || i >= labels.length) return;
-		label.attr("data-ai", formatAIShare(share));
-		var ko = move.maxDamage >= hp && hp > 0 && share > 0;
-		var title = "The trainer's AI uses this " + formatAIShare(share) + " of the time" + (ko ? "; it can KO you" : "");
+		// Used as its Z-Move (Hardcore) for some or all of that share.
+		var zShare = prediction.zShares[i];
+		var zMove = zShare > 0 && battle.ai.zMoves ? battle.ai.zMoves[i] : null;
+		label.attr("data-ai", formatAIShare(share) + (zMove ? " Z" : ""));
+		var damage = zMove ? Math.max(move.maxDamage, zMove.maxDamage) : move.maxDamage;
+		var ko = damage >= hp && hp > 0 && share > 0;
+		var title = "The trainer's AI uses this " + formatAIShare(share) + " of the time" +
+			(zMove ? " (" + formatAIShare(zShare) + " as " + zMove.name + ", its Z-Move)" : "") + (ko ? "; it can KO you" : "");
 		label.attr("title", title);
 		if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
 	});
@@ -4173,9 +4509,44 @@ function shortMonName(mon) {
 	return (mon.name || "").replace(/-Mega.*$/, "");
 }
 
+// The switches as marks on the trainer's team on Battle (small screens): who it switches to (and
+// how often), and who it sends out next if you KO the one out now. Kept for the team's redraws.
+var aiSwitchMarks = null;
+
+function markAISwitchesOnTeam() {
+	// The Battle tab's trainer card, and the Opposing Trainer panel's team (desktop).
+	var teams = [$(".ss-quick-trainer .ss-quick-mon"), $("#trainer-team .pokemon-sprite")];
+	teams.forEach(function (mons) {
+		mons.removeClass("ss-quick-switch ss-quick-next-in").find(".ss-quick-ai").remove();
+		mons.each(function () {
+			if ($(this).attr("data-ai-title") !== undefined) $(this).attr("title", $(this).attr("data-ai-title")).removeAttr("data-ai-title");
+		});
+	});
+	if (!aiSwitchMarks) return;
+	var badge = function (slot, className, text, title) {
+		teams.forEach(function (mons) {
+			var mon = mons.eq(slot);
+			if (!mon.length) return;
+			if (mon.attr("data-ai-title") === undefined) mon.attr("data-ai-title", mon.attr("title") || "");
+			mon.addClass(className).append($('<span class="ss-quick-ai"></span>').addClass(className + "-badge").text(text))
+				.attr("title", (mon.attr("data-set-id") || mon.attr("data-ai-title")) + " \u2014 " + title);
+		});
+	};
+	aiSwitchMarks.next.forEach(function (entry) {
+		badge(entry.slot, "ss-quick-next-in", "\u21AA" + (aiSwitchMarks.next.length > 1 ? formatAIShare(entry.share) : ""),
+			"sent out next if you KO the one out now" + (aiSwitchMarks.next.length > 1 ? " (" + formatAIShare(entry.share) + ")" : ""));
+	});
+	aiSwitchMarks.switches.forEach(function (entry) {
+		badge(entry.slot, "ss-quick-switch", "\u21C4" + formatAIShare(entry.share),
+			"the AI switches to it " + formatAIShare(entry.share) + " of the time (" + aiSwitchMarks.why + ")");
+	});
+}
+
 // Under the foe's moves: its chance of switching out and to whom (with why), and who it sends out
-// next if you KO it now.
+// next if you KO it now. On small screens these are marks on the trainer's team instead
+// (markAISwitchesOnTeam), so the foe's header stays clean.
 function renderAISwitch(battle, prediction) {
+	aiSwitchMarks = null;
 	var box = $("#ai-switch");
 	if (!box.length) box = $('<div id="ai-switch" class="ai-switch" aria-live="polite"></div>');
 	// Small screens: in the foe's header (Battle has to fit the screen); otherwise under its moves.
@@ -4184,9 +4555,11 @@ function renderAISwitch(battle, prediction) {
 	box.empty().removeAttr("title");
 	if (!battle || !battle.party || !battle.party.length) {
 		box.hide();
+		markAISwitchesOnTeam();
 		return;
 	}
 	var lines = [];
+	var marks = {switches: [], next: [], why: ""};
 	if (prediction.switchShare > 0) {
 		var why = [];
 		var line = $('<div class="ai-switch-out"></div>')
@@ -4196,12 +4569,17 @@ function renderAISwitch(battle, prediction) {
 						var text = SWITCH_REASONS[r];
 						if (why.indexOf(text) === -1) why.push(text);
 					});
+					marks.switches.push({slot: entry.mon.slot, share: entry.share});
 					return shortMonName(entry.mon) + (prediction.switches.length > 1 ? " " + formatAIShare(entry.share) : "");
 				}).join(" \u00b7 ")));
 		line.attr("title", "The trainer's AI switches out " + why.join(", or ") + ".");
+		marks.why = why.join(", or ");
 		lines.push(line);
 	}
 	var next = predictReplacement(battle);
+	next.forEach(function (entry) {
+		marks.next.push({slot: entry.mon.slot, share: entry.share});
+	});
 	if (next.length) {
 		lines.push($('<div class="ai-switch-next"></div>').text("Next \u2192 " + next.map(function (entry) {
 			return shortMonName(entry.mon) + (next.length > 1 ? " " + formatAIShare(entry.share) : "");
@@ -4210,4 +4588,12 @@ function renderAISwitch(battle, prediction) {
 	box.append(lines).toggle(lines.length > 0).attr("title", lines.map(function (line) {
 		return line.attr("title") ? line.text() + ": " + line.attr("title") : line.text();
 	}).join("\n"));
+	aiSwitchMarks = marks;
+	markAISwitchesOnTeam();
 }
+
+// Desktop too: the AI's chances on the foe's moves and its switches (small_screen.js binds the
+// small layout's).
+$(document).on("calc:done", function () {
+	if (!$("html").hasClass("small-screen") && typeof TRAINER_ORDER !== "undefined" && TRAINER_ORDER.length) markFoeLikelyMoves();
+});

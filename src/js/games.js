@@ -15,6 +15,9 @@
  *  - abilityText / itemText: the game's own ability and item descriptions.
  *  - trainers: boss fights in game order with level caps (the trainer panel and progress).
  *  - learnsets: level-up moves for the Dex (data/learnsets/<game id>.js).
+ *  - trainerSprites: a Showdown trainer sprite for each trainer (data/trainer_sprites/<game id>.js).
+ *  - genders: each trainer Pokémon's gender and the species' gender ratios (data/genders/<game id>.js).
+ *  - trainerOrderFixes: route trainers put in the order you meet them (data/trainer_order_fixes/<game id>.js).
  *
  * A game whose status is "planned" has no pages yet: the game picker lists it as coming soon.
  */
@@ -36,7 +39,7 @@ var GAMES = [
 			{id: "hardcore", label: "Hardcore Mode", page: "hardcore", sets: "hardcore", trainers: "hardcore"}
 		],
 		features: {saveImport: "cfru", trainerAI: "cfru", encounters: true, abilityText: true, itemText: true, trainers: true,
-			learnsets: true}
+			learnsets: true, trainerSprites: true, trainerOrderFixes: true, genders: true}
 	},
 	{
 		id: "runbun",

@@ -40,8 +40,9 @@ function summarizeDamage(results, defender) {
 
 // Returns {speed: class, damage: [classes], metrics} for `pokemon` against `opponent`; the
 // metrics (each side's best move and its damage, and both Speeds) rank the box (box_ranking.js).
-function getMatchupClasses(pokemon, opponent) {
-	var field = createField();
+// `field`: the field to use (a whole box is colored on one), else the page's.
+function getMatchupClasses(pokemon, opponent, field) {
+	field = field ? field.clone() : createField();
 	// calculateAllMoves comes from index_randoms_controls.js. It applies the "+1 all stats"
 	// toggles by mutating both Pokémon, so callers must pass fresh objects.
 	var results = calculateAllMoves(gen, pokemon, field, opponent, field.clone().swap());
@@ -69,11 +70,11 @@ function getMatchupClasses(pokemon, opponent) {
 }
 
 // The colors go on only while color coding is shown; the matchup is kept on the element either way.
-function applyMatchupClasses(element, pokemon, opponent) {
+function applyMatchupClasses(element, pokemon, opponent, field) {
 	element.removeClass(MATCHUP_CLASSES).removeData("matchup");
 	var classes;
 	try {
-		classes = getMatchupClasses(pokemon, opponent);
+		classes = getMatchupClasses(pokemon, opponent, field);
 	} catch (e) {
 		// A set the calc cannot handle (e.g. an unknown move) is left uncolored.
 		return;
@@ -109,8 +110,9 @@ function isColorCodingShown() {
 function colorCodeBox() {
 	if (!isColorCodingShown() && !isBoxRanked()) return;
 	var opponent = createPokemon($("#p2"));
+	var field = createField(); // read once for the whole box
 	$("#box-panel .box-pokemon").each(function () {
-		applyMatchupClasses($(this), getBoxMatchupPokemon($(this).attr("data-set-id")), opponent.clone());
+		applyMatchupClasses($(this), getBoxMatchupPokemon($(this).attr("data-set-id")), opponent.clone(), field);
 	});
 	$(document).trigger("colorcoding:changed");
 }

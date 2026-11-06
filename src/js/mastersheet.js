@@ -51,7 +51,7 @@ function readMastersheetFilters() {
 	try {
 		filters = JSON.parse(readSetting(MASTERSHEET_FILTERS_KEY)) || {};
 	} catch (e) {}
-	return {routes: filters.routes !== false, wild: filters.wild !== false, hideDefeated: !!filters.hideDefeated};
+	return {routes: filters.routes !== false, wild: filters.wild !== false, hideDefeated: !!filters.hideDefeated, reorder: !!filters.reorder};
 }
 
 function writeMastersheetFilters(filters) {
@@ -178,16 +178,30 @@ function buildMastersheetMiniTeam(index, variant) {
 	}));
 }
 
-function buildMastersheetTrainer(index, folds) {
+function buildMastersheetTrainer(index, folds, reorder) {
 	var trainer = TRAINER_ORDER[index];
 	var variant = getTrainerVariant(trainer);
 	var defeated = isTrainerDefeated(index);
 	var card = $('<div class="ms-trainer"></div>').attr("data-index", index)
 		.toggleClass("ms-trainer-defeated", defeated).toggleClass("ms-trainer-route", !!trainer.route);
-	// Tapping the header row (anywhere but the name, which opens the fight, and the team picker)
-	// folds the trainer's team.
+	// Tapping the header row (anywhere but the name, which opens the fight, the team picker and the
+	// reorder arrows) folds the trainer's team.
 	var head = $('<div class="ms-trainer-head sheet-fold-head" role="button" tabindex="0"></div>').appendTo(card);
 	var fold = head;
+	if (typeof buildTrainerSprites === "function") head.append(buildTrainerSprites(trainer, "ms-trainer-sprite"));
+	// Reordering: a route trainer moves among those before the same fight.
+	if (reorder && trainer.route) {
+		var group = getRouteGroup(index);
+		var at = group.indexOf(index);
+		var arrow = function (step, label, text) {
+			return $('<button type="button" class="ms-move"></button>').text(text).attr({title: label, "aria-label": label + ": " + trainer.name})
+				.prop("disabled", at + step < 0 || at + step >= group.length)
+				.click(function () {
+					moveRouteTrainer(index, step);
+				});
+		};
+		head.append($('<span class="ms-move-buttons"></span>').append(arrow(-1, "Move earlier", "\u25B2"), arrow(1, "Move later", "\u25BC")));
+	}
 	$('<button type="button" class="ms-trainer-name" title="Fight this trainer in the calc"></button>').text(trainer.name)
 		.click(function () {
 			openTrainerInCalc(index);
@@ -324,7 +338,7 @@ function buildMastersheetArcBody(section, filters, query) {
 			inside.append(buildMastersheetWild(area, caught, nuzlocke));
 		});
 		trainers.forEach(function (index) {
-			inside.append(buildMastersheetTrainer(index, folds));
+			inside.append(buildMastersheetTrainer(index, folds, filters.reorder));
 		});
 	});
 	if (!body.children().length) body.append('<p class="ms-empty">Nothing here with these filters.</p>');
@@ -350,10 +364,40 @@ function renderMastersheet(container) {
 				rebuild();
 			}), document.createTextNode(label));
 	};
-	tools.append(toggle("routes", "Route trainers"), hasWildData() ? toggle("wild", "Wild Pokémon") : "", toggle("hideDefeated", "Hide defeated"));
+	tools.append(toggle("routes", "Route trainers"), hasWildData() ? toggle("wild", "Wild Pokémon") : "", toggle("hideDefeated", "Hide defeated"),
+		toggle("reorder", "Reorder"));
+	// While reordering: your changes, to send in (they become everyone's order), or undo.
+	var orderTools = $('<div class="ms-order-tools"></div>').appendTo(container);
+	var showOrderTools = function () {
+		var changes = describeTrainerOrderFixes();
+		orderTools.empty().toggle(!!filters.reorder);
+		if (!filters.reorder) return;
+		orderTools.append($('<span class="ms-order-note"></span>').text(filters.routes ?
+			"\u25B2 / \u25BC move a route trainer earlier or later among those before the same fight, saved for this mode." :
+			"Turn on Route trainers to reorder them."));
+		if (!changes) return;
+		orderTools.append(
+			$('<button type="button" class="ms-order-copy">Copy order changes</button>').click(function () {
+				var button = $(this);
+				var done = function () {
+					button.text("Copied \u2713");
+					setTimeout(function () {
+						button.text("Copy order changes");
+					}, 1500);
+				};
+				if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(changes).then(done, function () {
+					window.prompt("Copy your order changes:", changes);
+				});
+				else window.prompt("Copy your order changes:", changes);
+			}),
+			$('<button type="button" class="ms-order-reset">Reset order</button>').click(function () {
+				if (window.confirm("Put the trainers back in the calc's own order for this mode?")) resetTrainerOrderFixes();
+			}));
+	};
 	var list = $('<div class="ms-arcs"></div>').appendTo(container);
 
 	var rebuild = function () {
+		showOrderTools();
 		var query = $.trim(search.val()).toLowerCase();
 		list.empty();
 		jump.empty();
@@ -393,6 +437,27 @@ function renderMastersheet(container) {
 		details[0].scrollIntoView({block: "start"});
 	});
 	rebuild();
+	// After a move: the arcs again in the new order, the moved trainer where you can see it.
+	$(document).off("trainer:order.mastersheet").on("trainer:order.mastersheet", function (event) {
+		if (!$.contains(document, container[0])) return;
+		var openArcs = list.children("details[open]").map(function () {
+			return this.id;
+		}).get();
+		var focused = $(document.activeElement).closest(".ms-trainer").attr("data-index");
+		var step = $(document.activeElement).hasClass("ms-move") ? $(document.activeElement).index() : -1;
+		sections = buildMastersheetArcs();
+		rebuild();
+		openArcs.forEach(function (id) {
+			var details = $("#" + id);
+			if (!details.prop("open")) details.prop("open", true).trigger("toggle");
+		});
+		var card = list.find('.ms-trainer[data-index="' + focused + '"]');
+		if (card.length) {
+			card[0].scrollIntoView({block: "center"});
+			var again = card.find(".ms-move").eq(step);
+			(again.length && !again.prop("disabled") ? again : card.find(".ms-trainer-name")).focus();
+		}
+	});
 	// The arc you are in, at the top.
 	setTimeout(function () {
 		var here = $("#ms-arc-" + current);

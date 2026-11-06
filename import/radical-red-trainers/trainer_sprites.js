@@ -1,0 +1,106 @@
+#!/usr/bin/env node
+'use strict';
+/*
+ * Generates src/js/data/trainer_sprites/radicalred.js: a Pokémon Showdown trainer sprite for each Radical Red
+ * trainer (by its id in gTrainers), shown beside the trainer in the calc. The images are Showdown's
+ * (play.pokemonshowdown.com/sprites/trainers/<name>.png); only their names are stored here.
+ *
+ * Usage: node import/radical-red-trainers/trainer_sprites.js <Showdown avatar names, one a line>
+ * (the names in pokemon-showdown's server/chat-commands/avatars.tsx).
+ *
+ * Bosses and other named trainers (gym leaders, the Elite Four, Rocket admins...) get their own sprite
+ * (FireRed/LeafGreen's, else the plain one, else Gold/Silver's); everyone else their class's, the
+ * female one where there is one.
+ */
+
+const fs = require('fs');
+const path = require('path');
+
+const TRAINERS = path.resolve(__dirname, 'route_trainers.json');
+const OUTPUT = path.resolve(__dirname, '../../src/js/data/trainer_sprites/radicalred.js');
+
+// The game's class names (as route_trainers.json has them) and the Showdown sprite of each, [male, female].
+const CLASSES = {
+	'Team Rocket': ['teamrocketgruntm-gen3', 'teamrocketgruntf-gen3'],
+	'Picnicker': ['picnicker-gen3', 'picnicker-gen3'],
+	'Bird Keeper': ['birdkeeper-gen3', 'birdkeeper-gen3'],
+	'Youngster': ['youngster-gen3', 'youngster-gen3'],
+	'Bug Catcher': ['bugcatcher-gen3', 'bugcatcher-gen3'],
+	'SwimmerM': ['swimmerm-gen3', 'swimmerm-gen3'],
+	'SwimmerF': ['swimmerf-gen3', 'swimmerf-gen3'],
+	'Lass': ['lass-gen3', 'lass-gen3'],
+	'Biker': ['biker-gen3', 'biker-gen3'],
+	'Ace Trainer': ['acetrainer-gen3', 'acetrainerf-gen3'],
+	'Channeler': ['channeler-gen3', 'channeler-gen3'],
+	'Hiker': ['hiker-gen3', 'hiker-gen3'],
+	'Camper': ['camper-gen3', 'camper-gen3'],
+	'Fisherman': ['fisherman-gen3', 'fisherman-gen3'],
+	'Black Belt': ['blackbelt-gen3', 'blackbelt-gen3'],
+	'Scientist': ['scientist-gen3', 'scientist-gen3'],
+	'Pokémaniac': ['pokemaniac-gen3', 'pokemaniac-gen3'],
+	'Cue Ball': ['cueball-gen3', 'cueball-gen3'],
+	'Beauty': ['beauty-gen3', 'beauty-gen3'],
+	'Juggler': ['juggler-gen3', 'juggler-gen3'],
+	'Gentleman': ['gentleman-gen3', 'gentleman-gen3'],
+	'Gambler': ['gamer-gen3', 'gamer-gen3'],
+	'Crush Girl': ['crushgirl-gen3', 'crushgirl-gen3'],
+	'Crush Kin': ['crushkin-gen3', 'crushkin-gen3'],
+	'Sailor': ['sailor-gen3', 'sailor-gen3'],
+	'Super Nerd': ['supernerd-gen3', 'supernerd-gen3'],
+	'Burglar': ['burglar-gen3', 'burglar-gen3'],
+	'Tamer': ['tamer-gen3', 'tamer-gen3'],
+	'Ruin Mamoac': ['ruinmaniac-gen3', 'ruinmaniac-gen3'], // (sic, the game's spelling)
+	'Psychic': ['psychic-gen3', 'psychicf-gen3'],
+	'Twins': ['twins-gen3', 'twins-gen3'],
+	'Young Couple': ['youngcouple-gen3', 'youngcouple-gen3'],
+	'Sis And Bro': ['sisandbro-gen3', 'sisandbro-gen3'],
+	'PkMn Ranger': ['pokemonranger-gen3', 'pokemonrangerf-gen3'],
+	'Painter': ['painter-gen3', 'painter-gen3'],
+	'Engineer': ['engineer-gen3', 'engineer-gen3'],
+	'PkMn Breeder': ['pokemonbreeder-gen3', 'pokemonbreederf-gen3frlg'],
+	'Aroma Lady': ['aromalady-gen3', 'aromalady-gen3'],
+	'Rocker': ['rocker-gen3', 'rocker-gen3'],
+	'Cool Couple': ['acetrainercouple-gen3', 'acetrainercouple-gen3'],
+	'Tuber': ['tuber-gen3', 'tuberf-gen3'],
+	'Lady': ['lady-gen3', 'lady-gen3'],
+	'Pokéfan': ['pokefan-gen3', 'pokefanf-gen3'],
+	'School Kid': ['schoolkid-gen3', 'schoolkidf-gen3'],
+	'Dragon Tamer': ['dragontamer-gen3', 'dragontamer-gen3'],
+	'Professor': ['oak-gen3', 'oak-gen3'],
+	'PkMn Prof.': ['oak-gen3', 'oak-gen3'],
+	'Boss': ['giovanni-gen3', 'giovanni-gen3'],
+	'Rival': ['blue-gen3', 'blue-gen3'],
+	'Player': ['red-gen3', 'leaf-gen3']
+};
+// Named trainers spelt otherwise in the game, or with a sprite of their own here.
+const NAMES = {'LanceRe': 'lance-gen3', 'Terry': 'blue-gen3champion'};
+// Classes whose trainers are looked up by their own name first.
+const NAMED_CLASSES = ['Leader', 'Elite Four', 'Champion', 'Rocket Admin', 'PkMn Trainer', 'Boss', 'Rival', 'Player',
+	'Professor', 'PkMn Prof.', 'Friendly', 'Dumbass', 'Gatekeeper'];
+
+function main(avatarFile) {
+	const avatars = new Set(fs.readFileSync(avatarFile, 'utf8').split(/\s+/).filter(Boolean));
+	const trainers = JSON.parse(fs.readFileSync(TRAINERS, 'utf8'));
+	const byName = name => {
+		if (NAMES[name]) return NAMES[name];
+		const id = name.toLowerCase().replace(/[^a-z0-9]/g, '');
+		return [id + '-gen3', id, id + '-gen2'].find(n => avatars.has(n)) || '';
+	};
+	const sprites = {};
+	const missing = {};
+	trainers.forEach(trainer => {
+		let sprite = '';
+		if (NAMED_CLASSES.includes(trainer.className)) sprite = byName(trainer.name);
+		if (!sprite && CLASSES[trainer.className]) sprite = CLASSES[trainer.className][trainer.female ? 1 : 0];
+		if (sprite && !avatars.has(sprite)) throw new Error('No Showdown sprite ' + sprite);
+		if (sprite) sprites[trainer.id] = sprite;
+		else missing[trainer.className + ' ' + trainer.name] = true;
+	});
+	fs.writeFileSync(OUTPUT, '/* Generated by import/radical-red-trainers/trainer_sprites.js; do not edit by hand. Each Radical\n' +
+		' * Red trainer\'s Pokémon Showdown sprite name, by its id in the game\'s trainer table (the trainerIds of\n' +
+		' * TRAINER_ORDER). */\n' +
+		'var TRAINER_SPRITES = ' + JSON.stringify(sprites) + ';\n');
+	console.log(`${Object.keys(sprites).length} of ${trainers.length} trainers have a sprite; none for: ${Object.keys(missing).join(', ')}`);
+}
+
+main(process.argv[2]);

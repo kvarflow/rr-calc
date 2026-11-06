@@ -62,7 +62,7 @@ function makeServiceWorker(pages) {
 	const swPath = path.resolve(rootDir, 'dist', 'sw.js');
 	const sw = fs.readFileSync(swPath, 'utf8')
 		.replace('"__VERSION__"', JSON.stringify(version))
-		.replace('__PRECACHE__', JSON.stringify(list, null, '\t'));
+		.replace('var PRECACHE = __PRECACHE__;', 'var PRECACHE = ' + JSON.stringify(list, null, '\t') + ';');
 	fs.writeFileSync(swPath, sw);
 	console.log('Service worker ' + version + ': ' + list.length + ' files for offline use');
 }
@@ -125,11 +125,19 @@ function loadGames() {
 function writeOfflineAssets() {
 	const urls = new Set();
 	const sandbox = {};
-	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/trainer_sprites.js'), 'utf8'), sandbox);
-	for (const file of Object.values(sandbox.TRAINER_SPRITES)) urls.add(sandbox.TRAINER_SPRITE_BASE + file);
+	// Trainer pictures: each game's sprite names (data/trainer_sprites/<game id>.js) under trainer_controls.js's address.
+	const controls = fs.readFileSync(path.resolve(rootDir, 'src/js/trainer_controls.js'), 'utf8');
+	const spriteBase = /var TRAINER_SPRITE_URL = "([^"]+)"/.exec(controls)[1];
+	for (const game of loadGames().filter(g => g.features.trainerSprites)) {
+		const file = path.resolve(rootDir, 'src/js/data/trainer_sprites/' + game.id + '.js');
+		if (!fs.existsSync(file)) continue;
+		const sprites = {};
+		vm.runInNewContext(fs.readFileSync(file, 'utf8'), sprites);
+		for (const name of Object.values(sprites.TRAINER_SPRITES)) urls.add(spriteBase + name + '.png');
+	}
 	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/item_icons.js'), 'utf8'), sandbox);
 	for (const file of Object.values(sandbox.ITEM_ICONS)) urls.add(sandbox.ITEM_ICON_BASE + file);
-	const oak = /var OAK_SPRITE_URL = "([^"]+)"/.exec(fs.readFileSync(path.resolve(rootDir, 'src/js/trainer_controls.js'), 'utf8'));
+	const oak = /var OAK_SPRITE_URL = "([^"]+)"/.exec(controls);
 	if (oak) urls.add(oak[1]);
 	const list = [...urls].sort();
 	fs.writeFileSync(path.resolve(rootDir, 'dist/offline-assets.json'), JSON.stringify({files: list}, null, '\t') + '\n');
@@ -147,13 +155,9 @@ function renderGamePage(template, game, mode, testGame) {
 			(m.id === mode.id ? ' checked="checked"' : '') + ' /><label class="btn ' + position + '" for="' + m.id + '">' +
 			htmlText(m.label) + '</label>\n';
 	}).join('');
-	// The mode's own sets, then Showdown's for the other generations (its own generation's only when
-	// the mode has none).
-	let sets = mode.sets ? script('js/data/sets/' + mode.sets + '.js') : '';
-	for (let gen = 9; gen >= 1; gen--) {
-		if (gen === game.gen && mode.sets) continue;
-		sets += script('js/data/sets/gen' + gen + '.js');
-	}
+	// The mode's own sets, or Showdown's for its generation when it has none. The page never changes
+	// generation, so no other generation's sets are loaded (they were half of what a page loaded).
+	const sets = script('js/data/sets/' + (mode.sets || 'gen' + game.gen) + '.js');
 	const gameData = (testGame ? '    <script type="text/javascript">GAMES.push(' + JSON.stringify(game) + ');</script>\n' : '') +
 		(game.data ? script('js/data/games/' + game.data + '.js') : '');
 	const links = game.links || {};
@@ -168,8 +172,11 @@ function renderGamePage(template, game, mode, testGame) {
 		SETS_SCRIPTS: sets,
 		GAME_DATA_SCRIPTS: gameData,
 		// A game with no boss fights yet: no trainers, and no trainer panel.
-		TRAINERS_SCRIPTS: mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') + script('js/data/trainer_sprites.js') :
-			'    <script type="text/javascript">var TRAINER_ORDER = [];</script>\n',
+		TRAINERS_SCRIPTS: (mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') :
+			'    <script type="text/javascript">var TRAINER_ORDER = [];</script>\n') +
+			(game.features.trainerSprites ? script('js/data/trainer_sprites/' + game.id + '.js') : '') +
+			(game.features.trainerOrderFixes ? script('js/data/trainer_walk/' + game.id + '.js') + script('js/data/trainer_order_fixes/' + game.id + '.js') : '') +
+			(game.features.genders ? script('js/data/genders/' + game.id + '.js') : ''),
 		DEX_LINK: links.dex ? '        <li><a class="button" href="' + links.dex + '">Pok&eacute;dex</a></li>\n' : '',
 		PLAY_LINK: links.play ? '    <ul class="nav nav-play">\n        <li><a class="button greenbutton nav-first nav-last" href="' +
 			links.play + '">Play</a></li>\n    </ul>\n' : '',

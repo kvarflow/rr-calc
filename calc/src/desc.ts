@@ -130,7 +130,8 @@ export function getRecovery(
   if (move.named('G-Max Finale')) {
     recovery[0] = recovery[1] = Math.round(attacker.maxHP() / 6);
   }
-  if (attacker.hasAbility('Parasitic Waste') && move.named('Gunk Shot', 'Sludge Bomb', 'Sludge Wave', 'Sludge', 'Poison Jab', 'Cross Poison')) {
+  if (attacker.hasAbility('Parasitic Waste') &&
+    move.named('Gunk Shot', 'Sludge Bomb', 'Sludge Wave', 'Sludge', 'Poison Jab', 'Cross Poison')) {
     move.drain = [1, 2];
   }
 
@@ -590,7 +591,7 @@ function getEndOfTurn(
     }
   } else if (
     (defender.hasStatus('slp') || defender.hasAbility('Comatose')) &&
-    attacker.hasAbility('isBadDreams') &&
+    attacker.hasAbility('Bad Dreams') &&
     !defender.hasAbility('Magic Guard')
   ) {
     damage -= Math.floor(defender.maxHP() / 8);

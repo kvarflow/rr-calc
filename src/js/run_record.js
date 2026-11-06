@@ -109,17 +109,57 @@ function recordFrag(trainerIndex, slot, added) {
 // Marks the Pokémon in Pokémon 1 as fainted, to the Pokémon in Pokémon 2, or revives it.
 function toggleYourFaint() {
 	var setId = $("#p1 input.set-selector").val();
+	if (!getRunKey(setId)) return;
+	var fainted = !getRunMon(setId).fainted;
+	var foe = splitSetId($("#p2 input.set-selector").val() || " ()").pokemonName;
+	setYourFaint(setId, fainted, fainted ? (($("#trainer-name").text() || "A trainer") + "'s " + foe) : "",
+		fainted ? currentTrainerIndex : undefined);
+}
+
+// One of your sets fainted (or is revived): the run record, and the Box's Fainted section (it
+// goes back where it was when revived).
+function setYourFaint(setId, fainted, by, at, from) {
 	var key = getRunKey(setId);
 	if (!key) return;
 	var record = readRunRecord();
 	var mon = record.mons[key] = record.mons[key] || {};
 	mon.name = splitSetId(setId).pokemonName;
-	mon.fainted = !mon.fainted;
-	var foe = splitSetId($("#p2 input.set-selector").val() || " ()").pokemonName;
-	mon.faintedBy = mon.fainted ? (($("#trainer-name").text() || "A trainer") + "'s " + foe) : "";
-	mon.faintedAt = mon.fainted ? currentTrainerIndex : undefined;
+	if (fainted && !mon.fainted) {
+		var layout = resolveBoxLayout(readCustomSets(), readBoxLayout());
+		mon.faintedFrom = from || ["team", "box", "box2"].filter(function (section) {
+			return layout[section].indexOf(setId) !== -1;
+		})[0] || "box";
+	}
+	mon.fainted = fainted;
+	mon.faintedBy = fainted ? by || mon.faintedBy || "" : "";
+	mon.faintedAt = fainted ? at : undefined;
 	writeRunRecord(record);
+	if (typeof moveSetsToSection === "function") {
+		var section = fainted ? "fainted" : mon.faintedFrom || "box";
+		var current = resolveBoxLayout(readCustomSets(), readBoxLayout());
+		if ((current[section] || []).indexOf(setId) === -1) {
+			moveSetsToSection([setId], section);
+			renderBox();
+		}
+	}
 }
+
+// Every set the run has as fainted goes to the Fainted section (after a .sav import puts them
+// back in the team or a box, and for runs from before the section). Returns how many moved.
+function moveFaintedToSection() {
+	if (typeof moveSetsToSection !== "function") return 0;
+	var record = readRunRecord();
+	var layout = resolveBoxLayout(readCustomSets(), readBoxLayout());
+	var dead = [].concat(layout.team, layout.box, layout.box2).filter(function (setId) {
+		return getRunMon(setId, record).fainted;
+	});
+	if (dead.length) moveSetsToSection(dead, "fainted");
+	return dead.length;
+}
+
+$(document).on("box:faintedMoved", function (event, setId, fainted, from) {
+	if (getRunMon(setId).fainted !== fainted) setYourFaint(setId, fainted, fainted ? "" : "", undefined, from);
+});
 
 // Where the run stands: how far it got and how many of your team are still standing.
 function summarizeRun() {
@@ -257,4 +297,5 @@ $(document).ready(function () {
 	$(document).on("run:changed box:rendered", markFaintedSprites);
 	renderRunRecord();
 	markFaintedSprites();
+	if (moveFaintedToSection()) renderBox();
 });
