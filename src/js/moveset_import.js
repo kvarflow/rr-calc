@@ -296,9 +296,10 @@ function addToDex(poke, customsets) {
 	}
 }
 
-// Every generation's set list; imported sets are added to all of them.
+// Every generation's set list (SETDEX, shared_controls.js: empty for one the page doesn't load);
+// imported sets are added to all of them.
 function getAllSetdexes() {
-	return [SETDEX_SV, SETDEX_SS, SETDEX_SM, SETDEX_XY, SETDEX_BW, SETDEX_DPP, SETDEX_ADV, SETDEX_GSC, SETDEX_RBY];
+	return SETDEX.slice(1);
 }
 
 function updateDex(customsets) {

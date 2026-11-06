@@ -6,7 +6,7 @@
 
 function updateItemInfo(panel) {
 	var info = panel.find(".item-info");
-	if (!info.is(":visible")) return;
+	if (!isShown(info)) return; // open, even on a tab not showing
 	var item = panel.find("select.item").val() || "";
 	info.empty().append($("<b></b>").text(item ? item + ": " : ""),
 		document.createTextNode(ITEM_DESCRIPTIONS[item] || (item ? "No description available." : "No item.")));
@@ -21,7 +21,7 @@ $(document).ready(function () {
 		var info = $('<div class="item-info" role="note"></div>').hide();
 		$('<button type="button" class="ability-help item-help" aria-expanded="false" title="What does this item do?">?</button>')
 			.click(function () {
-				var open = !info.is(":visible");
+				var open = !isShown(info);
 				info.toggle(open);
 				$(this).attr("aria-expanded", open);
 				updateItemInfo(panel);

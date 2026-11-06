@@ -11,7 +11,7 @@ var ABILITY_CALC_TIPS = {
 
 function updateAbilityInfo(panel) {
 	var info = panel.find(".ability-info");
-	if (!info.is(":visible")) return;
+	if (!isShown(info)) return; // open, even on a tab not showing
 	var ability = panel.find("select.ability").val() || "";
 	info.empty().append($("<b></b>").text(ability ? ability + ": " : ""),
 		document.createTextNode(ABILITY_DESCRIPTIONS[ability] || (ability ? "No description available." : "No ability.")));
@@ -27,7 +27,7 @@ $(document).ready(function () {
 		var info = $('<div class="ability-info" role="note"></div>').hide();
 		$('<button type="button" class="ability-help" aria-expanded="false" title="What does this ability do?">?</button>')
 			.click(function () {
-				var open = !info.is(":visible");
+				var open = !isShown(info);
 				info.toggle(open);
 				$(this).attr("aria-expanded", open);
 				updateAbilityInfo(panel);

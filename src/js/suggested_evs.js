@@ -14,7 +14,6 @@
 
 var SEV_STATS = ["hp", "at", "df", "sa", "sd", "sp"];
 var SEV_CALC_STAT = {hp: "hp", at: "atk", df: "def", sa: "spa", sd: "spd", sp: "spe"};
-var SEV_LABELS = {hp: "HP", at: "Attack", df: "Defense", sa: "Sp. Atk", sd: "Sp. Def", sp: "Speed"};
 var SEV_MAX_STAT = 252;
 var SEV_MAX_TOTAL = 510;
 // The EV amounts tried (multiples of 4: the game counts a stat point per 4 EVs).
@@ -404,18 +403,19 @@ function getTailoredKey(pokemon, fight) {
 		pokemon.moves.map(function (move) {
 			return move.name;
 		}), pokemon.species.baseStats, pokemon.species.types, fight.key, $("#trickroom").prop("checked"),
-		$("input:radio[name='weather']:checked").val(), $("input:checkbox[name='terrain']:checked").val(), battleSpeedMultiplier.p1]);
+		$("input[type=radio][name='weather']:checked").val(), $("input[type=checkbox][name='terrain']:checked").val(), battleSpeedMultiplier.p1]);
 }
 
 function renderSpreadColumn(column, spread) {
+	var panel = $("#p1");
 	SEV_STATS.forEach(function (stat) {
-		var cell = $("#p1 tr." + stat + " .sev-" + column);
-		var current = ~~$("#p1 ." + stat + " .evs").val();
+		var cell = panelFind(panel, "tr." + stat + " .sev-" + column);
+		var current = ~~panelFind(panel, "." + stat + " .evs").val();
 		cell.text(spread ? spread[stat] : "")
 			.toggleClass("sev-zero", !!spread && !spread[stat])
 			.toggleClass("sev-same", !!spread && !!spread[stat] && spread[stat] === current);
 	});
-	$("#p1 .sev-use-" + column).prop("disabled", !spread);
+	panelFind(panel, ".sev-use-" + column).prop("disabled", !spread);
 }
 
 function renderSuggestions() {

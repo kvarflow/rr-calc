@@ -62,7 +62,7 @@ function makeServiceWorker(pages) {
 	const swPath = path.resolve(rootDir, 'dist', 'sw.js');
 	const sw = fs.readFileSync(swPath, 'utf8')
 		.replace('"__VERSION__"', JSON.stringify(version))
-		.replace('__PRECACHE__', JSON.stringify(list, null, '\t'));
+		.replace('var PRECACHE = __PRECACHE__;', 'var PRECACHE = ' + JSON.stringify(list, null, '\t') + ';');
 	fs.writeFileSync(swPath, sw);
 	console.log('Service worker ' + version + ': ' + list.length + ' files for offline use');
 }
@@ -127,13 +127,9 @@ function renderGamePage(template, game, mode, testGame) {
 			(m.id === mode.id ? ' checked="checked"' : '') + ' /><label class="btn ' + position + '" for="' + m.id + '">' +
 			htmlText(m.label) + '</label>\n';
 	}).join('');
-	// The mode's own sets, then Showdown's for the other generations (its own generation's only when
-	// the mode has none).
-	let sets = mode.sets ? script('js/data/sets/' + mode.sets + '.js') : '';
-	for (let gen = 9; gen >= 1; gen--) {
-		if (gen === game.gen && mode.sets) continue;
-		sets += script('js/data/sets/gen' + gen + '.js');
-	}
+	// The mode's own sets, or Showdown's for its generation when it has none. The page never changes
+	// generation, so no other generation's sets are loaded (they were half of what a page loaded).
+	const sets = script('js/data/sets/' + (mode.sets || 'gen' + game.gen) + '.js');
 	const gameData = (testGame ? '    <script type="text/javascript">GAMES.push(' + JSON.stringify(game) + ');</script>\n' : '') +
 		(game.data ? script('js/data/games/' + game.data + '.js') : '');
 	const links = game.links || {};

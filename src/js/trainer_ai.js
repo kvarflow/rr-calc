@@ -88,7 +88,6 @@ var POWDER_MOVES = ["Spore", "Sleep Powder", "Stun Spore", "Poison Powder", "Rag
 var GRAVITY_BANNED = ["Fly", "Bounce", "Sky Drop", "High Jump Kick", "Jump Kick", "Splash", "Magnet Rise", "Telekinesis", "Flying Press"];
 var CHARGE_MOVES = ["Razor Wind", "Sky Attack", "Skull Bash", "Meteor Beam", "Freeze Shock", "Ice Burn", "Geomancy", "Solar Beam",
 	"Solar Blade", "Fly", "Dig", "Dive", "Bounce", "Phantom Force", "Shadow Force", "Sky Drop", "Electro Shot"];
-var HEX_MOVES = ["Hex", "Infernal Parade", "Bitter Malice", "Barb Barrage"];
 // Radical Red's DoubleDamageWithStatusMoveInMovesetThatAffects table.
 var DOUBLE_DAMAGE_MOVES = ["Bitter Malice", "Infernal Parade", "Hex", "Venoshock"];
 // The moves Sheer Force boosts (Radical Red's table), which then have no secondary effect.
@@ -124,9 +123,6 @@ var CLEAR_BODY_ABILITIES = ["Clear Body", "White Smoke", "Full Metal Body"];
 var STAT_DROP_SELF_EFFECTS = [E.SUPERPOWER, E.OVERHEAT];
 var FIXED_DAMAGE_EFFECTS = [E.LEVEL_DAMAGE, E.SUPER_FANG, E.DRAGON_RAGE, E.SONICBOOM, E.PSYWAVE, E.ENDEAVOR, E.PAIN_SPLIT];
 var SET_STATUS_EFFECTS = [E.SLEEP, E.TOXIC, E.POISON, E.PARALYZE, E.WILL_O_WISP, E.YAWN];
-var STAT_LOWER_EFFECTS = [E.ATTACK_DOWN, E.DEFENSE_DOWN, E.SPEED_DOWN, E.SPECIAL_ATTACK_DOWN, E.SPECIAL_DEFENSE_DOWN,
-	E.ACCURACY_DOWN, E.EVASION_DOWN, E.ATTACK_DOWN_2, E.DEFENSE_DOWN_2, E.SPEED_DOWN_2, E.SPECIAL_ATTACK_DOWN_2,
-	E.SPECIAL_DEFENSE_DOWN_2, E.ACCURACY_DOWN_2, E.EVASION_DOWN_2, E.TICKLE, E.PLAY_NICE, E.VENOM_DRENCH];
 // The moves that make a set "boosting" for its fighting style, as Radical Red's own code lists them:
 // unlike CFRU master, attacks that raise the user's Attack count (Power-Up Punch, Metal Claw,
 // Meteor Mash, Fell Stinger), and the effects no Radical Red boosting move uses are left out.
@@ -218,7 +214,6 @@ var TWO_TO_FIVE_HIT_MOVES = ["Arm Thrust", "Barrage", "Bone Rush", "Bullet Seed"
 	"Surging Strikes", "Beat Up", "Triple Dive"];
 var TWO_HIT_MOVES = ["Bonemerang", "Double Hit", "Double Iron Bash", "Double Kick", "Dragon Darts", "Dual Chop", "Dual Wingbeat",
 	"Gear Grind", "Twineedle", "Twin Beam", "Tachyon Cutter"];
-var STAT_INDEX = {atk: 0, def: 1, spe: 2, spa: 3, spd: 4, acc: 5, eva: 6};
 
 function has(list, value) {
 	return list.indexOf(value) !== -1;
@@ -312,10 +307,6 @@ AITurn.prototype.predicted = function (side) {
 /* ---------------------------------------------------------------------------------------------
  * Facts about one side.
  */
-function sideHasAbility(side, names) {
-	return has(names, side.ability);
-}
-
 function ignoresAbilities(atk) {
 	return has(MOLD_BREAKERS, atk.ability);
 }
@@ -424,10 +415,6 @@ function isUsable(side, i, field) {
 
 function isSelfTargeting(move) {
 	return (move.target & MOVE_TARGET_USER) !== 0;
-}
-
-function isStatusAffected(def) {
-	return !!def.status;
 }
 
 function needsCharge(atk, move, field) {
@@ -966,10 +953,6 @@ function styleOf(turn, side) {
 
 function isSweeper(style) {
 	return style === STYLE.KILL || style === STYLE.SETUP_STATS || style === STYLE.SETUP_STATUS;
-}
-
-function isTeamSupport(style) {
-	return style === STYLE.BATON_PASS || style === STYLE.CLERIC || style === STYLE.SUPPORT_SCREENS || style === STYLE.PHAZING;
 }
 
 function isDamager(style) {
@@ -4257,7 +4240,7 @@ function countFoeMonsLeft() {
 function readSideState(suffix) {
 	return {
 		sr: $("#sr" + suffix).prop("checked"),
-		spikes: ~~$("input:radio[name='spikes" + suffix + "']:checked").val(),
+		spikes: ~~$("input[type=radio][name='spikes" + suffix + "']:checked").val(),
 		toxicSpikes: 0,
 		stickyWeb: false,
 		reflect: $("#reflect" + suffix).prop("checked"),

@@ -502,6 +502,18 @@ function labelDamageDealt(card, mons) {
 	});
 }
 
+// Many events can follow one change (a new trainer fires five): the strips are rebuilt once, before
+// the next frame.
+var quickStripsQueued = false;
+function queueQuickStrips() {
+	if (quickStripsQueued) return;
+	quickStripsQueued = true;
+	(window.requestAnimationFrame || setTimeout)(function () {
+		quickStripsQueued = false;
+		renderQuickStrips();
+	});
+}
+
 function renderQuickStrips() {
 	if (!$("html").hasClass("small-screen")) return;
 	var quick = $("#ss-quick").empty();
@@ -803,7 +815,7 @@ $(document).ready(function () {
 	$(document).on("calc:done", function (event, p1, p2) {
 		if ($("html").hasClass("small-screen")) compactResults(p1.name, p2.name);
 	});
-	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered box:ranked run:changed", renderQuickStrips);
+	$(document).on("calc:done trainer:shown trainer:active trainer:progress customsets:changed colorcoding:changed box:rendered box:ranked run:changed", queueQuickStrips);
 	applySmallScreenLayout();
 	renderQuickStrips();
 	// The page may have calculated before this script was ready (One vs One does).

@@ -85,7 +85,7 @@ function releaseBattleEffect() {
 	$("#battle-effect-lock").hide();
 	if (locked.is("#doubles-format")) $("#singles-format").prop("checked", true).change();
 	if (hadWeather) $("#clear").prop("checked", true).change();
-	if (hadTerrain) $("input:checkbox[name='terrain']").prop("checked", false).first().change();
+	if (hadTerrain) $("input[type=checkbox][name='terrain']").prop("checked", false).first().change();
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (locked.is("#" + effect.id)) $("#" + effect.id).prop("checked", false).change();
 	});
@@ -100,15 +100,15 @@ function applyBattleEffect(text, trainerName) {
 	var weather = firstMatch(EFFECT_WEATHER, text);
 	if (weather) {
 		$("#" + weather.id).prop("checked", true).change();
-		lockFieldInputs($("input:radio[name='weather']"));
+		lockFieldInputs($("input[type=radio][name='weather']"));
 		lockedField.weather = true;
 	}
 	var terrain = firstMatch(EFFECT_TERRAIN, text);
 	if (terrain) {
 		// Terrain boxes are mutually exclusive: the change event must come from the one ticked.
-		$("input:checkbox[name='terrain']").prop("checked", false);
+		$("input[type=checkbox][name='terrain']").prop("checked", false);
 		$("#" + terrain.id).prop("checked", true).change();
-		lockFieldInputs($("input:checkbox[name='terrain']"));
+		lockFieldInputs($("input[type=checkbox][name='terrain']"));
 		lockedField.terrain = true;
 	}
 	EFFECT_TOGGLES.forEach(function (effect) {
@@ -707,13 +707,13 @@ function keepFightField() {
 	if (CARRIED_WEATHER.indexOf(weather) !== -1) fightField.weather = weather;
 	if (terrain) fightField.terrain = terrain;
 	// Only when loading turned it off: weather your Pokémon set since then stays.
-	if (!lockedField.weather && !weather && fightField.weather && !$("input:radio[name='weather']:checked").val()) {
+	if (!lockedField.weather && !weather && fightField.weather && !$("input[type=radio][name='weather']:checked").val()) {
 		lastAutoWeather[1] = fightField.weather;
-		$("input:radio[name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
+		$("input[type=radio][name='weather'][value='" + fightField.weather + "']").prop("checked", true).change();
 	}
-	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input:checkbox[name='terrain']:checked").length) {
+	if (!lockedField.terrain && !terrain && fightField.terrain && !$("input[type=checkbox][name='terrain']:checked").length) {
 		lastAutoTerrain[1] = fightField.terrain;
-		$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
+		$("input[type=checkbox][name='terrain'][value='" + fightField.terrain + "']").prop("checked", true).change();
 	}
 }
 
@@ -886,11 +886,11 @@ function bindTrainerEvents() {
 	$("#reset-trainer").click(confirmNewRun);
 	$("#trainer-mega-form").click(toggleMegaForm);
 	// Turning the kept weather or terrain off (it ran out) stops it coming back.
-	$("input:radio[name='weather']").change(function () {
+	$("input[type=radio][name='weather']").change(function () {
 		if (this.checked && this.value !== fightField.weather) fightField.weather = "";
 	});
-	$("input:checkbox[name='terrain']").change(function () {
-		if (!$("input:checkbox[name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
+	$("input[type=checkbox][name='terrain']").change(function () {
+		if (!$("input[type=checkbox][name='terrain'][value='" + fightField.terrain + "']").prop("checked")) fightField.terrain = "";
 	});
 	$("#trainer-on-top").prop("checked", readSetting(TRAINER_ON_TOP_KEY) === "true").change(function () {
 		writeSetting(TRAINER_ON_TOP_KEY, this.checked);

@@ -9,85 +9,47 @@ var SITE_SETTINGS = [
 	{key: "showCritRates", label: "Show crit chances", hideClass: "hide-crit-rates"}
 ];
 
-// Newest last. Bump the version to show "What's new" again.
-// Versions grouped by what they cover (earlier releases 1.0 to 1.15 were merged into these).
+// Newest last. Bump the version to show "What's new" again; keep each entry to a few short lines.
 var CHANGELOG = [
 	{version: "1.0", notes: [
-		"Team / Box / Trash panel, kept per mode",
-		"Import your party and boxes from a .sav (stats locked; your starter set from it)",
-		"Matchup color coding for your box against Pokémon 2"
-	], fixes: [
-		"Basculin's stripe and Pumpkaboo / Gourgeist sizes from a .sav"
+		"Team / Box panel and .sav import, with matchup colour coding"
 	]},
 	{version: "1.1", notes: [
-		"Previous / Next through every boss fight, with Professor Oak to start a run",
-		"Every rival team for each starter, from the game",
-		"Boss battle effects set and locked on the Field",
-		"“Base form” for a trainer's Mega before it evolves"
-	], fixes: [
-		"A trainer's Hidden Power could change type"
+		"Previous / Next through every boss, rival teams per starter, Professor Oak's new run"
 	]},
 	{version: "1.2", notes: [
-		"Trick Room, Focus Energy, crit chances and Crit buttons",
-		"Range Compare: HP left after several hits",
-		"Export All, copy damage rolls, fold panels, Fight Notes",
-		"A ? beside abilities says what they do"
+		"Crit chances, Range Compare, Export All, Fight Notes and ability info"
 	]},
 	{version: "1.3", notes: [
-		"Small-screen layout (AYN Thor, phones) with Battle, You, Foe, Advanced, Box, Wild and More tabs",
-		"Wild tab: every location's encounters, with Nuzlocke dupes",
-		"Works offline and installs as an app"
-	], fixes: [
-		"On-screen keyboard HP entry; repeated recalculations"
+		"Small-screen layout for the Thor and phones, the Wild tab, offline and install"
 	]},
 	{version: "1.4", notes: [
-		"Trainer AI: how often the foe picks each move, from Radical Red's own AI",
-		"Switching: how often it switches out, to whom, and who comes in after a KO"
-	], fixes: [
-		"The Route 22 rival used the basic AI"
+		"Trainer AI: how likely each move is, and when the foe switches"
 	]},
 	{version: "1.5", notes: [
-		"KO'd / Defeated tracking, arc and game progress, frags and the fainted",
-		"A .sav marks the fights you've won and starts new runs",
-		"Level caps and “Highest Lv” levels follow your progress",
-		"“Skip for now” for fights you can do around a gym"
+		"KO and fight tracking, run progress, level caps from your save"
 	]},
 	{version: "1.6", notes: [
-		"Protean changes type with the move picked",
-		"Echoed Voice, Fury Cutter, Rollout: pick the use in a row",
-		"Rank the box by damage dealt, taken or Speed",
-		"A ? beside items; Loaded Dice counts 5 hits",
-		"Neater small-screen result card and Battle tab"
+		"Protean, consecutive-use moves, box ranking and item info"
 	]},
 	{version: "1.7", notes: [
 		"Trainer AI: the rest of Radical Red's move scoring"
 	]},
 	{version: "1.8", notes: [
-		"Desktop: a modern look (cards, a slim header with the tabs), as on the Thor; Settings > Desktop style switches back to Classic",
-		"Route trainers: every trainer in the game, before the boss they lead to",
-		"Route trainers in the order you walk to them; Reorder on the Mastersheet to fix any",
-		"Trainer sprites on the trainer panel and Mastersheet",
-		"Mastersheet: the whole game in order, with every team and wild Pokémon",
-		"Frag sheet: your run's KOs per Pokémon and arc",
-		"Dex: stats, evolutions, abilities, level-up / TM / tutor / egg moves, locations",
-		"Suggested EVs: a generic spread and one for the arc's boss",
-		"Genders as in the game (for Rivalry); a ♂ / ♀ button on small screens",
-		"Battle tab: the foe's likely switch-in marked on its team (⇄ 75%, ↪ next)",
-		"Battle tab: drag between your team and the Box",
-		"Fainted section in the Box: your dead stay out of the team, boxes and Pok\u00e9mon 1's list, even after a new .sav import",
-		"Draining moves and Shell Bell show what they heal",
-		"Trainer AI: Z-Moves (Hardcore) and the last move cases",
-		"Emulator sync with RetroArch and mGBA",
-		"A game picker, ready for more games"
+		"Every trainer in the order you walk to them, with sprites",
+		"Mastersheet, Frag sheet and Dex",
+		"Suggested EVs, and genders as in the game",
+		"Battle tab: the foe's likely switch-in, and drag between team and Box",
+		"Fainted section: your dead stay out after a .sav import",
+		"Desktop: a modern look (Classic under Settings)"
 	], fixes: [
-		"An Unburden Pok\u00e9mon in your box showed as faster than it is (Speed doubled as if its item were gone)",
-		"Rivalry now weakens moves against the other gender (0.75×)",
-		"Trainer AI treated frostbite as freeze",
-		"The Toxic counter always counted as turn one",
-		"Frostbite, Bad Dreams and Kee / Maranga Berry with multi-hit moves",
-		"Mega Absol's ability; Ability Shield / Clear Amulet / Mirror Herb text",
-		"Status moves listed as Physical in the Dex",
-		"Works with site data blocked (private browsing)"
+		"Rivalry against the other gender, Unburden in the box, frostbite and the Toxic counter"
+	]},
+	{version: "1.9", notes: [
+		"Faster: calculations and trainer changes in about half the time, and half as much to load"
+	], fixes: [
+		"Small screens: Rivalry never applied (genders were read as genderless)",
+		"Small screens: Metronome's use count was ignored on the Battle tab"
 	]}
 ];
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
