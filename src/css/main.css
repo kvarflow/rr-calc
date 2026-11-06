@@ -3784,6 +3784,12 @@ html.sheet-open body {
 .ms-place-folded .ms-place-body {
     display: none;
 }
+/* A folded trainer: the team as small sprites only (and no team picker). */
+.ms-trainer-folded .ms-team,
+.ms-trainer:not(.ms-trainer-folded) .ms-team-mini,
+.ms-trainer-folded .ms-variant {
+    display: none;
+}
 .ms-trainer-folded .ms-trainer-head {
     margin-bottom: 2px;
 }
@@ -4070,6 +4076,13 @@ html.small-screen .sev-notes {
     cursor: default;
 }
 .ms-order-tools {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0 0 8px;
+    font-size: 12px;
+}
 /* An icon before each Pokémon's item (item_icons.js). */
 .item-icon {
     width: 24px;
@@ -4161,8 +4174,7 @@ html.small-screen .sev-notes {
     flex-wrap: wrap;
     align-items: center;
     gap: 6px;
-    margin: 0 0 8px;
-    font-size: 12px;
+    margin-top: 6px;
 }
 .ms-order-note {
     flex: 1 1 200px;
@@ -4269,7 +4281,6 @@ html:not(.small-screen) .move-result-subgroup .btn.ss-threat-ko::before {
 }
 .trainer-team .pokemon-sprite.ss-quick-next-in:not(.ss-quick-switch) {
     outline: 1px dashed #888;
-    margin-top: 6px;
 }
 .backup-list {
     flex: 1 1 12em;
