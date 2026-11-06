@@ -42,6 +42,9 @@ with Radical Red's data read from the game itself.
   layout: Battle, You, Foe, Advanced, Box, Wild, More. Swipe between tabs. Phones held upright put
   the tabs at the bottom.
 - **Desktop** has a modern card layout (Settings → Desktop style switches back to Classic).
+- **Back up / Restore** (Settings → Data): everything the calc keeps in your browser as one
+  file, to keep safe or move to another device. Restoring replaces that browser's data, but keeps
+  its own layout and text size.
 - **Install** it as an app (More → App, or Chrome's ⋮ → Add to Home screen) and it **works
   offline**.
 - **Emulator sync**: your party sent live from mGBA (a Lua script) or RetroArch (a Python

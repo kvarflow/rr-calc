@@ -439,6 +439,7 @@ function buildSettingsCard() {
 		row("Accent", buildAccentPicker()),
 		row("Text size", buildTextSizeSlider()),
 		row("App", buildInstallRow()),
+		typeof buildBackupButtons === "function" ? row("Data", buildBackupButtons()) : $(),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();

@@ -46,7 +46,8 @@ var CHANGELOG = [
 		"Rivalry against the other gender, Unburden in the box, frostbite and the Toxic counter"
 	]},
 	{version: "1.9", notes: [
-		"Faster: calculations and trainer changes in about half the time, and half as much to load"
+		"Faster: calculations and trainer changes in about half the time, and half as much to load",
+		"Back up and restore all your calculator data as a file (Settings → Data)"
 	], fixes: [
 		"Small screens: Rivalry never applied (genders were read as genderless)",
 		"Small screens: Metronome's use count was ignored on the Battle tab"

@@ -2701,6 +2701,7 @@ html.small-screen .ss-segmented .visually-hidden:checked + .btn {
 }
 html.small-screen .ss-settings select,
 html.small-screen .ss-settings #dark-theme-toggle,
+html.small-screen .ss-settings .backup-buttons button,
 html.small-screen .credits button {
     height: 32px;
     padding: 0 12px;
@@ -2743,6 +2744,12 @@ html.small-screen .credits button {
     font-variant-numeric: tabular-nums;
     color: var(--ss-muted, #667085);
 }
+/* Back up / Restore (backup.js). */
+.backup-buttons {
+    display: inline-flex;
+    gap: 6px;
+}
+
 /* Install as an app. */
 .ss-install {
     display: flex;

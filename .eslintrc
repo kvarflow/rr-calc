@@ -50,6 +50,8 @@
         "pokedex": true,
         "createField": false,
         "createPokemon": false,
+        "buildBackupButtons": false,
+        "getLatestVersion": false,
         "SETDEX": false,
         "isShown": false,
         "panelFind": false,
