@@ -74,6 +74,7 @@
         "getGameModeLabels": false,
         "hasGameFeature": false,
         "registerSheet": false,
+        "makeFoldable": false,
         "openTrainerInCalc": false,
         "getStoryIndex": false,
         "formatRankPercent": false,

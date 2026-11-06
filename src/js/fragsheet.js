@@ -195,9 +195,28 @@ function renderFragsheet(container) {
 			}
 			head.append(th);
 		});
-		var body = $("<tbody></tbody>").appendTo(table);
-		sortFragRows(data.rows, columns, sort).forEach(function (row) {
-			var tr = $("<tr></tr>").toggleClass("fs-fainted", row.status === "Fainted" || row.status === "Gone").appendTo(body);
+		// One group per status (Team, Box, Fainted…), in that order, each sorted as chosen; tapping a
+		// group's header folds it.
+		var groups = {};
+		var rows = sortFragRows(data.rows, columns, sort);
+		rows.forEach(function (row) {
+			if (!groups[row.status]) {
+				groups[row.status] = $('<tbody class="fs-group"></tbody>');
+				groups[row.status].rows = 0;
+			}
+			groups[row.status].rows++;
+		});
+		Object.keys(groups).sort(function (a, b) {
+			return FRAG_STATUS_ORDER[a] - FRAG_STATUS_ORDER[b];
+		}).forEach(function (status) {
+			var group = groups[status].appendTo(table);
+			var headRow = $('<tr class="fs-group-head"></tr>').append($("<th></th>").attr("colspan", columns.length)
+				.append($('<span class="fs-group-name"></span>').text(status), $('<span class="fs-group-count"></span>').text(groups[status].rows)))
+				.appendTo(group);
+			makeFoldable(group, headRow, "frags:" + status);
+		});
+		rows.forEach(function (row) {
+			var tr = $("<tr></tr>").toggleClass("fs-fainted", row.status === "Fainted" || row.status === "Gone").appendTo(groups[row.status]);
 			columns.forEach(function (column) {
 				var td = $("<td></td>").toggleClass("fs-numeric", !!column.numeric).appendTo(tr);
 				if (column.key === "sprite") {
