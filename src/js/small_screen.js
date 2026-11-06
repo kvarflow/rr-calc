@@ -427,6 +427,52 @@ function buildInstallRow() {
 			"Or Chrome's \u22EE menu \u2192 Add to Home screen"));
 }
 
+// Inside the Pcalc app (kvarflow/Pcalc): it is always full screen and already installed.
+var SS_IN_PCALC = /\bPcalc\//.test(navigator.userAgent);
+
+// Where the tab bar sits: the bottom in the Pcalc app (in reach of your thumbs on a handheld), the
+// top elsewhere, unless changed in Settings. Upright phones keep theirs at the bottom either way.
+var TABS_POSITION_KEY = "tabsPosition";
+
+function getTabsPosition() {
+	return readSetting(TABS_POSITION_KEY) || (SS_IN_PCALC ? "bottom" : "top");
+}
+
+function applyTabsPosition() {
+	$("html").toggleClass("ss-tabs-bottom", getTabsPosition() === "bottom");
+}
+
+// A sliding selector of radio buttons (segmentedSelector), for settings that aren't page controls.
+function buildChoiceSelector(name, choices, current, onChange) {
+	var group = $('<span role="radiogroup"></span>');
+	choices.forEach(function (choice, i) {
+		var id = name + "-" + choice.value;
+		$('<input type="radio" class="visually-hidden" />').attr({name: name, id: id, value: choice.value})
+			.prop("checked", choice.value === current)
+			.change(function () {
+				if (this.checked) onChange(choice.value);
+			}).appendTo(group);
+		$('<label class="btn btn-small"></label>').attr("for", id).text(choice.label)
+			.toggleClass("btn-left", i === 0).toggleClass("btn-right", i === choices.length - 1).appendTo(group);
+	});
+	return segmentedSelector(group);
+}
+
+function buildTabsSelector() {
+	return buildChoiceSelector("ss-tabs-position", [{value: "top", label: "Top"}, {value: "bottom", label: "Bottom"}],
+		getTabsPosition(), function (value) {
+			writeSetting(TABS_POSITION_KEY, value);
+			applyTabsPosition();
+		});
+}
+
+// Light, Dark or Black (dark-theme-toggle.js; Black is for OLED screens).
+function buildThemeSelector() {
+	$("#dark-theme-toggle").hide();
+	return buildChoiceSelector("ss-theme", [{value: "light", label: "Light"}, {value: "dark", label: "Dark"},
+		{value: "black", label: "Black"}], getCalcTheme(), setCalcTheme);
+}
+
 function buildSettingsCard() {
 	var row = function (title, control) {
 		return $('<div class="ss-setting"></div>').append($('<span class="ss-setting-label"></span>').text(title), control);
@@ -442,10 +488,11 @@ function buildSettingsCard() {
 		row("Mode", segmentedSelector(page.find(".modeSelection"))),
 		row("Damage as", segmentedSelector(page.find(".notationSelection"))),
 		row("Layout", layout),
-		row("Theme", $("#dark-theme-toggle")),
+		row("Theme", typeof setCalcTheme === "function" ? buildThemeSelector() : $("#dark-theme-toggle")),
+		row("Tabs", buildTabsSelector()),
 		row("Accent", buildAccentPicker()),
 		row("Text size", buildTextSizeSlider()),
-		row("App", buildInstallRow()),
+		SS_IN_PCALC ? $() : row("App", buildInstallRow()),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();
@@ -777,8 +824,9 @@ $(document).ready(function () {
 			})
 			.appendTo(tabs);
 	});
-	// Full screen hides the browser's address bar, which otherwise takes part of a small screen.
-	if (document.documentElement.requestFullscreen) {
+	// Full screen hides the browser's address bar, which otherwise takes part of a small screen (the
+	// Pcalc app is always full screen, so not there).
+	if (document.documentElement.requestFullscreen && !SS_IN_PCALC) {
 		$('<button type="button" id="ss-fullscreen" class="ss-tab ss-fullscreen" aria-pressed="false" title="Full screen (hides the address bar)">\u26F6</button>')
 			.click(toggleFullscreen)
 			.appendTo(tabs);
@@ -789,6 +837,7 @@ $(document).ready(function () {
 		});
 	}
 	$(".wrapper").prepend(tabs);
+	applyTabsPosition();
 	// The You and Foe tabs show each stat's value and stage buttons; this shows the full table.
 	$("#p1, #p2").each(function () {
 		var panel = $(this);

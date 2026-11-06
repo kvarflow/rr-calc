@@ -4326,3 +4326,63 @@ html.small-screen .backup-help {
     color: var(--ss-muted);
     opacity: 1;
 }
+
+/* The tab bar at the bottom (Settings > Tabs; the default in the Pcalc app), as upright phones have it. */
+html.small-screen.ss-tabs-bottom .ss-tabs {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 0;
+    padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+    box-shadow: 0 -1px 3px rgba(16, 24, 40, 0.12);
+}
+html.small-screen.ss-tabs-bottom body {
+    padding-bottom: calc(56px + env(safe-area-inset-bottom));
+}
+html.small-screen.ss-tabs-bottom .wrapper {
+    padding-top: 8px;
+}
+
+/* Auto-import of the game's save (save_import.js, in the Pcalc app), under Import / Export. */
+.save-auto {
+    margin-top: 8px;
+    text-align: left;
+}
+.save-auto-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 6px;
+}
+.save-auto-where,
+.save-auto-status,
+.save-auto-help {
+    margin-top: 6px;
+    font-size: 0.9em;
+}
+.save-auto-help {
+    opacity: 0.75;
+}
+.save-auto-bad {
+    color: #d63031;
+}
+html.small-screen .save-auto-actions button {
+    height: 32px;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 13px;
+}
+html.small-screen .save-auto-where,
+html.small-screen .save-auto-status,
+html.small-screen .save-auto-help {
+    font-size: 12px;
+}
+html.small-screen .save-auto-help {
+    color: var(--ss-muted);
+    opacity: 1;
+}

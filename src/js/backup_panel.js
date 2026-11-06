@@ -77,15 +77,12 @@ function restoreBackup(backup) {
 }
 
 function isPcalcApp() {
-	return /\bPcalc\//.test(navigator.userAgent) && typeof window.PcalcNative !== "undefined";
+	return pcalcBridge.available();
 }
 
-// Pcalc's backup folder: a request to the app and its answer (one at a time is all the panel needs).
-var pcalcBackupReply = null;
-
+// Pcalc's backup folder: a request to the app and its answer (pcalc_bridge.js).
 function pcalcBackupRequest(message, callback) {
-	pcalcBackupReply = callback || null;
-	window.PcalcNative.postMessage(JSON.stringify(message));
+	pcalcBridge.request(message, callback);
 }
 
 function backupFileName() {
@@ -188,17 +185,6 @@ function buildPcalcBackupFolder(panel, setStatus) {
 	}).appendTo(restoreRow);
 	$('<div class="backup-help"></div>').text("The app backs up here by itself whenever you leave it (the latest ten are kept). " +
 		"A folder of your own keeps them even if the app is uninstalled.").appendTo(folder);
-	window.PcalcNative.onmessage = function (event) {
-		var reply;
-		try {
-			reply = JSON.parse(event.data);
-		} catch (e) {
-			return;
-		}
-		var callback = pcalcBackupReply;
-		pcalcBackupReply = null;
-		if (callback) callback(reply);
-	};
 	refresh();
 }
 

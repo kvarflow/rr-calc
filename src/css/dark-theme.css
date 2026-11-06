@@ -189,3 +189,16 @@ input.select2-input {
     /* "Slower" is near black in the light theme; on dark cards it needs to show. */
     --ss-dark-slower: #6b6b6b;
 }
+
+/* Black (Settings > Theme on small screens): the dark theme with true black behind everything, for
+   OLED screens such as the AYN Thor's. Cards stay a shade above black so they still stand apart. */
+html.black-theme {
+    --background: #000000;
+    --fieldset-color: #121212;
+    --column-1: #121212;
+    --ss-dark-bg: #000000;
+    --ss-dark-card: #111111;
+    --ss-dark-btn: #1c1c1c;
+    --ss-dark-line: #2a2a2a;
+    --ss-dark-cc-veil: rgba(17, 17, 17, 0.45);
+}

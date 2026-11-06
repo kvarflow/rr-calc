@@ -55,6 +55,12 @@ var CHANGELOG = [
 		"Small screens: Rivalry never applied (genders were read as genderless)",
 		"Small screens: Metronome's use count was ignored on the Battle tab",
 		"A Pok\u00e9mon with no sprite keeps its place in the Dex"
+	]},
+	{version: "1.10", notes: [
+		"Settings \u2192 Theme: Light, Dark or Black (true black, for OLED screens like the AYN Thor's)",
+		"Settings \u2192 Tabs: the tab bar at the top or the bottom of the screen",
+		"In the Pcalc app: the game's save is imported by itself each time it changes (Import / Export \u2192 " +
+			"Auto-import), the tabs start at the bottom, and the full-screen and Install buttons are gone"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
@@ -66,6 +72,8 @@ $(document).ready(function () {
 	if (!isInPcalc()) return;
 	document.title = "Pcalc";
 	$(".title-text").text("Pcalc");
+	// The original calculator's links to Pokémon Showdown's site (Home, Replays, Ladder, Forum) aren't the app's.
+	$(".header .nav a[href*='pokemonshowdown.com']").closest("li").remove();
 });
 
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
