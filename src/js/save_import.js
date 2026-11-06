@@ -631,7 +631,7 @@ function buildSaveAutoImport() {
 	});
 	pcalcBridge.on("save:file", function (message) {
 		// The same version of the file is imported once (the app sends it again on every page).
-		var version = message.name + "|" + message.modified + "|" + message.size;
+		var version = message.name + "|" + (message.version || message.modified + "|" + message.size);
 		if (readSetting(AUTO_IMPORT_KEY + ":" + getPageMode()) === version) return;
 		var save = null;
 		try {
