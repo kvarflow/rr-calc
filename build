@@ -116,34 +116,6 @@ function loadGames() {
 	return context.GAMES;
 }
 
-/*
- * dist/offline-assets.json: every image the calculator loads from a fixed address elsewhere
- * (trainer pictures, item icons, Professor Oak), so an app that packs the calculator (kvarflow/Pcalc) can pack
- * them too and work offline. Pokémon sprites are left out: their addresses follow a pattern
- * (box_controls.js SPRITE_BASE_URL) and the app packs the whole set.
- */
-function writeOfflineAssets() {
-	const urls = new Set();
-	const sandbox = {};
-	// Trainer pictures: each game's sprite names (data/trainer_sprites/<game id>.js) under trainer_controls.js's address.
-	const controls = fs.readFileSync(path.resolve(rootDir, 'src/js/trainer_controls.js'), 'utf8');
-	const spriteBase = /var TRAINER_SPRITE_URL = "([^"]+)"/.exec(controls)[1];
-	for (const game of loadGames().filter(g => g.features.trainerSprites)) {
-		const file = path.resolve(rootDir, 'src/js/data/trainer_sprites/' + game.id + '.js');
-		if (!fs.existsSync(file)) continue;
-		const sprites = {};
-		vm.runInNewContext(fs.readFileSync(file, 'utf8'), sprites);
-		for (const name of Object.values(sprites.TRAINER_SPRITES)) urls.add(spriteBase + name + '.png');
-	}
-	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/item_icons.js'), 'utf8'), sandbox);
-	for (const file of Object.values(sandbox.ITEM_ICONS)) urls.add(sandbox.ITEM_ICON_BASE + file);
-	const oak = /var OAK_SPRITE_URL = "([^"]+)"/.exec(controls);
-	if (oak) urls.add(oak[1]);
-	const list = [...urls].sort();
-	fs.writeFileSync(path.resolve(rootDir, 'dist/offline-assets.json'), JSON.stringify({files: list}, null, '\t') + '\n');
-	console.log('Offline assets: ' + list.length + ' images from elsewhere');
-}
-
 const htmlText = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const script = src => '    <script type="text/javascript" src="./' + src + '?"></script>\n';
 
@@ -220,4 +192,3 @@ makeCachebuster('dist/honkalculate.template.html', 'dist/honkalculate.html');
 makeCachebuster('dist/index.template.html', 'dist/index.html');
 const gamePages = makeGamePages(process.argv.includes('--test-games'));
 makeServiceWorker(['index.html'].concat(gamePages));
-writeOfflineAssets();

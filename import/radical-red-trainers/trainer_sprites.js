@@ -3,7 +3,8 @@
 /*
  * Generates src/js/data/trainer_sprites/radicalred.js: a Pokémon Showdown trainer sprite for each Radical Red
  * trainer (by its id in gTrainers), shown beside the trainer in the calc. The images are Showdown's
- * (play.pokemonshowdown.com/sprites/trainers/<name>.png); only their names are stored here.
+ * (play.pokemonshowdown.com/sprites/trainers/<name>.png), copied into src/img/trainers by
+ * import/vendor-images.sh (run it after this); only their names are stored here.
  *
  * Usage: node import/radical-red-trainers/trainer_sprites.js <Showdown avatar names, one a line>
  * (the names in pokemon-showdown's server/chat-commands/avatars.tsx).

@@ -73,8 +73,8 @@ var LAST_CHANGELOG_KEY = "lastChangelogVersion";
 var CREDITS = [
 	"Original calculator by Honko, maintained by Austin and Kris; Radical Red edition by Karthik.",
 	"Team/Box, color coding, crit chances, Range Compare, Export All and more ported from SylmarDev's syl-rnb-calc (MIT).",
-	"Pokémon sprites from May8th1995/sprites; trainer pictures and Professor Oak from smogon/sprites; " +
-		"item icons from PokéAPI's sprites (CC0).",
+	"Pokémon sprites from May8th1995/sprites; trainer pictures from Pokémon Showdown; Professor Oak from " +
+		"smogon/sprites; item icons from PokéAPI's sprites (CC0). All are kept with the calculator.",
 	".sav names from Rad-Red-4.1-Team-Exporter; growth rates from PokéAPI.",
 	"Trainer data from the Radical Red 4.1 Default and Hardcore Mode boss documents, checked against the game.",
 	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",

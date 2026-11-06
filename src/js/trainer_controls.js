@@ -8,7 +8,7 @@
  */
 
 // FireRed / LeafGreen's Professor Oak, from Smogon's sprite archive.
-var OAK_SPRITE_URL = "https://raw.githubusercontent.com/smogon/sprites/master/src/_uncategorized/canonical/trainers/gen3/firered-leafgreen/Oak.png";
+var OAK_SPRITE_URL = "./img/oak.png";
 // Other fights with several possible teams (Lorelei's rain or snow team) remember the
 // chosen team by its label.
 var TRAINER_VARIANT_KEY = "trainerVariant";
@@ -579,7 +579,8 @@ function describeTrainerOrderFixes() {
 	return JSON.stringify(out, null, 1);
 }
 
-var TRAINER_SPRITE_URL = "https://play.pokemonshowdown.com/sprites/trainers/";
+// Pokémon Showdown's trainer sprites, kept in src/img/trainers (import/vendor-images.sh).
+var TRAINER_SPRITE_URL = "./img/trainers/";
 
 // The trainer's Showdown sprites (one for each trainer of a fight), from its ids in the game's trainer table.
 function getTrainerSpriteUrls(trainer) {
