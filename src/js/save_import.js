@@ -564,7 +564,7 @@ function handleSaveFile(file) {
 	reader.onload = function () {
 		var save = parseRadicalRedSave(new Uint8Array(reader.result));
 		if (!save) {
-			alert("Could not read " + file.name + ". Please choose a Pok\u00e9mon Radical Red 4.1 .sav file.");
+			alert("Could not read " + file.name + ". Please choose a save file (.sav) from the game picked in the calculator.");
 			return;
 		}
 		importSave(save, file.name);
@@ -588,7 +588,7 @@ $(document).ready(function () {
 	// Only for a game whose save format this reads (games.js).
 	if (getCurrentGame().features.saveImport !== "cfru") return;
 	var fileInput = $('<input type="file" id="save-file-input" accept=".sav,.srm" class="visually-hidden" />');
-	var button = $('<button type="button" id="import-save" class="bs-btn bs-btn-default" title="Load your party and PC boxes from a Radical Red .sav file">Import .sav</button>');
+	var button = $('<button type="button" id="import-save" class="bs-btn bs-btn-default" title="Load your party and PC boxes from your save file (.sav)">Import .sav</button>');
 	button.click(function () {
 		fileInput.click();
 	});

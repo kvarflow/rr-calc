@@ -14,7 +14,7 @@ var SITE_SETTINGS = [
 var CHANGELOG = [
 	{version: "1.0", notes: [
 		"Team / Box / Box 2 / Trash panel with sprites, kept separately for Normal and Hardcore Mode",
-		"Import your party and PC boxes from a Radical Red .sav: Pok\u00e9mon keep the save's type, stats, level " +
+		"Import your party and PC boxes from your .sav: Pok\u00e9mon keep the save's type, stats, level " +
 			"and ability, locked (\"Edit anyway\" unlocks them), and your starter is set from the save",
 		"Importing another save of the same game just says how many Pok\u00e9mon came in",
 		"Matchup color coding for your box against Pok\u00e9mon 2, on unless you turn it off"
@@ -38,7 +38,7 @@ var CHANGELOG = [
 		"Range Compare: how much HP a Pok\u00e9mon has left after several hits",
 		"Export All, click the damage rolls to copy them, Escape clears the box search",
 		"Fold away parts of the Pok\u00e9mon panels; save base stat and type overrides; Fight Notes",
-		"A ? beside each Pok\u00e9mon's ability says what it does, in Radical Red's own words where the game has them",
+		"A ? beside each Pok\u00e9mon's ability says what it does, in the game's own words where the game has them",
 		"A note when Simple or Contrary changes how stat boosts add up",
 		"Trainer above Pok\u00e9mon 2, and the footer settings"
 	]},
@@ -58,13 +58,13 @@ var CHANGELOG = [
 		"Loading a Pok\u00e9mon from the Box recalculated many times over"
 	]},
 	{version: "1.4", notes: [
-		"Trainer AI: on Battle, each of the foe's moves shows how often the trainer picks it, from Radical " +
-			"Red's own battle AI (Complete Fire Red Upgrade's) with every move's data read from the game; the " +
+		"Trainer AI: on Battle, each of the foe's moves shows how often the trainer picks it, from the " +
+			"game's own battle AI (Complete Fire Red Upgrade's) with every move's data read from the game; the " +
 			"likeliest move gets the red stripe, tagged KO when it can knock you out, and the move that hits you " +
 			"hardest is marked too",
 		"Switching: how often the foe switches out and to whom (the reason in the tooltip), and who it sends " +
 			"out next after a KO",
-		"Checked line by line against Radical Red's AI code, decompiled from the game: every trainer uses the " +
+		"Checked line by line against the game's AI code, decompiled from the game: every trainer uses the " +
 			"full AI; KOs, the strongest move, set-up (+2 going first, +3 going second), Taunt, screens, " +
 			"hazards, Protect, Counter, multi-hit moves, Sucker Punch, Pursuit, Quick Claw and the turn a boss " +
 			"Mega Evolves follow the game, including its coin flips (switch checks skipped a quarter of turns, " +
@@ -97,7 +97,7 @@ var CHANGELOG = [
 		"Nuzlocke dupes last the whole run: a Pok\u00e9mon that fainted, went to the Trash, was deleted or was " +
 			"released still makes its family a dupe until Professor Oak starts a new run",
 		"Echoed Voice, Fury Cutter, Rollout and Ice Ball: pick which use in a row it is (and Defense Curl) " +
-			"and the base power follows, as in Radical Red",
+			"and the base power follows, as in the game",
 		"Upright phones: your Box (and Box 2) under your team on the Battle tab, tap one to load it; the " +
 			"trainer card's buttons no longer run off the screen",
 		"Small screens: a neater result card (the move and its damage, the KO chance, then who is fighting " +
@@ -105,13 +105,13 @@ var CHANGELOG = [
 		"Battle: Previous trainer and Next trainer spelled out at the bottom of the trainer card",
 		"The arc bar follows your progress: beating Misty moves you on to Lt. Surge's arc, fights you left for " +
 			"later move on with you, and a fight counts in the arc you beat it in (Bugsy after Misty: Lt. Surge's)",
-		"A ? beside the item says what it does, from Radical Red's own item text",
+		"A ? beside the item says what it does, from the game's own item text",
 		"Result card: the KO chance stays on the move's line and the HP range is gone (the rolls show it)",
 		"This run: top fraggers and the fainted as a grid of sprites; on small screens your progress sits above the trainer",
 		"Rank the box against the foe: by damage dealt, damage taken or Speed, each Pok\u00e9mon's figure on its " +
 			"sprite (an idea from hzla's Dynamic Calc), optionally as if your box were at the level cap",
 		"Normal: the Route 22 rival's Darmanitan has its 4 EVs in Sp. Def, as in the game",
-		"Loaded Dice: multi-hit moves count 5 hits (Radical Red's Loaded Dice hits 5 times two times in three, " +
+		"Loaded Dice: multi-hit moves count 5 hits (the game's Loaded Dice hits 5 times two times in three, " +
 			"4 otherwise); it was 4. The box colors and the trainer AI count it too",
 		"Your level is your Team's highest-level Pok\u00e9mon, from a .sav or made by hand; with no Team, the " +
 			"cap you are at",
@@ -122,7 +122,7 @@ var CHANGELOG = [
 			"beaten at"
 	]},
 	{version: "1.7", notes: [
-		"Trainer AI: the last part of Radical Red's move scoring, checked against the game's code: Reflect and " +
+		"Trainer AI: the last part of the game's move scoring, checked against the game's code: Reflect and " +
 			"Light Screen (+15), Knock Off, flinching moves, stat-lowering attacks (Snarl, Lunge), Explosion, Fake Out, " +
 			"Shed Tail, burns, paralysis and poison (with Hex and Venoshock), Sheer Force and Serene Grace chances, " +
 			"draining moves, Rest and Wish, trapping moves and Salt Cure, Defog and Rapid Spin, and many more"
@@ -148,7 +148,7 @@ var CHANGELOG = [
 			"reorders when Pok\u00e9mon 2 changes (ranking the Box another way on the Box tab keeps that order)",
 		"What a draining move (Giga Drain, Drain Punch...) or Shell Bell heals, in HP and as a share of yours, under " +
 			"the damage and on the Battle tab's result card. It comes from the damage dealt, so never more than the " +
-			"target had left; Big Root adds 30% as in Radical Red",
+			"target had left; Big Root adds 30% as in the game",
 		"Frag sheet: every Pok\u00e9mon of your run, where it was caught, its KOs in each arc, its share of all your " +
 			"KOs and who made it faint. Sort by any column, or export it as a CSV",
 		"Dex: any Pok\u00e9mon's types, base stats, evolution line with how each stage evolves (level, stone, " +
@@ -177,6 +177,17 @@ var CHANGELOG = [
 		"A Pok\u00e9mon with no sprite keeps its place in the Dex instead of its name jumping across"
 	]}
 ];
+// Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
+function isInPcalc() {
+	return /\bPcalc\//.test(navigator.userAgent);
+}
+
+$(document).ready(function () {
+	if (!isInPcalc()) return;
+	document.title = "Pcalc";
+	$(".title-text").text("Pcalc");
+});
+
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
 
 var CREDITS = [
