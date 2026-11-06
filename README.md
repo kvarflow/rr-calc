@@ -47,6 +47,10 @@ Damage calculator for all generations of Pokémon battling.
   Radical Red's own text from the game where it has one, otherwise Pokémon Showdown's short
   descriptions via [@pkmn/dex](https://github.com/pkmn/ps) (MIT).
 
+## Backup and restore
+
+Under Import / Export (on small screens, in More), **Backup** saves everything the calculator keeps in your browser as one file: every mode's box, runs and personal bests, settings and fight notes. **Restore from file** brings it back, on this device or another; it asks first and replaces what's saved. In the [Pcalc](https://github.com/kvarflow/Pcalc) Android app, the same panel also shows the app's backup folder, where it backs up by itself.
+
 ## Small-screen layout
 
 On small screens (up to 640 CSS pixels on the shorter side), such as the AYN Thor's 3.92"
@@ -77,6 +81,9 @@ Swipe left or right to change tabs. Battle recalculates as you type (on-screen k
 key presses), once per change.
 
 ### Install as an app
+
+For Android there is also [Pcalc](https://github.com/kvarflow/Pcalc), an app that packs this calculator so it runs entirely offline, with every sprite, trainer picture and item icon included, RetroArch sync built in and automatic backups.
+
 
 `manifest.webmanifest` makes the calculator installable: Chrome on the Thor or a phone offers
 Install (More → App), or use ⋮ → Add to Home screen. It opens full screen, works offline and
