@@ -870,6 +870,10 @@ function buildTrainerPanel() {
 			$(this).replaceWith("↺");
 		})
 		.appendTo(panel.find("#reset-trainer"));
+	// A trainer whose picture can't load (offline, before it was ever seen) shows just their name.
+	panel.find("#trainer-sprite").hide().on("error", function () {
+		$(this).hide();
+	});
 	return panel;
 }
 

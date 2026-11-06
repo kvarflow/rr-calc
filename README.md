@@ -29,6 +29,8 @@ with Radical Red's data read from the game itself.
   there if your route differs.
 - **Trainer AI**: the chance the foe picks each move, and when it switches and to whom (see below).
 - **Genders** as the game rolls them, so Rivalry and Attract work.
+- **Trainer pictures** beside each trainer (their own for leaders, rivals and the Elite Four, else
+  their class), **item icons** before each item, and **type badges** on the Battle tab.
 
 **Reference**
 - **Dex**: stats, evolutions, abilities, level-up / TM / tutor / egg moves, where to catch it, and
@@ -42,11 +44,12 @@ with Radical Red's data read from the game itself.
   layout: Battle, You, Foe, Advanced, Box, Wild, More. Swipe between tabs. Phones held upright put
   the tabs at the bottom.
 - **Desktop** has a modern card layout (Settings → Desktop style switches back to Classic).
-- **Back up / Restore** (Settings → Data): everything the calc keeps in your browser as one
-  file, to keep safe or move to another device. Restoring replaces that browser's data, but keeps
-  its own layout and text size.
+- **Backup** (Import / Export; More on small screens): everything the calc keeps in your browser
+  (every mode's box, runs, personal bests, settings, Fight Notes) as one file, restored on this
+  device or another. It asks first, then replaces what's saved.
 - **Install** it as an app (More → App, or Chrome's ⋮ → Add to Home screen) and it **works
-  offline**.
+  offline**. The [Pcalc](https://github.com/kvarflow/Pcalc) Android app packs it too, with
+  RetroArch sync built in and automatic backups to a folder on the device.
 - **Emulator sync**: your party sent live from mGBA (a Lua script) or RetroArch (a Python
   script), both in `src/emulator/`.
 
@@ -80,6 +83,11 @@ Each trainer's AI flags and every move's effect come from the ROM
   sheet.
 - **Learnsets, evolutions, gender ratios and ability text**: the ROM, falling back to Pokémon
   Showdown's descriptions via [@pkmn/dex](https://github.com/pkmn/ps).
+- **Trainer pictures**: Pokémon Showdown's trainer sprites, matched to each trainer's class and id
+  in the ROM (`import/radical-red-trainers/trainer_sprites.js`).
+- **Item icons**: [PokeAPI/sprites](https://github.com/PokeAPI/sprites) (CC0; the art is The
+  Pokémon Company's), matched by `import/item-icons.js`. `node build` lists them, the trainer
+  pictures and Professor Oak in `dist/offline-assets.json` for apps that pack the calc.
 - **Save format**: [PKForge](https://github.com/sofianeelhor/PKForge)'s Radical Red engine; id
   tables from [Rad-Red-4.1-Team-Exporter](https://github.com/eliyahu1702/Rad-Red-4.1-Team-Exporter)
   and growth rates from [PokéAPI](https://github.com/PokeAPI/pokeapi).

@@ -47,18 +47,34 @@ var CHANGELOG = [
 	]},
 	{version: "1.9", notes: [
 		"Faster: calculations and trainer changes in about half the time, and half as much to load",
-		"Back up and restore all your calculator data as a file (Settings → Data)"
+		"Backup (Import / Export): everything as one file, to restore here or on another device",
+		"Trainer pictures on the Battle tab, item icons, and type badges",
+		"Tap a heading in the Dex, Mastersheet or Frag sheet to fold it; the Frag sheet groups Team, Box and Fainted",
+		"In the Pcalc app: RetroArch sync built in, and automatic backups"
 	], fixes: [
 		"Small screens: Rivalry never applied (genders were read as genderless)",
-		"Small screens: Metronome's use count was ignored on the Battle tab"
+		"Small screens: Metronome's use count was ignored on the Battle tab",
+		"A Pok\u00e9mon with no sprite keeps its place in the Dex"
 	]}
 ];
+// Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
+function isInPcalc() {
+	return /\bPcalc\//.test(navigator.userAgent);
+}
+
+$(document).ready(function () {
+	if (!isInPcalc()) return;
+	document.title = "Pcalc";
+	$(".title-text").text("Pcalc");
+});
+
 var LAST_CHANGELOG_KEY = "lastChangelogVersion";
 
 var CREDITS = [
 	"Original calculator by Honko, maintained by Austin and Kris; Radical Red edition by Karthik.",
 	"Team/Box, color coding, crit chances, Range Compare, Export All and more ported from SylmarDev's syl-rnb-calc (MIT).",
-	"Pokémon sprites from May8th1995/sprites; Professor Oak from smogon/sprites.",
+	"Pokémon sprites from May8th1995/sprites; trainer pictures and Professor Oak from smogon/sprites; " +
+		"item icons from PokéAPI's sprites (CC0).",
 	".sav names from Rad-Red-4.1-Team-Exporter; growth rates from PokéAPI.",
 	"Trainer data from the Radical Red 4.1 Default and Hardcore Mode boss documents, checked against the game.",
 	"Ability descriptions from the game, and from Pokémon Showdown (@pkmn/dex, MIT) for the rest.",

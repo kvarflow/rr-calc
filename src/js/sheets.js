@@ -17,6 +17,41 @@ function registerSheet(sheet) {
 	SHEETS.push(sheet);
 }
 
+/*
+ * Sections that fold when their header is tapped (the Dex's cards, the Frag sheet's groups). There
+ * is no arrow: the header itself is the control, and a folded section shows only its header. Which
+ * ones are folded is remembered, so a folded Dex section stays folded from one Pokémon to the next.
+ */
+var SHEET_FOLDS_KEY = "sheetFolds";
+
+function readSheetFolds() {
+	try {
+		return JSON.parse(readSetting(SHEET_FOLDS_KEY)) || {};
+	} catch (e) {
+		return {};
+	}
+}
+
+// Folds `section` (adds "sheet-folded") when `head` is tapped; `key` names it in the saved folds.
+function makeFoldable(section, head, key) {
+	var apply = function (folded) {
+		section.toggleClass("sheet-folded", folded);
+		head.attr("aria-expanded", !folded);
+	};
+	head.addClass("sheet-fold-head").attr({role: "button", tabindex: 0});
+	apply(!!readSheetFolds()[key]);
+	head.on("click keydown", function (ev) {
+		if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+		ev.preventDefault();
+		var folded = !section.hasClass("sheet-folded");
+		apply(folded);
+		var folds = readSheetFolds();
+		if (folded) folds[key] = true;
+		else delete folds[key];
+		writeSetting(SHEET_FOLDS_KEY, JSON.stringify(folds));
+	});
+}
+
 function getSheet(key) {
 	return SHEETS.filter(function (sheet) {
 		return sheet.key === key;

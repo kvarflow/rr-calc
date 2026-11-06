@@ -83,6 +83,11 @@ function applyEmulatorBattler(panel, battler) {
 	$(panel + " .current-hp").change();
 }
 
+// Running inside the Pcalc Android app, whose user agent ends in "Pcalc/<version>".
+function isInPcalcApp() {
+	return /\bPcalc\//.test(navigator.userAgent);
+}
+
 function setEmulatorStatus(text, connected) {
 	if (connected && emulatorSync.via) text = text.replace(/^Connected/, "Connected to " + emulatorSync.via);
 	$("#emulator-sync-status").text(text).toggleClass("emulator-sync-connected", !!connected);
@@ -163,7 +168,7 @@ function pollEmulator() {
 			emulatorSync.via = null;
 			// The RetroArch script is running but RetroArch is not answering it: it says why.
 			setEmulatorStatus(xhr.status === 503 && xhr.responseText ? xhr.responseText :
-				"Waiting for the emulator: start its sync script (below)", false);
+				isInPcalcApp() ? "Waiting for RetroArch" : "Waiting for the emulator: start its sync script (below)", false);
 		})
 		.always(function () {
 			emulatorSync.busy = false;
@@ -194,8 +199,18 @@ $(document).ready(function () {
 		return $('<div class="emulator-sync-how"></div>').append($("<b></b>").text(title + ": "), document.createTextNode(steps + " "),
 			$('<a target="_blank" rel="noopener"></a>').text("Get " + script.split("/").pop()).attr({href: "./" + script, download: ""}));
 	};
-	var panel = $('<div id="emulator-sync-panel" class="emulator-sync-panel"></div>').append(
-		$('<div id="emulator-sync-status"></div>'),
+	var panel = $('<div id="emulator-sync-panel" class="emulator-sync-panel"></div>').append($('<div id="emulator-sync-status"></div>'));
+	// The Pcalc app (kvarflow/Pcalc) reads RetroArch itself: no script to run.
+	if (isInPcalcApp()) {
+		panel.append($('<div class="emulator-sync-how"></div>').append($("<b></b>").text("RetroArch: "), document.createTextNode(
+			"built into this app. Play with the mGBA core and turn on Settings > Network > Network Commands (port 55355).")),
+		$('<div class="emulator-sync-help"></div>').text("Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now."));
+		$("#import-save").after(button);
+		button.closest(".import-actions").after(panel);
+		setEmulatorSync(isEmulatorSyncOn());
+		return;
+	}
+	panel.append(
 		how("RetroArch (the Thor, phones, computers)", EMULATOR_SCRIPTS.retroarch,
 			"with the mGBA core, turn on Settings > Network > Network Commands, then run this script on the same " +
 			"device: on Android in Termux (pkg install python, termux-setup-storage, then " +

@@ -93,6 +93,13 @@ function buildTeamCard(label, originals, activeIndex) {
 function buildTrainerCard() {
 	var foe = $("#trainer-team .pokemon-sprite");
 	var card = buildTeamCard($("#trainer-name").text() || "Trainer", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1);
+	// His picture beside his name, when he has one (the trainer panel's, buildTrainerSprites).
+	var sprite = $("#trainer-sprite img").first();
+	if (sprite.length && sprite.attr("src")) {
+		card.find(".ss-quick-head").prepend($('<img class="ss-trainer-sprite" alt="" />').attr("src", sprite.attr("src")).on("error", function () {
+			$(this).remove();
+		}));
+	}
 	if (typeof toggleActiveKO !== "function") return card;
 	var defeated = isTrainerDefeated(currentTrainerIndex);
 	var step = function (label, original, html) {
@@ -439,7 +446,6 @@ function buildSettingsCard() {
 		row("Accent", buildAccentPicker()),
 		row("Text size", buildTextSizeSlider()),
 		row("App", buildInstallRow()),
-		typeof buildBackupButtons === "function" ? row("Data", buildBackupButtons()) : $(),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();
@@ -569,11 +575,21 @@ function bindResultSummary() {
 	renderResultSummary();
 }
 
+// The Pokémon's types as coloured badges, as the Dex shows them (the small layout hides the type
+// fields).
+function typeBadges(panel) {
+	var badges = $('<span class="dex-types ss-types"></span>');
+	[$(panel + " .type1").val(), $(panel + " .type2").val()].forEach(function (type) {
+		if (type) $('<span class="dex-type"></span>').attr("data-type", type).text(type).appendTo(badges);
+	});
+	return badges;
+}
+
 // Shorter results text that fits beside each move.
 function compactResults(p1Name, p2Name) {
 	// Just the names: "(select one to show detailed results)" does not fit.
-	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name));
-	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name));
+	$("#resultHeaderL").empty().append('<span class="ss-side-label">You</span>', document.createTextNode(p1Name), typeBadges("#p1"));
+	$("#resultHeaderR").empty().append('<span class="ss-side-label">Foe</span>', document.createTextNode(p2Name), typeBadges("#p2"));
 	// Just the damage range, as "21.2–27.0%"; recoil and recovery are in the detailed result below.
 	$('.move-result-subgroup span[id^="resultDamage"]').text(function (i, text) {
 		return formatDamageRange(text.replace(/ \(.*$/, ""));

@@ -46,10 +46,6 @@ function isTrainerFolded(index, folds) {
 }
 
 // A chevron that turns as its part opens.
-function buildFoldIcon() {
-	return $('<span class="ms-fold-icon" aria-hidden="true">\u25B8</span>');
-}
-
 function readMastersheetFilters() {
 	var filters = {};
 	try {
@@ -188,8 +184,10 @@ function buildMastersheetTrainer(index, folds, reorder) {
 	var defeated = isTrainerDefeated(index);
 	var card = $('<div class="ms-trainer"></div>').attr("data-index", index)
 		.toggleClass("ms-trainer-defeated", defeated).toggleClass("ms-trainer-route", !!trainer.route);
-	var head = $('<div class="ms-trainer-head"></div>').appendTo(card);
-	var fold = $('<button type="button" class="ms-trainer-fold"></button>').append(buildFoldIcon()).appendTo(head);
+	// Tapping the header row (anywhere but the name, which opens the fight, the team picker and the
+	// reorder arrows) folds the trainer's team.
+	var head = $('<div class="ms-trainer-head sheet-fold-head" role="button" tabindex="0"></div>').appendTo(card);
+	var fold = head;
 	if (typeof buildTrainerSprites === "function") head.append(buildTrainerSprites(trainer, "ms-trainer-sprite"));
 	// Reordering: a route trainer moves among those before the same fight.
 	if (reorder && trainer.route) {
@@ -228,7 +226,10 @@ function buildMastersheetTrainer(index, folds, reorder) {
 		card.toggleClass("ms-trainer-folded", folded);
 		fold.attr({"aria-expanded": !folded, "aria-label": (folded ? "Show " : "Hide ") + trainer.name + "\u2019s team"});
 	};
-	fold.click(function () {
+	fold.on("click keydown", function (ev) {
+		if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+		if ($(ev.target).closest("button, select, input, a").length) return;
+		ev.preventDefault();
 		var folded = !card.hasClass("ms-trainer-folded");
 		setFolded(folded);
 		var saved = readMastersheetFolds();
@@ -320,7 +321,7 @@ function buildMastersheetArcBody(section, filters, query) {
 		if (trainers.length) counts.push(trainers.length + (trainers.length === 1 ? " trainer" : " trainers") + (beaten ? ", " + beaten + " beaten" : ""));
 		if (wild.length) counts.push("wild Pok\u00e9mon");
 		var head = $('<button type="button" class="ms-place-head"></button>').attr("aria-expanded", !block.hasClass("ms-place-folded"))
-			.append(buildFoldIcon(), $('<span class="ms-place-name"></span>').text(place.name),
+			.append($('<span class="ms-place-name"></span>').text(place.name),
 				$('<span class="ms-place-meta"></span>').text(counts.join(" \u00b7 ")))
 			.click(function () {
 				var folded = !block.hasClass("ms-place-folded");
