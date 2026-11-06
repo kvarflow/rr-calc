@@ -3938,3 +3938,36 @@ html.sheet-open body {
 .fs-group.sheet-folded .fs-group-name {
     color: var(--sh-muted);
 }
+
+/* Backup and restore (backup_panel.js), under Import / Export. */
+.backup-panel {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+.backup-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin-top: 6px;
+}
+.backup-list {
+    flex: 1 1 12em;
+    min-width: 0;
+}
+.backup-where,
+.backup-help {
+    margin-top: 6px;
+    font-size: 0.9em;
+}
+.backup-help {
+    opacity: 0.75;
+}
+.backup-status {
+    margin-top: 6px;
+    font-size: 0.9em;
+}
+.backup-status-bad {
+    color: #d63031;
+}
