@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- The site's maskable icon (src/img/app-icon-maskable.png) on the calc's red. -->
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/icon_background" />
-    <foreground android:drawable="@mipmap/ic_launcher_fg" />
-</adaptive-icon>
