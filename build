@@ -116,6 +116,24 @@ function loadGames() {
 	return context.GAMES;
 }
 
+/*
+ * dist/offline-assets.json: every image the calculator loads from a fixed address elsewhere
+ * (trainer pictures, Professor Oak), so an app that packs the calculator (kvarflow/Pcalc) can pack
+ * them too and work offline. Pokémon sprites are left out: their addresses follow a pattern
+ * (box_controls.js SPRITE_BASE_URL) and the app packs the whole set.
+ */
+function writeOfflineAssets() {
+	const urls = new Set();
+	const sandbox = {};
+	vm.runInNewContext(fs.readFileSync(path.resolve(rootDir, 'src/js/data/trainer_sprites.js'), 'utf8'), sandbox);
+	for (const file of Object.values(sandbox.TRAINER_SPRITES)) urls.add(sandbox.TRAINER_SPRITE_BASE + file);
+	const oak = /var OAK_SPRITE_URL = "([^"]+)"/.exec(fs.readFileSync(path.resolve(rootDir, 'src/js/trainer_controls.js'), 'utf8'));
+	if (oak) urls.add(oak[1]);
+	const list = [...urls].sort();
+	fs.writeFileSync(path.resolve(rootDir, 'dist/offline-assets.json'), JSON.stringify({files: list}, null, '\t') + '\n');
+	console.log('Offline assets: ' + list.length + ' images from elsewhere');
+}
+
 const htmlText = text => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 const script = src => '    <script type="text/javascript" src="./' + src + '?"></script>\n';
 
@@ -148,7 +166,7 @@ function renderGamePage(template, game, mode, testGame) {
 		SETS_SCRIPTS: sets,
 		GAME_DATA_SCRIPTS: gameData,
 		// A game with no boss fights yet: no trainers, and no trainer panel.
-		TRAINERS_SCRIPTS: mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') :
+		TRAINERS_SCRIPTS: mode.trainers ? script('js/data/trainers/' + mode.trainers + '.js') + script('js/data/trainer_sprites.js') :
 			'    <script type="text/javascript">var TRAINER_ORDER = [];</script>\n',
 		DEX_LINK: links.dex ? '        <li><a class="button" href="' + links.dex + '">Pok&eacute;dex</a></li>\n' : '',
 		PLAY_LINK: links.play ? '    <ul class="nav nav-play">\n        <li><a class="button greenbutton nav-first nav-last" href="' +
@@ -193,3 +211,4 @@ makeCachebuster('dist/honkalculate.template.html', 'dist/honkalculate.html');
 makeCachebuster('dist/index.template.html', 'dist/index.html');
 const gamePages = makeGamePages(process.argv.includes('--test-games'));
 makeServiceWorker(['index.html'].concat(gamePages));
+writeOfflineAssets();

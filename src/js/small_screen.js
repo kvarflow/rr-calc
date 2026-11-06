@@ -93,6 +93,13 @@ function buildTeamCard(label, originals, activeIndex) {
 function buildTrainerCard() {
 	var foe = $("#trainer-team .pokemon-sprite");
 	var card = buildTeamCard($("#trainer-name").text() || "Trainer", foe, typeof activeTrainerSlot === "number" ? activeTrainerSlot : -1);
+	// His picture beside his name, when he has one (see getTrainerSpriteUrl).
+	var sprite = $("#trainer-sprite");
+	if (sprite.attr("src") && sprite.css("display") !== "none") {
+		card.find(".ss-quick-head").prepend($('<img class="ss-trainer-sprite" alt="" />').attr("src", sprite.attr("src")).on("error", function () {
+			$(this).remove();
+		}));
+	}
 	if (typeof toggleActiveKO !== "function") return card;
 	var defeated = isTrainerDefeated(currentTrainerIndex);
 	var step = function (label, original, html) {

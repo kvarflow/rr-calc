@@ -171,6 +171,8 @@
         "showChoiceDialog": false,
         "navigateToMode": false,
         "TRAINER_ORDER": false,
+        "TRAINER_SPRITES": false,
+        "TRAINER_SPRITE_BASE": false,
         "loadSetIntoPokemon": false,
         "createPokemonSprite": false
     },
