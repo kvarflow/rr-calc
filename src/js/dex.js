@@ -317,7 +317,7 @@ function renderDex(container) {
 	var page = $('<div class="dex-page"></div>').appendTo(container);
 	var head = $('<div class="dex-head"></div>').appendTo(page);
 	$('<span class="dex-sprite"></span>').append(createSpriteImage(name, function () {
-		$(this).remove();
+		$(this).parent().addClass("dex-sprite-none").attr("title", "No sprite for " + name).text("?");
 	})).appendTo(head);
 	$('<div class="dex-title"></div>').append($("<h2></h2>").text(name), buildDexTypes(species.types),
 		species.weightkg ? $('<span class="dex-weight"></span>').text(species.weightkg + " kg") : "").appendTo(head);

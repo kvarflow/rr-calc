@@ -9,6 +9,11 @@ function setOfflineStatus(text) {
 
 $(document).ready(function () {
 	$(".site-settings").append(' <span id="offline-status" class="offline-status"></span>');
+	// Inside the Pcalc app (kvarflow/Pcalc) every file is already in the app: nothing to save.
+	if (/\bPcalc\//.test(navigator.userAgent)) {
+		setOfflineStatus("Offline: built into the app \u2713");
+		return;
+	}
 	// Service workers need https (or this computer); a page opened from a file cannot use one.
 	if (!("serviceWorker" in navigator) || !window.isSecureContext) {
 		setOfflineStatus("Offline: not available here");

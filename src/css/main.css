@@ -3427,11 +3427,27 @@ html.sheet-open body {
     gap: 12px;
     margin-bottom: 12px;
 }
+.dex-sprite {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 96px;
+    height: 96px;
+}
 .dex-sprite img {
     width: 96px;
     height: 96px;
     object-fit: contain;
     image-rendering: pixelated;
+}
+/* A Pokémon with no sprite in the set (Chillet): a "?" in its place, so every entry lines up. */
+.dex-sprite-none {
+    border: 2px dashed rgba(128, 128, 128, 0.35);
+    border-radius: 12px;
+    color: var(--sh-muted);
+    font-size: 2em;
+    font-weight: bold;
 }
 .dex-title h2 {
     margin: 0 0 4px;
@@ -3875,40 +3891,12 @@ html.sheet-open body {
     image-rendering: pixelated;
 }
 
-/* Type badges beside each side's Pokémon on the small layout's Battle tab. */
-.type-badges {
-    display: inline-flex;
-    gap: 3px;
+/* Type badges beside each side's Pokémon on the small layout's Battle tab (the Dex's, smaller). */
+.ss-types {
     margin-left: 6px;
     vertical-align: middle;
 }
-.type-badge {
-    padding: 0 6px;
-    border-radius: 8px;
-    color: #fff;
-    font-size: 0.7em;
-    font-weight: bold;
-    line-height: 1.6;
-    text-transform: uppercase;
-    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.35);
+.ss-types .dex-type {
+    min-width: 0;
+    font-size: 0.65em;
 }
-.type-Normal { background: #9fa19f; }
-.type-Fire { background: #e62829; }
-.type-Water { background: #2980ef; }
-.type-Electric { background: #fac000; }
-.type-Grass { background: #3fa129; }
-.type-Ice { background: #3dcef3; }
-.type-Fighting { background: #ff8000; }
-.type-Poison { background: #9141cb; }
-.type-Ground { background: #915121; }
-.type-Flying { background: #81b9ef; }
-.type-Psychic { background: #ef4179; }
-.type-Bug { background: #91a119; }
-.type-Rock { background: #afa981; }
-.type-Ghost { background: #704170; }
-.type-Dragon { background: #5060e1; }
-.type-Dark { background: #624d4e; }
-.type-Steel { background: #60a1b8; }
-.type-Fairy { background: #ef70ef; }
-.type-Stellar { background: #40b5a5; }
-.type-\?\?\? { background: #68a090; }

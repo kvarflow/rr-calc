@@ -479,11 +479,12 @@ function bindResultSummary() {
 	renderResultSummary();
 }
 
-// The Pokémon's types as coloured badges (the small layout hides the type fields).
+// The Pokémon's types as coloured badges, as the Dex shows them (the small layout hides the type
+// fields).
 function typeBadges(panel) {
-	var badges = $('<span class="type-badges"></span>');
+	var badges = $('<span class="dex-types ss-types"></span>');
 	[$(panel + " .type1").val(), $(panel + " .type2").val()].forEach(function (type) {
-		if (type) $('<span class="type-badge"></span>').addClass("type-" + type).text(type).appendTo(badges);
+		if (type) $('<span class="dex-type"></span>').attr("data-type", type).text(type).appendTo(badges);
 	});
 	return badges;
 }
