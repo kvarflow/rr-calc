@@ -20,6 +20,9 @@
         */
         if (localStorage.getItem('darkTheme') !== 'true') {
             document.getElementById('dark-theme-styles').disabled = true;
+        } else if (localStorage.getItem('blackTheme') === 'true') {
+            // Black (OLED): the dark theme with true black behind everything.
+            document.documentElement.className += ' black-theme';
         }
     </script>
 </head>

@@ -571,6 +571,86 @@ function importSave(save, fileName) {
 		}]);
 }
 
+/*
+ * Auto-import (in the Pcalc app): the app watches the game's save file (RetroArch's .srm) and sends
+ * it here whenever the game saves. It goes in quietly, as Import .sav would, but only when it is
+ * this mode's save of the run already in the box: a save of another mode, or of a new game (which
+ * would start a new run), is left for Import .sav, which asks first.
+ */
+var AUTO_IMPORT_KEY = "saveAutoImported";
+
+function autoImportSave(save, fileName) {
+	var saveMode = getSaveMode(save);
+	if (saveMode !== getPageMode()) {
+		return {ok: false, text: "This is a " + SAVE_MODE_LABELS[saveMode] + " save: open " + SAVE_MODE_LABELS[saveMode] + " to follow it."};
+	}
+	if (!readSetting(getSaveTrainerIdKey())) {
+		return {ok: false, text: "Import this save once with Import .sav; after that it follows by itself."};
+	}
+	if (isNewGameSave(save)) {
+		return {ok: false, text: "This save is from a new game: use Import .sav, which asks before starting a new run."};
+	}
+	importSaveIntoBox(save);
+	writeSetting(getSaveTrainerIdKey(), save.trainerId);
+	$(document).trigger("save:imported", [save]);
+	return {ok: true, text: "Auto-imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " +
+		fileName + " at " + new Date().toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}) + "."};
+}
+
+function base64ToBytes(text) {
+	var raw = atob(text);
+	var bytes = new Uint8Array(raw.length);
+	for (var i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+	return bytes;
+}
+
+// The auto-import row under Import .sav: the save file the app watches, Choose / Stop, and what
+// happened last.
+function buildSaveAutoImport() {
+	var row = $('<div class="save-auto"></div>');
+	var where = $('<div class="save-auto-where"></div>').appendTo(row);
+	var actions = $('<div class="save-auto-actions"></div>').appendTo(row);
+	var status = $('<div class="save-auto-status" role="status"></div>').appendTo(row);
+	$('<div class="save-auto-help"></div>').text("The app imports the game's save each time it changes. In RetroArch, " +
+		"Settings > Saving > SaveRAM Autosave Interval (say 10 seconds) writes it as you play.").appendTo(row);
+	var choose = $('<button type="button" class="bs-btn bs-btn-default">Choose save file</button>').click(function () {
+		pcalcBridge.send({type: "save:choose"});
+	}).appendTo(actions);
+	var stop = $('<button type="button" class="bs-btn bs-btn-default">Stop</button>').click(function () {
+		pcalcBridge.send({type: "save:stop"});
+	}).appendTo(actions);
+	var setStatus = function (text, bad) {
+		status.text(text || "").toggleClass("save-auto-bad", !!bad);
+	};
+	pcalcBridge.on("save:status", function (message) {
+		where.empty().append($("<span></span>").text("Auto-import: "),
+			$("<b></b>").text(message.name || "off"));
+		choose.text(message.name ? "Choose another" : "Choose save file");
+		stop.toggle(!!message.name);
+		if (message.error) setStatus(message.error, true);
+	});
+	pcalcBridge.on("save:file", function (message) {
+		// The same version of the file is imported once (the app sends it again on every page).
+		var version = message.name + "|" + message.modified + "|" + message.size;
+		if (readSetting(AUTO_IMPORT_KEY + ":" + getPageMode()) === version) return;
+		var save = null;
+		try {
+			save = parseRadicalRedSave(base64ToBytes(message.data));
+		} catch (e) {
+			save = null;
+		}
+		if (!save) {
+			setStatus("Couldn't read " + message.name + ": choose the game's save file (.srm or .sav).", true);
+			return;
+		}
+		var result = autoImportSave(save, message.name);
+		if (result.ok) writeSetting(AUTO_IMPORT_KEY + ":" + getPageMode(), version);
+		setStatus(result.text, !result.ok);
+	});
+	pcalcBridge.send({type: "save:hello"});
+	return row;
+}
+
 function handleSaveFile(file) {
 	var reader = new FileReader();
 	reader.onload = function () {
@@ -612,4 +692,11 @@ $(document).ready(function () {
 	$("#import-1_wrapper").append(button, fileInput);
 	// After every panel is built, since a new game starts a new run first.
 	setTimeout(importPendingSave, 0);
+	// In the Pcalc app: auto-import, under the Import / Export buttons (import_panel.js builds that row).
+	if (pcalcBridge.available()) {
+		setTimeout(function () {
+			var actions = $(".import-actions").first();
+			if (actions.length) actions.after(buildSaveAutoImport());
+		}, 0);
+	}
 });
