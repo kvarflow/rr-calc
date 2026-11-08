@@ -60,7 +60,8 @@ var CHANGELOG = [
 		"Settings \u2192 Theme: Light, Dark or Black (true black, for OLED screens like the AYN Thor's)",
 		"Settings \u2192 Tabs: the tab bar at the top or the bottom of the screen",
 		"In the Pcalc app: the game's save is imported by itself each time it changes (Import / Export \u2192 " +
-			"Auto-import), the tabs start at the bottom, and the full-screen and Install buttons are gone"
+			"Auto-import), the tabs start at the bottom, and the full-screen and Install buttons are gone",
+		"In the Pcalc app: emulator sync is on from the start and connects to RetroArch by itself"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

@@ -8,16 +8,25 @@
  * one's HP, stat changes and status as the game has them. Single battles only.
  *
  * The party bytes are the save's own format, so save_import.js decodes them.
+ *
+ * In the Pcalc app sync is on until it's turned off: the app reads RetroArch itself, so it connects
+ * as soon as RetroArch answers. While nothing answers it asks less often, and not at all while the
+ * calculator is out of sight.
  */
 
 var EMULATOR_SYNC_KEY = "emulatorSync";
 var EMULATOR_URL = "http://127.0.0.1:31125/state";
 var EMULATOR_SCRIPTS = {mgba: "emulator/radicalred_sync.lua", retroarch: "emulator/retroarch_sync.py"};
 var EMULATOR_STAT_ROWS = [null, "at", "df", "sp", "sa", "sd"];
-var emulatorSync = {timer: null, busy: false, applied: {}, lastRaw: ""};
+// How often to ask, in ms: while connected, and while nothing answers.
+var EMULATOR_POLL_MS = 1000;
+var EMULATOR_WAIT_POLL_MS = 3000;
+var emulatorSync = {timer: null, busy: false, applied: {}, lastRaw: "", connected: false, lastPoll: 0};
 
 function isEmulatorSyncOn() {
-	return readSetting(EMULATOR_SYNC_KEY) === "true";
+	var setting = readSetting(EMULATOR_SYNC_KEY);
+	// In the app it's on unless turned off.
+	return setting === null ? isInPcalcApp() : setting === "true";
 }
 
 function hexToBytes(hex) {
@@ -149,10 +158,13 @@ function applyEmulatorState(state) {
 }
 
 function pollEmulator() {
-	if (emulatorSync.busy) return;
+	if (emulatorSync.busy || document.hidden) return;
+	if (!emulatorSync.connected && Date.now() - emulatorSync.lastPoll < EMULATOR_WAIT_POLL_MS - 100) return;
 	emulatorSync.busy = true;
+	emulatorSync.lastPoll = Date.now();
 	$.ajax({url: EMULATOR_URL, dataType: "text", cache: false, timeout: 900})
 		.done(function (raw) {
+			emulatorSync.connected = true;
 			if (raw === emulatorSync.lastRaw) return;
 			emulatorSync.lastRaw = raw;
 			try {
@@ -164,6 +176,7 @@ function pollEmulator() {
 			}
 		})
 		.fail(function (xhr) {
+			emulatorSync.connected = false;
 			emulatorSync.lastRaw = "";
 			emulatorSync.via = null;
 			// The RetroArch script is running but RetroArch is not answering it: it says why.
@@ -183,11 +196,21 @@ function setEmulatorSync(on) {
 	emulatorSync.timer = null;
 	emulatorSync.lastRaw = "";
 	emulatorSync.applied = {};
+	emulatorSync.connected = false;
+	emulatorSync.lastPoll = 0;
 	if (on) {
-		emulatorSync.timer = setInterval(pollEmulator, 1000);
+		emulatorSync.timer = setInterval(pollEmulator, EMULATOR_POLL_MS);
 		pollEmulator();
 	}
 }
+
+// Back in sight: ask straight away.
+document.addEventListener("visibilitychange", function () {
+	if (!document.hidden && emulatorSync.timer) {
+		emulatorSync.lastPoll = 0;
+		pollEmulator();
+	}
+});
 
 $(document).ready(function () {
 	if (getCurrentGame().features.saveImport !== "cfru" || !$("#import-save").length) return;
@@ -203,7 +226,8 @@ $(document).ready(function () {
 	// The Pcalc app (kvarflow/Pcalc) reads RetroArch itself: no script to run.
 	if (isInPcalcApp()) {
 		panel.append($('<div class="emulator-sync-how"></div>').append($("<b></b>").text("RetroArch: "), document.createTextNode(
-			"built into this app. Play with the mGBA core and turn on Settings > Network > Network Commands (port 55355).")),
+			"built into this app, and it connects by itself. Play with the mGBA core and turn on Settings > Network > " +
+			"Network Commands (port 55355).")),
 		$('<div class="emulator-sync-help"></div>').text("Import your .sav first so your Pok\u00e9mon are in your box. Single battles for now."));
 		$("#import-save").after(button);
 		button.closest(".import-actions").after(panel);
