@@ -210,6 +210,11 @@
         "canMoveRouteTrainer": false,
         "moveRouteTrainersBefore": false,
         "copyAIReport": false,
+        "getBattleVolatile": false,
+        "buildBattleHistoryButton": false,
+        "AI_VOLATILE_DEFAULTS": false,
+        "getAIMoveData": false,
+        "E": false,
         "trainerArcCaps": true,
         "getStoryLength": false,
         "resetTrainerOrderFixes": false

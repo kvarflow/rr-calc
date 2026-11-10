@@ -24,10 +24,11 @@
  * Radical Red's version (decompiled too) skips the switching checks on a random quarter of turns,
  * absorbs Ground moves with Earth Eater, keeps Phoenix Down in, and never uses trainer items.
  *
- * What the calculator cannot know is assumed: no moves used yet this battle (so no Protect or
- * Destiny Bond last turn, no Choice lock), the foe's Pokémon has just come in when it is at full
- * HP (Fake Out, and it waits a turn before switching again unless it led), its benched Pokémon are
- * at full HP with no status, and neither side holds a Substitute.
+ * What has happened in the battle so far comes from "This turn" (battle_history.js; each side's
+ * `vol`): the move each side used last (a Choice lock, Encore, Disable, Protects in a row), whether
+ * it has just come in, a Substitute, Taunt, Yawn and so on, as CFRU master reads them. Left alone it
+ * is a fresh battle: no moves used yet, and the foe's Pokémon has just come in when it is at full
+ * HP. Its benched Pokémon are taken at full HP with no status.
  */
 
 // CFRU's move effects (include/constants/battle_move_effects.h), by number.
@@ -394,11 +395,73 @@ function isAsleep(side) {
 	return side.status === "slp" && side.ability !== "Comatose";
 }
 
+/*
+ * What has happened to a side in this battle (battle_history.js fills it in; a benched Pokémon
+ * has none of it): firstTurn (null: guess from its HP), lastMove (the name of the move it used
+ * last), protectUses (Protects in a row), sub (behind a Substitute), taunt, encore (into lastMove),
+ * torment, disabled (a move's name), healBlock, yawn, perish (Perish Song counting; perishLast: it
+ * faints this turn), confused, infatuated, wrapped (Bind, Fire Spin...), noEscape (Mean Look),
+ * destinyBond (it used it last turn), recharge (Hyper Beam's turn off), locked (into lastMove:
+ * Outrage, a charging move), stockpile (0-3), wish (one is on its way).
+ */
+var AI_VOLATILE_DEFAULTS = {firstTurn: null, lastMove: "", protectUses: 0, sub: false, taunt: false, encore: false,
+	torment: false, disabled: "", healBlock: false, yawn: false, perish: false, perishLast: false, confused: false,
+	infatuated: false, wrapped: false, noEscape: false, destinyBond: false, recharge: false, locked: false, stockpile: 0, wish: false};
+
+function volatileOf(side) {
+	return side.vol || AI_VOLATILE_DEFAULTS;
+}
+
+// The move a side used last, if it still knows it.
+function lastMoveOf(side) {
+	var name = volatileOf(side).lastMove;
+	if (!name) return null;
+	for (var i = 0; i < side.moves.length; i++) {
+		if (side.moves[i] && side.moves[i].name === name) return side.moves[i];
+	}
+	return null;
+}
+
+// The move a Choice item (or Gorilla Tactics) has it locked into: the one it used last.
+function choicedMoveOf(side) {
+	return canBeChoiceLocked(side) ? lastMoveOf(side) : null;
+}
+
+// Moves that go through a Substitute (MoveIgnoresSubstitutes): sound moves, Infiltrator, and the game's list.
+var SUBSTITUTE_BYPASS_MOVES = ["Attract", "Disable", "Encore", "Foresight", "Odor Sleuth", "Miracle Eye", "Spite", "Taunt",
+	"Torment", "Whirlwind", "Roar", "Haze", "Curse", "Psych Up", "Reflect Type", "Role Play", "Skill Swap", "Play Nice",
+	"Tearful Look", "After You", "Bestow", "Conversion 2", "Destiny Bond", "Imprison", "Sketch", "Mimic", "Transform"];
+
+function moveBlockedBySubstitute(atk, def, move) {
+	if (!volatileOf(def).sub) return false;
+	return !(move.sound || (atk.ability === "Infiltrator" && move.name !== "Transform" && move.effect !== E.SKY_DROP) ||
+		has(SUBSTITUTE_BYPASS_MOVES, move.name));
+}
+
+// A damaging move of `atk` that gets through `def`'s Substitute (sound, Infiltrator).
+function canBreakThroughSubstitute(atk, def) {
+	return hasMoveWhere(atk, function (move) {
+		return isDamaging(move) && move.effectiveness !== 0 && !moveBlockedBySubstitute(atk, def, move);
+	});
+}
+
+// The status moves the game checks against a Substitute before using them on the foe (AI_SUBSTITUTE_CHECK).
+var SUBSTITUTE_CHECK_EFFECTS = ["SLEEP", "YAWN", "ATTACK_DOWN", "ATTACK_DOWN_2", "TICKLE", "PLAY_NICE", "VENOM_DRENCH", "DEFENSE_DOWN",
+	"DEFENSE_DOWN_2", "SPEED_DOWN", "SPEED_DOWN_2", "SPECIAL_ATTACK_DOWN", "SPECIAL_ATTACK_DOWN_2", "SPECIAL_DEFENSE_DOWN",
+	"SPECIAL_DEFENSE_DOWN_2", "ACCURACY_DOWN", "ACCURACY_DOWN_2", "EVASION_DOWN", "EVASION_DOWN_2", "POISON", "TOXIC", "CONFUSE",
+	"PARALYZE", "SPITE", "MIMIC", "LEECH_SEED", "LOCK_ON", "SKETCH", "SWAGGER", "TORMENT", "FLATTER", "WILL_O_WISP", "TRICK",
+	"SKILL_SWAP", "STAT_SWAP_SPLIT", "ATTACK_BLOCKERS", "TYPE_CHANGES", "HEAL_TARGET", "TOPSY_TURVY_ELECTRIFY"];
+
+// Healing moves, which Heal Block stops (CheckHealingMove).
+function isHealingMove(move) {
+	return has([E.RESTORE_HP, E.MORNING_SUN, E.SWALLOW, E.WISH, E.REST, E.ABSORB, E.DREAM_EATER, E.HEAL_TARGET], move.effect) || !!move.drain;
+}
+
 // Asleep (for more than this turn): it cannot act this turn. Radical Red's IsBankIncapacitated
 // (0x090DA1C4) is sleep, recharging and Truant only: it is built with frostbite instead of freeze,
 // and a frostbitten Pokémon (the calculator's "frz") still attacks.
 function isIncapacitated(side) {
-	return isAsleep(side);
+	return isAsleep(side) || volatileOf(side).recharge;
 }
 
 function canBeChoiceLocked(side) {
@@ -410,6 +473,16 @@ function isUsable(side, i, field) {
 	if (!move) return false;
 	if (move.split === SPLIT_STATUS && side.item === "Assault Vest") return false;
 	if (field.isGravity && has(GRAVITY_BANNED, move.name)) return false;
+	// CheckMoveLimitations: what has happened this battle rules moves out too.
+	var vol = volatileOf(side);
+	if (vol === AI_VOLATILE_DEFAULTS) return true;
+	if (vol.disabled && vol.disabled === move.name) return false;
+	if (vol.torment && vol.lastMove === move.name) return false;
+	if (vol.taunt && move.split === SPLIT_STATUS) return false;
+	var last = lastMoveOf(side);
+	if (vol.encore && last && last !== move) return false;
+	if (last && last !== move && canBeChoiceLocked(side)) return false;
+	if (vol.healBlock && isHealingMove(move)) return false;
 	return true;
 }
 
@@ -458,6 +531,7 @@ function passiveRecovery(side, field) {
 
 // WillFaintFromSecondaryDamage, with the game's 8-bit HP wrap kept.
 function willFaintFromChip(side, field) {
+	if (volatileOf(side).perishLast) return true;
 	var hp = Math.min(side.hp + passiveRecovery(side, field), side.maxHP) & 0xFF;
 	var chip = secondaryDamage(side, field);
 	return chip > 0 && chip >= hp;
@@ -1244,6 +1318,17 @@ function statBonus(turn, atk, def, move, stat, limit, boost) {
  * AIScript_Negatives: points off moves that fail or waste the turn.
  */
 function scoreNegatives(turn, atk, def, i, score) {
+	var result = scoreNegativesCore(turn, atk, def, i, score);
+	var move = atk.moves[i];
+	// AI_SUBSTITUTE_CHECK: a status move that nothing else counted against is no good into a Substitute.
+	if (result === score && volatileOf(def).sub && move.split === SPLIT_STATUS && !isSelfTargeting(move) &&
+		SUBSTITUTE_CHECK_EFFECTS.indexOf(AI_EFFECT_NAMES[move.effect]) !== -1 && moveBlockedBySubstitute(atk, def, move)) {
+		result = Math.max(0, result - 10);
+	}
+	return result;
+}
+
+function scoreNegativesCore(turn, atk, def, i, score) {
 	var move = atk.moves[i];
 	var field = turn.battle.field;
 	var flags = turn.flags;
@@ -1335,8 +1420,11 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (!canApply) down(10);
 		return score;
 	};
+	var atkVol = volatileOf(atk);
+	var defVol = volatileOf(def);
+	var defLast = lastMoveOf(def);
 	var selfBoost = function (stats, noLockCheck) {
-		var locked = !noLockCheck && goodAI && canBeChoiceLocked(atk);
+		var locked = !noLockCheck && goodAI && (canBeChoiceLocked(atk) || atkVol.encore);
 		if (locked || atk.ability === "Contrary") return down(10);
 		if (!stats.some(function (stat) {
 			return canStatBeRaised(atk, stat) && (stat !== "atk" || hasRealPhysical(atk)) && (stat !== "spa" || hasSpecial(atk));
@@ -1344,18 +1432,23 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return score;
 	};
 
-	// Moves that fail now: nothing has been used yet this battle (Spit Up, Belch, Mimic going first...), the
-	// AI's bench is assumed healthy (Healing Wish), or this foe or field rules them out.
+	// Moves that fail now: nothing to copy or disable (the foe's last move, or its move this turn when it
+	// goes first), nothing stockpiled, the AI's bench is assumed healthy (Healing Wish), or this foe or
+	// field rules them out.
 	var failsNow = function () {
 		var first = hitsFirst(turn, atk, move, def);
 		switch (move.name) {
-		case "Splash": case "Conversion 2": case "Sketch": case "Belch": case "Recycle": case "Spit Up": case "Swallow":
+		case "Splash": case "Conversion 2": case "Belch": case "Recycle":
 		case "Stuff Cheeks": case "Healing Wish": case "Lunar Dance": case "Celebrate": case "Hold Hands": case "Happy Hour":
 			return true;
+		case "Sketch":
+			return !defVol.lastMove;
+		case "Spit Up": case "Swallow":
+			return !atkVol.stockpile;
 		case "Mimic": case "Spite":
-			return first || !predicted;
+			return first ? !defVol.lastMove : !predicted;
 		case "Disable":
-			return def.item === "Mental Herb" || first || !predicted;
+			return def.item === "Mental Herb" || !!defVol.disabled || (first ? !defVol.lastMove : !predicted);
 		case "Last Resort":
 			return atk.moves.filter(Boolean).length > 1;
 		case "Purify":
@@ -1379,10 +1472,24 @@ function scoreNegatives(turn, atk, def, i, score) {
 			return !isAsleep(def) && def.ability !== "Comatose";
 		case "Mean Look": case "Block": case "Spider Web":
 			return isTrappedBy(def, atk, field);
+		case "Heal Block":
+			return defVol.healBlock;
 		case "Lock-On": case "Mind Reader":
 			return atk.ability === "No Guard" || def.ability === "No Guard";
 		case "Taunt":
-			return ability === "Aroma Veil";
+			return ability === "Aroma Veil" || defVol.taunt;
+		case "Wish":
+			return atkVol.wish;
+		case "Destiny Bond":
+			return atkVol.destinyBond;
+		case "Substitute":
+			return atkVol.sub;
+		case "Transform":
+			return defVol.sub;
+		case "Stockpile":
+			return atkVol.stockpile >= 3;
+		case "Yawn":
+			return defVol.yawn;
 		case "Trick": case "Switcheroo":
 			return (!atk.item && !def.item) || ability === "Sticky Hold" || /ite$|ium Z$/.test(atk.item) || /ite$|ium Z$/.test(def.item);
 		case "Bestow":
@@ -1610,6 +1717,17 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) return down(10);
 		if (move.name === "Mat Block" && !atk.firstTurn) return down(10);
 		if (move.name === "Endure" && (atk.hp === 1 || secondaryDamage(atk, field) > 0)) down(10);
+		// Nothing to protect from while the foe recharges.
+		if (defVol.recharge) return down(10);
+		// It protected last turn: not if the chip damage finishes it anyway, never a third time, hardly
+		// ever King's Shield twice, and a second Protect half the time.
+		var atkLast = lastMoveOf(atk);
+		if (atkLast && atkLast.effect === E.PROTECT) {
+			if (willFaintFromChip(atk, field) && !has(MOXIE_ABILITIES, ability)) down(10);
+			else if (atkVol.protectUses >= 2) down(10);
+			else if (move.name === "King's Shield" && atkVol.protectUses > 0) down(9);
+			else if (atkVol.protectUses === 1 && (turn.simulatedRNG(1) & 1)) down(6);
+		}
 		return score;
 	case E.SUBSTITUTE:
 		if (healthPercent(atk) <= 25) return down(10);
@@ -1621,9 +1739,15 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (def.ability === "Oblivious") down(10);
 		return score;
 	case E.ENCORE:
-		if (def.item === "Mental Herb") return down(10);
-		// No move used yet this battle: going first there is nothing to encore.
-		if (hitsFirst(turn, atk, move, def) || !predicted) down(10);
+		if (def.item === "Mental Herb" || defVol.encore) return down(10);
+		// Going first it encores the move the foe used last (nothing, on its first turn; not Encore
+		// itself or a move that calls another); going second, the move it uses this turn.
+		if (hitsFirst(turn, atk, move, def)) {
+			if (!defVol.lastMove || has(["Encore", "Struggle", "Metronome", "Sleep Talk", "Assist", "Copycat", "Mirror Move",
+				"Me First", "Nature Power"], defVol.lastMove)) down(10);
+		} else if (!predicted) {
+			down(10);
+		}
 		return score;
 	case E.FIELD_EFFECTS:
 		if (move.name === "Trick Room") {
@@ -1645,7 +1769,8 @@ function scoreNegatives(turn, atk, def, i, score) {
 	case E.BATON_PASS:
 		if (move.name === "Baton Pass") {
 			if (atk.monsLeft <= 1) return down(10);
-			if (!Object.keys(atk.boosts).some(function (stat) {
+			// Something to pass: a Substitute, or raised stats.
+			if (!atkVol.sub && !Object.keys(atk.boosts).some(function (stat) {
 				return atk.boosts[stat] > 0;
 			})) down(6);
 			return score;
@@ -1702,6 +1827,11 @@ function scoreNegatives(turn, atk, def, i, score) {
 		if (def.monsLeft <= 1 || ability === "Suction Cups") down(10);
 		return score;
 	case E.KNOCK_OFF:
+		// Not when it frees a foe from an Assault Vest or a Choice lock whose moves can't touch the AI.
+		if ((def.item === "Assault Vest" || (/^Choice /.test(def.item) && atk.ability !== "Gorilla Tactics" && defLast)) &&
+			!def.moves.some(function (m, k) {
+				return m && isDamaging(m) && m.effectiveness !== 0 && m.maxDamage > 0 && isUsable(def, k, field);
+			})) down(9);
 		return score;
 	case E.DREAM_EATER:
 		if (!isAsleep(def) && def.ability !== "Comatose") return down(10);
@@ -1743,7 +1873,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 		return score;
 	case E.PERISH_SONG:
 		if (atk.monsLeft <= 1 && atk.ability !== "Soundproof" && def.monsLeft >= 2) down(10);
-		if (def.ability === "Soundproof") down(10);
+		if (def.ability === "Soundproof" || defVol.perish) down(10);
 		return score;
 	case E.MEMENTO:
 		if (atk.monsLeft <= 1) return down(10);
@@ -1906,8 +2036,11 @@ function scorePositives(turn, atk, def, i, score) {
 		up(statBonus(turn, atk, def, move, stat, limit, boost));
 		return true;
 	};
-	// Secondary chances with Sheer Force and Serene Grace (nobody is assumed to be behind a Substitute).
-	var chance = chanceOf(atk, move);
+	var atkVol = volatileOf(atk);
+	var defVol = volatileOf(def);
+	var defLast = lastMoveOf(def);
+	// Secondary chances with Sheer Force and Serene Grace; none through a Substitute.
+	var chance = isDamaging(move) && moveBlockedBySubstitute(atk, def, move) ? 0 : chanceOf(atk, move);
 	var phazingPredicted = !!predicted && has([E.ROAR, E.HAZE, E.REMOVE_TARGET_STAT_CHANGES], predicted.effect);
 	// Recover's +8 for stallers and phazers, else STATUS(3) (RECOVER_INCREASE).
 	var recoverBonus = function () {
@@ -2204,7 +2337,7 @@ function scorePositives(turn, atk, def, i, score) {
 		if (!canFlinch(turn, atk, def, move)) break;
 		// With Serene Grace or a foe already slowed (paralysed), a likely flinch or one that buys a
 		// turn the AI needs; Radical Red also always likes Double Iron Bash.
-		if (atk.ability === "Serene Grace" || def.status === "par") {
+		if (atk.ability === "Serene Grace" || def.status === "par" || defVol.infatuated || defVol.confused) {
 			if (chance >= 60 || !can2HKO(turn, atk, def)) status(3);
 		} else if (move.name === "Double Iron Bash") status(3);
 		break;
@@ -2351,7 +2484,7 @@ function scorePositives(turn, atk, def, i, score) {
 		if (shouldProtect(turn, atk, def)) up(protectBonus(turn, atk, def));
 		break;
 	case E.SUBSTITUTE:
-		if (shouldUseSubstitute(turn, atk, def, move)) up(substituteBonus(turn, atk, def));
+		if (!atkVol.sub && shouldUseSubstitute(turn, atk, def, move)) up(substituteBonus(turn, atk, def));
 		break;
 	case E.TAUNT:
 		if (isAsleep(def) && !hasEffect(def, [E.SLEEP_TALK])) break;
@@ -2364,7 +2497,14 @@ function scorePositives(turn, atk, def, i, score) {
 		else if (foeHasStatusMove) status(2);
 		break;
 	case E.ENCORE:
-		if (def.item !== "Mental Herb" && !hitsFirst(turn, atk, move, def) && predicted && predicted.split === SPLIT_STATUS) status(3);
+		// Locks the foe into a status move, or one that can't touch the AI: the one it used last when
+		// the AI goes first, else the one it uses this turn.
+		if (def.item === "Mental Herb" || defVol.encore) break;
+		if (hitsFirst(turn, atk, move, def)) {
+			if (defLast && (defLast.split === SPLIT_STATUS || defLast.effectiveness === 0)) status(3);
+		} else if (predicted && predicted.split === SPLIT_STATUS) {
+			status(3);
+		}
 		break;
 	case E.FIELD_EFFECTS:
 		if (move.name === "Trick Room") {
@@ -2400,7 +2540,7 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.TRAP:
 		// Not into Rapid Spin, a Ghost or a foe already trapped. Radical Red: Salt Cure +8 on Water and
 		// Steel types, else +4; the others when a staller should trap.
-		if (hasMoveNamed(def, ["Rapid Spin"]) || def.types.indexOf("Ghost") !== -1) break;
+		if (hasMoveNamed(def, ["Rapid Spin"]) || def.types.indexOf("Ghost") !== -1 || (defVol.wrapped && move.name !== "Salt Cure")) break;
 		if (move.name === "Salt Cure") {
 			if (!def.saltCured) up(def.types.indexOf("Water") !== -1 || def.types.indexOf("Steel") !== -1 ? 8 : 4);
 		} else if (shouldTrap(turn, atk, def, move)) up(7);
@@ -2438,7 +2578,7 @@ function scorePositives(turn, atk, def, i, score) {
 				goodIdeaToLower(turn, def, atk, move, "eva")) status(2);
 		} else if (move.name === "Court Change") {
 			if (shouldCourtChange(atk, def) && !shouldCourtChange(def, atk)) status(2);
-		} else if (atk.seeded && move.effectiveness > 0) {
+		} else if ((atk.seeded || atkVol.wrapped) && move.effectiveness > 0) {
 			status(3);
 		}
 		break;
@@ -2501,7 +2641,14 @@ function scorePositives(turn, atk, def, i, score) {
 		if (predicted && (predicted.flags & 0x8)) status(3); // FLAG_SNATCH_AFFECTED
 		break;
 	case E.DISABLE:
-		if (def.item !== "Mental Herb" && !hitsFirst(turn, atk, move, def) && predicted && predicted.split === SPLIT_STATUS) status(1);
+		if (def.item === "Mental Herb" || defVol.disabled) break;
+		// Going first: the move the foe used last, when it is about to use it again or it would KO the AI.
+		if (hitsFirst(turn, atk, move, def)) {
+			if (defLast && defLast === predicted) status(3);
+			else if (defLast && knocksOut(turn, def, atk, def.moves.indexOf(defLast), 1)) status(2);
+		} else if (predicted && predicted.split === SPLIT_STATUS) {
+			status(1);
+		}
 		break;
 	case E.PAIN_SPLIT:
 		// Radical Red: only a staller, when the split heals it enough.
@@ -2817,6 +2964,8 @@ function shouldUseZMove(turn, atk, def, i) {
 	var move = atk.moves[i];
 	var z = atk.zMoves && atk.zMoves[i];
 	if (!move || !z) return false;
+	// Not into a Substitute.
+	if (volatileOf(def).sub && atk.ability !== "Infiltrator") return false;
 	var field = turn.battle.field;
 	var predicted = turn.predicted(def);
 	if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) return false;
@@ -2972,10 +3121,12 @@ function damageMoveBonus(turn, atk, def, i, score) {
 	var noProtect = !hasProtectMove(atk);
 	var chipSafe = !willFaintFromChip(def, field) || (predicted && (predicted.effect === E.RESTORE_HP ||
 		predicted.effect === E.MORNING_SUN)) || has(MOXIE_ABILITIES, atk.ability);
+	// Not a KO that takes the AI down with it (the foe used Destiny Bond last turn), unless it falls anyway.
+	var bondSafe = !volatileOf(def).destinyBond || canKnockOut(turn, def, atk);
 
 	if (!switching && knocksOutWithBestAccuracy(turn, atk, def, i, true) &&
 		(accuracyOf(atk, def, move, field) >= 70 || !helpsAccuracy || canKnockOut(turn, def, atk))) {
-		return suckerPunchRule() ? up(9) : score;
+		return suckerPunchRule() && bondSafe ? up(9) : score;
 	}
 	if (!switching && noProtect && !hitsFirst(turn, atk, move, def) && knocksOutWithBestAccuracy(turn, atk, def, i, false) && chipSafe) {
 		return up(slowKOBonus(turn, atk, def));
@@ -2989,7 +3140,7 @@ function damageMoveBonus(turn, atk, def, i, score) {
 		!(hasEffect(atk, [E.FAKE_OUT]) && shouldUseFakeOut(turn, atk, def, atk.moves.filter(function (m) {
 			return m && m.effect === E.FAKE_OUT;
 		})[0]))) {
-		if (suckerPunchRule()) return up(9);
+		if (suckerPunchRule() && bondSafe) return up(9);
 		if (!isStrongest(turn, atk, def, i)) return score;
 	}
 	if (isStrongest(turn, atk, def, i) && (hitsFirst(turn, atk, move, def) || chipSafe)) {
@@ -3109,9 +3260,10 @@ function isMoldBreaker(side) {
 	return has(MOLD_BREAKERS, side.ability);
 }
 
-// IsTrapped through an ability (Shadow Tag, Arena Trap, Magnet Pull); trapping moves are not known.
+// IsTrapped: by a trapping move (Bind, Mean Look) or an ability (Shadow Tag, Arena Trap, Magnet Pull).
 function isTrappedBy(side, foe, field) {
 	if (side.types.indexOf("Ghost") !== -1 || side.item === "Shed Shell") return false;
+	if (volatileOf(side).wrapped || volatileOf(side).noEscape) return true;
 	if (foe.ability === "Shadow Tag") return side.ability !== "Shadow Tag";
 	if (foe.ability === "Arena Trap") return isGrounded(side, field);
 	if (foe.ability === "Magnet Pull") return side.types.indexOf("Steel") !== -1;
@@ -3659,7 +3811,16 @@ function onlyBadMovesLeft(turn) {
 
 // ShouldSwitchIfOnlyBadMovesLeft.
 function switchFromBadMoves(turn, justIn) {
-	if (justIn || !onlyBadMovesLeft(turn)) return null;
+	if (justIn) return null;
+	var ai = turn.battle.ai;
+	var foe = turn.battle.player;
+	var aiVol = volatileOf(ai);
+	var predicted = turn.predicted(foe);
+	// Destiny Bond is up and your move would set it off: stay. Behind a Substitute you can't break: use it.
+	if (aiVol.destinyBond && predicted && knocksOut(turn, foe, ai, foe.moves.indexOf(predicted), 1) &&
+		hitsFirst(turn, foe, predicted, ai)) return null;
+	if (aiVol.sub && !canBreakThroughSubstitute(foe, ai)) return null;
+	if (!onlyBadMovesLeft(turn)) return null;
 	var scored = scoreSwitchIns(turn);
 	var wanted = SWITCH_FLAG.OUTSPEEDS | SWITCH_FLAG.WALLS_FOE | SWITCH_FLAG.RESIST_ALL;
 	if (scored.best && (scored.best.flags & wanted) && predictedHitIsSafe(turn, scored.best.mon, scored.best.flags)) return {mon: null};
@@ -3705,6 +3866,32 @@ function switchToHeal(turn) {
 	if (best && !predictedHitIsSafe(turn, best.mon, best.flags)) {
 		if (!predictedHitWontKO(turn, best.mon)) return null;
 		if (turn.coin("healHalf", 0.5)) return null;
+	}
+	return {mon: null};
+}
+
+// ShouldSwitchWhenYawned: out before it falls asleep, unless it can still do real work this turn.
+function switchWhenYawned(turn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var field = battle.field;
+	if (!volatileOf(ai).yawn || ai.ability === "Natural Cure" || has(["Chesto Berry", "Lum Berry"], ai.item) ||
+		ai.hp <= Math.floor(ai.maxHP / 4) || !canBeSlept(ai, ai, field)) return null;
+	if (foe.monsLeft <= 1 && canKnockOut(turn, ai, foe)) return null;
+	if (isTrappedBy(foe, ai, field) && (secondaryDamage(foe, field) > 0 || volatileOf(foe).confused)) return null;
+	if (stage(ai, "eva") >= 9 && !has(["Unaware", "Keen Eye"], foe.ability)) return null;
+	if (has(["Early Bird", "Shed Skin"], ai.ability) || hasEffect(ai, [E.SNORE, E.SLEEP_TALK]) ||
+		(hasMoveNamed(ai, ["Electric Terrain", "Misty Terrain"]) && isGrounded(ai, field))) return null;
+	var predicted = turn.predicted(foe);
+	if (!turn.predictedSwitch[foe.key] && !(predicted && predicted.effect === E.PROTECT) &&
+		!(predicted && predicted.effect === E.SEMI_INVULNERABLE && hitsFirst(turn, foe, predicted, ai))) {
+		// It will fall asleep, but takes the foe down first.
+		if (!predicted || !hitsFirst(turn, foe, predicted, ai)) {
+			if (canKnockOut(turn, ai, foe)) return null;
+		} else if (!canKnockOut(turn, foe, ai) && canKnockOut(turn, ai, foe)) {
+			return null;
+		}
 	}
 	return {mon: null};
 }
@@ -3765,10 +3952,14 @@ function switchToAvoidDeath(turn, justIn) {
 	if (justIn || battle.flags <= AI_NEGATIVES) return null;
 	var own = turn.aiPrediction;
 	var predicted = turn.predicted(foe);
+	var aiVol = volatileOf(ai);
+	// With Destiny Bond up it would rather fall; and a hit its Substitute takes is no threat.
+	if (aiVol.destinyBond) return null;
+	if (predicted && aiVol.sub && moveBlockedBySubstitute(foe, ai, predicted)) return null;
 	if (ai.status === "par" && ai.hp < Math.floor(ai.maxHP / 3) && !has(["Quick Feet", "Natural Cure"], ai.ability)) return null;
 	// Radical Red: Phoenix Down (revives once at half HP) stays in while its revive is unused.
 	if (ai.ability === "Phoenix Down") return null;
-	if (/^Aegislash/.test(ai.name) && ai.ability === "Stance Change" && hasMoveNamed(ai, ["King's Shield"]) && predicted &&
+	if (/^Aegislash/.test(ai.name) && ai.ability === "Stance Change" && hasMoveNamed(ai, ["King's Shield"]) && !aiVol.protectUses && predicted &&
 		(predicted.flags & FLAG_CONTACT) && hasRealPhysical(foe)) return null;
 	if (!predicted || (own && hitsFirst(turn, ai, own, foe))) return null;
 	if (!knocksOut(turn, foe, ai, foe.moves.indexOf(predicted), 1) || hazardsHurt(ai, 3, battle.field)) return null;
@@ -3854,6 +4045,7 @@ function switchToSaveSweeper(turn, justIn) {
 	if (justIn || battle.flags <= AI_NEGATIVES) return null;
 	if (ai.status === "par" && !has(["Quick Feet", "Guts"], ai.ability)) return null;
 	if (!isDamager(styleOf(turn, ai))) return null;
+	if (volatileOf(ai).sub && !canBreakThroughSubstitute(foe, ai)) return null;
 	var predicted = turn.predicted(foe);
 	var fakeOutHurts = predicted && predicted.name === "Fake Out" && !has(["Inner Focus", "Shield Dust"], ai.ability) &&
 		ai.item !== "Covert Cloak" && finalDamage(turn, foe, ai, foe.moves.indexOf(predicted), 1) >= Math.floor(ai.maxHP / 2);
@@ -3895,8 +4087,8 @@ function switchToSaveSweeper(turn, justIn) {
 /*
  * ShouldSwitch's checks for the Pokémon on the field, in order; the first that says so decides.
  * `justSwitchedIn`: it came in this turn (after a KO or a switch), when most of them wait a turn.
- * Not modelled (the calculator doesn't know them): passing a Wish, Perish Song, a Yawn, your Fly or
- * Dig in progress, a Choice lock, Toxic Spikes and Sticky Web (no setting for them). Toxic's turn
+ * Not modelled: passing a Wish, switching to stop your locked move or while you Fly or Dig, the
+ * looser rules while Choice-locked, Toxic Spikes and Sticky Web (no setting for them). Toxic's turn
  * count comes from the Toxic counter beside Pokémon 2's status.
  */
 function switchChecks(turn) {
@@ -3917,11 +4109,16 @@ function switchChecks(turn) {
 		decide(function () {
 			return switchToAbsorb(turn, justIn);
 		}), decide(function () {
+			// ShouldSwitchIfPerishSong: on the count's last turn.
+			return volatileOf(battle.ai).perishLast ? {mon: null} : null;
+		}), decide(function () {
 			return switchForWonderGuard(turn);
 		}), decide(function () {
 			return switchFromBadMoves(turn, justIn);
 		}), decide(function () {
 			return switchToHeal(turn);
+		}), decide(function () {
+			return switchWhenYawned(turn);
 		}), decide(function () {
 			return switchWhileAsleep(turn, justIn);
 		}), decide(function () {
@@ -3943,7 +4140,10 @@ function predictAISelf(turn) {
 	turn.phase = "p";
 	turn.cache = {};
 	var index = null;
-	if (!(isAsleep(ai) && !hasEffect(ai, [E.SLEEP_TALK, E.SNORE])) && ai.hp > 0) {
+	var forced = forcedMoveIndex(ai);
+	if (forced !== undefined) {
+		index = forced;
+	} else if (!(isAsleep(ai) && !hasEffect(ai, [E.SLEEP_TALK, E.SNORE])) && ai.hp > 0) {
 		var values = runScripts(turn, ai, battle.player, AI_SMART_FLAGS, false);
 		var best = Math.max.apply(null, values);
 		if (best >= 100) {
@@ -3988,6 +4188,18 @@ function runScripts(turn, atk, def, flags, signed) {
 	return scores;
 }
 
+// A side with no choice this turn: null while it recharges, the index of the move it is locked
+// into (Outrage, a move it is charging), undefined when it chooses freely.
+function forcedMoveIndex(side) {
+	var vol = volatileOf(side);
+	if (vol.recharge) return null;
+	if (vol.locked) {
+		var last = lastMoveOf(side);
+		if (last) return side.moves.indexOf(last);
+	}
+	return undefined;
+}
+
 // Your move, as the AI predicts it before choosing its own (always with the smart flags).
 function predictPlayer(turn) {
 	var battle = turn.battle;
@@ -3997,7 +4209,11 @@ function predictPlayer(turn) {
 	turn.cache = {};
 	turn.prediction[ai.key] = null;
 	var index = null;
-	if (!(isAsleep(player) && !hasEffect(player, [E.SLEEP_TALK, E.SNORE])) && player.hp > 0) {
+	var forced = forcedMoveIndex(player);
+	if (forced !== undefined) {
+		// Recharging (no move), or locked into its last move (Outrage, a charging move).
+		index = forced;
+	} else if (!(isAsleep(player) && !hasEffect(player, [E.SLEEP_TALK, E.SNORE])) && player.hp > 0) {
 		var values = runScripts(turn, player, ai, AI_SMART_FLAGS, false);
 		var best = Math.max.apply(null, values);
 		if (best < 100) {
@@ -4039,9 +4255,9 @@ function chooseShares(scores, moves) {
 }
 
 // Why the AI switches, in ShouldSwitch's order (for the Battle tab's tooltip).
-var SWITCH_REASONS = ["to take your move with its ability", "against your Wonder Guard", "because its moves are no good here",
-	"to heal with its ability", "because it is asleep", "because of Leech Seed", "to avoid being knocked out",
-	"because its attacking stat is down", "to save it for later"];
+var SWITCH_REASONS = ["to take your move with its ability", "because Perish Song is about to take it", "against your Wonder Guard",
+	"because its moves are no good here", "to heal with its ability", "because of Yawn", "because it is asleep", "because of Leech Seed",
+	"to avoid being knocked out", "because its attacking stat is down", "to save it for later"];
 
 /*
  * The chance (0-1) the AI picks each of `battle.ai`'s four moves, and of each switch.
@@ -4054,6 +4270,13 @@ function predictAIMoves(battle) {
 	var reasons = SWITCH_REASONS.length;
 	// Where the shares of moves used as Z-Moves go, after the switches.
 	var zBase = 4 + party.length * reasons;
+	// Recharging or locked into a move: the game does not ask the AI.
+	var forced = forcedMoveIndex(battle.ai);
+	if (forced !== undefined) {
+		return {shares: [0, 1, 2, 3].map(function (i) {
+			return i === forced ? 1 : 0;
+		}), zShares: [0, 0, 0, 0], switches: [], switchShare: 0, forced: forced === null ? "recharge" : "locked"};
+	}
 	var outcomes = enumerateChances(function (rng) {
 		var turn = new AITurn(rng, megaPhaseBattle(battle, false));
 		var outcome = [0, 0, 0, 0];
@@ -4162,7 +4385,8 @@ function buildAISide(key, pokemon, results, foe, options) {
 		stats: pokemon.stats,
 		speed: options.speed,
 		monsLeft: options.monsLeft,
-		firstTurn: options.firstTurn,
+		firstTurn: options.vol && options.vol.firstTurn !== null && options.vol.firstTurn !== undefined ? !!options.vol.firstTurn : options.firstTurn,
+		vol: options.vol ? $.extend({}, AI_VOLATILE_DEFAULTS, options.vol) : AI_VOLATILE_DEFAULTS,
 		sideState: options.sideState,
 		seeded: options.sideState.seeded,
 		saltCured: !!options.saltCured,
@@ -4349,11 +4573,13 @@ function readAIBattle() {
 	};
 	var player = buildAISide("p1", p1, damageResults[0], p2, {
 		speed: getBattleSpeed(p1, "p1"), monsLeft: countYourMonsLeft(), firstTurn: p1.curHP() === p1.maxHP(),
-		sideState: readSideState("L"), focusEnergy: focus.p1, critChance: critChance(p1, p2, "p1"), critDamage: critDamage(0)
+		sideState: readSideState("L"), focusEnergy: focus.p1, critChance: critChance(p1, p2, "p1"), critDamage: critDamage(0),
+		vol: typeof getBattleVolatile === "function" ? getBattleVolatile("p1") : null
 	});
 	var ai = buildAISide("p2", p2, damageResults[1], p1, {
 		speed: getBattleSpeed(p2, "p2"), monsLeft: countFoeMonsLeft(), firstTurn: p2.curHP() === p2.maxHP(),
-		sideState: readSideState("R"), focusEnergy: focus.p2, critChance: critChance(p2, p1, "p2"), critDamage: critDamage(1)
+		sideState: readSideState("R"), focusEnergy: focus.p2, critChance: critChance(p2, p1, "p2"), critDamage: critDamage(1),
+		vol: typeof getBattleVolatile === "function" ? getBattleVolatile("p2") : null
 	});
 	ai.zMoves = readZMoves(ai);
 	var party = readAIParty(p1, damageResults[0][0].field, field,
@@ -4433,12 +4659,12 @@ function readPendingMega(p1, p2, aiField, playerField, base) {
 	var megaSide = out[0].attacker;
 	return {
 		ai: buildAISide("p2", megaSide, out, p1, {speed: getBattleSpeed(megaSide, "p2"), monsLeft: base.ai.monsLeft,
-			firstTurn: base.ai.firstTurn, sideState: base.ai.sideState, focusEnergy: base.focus.p2, critChance: crit(megaSide, p1, base.focus.p2),
+			firstTurn: base.ai.firstTurn, vol: base.ai.vol, sideState: base.ai.sideState, focusEnergy: base.focus.p2, critChance: crit(megaSide, p1, base.focus.p2),
 			critDamage: function (i) {
 				return maxCritRoll(out[i]);
 			}}),
 		player: buildAISide("p1", incoming[0].attacker, incoming, megaSide, {speed: base.player.speed, monsLeft: base.player.monsLeft,
-			firstTurn: base.player.firstTurn, sideState: base.player.sideState, focusEnergy: base.focus.p1,
+			firstTurn: base.player.firstTurn, vol: base.player.vol, sideState: base.player.sideState, focusEnergy: base.focus.p1,
 			critChance: crit(p1, megaSide, base.focus.p1), critDamage: function (i) {
 				return maxCritRoll(incoming[i]);
 			}})
@@ -4469,6 +4695,7 @@ function formatAIShare(share) {
 // Battle: each of the foe's moves gets the chance the AI uses it; the likeliest is marked, and
 // tagged KO when it can knock you out from the HP you have now.
 function markFoeLikelyMoves() {
+	placeBattleHistoryButton();
 	var labels = $('label[for^="resultMoveR"]');
 	labels.removeClass("ss-threat ss-threat-ko ss-ai-likely").removeAttr("data-ai").removeAttr("title");
 	var battle = null;
@@ -4498,7 +4725,9 @@ function markFoeLikelyMoves() {
 		label.attr("data-ai", formatAIShare(share) + (zMove ? " Z" : ""));
 		var damage = zMove ? Math.max(move.maxDamage, zMove.maxDamage) : move.maxDamage;
 		var ko = damage >= hp && hp > 0 && share > 0;
-		var title = "The trainer's AI uses this " + formatAIShare(share) + " of the time" +
+		var title = (prediction.forced === "locked" && share > 0 ? "It is locked into this move" :
+			prediction.forced === "recharge" ? "It must recharge this turn" :
+				"The trainer's AI uses this " + formatAIShare(share) + " of the time") +
 			(zMove ? " (" + formatAIShare(zShare) + " as " + zMove.name + ", its Z-Move)" : "") + (ko ? "; it can KO you" : "");
 		label.attr("title", title);
 		if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
@@ -4540,6 +4769,15 @@ function markAISwitchesOnTeam() {
 		badge(entry.slot, "ss-quick-switch", "\u21C4" + formatAIShare(entry.share),
 			"the AI switches to it " + formatAIShare(entry.share) + " of the time (" + aiSwitchMarks.why + ")");
 	});
+}
+
+// The Turn button (battle_history.js): in the foe's header on small screens, else under its moves.
+function placeBattleHistoryButton() {
+	if (typeof buildBattleHistoryButton !== "function") return;
+	$(".bh-button").remove();
+	var button = buildBattleHistoryButton();
+	if ($("html").hasClass("small-screen")) button.appendTo($("#resultHeaderR").closest(".result-move-header"));
+	else button.appendTo($('label[for="resultMoveR4"]').closest(".move-result-subgroup"));
 }
 
 // Under the foe's moves: its chance of switching out and to whom (with why), and who it sends out
@@ -4634,6 +4872,8 @@ function buildAIReport() {
 		foe: describe(p2, damageResults[1]), you: describe(p1, damageResults[0]),
 		speeds: {you: battle.player.speed, foe: battle.ai.speed}, yourMonsLeft: battle.player.monsLeft, foeMonsLeft: battle.ai.monsLeft,
 		field: damageResults[1][0].field, trickRoom: battle.trickRoom, justSwitchedIn: battle.justSwitchedIn,
+		history: {you: battle.player.vol === AI_VOLATILE_DEFAULTS ? null : battle.player.vol,
+			foe: battle.ai.vol === AI_VOLATILE_DEFAULTS ? null : battle.ai.vol},
 		bench: (battle.party || []).map(function (mon) {
 			return shortMonName(mon);
 		}),

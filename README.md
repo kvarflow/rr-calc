@@ -68,8 +68,11 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   are all bad, and so on). The best replacement is scored on whether it KOs you, resists you,
   outspeeds you or revenge kills. Battle shows the chance and who comes in, and who comes in after
   a KO.
-- **Assumptions**: no moves used yet this battle, benched Pokémon at full HP, no Substitutes. Set
-  the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
+- **This turn**: the Turn button beside the foe's moves holds what has happened in the battle:
+  tap the move each side used last turn and tick what applies (a Choice lock, Encore, Disable,
+  Taunt, Protects in a row, a Substitute, Yawn, Perish Song, recharging...). Left alone it is a
+  fresh battle. Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
+  status as they are; benched Pokémon are taken at full HP.
   Double battles show damage but the predictions are for single battles.
 - **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
   Pokémon, the field and what was predicted, to send in.

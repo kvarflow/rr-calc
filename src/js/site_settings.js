@@ -70,6 +70,13 @@ var CHANGELOG = [
 		"Copy AI report (beside What's new): when the trainer's AI did something else than predicted, it copies the fight as it stands to send in"
 	], fixes: [
 		"Route 10 comes on both sides of Rock Tunnel, and the S.S. Anne's sailors with the rest of the ship"
+	]},
+	{version: "1.12", notes: [
+		"Turn (beside the foe's moves): tell the trainer's AI what has happened this battle. Tap the move each side used last turn " +
+			"and tick what applies: a Choice lock, Encore, Disable, Taunt, Protects in a row, a Substitute, Yawn, Perish Song, " +
+			"recharging, locked into Outrage and more",
+		"The AI switches out of Yawn and on Perish Song's last turn, stays in behind a Substitute or with Destiny Bond up, " +
+			"and won't use a status move into your Substitute"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
