@@ -211,6 +211,8 @@
         "moveRouteTrainersBefore": false,
         "copyAIReport": false,
         "getBattleVolatile": false,
+        "isMinimalGrindingOn": false,
+        "MINIMAL_GRINDING_KEY": false,
         "getBattleHistoryMoves": false,
         "getBattleHistorySetId": false,
         "battleHistory": true,

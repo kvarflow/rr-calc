@@ -573,6 +573,33 @@ function applyTrainerOrderFixes() {
 }
 if (typeof TRAINER_ORDER !== "undefined") applyTrainerOrderFixes();
 
+/*
+ * Minimal Grinding (a choice when a Normal Mode game starts; Hardcore always has it): the game then
+ * gives trainers' Pokémon no EVs (its party builder skips the spread's EVs when flag 0x1032 is set).
+ * Hardcore's sets have none; in Normal Mode the setting (Settings, or set by importing your .sav)
+ * takes them off every trainer's sets as the page loads.
+ */
+var MINIMAL_GRINDING_KEY = "minimalGrinding";
+
+function isMinimalGrindingOn() {
+	return getPageMode() === "normal" && readSetting(MINIMAL_GRINDING_KEY) === "true";
+}
+
+function applyMinimalGrinding() {
+	if (!isMinimalGrindingOn() || typeof SETDEX_SV === "undefined") return;
+	TRAINER_ORDER.forEach(function (trainer) {
+		trainer.variants.forEach(function (variant) {
+			variant.sets.forEach(function (id) {
+				var at = id.lastIndexOf(" (");
+				var sets = SETDEX_SV[id.slice(0, at)];
+				var set = sets && sets[id.slice(at + 2, -1)];
+				if (set) delete set.evs;
+			});
+		});
+	});
+}
+if (typeof TRAINER_ORDER !== "undefined") applyMinimalGrinding();
+
 // The route trainers before the same fight as this one, in the order they come.
 function getRouteGroup(index) {
 	var before = TRAINER_ORDER[index].route.before;

@@ -76,7 +76,12 @@ var CHANGELOG = [
 			"and tick what applies: a Choice lock, Encore, Disable, Taunt, Protects in a row, a Substitute, Yawn, Perish Song, " +
 			"recharging, locked into Outrage and more",
 		"The AI switches out of Yawn and on Perish Song's last turn, stays in behind a Substitute or with Destiny Bond up, " +
-			"and won't use a status move into your Substitute"
+			"and won't use a status move into your Substitute",
+		"Emulator sync sends the battle's history too, so Turn fills itself in (sync script 2: fetch the script again)",
+		"Minimal Grinding (Settings; set by importing your .sav): with it on the game gives trainers' Pok\u00e9mon no EVs, and so does the calc now"
+	], fixes: [
+		"70 boss Pok\u00e9mon had EVs a few points off the game's (4 Def where it has 6 HP); Falkner's Rufflet and Brock's Onix were missing theirs",
+		"Hardcore: the route trainers added in 1.11 had EVs the game does not give them"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
@@ -175,6 +180,14 @@ $(document).ready(function () {
 			.appendTo(panel);
 		applySiteSetting(setting);
 	});
+	// Normal Mode: Minimal Grinding, which takes the EVs off every trainer's Pokémon (trainer_controls.js).
+	if (typeof isMinimalGrindingOn === "function" && getPageMode() === "normal" && typeof TRAINER_ORDER !== "undefined" && TRAINER_ORDER.length) {
+		$('<label title="The choice you made when the game started. With it on, trainers\' Pok\u00e9mon have no EVs. Importing your .sav sets it."></label>')
+			.append($('<input type="checkbox" id="minimal-grinding" />').prop("checked", isMinimalGrindingOn()).change(function () {
+				writeSetting(MINIMAL_GRINDING_KEY, this.checked);
+				window.location.reload();
+			}), " Minimal Grinding (trainers have no EVs)").appendTo(panel);
+	}
 	panel.append(
 		$('<button type="button" id="show-changelog">What\'s new</button>').click(showChangelog),
 		" ",

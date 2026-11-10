@@ -31,6 +31,8 @@ with Radical Red's data read from the game itself.
   fight, and Copy order changes gives you the changes to send in.
 - **Trainer AI**: the chance the foe picks each move, and when it switches and to whom (see below).
 - **Genders** as the game rolls them, so Rivalry and Attract work.
+- **Minimal Grinding** (Settings; set by importing your `.sav`): with it on the game gives
+  trainers' Pokémon no EVs, and the calc follows. Hardcore always has it on.
 - **Trainer pictures** beside each trainer (their own for leaders, rivals and the Elite Four, else
   their class), **item icons** before each item, and **type badges** on the Battle tab.
 
@@ -52,8 +54,9 @@ with Radical Red's data read from the game itself.
 - **Install** it as an app (More → App, or Chrome's ⋮ → Add to Home screen) and it **works
   offline**. The [Pcalc](https://github.com/kvarflow/Pcalc) Android app packs it too, with
   RetroArch sync built in and automatic backups to a folder on the device.
-- **Emulator sync**: your party sent live from mGBA (a Lua script) or RetroArch (a Python
-  script), both in `src/emulator/`.
+- **Emulator sync**: the battle sent live from mGBA (a Lua script) or RetroArch (a Python
+  script), both in `src/emulator/`: who is out, HP, status, stat changes, and what has happened
+  (the moves used last, Substitute, Taunt, Encore...) for the trainer's AI.
 
 ## Trainer AI
 

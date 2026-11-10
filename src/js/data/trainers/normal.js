@@ -1017,10 +1017,10 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 3)",
      "Kingambit (*Rival Blue Set 1)",
-     "Jumpluff (*Rival Blue)",
-     "Darmanitan (*Rival Blue Set 1)",
+     "Jumpluff (*Rival Blue Set 1)",
+     "Darmanitan (*Rival Blue Set 4)",
      "Blastoise-Mega (*Rival Blue Set 1)"
     ],
     "preMega": {
@@ -1041,7 +1041,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Bulbasaur",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 3)",
      "Kingambit (*Rival Blue Set 1)",
      "Azumarill (*Rival Blue Set 1)",
      "Darmanitan (*Rival Blue Set 1)",
@@ -1062,7 +1062,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Charmander",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 3)",
      "Kingambit (*Rival Blue Set 1)",
      "Jumpluff (*Rival Blue)",
      "Azumarill (*Rival Blue Set 1)",
@@ -2180,8 +2180,8 @@ var TRAINER_ORDER = [
     "battleEffect": null,
     "sets": [
      "Bronzong (*Leader Jasmine)",
-     "Melmetal (*Leader Jasmine Set 1)",
-     "Magnezone (*Leader Jasmine)",
+     "Melmetal (*Leader Jasmine Set 3)",
+     "Magnezone (*Leader Jasmine Set 1)",
      "Excadrill (*Leader Jasmine)",
      "Samurott (*Leader Jasmine)",
      "Aggron-Mega (*Leader Jasmine)"
@@ -2545,7 +2545,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 3)",
      "Kingambit (*Rival Blue Set 2)",
      "Azumarill (*Rival Blue Set 3)",
      "Iron Moth (*Rival Blue)",
@@ -2571,7 +2571,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Bulbasaur",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 3)",
      "Kingambit (*Rival Blue Set 2)",
      "Darmanitan (*Rival Blue Set 3)",
      "Iron Bundle (*Rival Blue)",
@@ -2886,7 +2886,7 @@ var TRAINER_ORDER = [
      "Urshifu-Rapid-Strike (*Elite Four Bruno)",
      "Iron Valiant (*Elite Four Bruno Set 1)",
      "Iron Hands (*Elite Four Bruno)",
-     "Zacian-Crowned (*Elite Four Bruno)",
+     "Zacian-Crowned (*Elite Four Bruno Set 1)",
      "Lucario-Mega (*Elite Four Bruno Set 1)"
     ],
     "preMega": {
@@ -2987,7 +2987,7 @@ var TRAINER_ORDER = [
     "battleEffect": null,
     "sets": [
      "Aerodactyl (*Elite Four Lance)",
-     "Melmetal (*Elite Four Lance)",
+     "Melmetal (*Elite Four Lance Set 1)",
      "Iron Jugulis (*Elite Four Lance)",
      "Dragonite (*Elite Four Lance Set 2)",
      "Dialga-Primal (*Elite Four Lance Set 2)",
@@ -3030,11 +3030,11 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Pheromosa (Champion Blue)",
+     "Pheromosa (Champion Blue Set 1)",
      "Metagross-Mega (Champion Blue)",
      "Koraidon (Champion Blue)",
-     "Yveltal (Champion Blue Set 1)",
-     "Eternatus (Champion Blue)",
+     "Yveltal (Champion Blue Set 3)",
+     "Eternatus (Champion Blue Set 1)",
      "Ditto (Champion Blue)"
     ],
     "preMega": {
@@ -3048,11 +3048,11 @@ var TRAINER_ORDER = [
     "label": "Rival Has Charmander",
     "battleEffect": null,
     "sets": [
-     "Pheromosa (Champion Blue)",
+     "Pheromosa (Champion Blue Set 1)",
      "Metagross-Mega (Champion Blue)",
      "Miraidon (Champion Blue Set 1)",
      "Yveltal (Champion Blue Set 2)",
-     "Eternatus (Champion Blue)",
+     "Eternatus (Champion Blue Set 1)",
      "Ditto (Champion Blue)"
     ],
     "preMega": {

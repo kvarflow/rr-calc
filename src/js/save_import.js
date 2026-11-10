@@ -523,9 +523,21 @@ function importSaveAndReport(save, fileName) {
 	if (newGame) startNewRun();
 	importSaveIntoBox(save);
 	writeSetting(getSaveTrainerIdKey(), save.trainerId);
+	// Minimal Grinding takes the EVs off every trainer (trainer_controls.js): the page loads again when
+	// the save says otherwise than the setting.
+	var grinding = String(!!save.minimalGrinding);
+	var grindingChanged = getPageMode() === "normal" && typeof MINIMAL_GRINDING_KEY !== "undefined" &&
+		(readSetting(MINIMAL_GRINDING_KEY) === "true") !== !!save.minimalGrinding;
+	if (grindingChanged) writeSetting(MINIMAL_GRINDING_KEY, grinding);
 	// The trainer panel sets your starter (and so the rival's teams) from the save.
 	$(document).trigger("save:imported", [save]);
 	var imported = "Imported " + save.party.length + " party and " + save.boxes.length + " boxed Pok\u00e9mon from " + fileName + ".";
+	if (grindingChanged) {
+		alert(imported + "\nThis save has Minimal Grinding " + (save.minimalGrinding ? "on: trainers' Pok\u00e9mon have no EVs" :
+			"off: trainers' Pok\u00e9mon have their EVs") + ". The calculator will reload with that.");
+		window.location.reload();
+		return;
+	}
 	if (!newGame && !firstImport) {
 		alert(imported);
 		return;

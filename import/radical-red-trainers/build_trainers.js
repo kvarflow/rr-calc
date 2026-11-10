@@ -699,6 +699,13 @@ function addRouteTrainers(order, setdex) {
 		if (!trainer || !trainer.locations.length) return;
 		const before = placeTrainer(trainer);
 		t.route.before = before === -1 ? null : before;
+		if (mode === 'hardcore') {
+			t.variants[0].sets.forEach(id => {
+				const species = id.slice(0, id.lastIndexOf(' ('));
+				const set = setdex[species] && setdex[species][id.slice(id.lastIndexOf(' (') + 2, -1)];
+				if (set) delete set.evs;
+			});
+		}
 	});
 	all.forEach(trainer => {
 		if (inOrder.has(trainer.id) || !trainer.locations.length || !trainer.team.length) return;
@@ -731,7 +738,9 @@ function addRouteTrainers(order, setdex) {
 			// A spread (custom moves and an item) brings its own IVs and EVs; the rest have their class's IVs.
 			const iv = mon.ivs === undefined ? trainer.classIV : mon.ivs;
 			if (iv < 31) set.ivs = Object.fromEntries(STATS.map(stat => [stat, iv]));
-			if (mon.evs && Object.keys(mon.evs).length) set.evs = mon.evs;
+			// No EVs in Hardcore: it always has Minimal Grinding on, and the game then skips the spread's
+			// EVs (the party builder at 0x0907BAAE tests flags 0x1032 and 0x1033).
+			if (mode !== 'hardcore' && mon.evs && Object.keys(mon.evs).length) set.evs = mon.evs;
 			setdex[mon.species][setName] = set;
 			return mon.species + ' (' + setName + ')';
 		});
@@ -771,7 +780,9 @@ function addMissingRouteTrainers() {
 	const setdex = loadSetdex();
 	const order = new Function(fs.readFileSync(TRAINERS_FILE, 'utf8') + '; return TRAINER_ORDER;')();
 	const added = addRouteTrainers(order, setdex);
-	if (added) writeSetdex(setdex);
+	const fixed = applyRomFixes(order, setdex);
+	console.log(`  ${fixed} fixes from the game`);
+	writeSetdex(setdex);
 	{
 		fs.writeFileSync(TRAINERS_FILE, TRAINERS_HEADER + 'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	}

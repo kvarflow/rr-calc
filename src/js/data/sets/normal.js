@@ -16,7 +16,7 @@ var SETDEX_SV = {
     "Rival Blue Set 2": {"nature":"Modest","ability":"Torrent","level":5,"moves":["Hydro Pump","Iron Defense","Rain Dance","Skull Bash"],"ivs":{"hp":25,"at":25,"df":25,"sp":25,"sa":25,"sd":25}}
   },
   "Rufflet": {
-    "Leader Falkner": {"nature":"Jolly","ability":"Hustle","level":12,"item":"Berry Juice","moves":["Aerial Ace","Rock Smash","Rock Tomb","Roost"]}
+    "Leader Falkner": {"nature":"Jolly","ability":"Hustle","level":12,"item":"Berry Juice","moves":["Aerial Ace","Rock Smash","Rock Tomb","Roost"],"evs":{"hp":4,"sp":40}}
   },
   "Wattrel": {
     "Leader Falkner": {"nature":"Timid","ability":"Volt Absorb","level":14,"item":"Berry Juice","moves":["Air Slash","Flash","Roost","Sleep Talk"]}
@@ -33,7 +33,7 @@ var SETDEX_SV = {
     "Gambler Darian": {"level":25,"nature":"Relaxed","ability":"Overcoat","moves":["Sludge","Gyro Ball","Headbutt","Screech"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Onix": {
-    "Leader Brock": {"nature":"Bashful","ability":"Sturdy","level":14,"item":"Berry Juice","moves":["Bulldoze","Rock Tomb","Sleep Talk"]},
+    "Leader Brock": {"nature":"Bashful","ability":"Sturdy","level":14,"item":"Berry Juice","moves":["Bulldoze","Rock Tomb","Sleep Talk"],"evs":{"hp":100,"sp":40}},
     "Ruin Maniac Stanly": {"level":48,"nature":"Jolly","ability":"Rock Head","moves":["Sand Tomb","Iron Tail","Dig","Stone Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Hiker Earl": {"level":49,"nature":"Quiet","ability":"Rock Head","moves":["Iron Tail","Dig","Stone Edge","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Ruin Maniac Brandon": {"level":50,"nature":"Serious","ability":"Sturdy","moves":["Iron Tail","Dig","Stone Edge","Double-Edge"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
@@ -1238,7 +1238,7 @@ var SETDEX_SV = {
     "Black Belt Hideki": {"level":45,"nature":"Naive","ability":"Effect Spore","moves":["Force Palm","Mind Reader","Sky Uppercut","Seed Bomb"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
     "Biker Gerald": {"level":57,"nature":"Adamant","ability":"Effect Spore","moves":["Mach Punch","Spore","Drain Punch","Seed Bomb"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Picnicker Tina": {"level":37,"nature":"Naive","ability":"Effect Spore","moves":["Feint","Counter","Force Palm","Mind Reader"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}},
-    "*Leader Chuck": {"nature":"Jolly","ability":"Poison Heal","level":32,"item":"Toxic Orb","moves":["Focus Punch","Rock Slide","Spore","Substitute"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Leader Chuck": {"nature":"Jolly","ability":"Poison Heal","level":32,"item":"Toxic Orb","moves":["Focus Punch","Rock Slide","Spore","Substitute"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Sirfetch’d": {
     "Crush Kin Ron & Mya": {"level":58,"nature":"Naive","ability":"Sharpness","moves":["Brick Break","Swords Dance","Slam","Leaf Blade"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}},
@@ -1254,7 +1254,7 @@ var SETDEX_SV = {
     "Cue Ball Raul": {"level":55,"nature":"Impish","ability":"Water Absorb","moves":["Hypnosis","Double Slap","Dynamic Punch","Circle Throw"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Hitmontop": {
-    "*Leader Chuck": {"nature":"Jolly","ability":"Technician","level":32,"item":"Focus Sash","moves":["Brutal Swing","Fake Out","Triple Axel","Triple Kick"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Leader Chuck": {"nature":"Jolly","ability":"Technician","level":32,"item":"Focus Sash","moves":["Brutal Swing","Fake Out","Triple Axel","Triple Kick"],"evs":{"hp":6,"at":252,"sp":252}},
     "Crush Girl Cyndy": {"level":48,"nature":"Hardy","ability":"Technician","moves":["Agility","Spin Out","Wide Guard","Quick Guard"],"item":"Black Belt","ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Sneasler": {
@@ -1297,7 +1297,7 @@ var SETDEX_SV = {
     "Channeler Ruth": {"level":38,"nature":"Adamant","ability":"Sharpness","moves":["Retaliate","Slash","Iron Defense","Night Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}}
   },
   "Mimikyu": {
-    "*Leader Morty Set 1": {"nature":"Jolly","ability":"Disguise","level":32,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Leader Morty Set 1": {"nature":"Jolly","ability":"Disguise","level":32,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Leader Morty Set 2": {"nature":"Jolly","ability":"Disguise","level":100,"item":"Ghostium Z","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
     "Channeler Tammy": {"level":36,"nature":"Modest","ability":"Disguise","moves":["Feint Attack","Charm","Shadow Sneak","Slash"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Rocket Admin Archer": {"nature":"Jolly","ability":"Disguise","level":79,"item":"Lum Berry","moves":["Play Rough","Shadow Claw","Shadow Sneak","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
@@ -1405,7 +1405,7 @@ var SETDEX_SV = {
     "PkMn Ranger Jackson": {"level":49,"nature":"Gentle","ability":"Leaf Guard","moves":["Mega Drain","Bind","Ingrain"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Rillaboom": {
-    "Leader Erika": {"nature":"Jolly","ability":"Grassy Surge","level":43,"item":"Terrain Extender","moves":["Drain Punch","Grassy Glide","High Horsepower","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
+    "Leader Erika": {"nature":"Jolly","ability":"Grassy Surge","level":43,"item":"Terrain Extender","moves":["Drain Punch","Grassy Glide","High Horsepower","U-turn"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Ace Trainer Symes": {"nature":"Jolly","ability":"Grassy Surge","level":100,"item":"Terrain Extender","moves":["Grassy Glide","Knock Off","U-turn","Wood Hammer"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Meowscarada": {
@@ -1420,7 +1420,7 @@ var SETDEX_SV = {
     "*PkMn Trainer Red": {"nature":"Modest","ability":"Thick Fat","level":100,"item":"Venusaurite","moves":["Earth Power","Giga Drain","Sleep Powder","Sludge Bomb"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Meganium": {
-    "Leader Erika": {"nature":"Modest","ability":"Triage","level":44,"item":"Grassy Seed","moves":["Ancient Power","Dazzling Gleam","Giga Drain","Hidden Power Fire"],"shiny":1,"ivs":{"at":30,"sp":30,"sa":30},"evs":{"hp":252,"df":4,"sa":252}}
+    "Leader Erika": {"nature":"Modest","ability":"Triage","level":44,"item":"Grassy Seed","moves":["Ancient Power","Dazzling Gleam","Giga Drain","Hidden Power Fire"],"shiny":1,"ivs":{"at":30,"sp":30,"sa":30},"evs":{"hp":252,"df":6,"sa":252}}
   },
   "Electrode-Hisui": {
     "Leader Erika": {"nature":"Naive","ability":"Reckless","level":44,"item":"Life Orb","moves":["Chloroblast","Explosion","Hidden Power Ice","Thunderbolt"],"ivs":{"at":30,"df":30},"evs":{"at":4,"sp":252,"sa":252}}
@@ -1469,7 +1469,7 @@ var SETDEX_SV = {
   "Aerodactyl": {
     "*Team Rocket Grunt": {"nature":"Jolly","ability":"Unnerve","level":44,"item":"Focus Sash","moves":["Aqua Tail","Dual Wingbeat","Iron Head","Rock Slide"],"evs":{"at":252,"df":4,"sp":252}},
     "*Elite Four Lance": {"nature":"Jolly","ability":"Pressure","level":85,"item":"Focus Sash","moves":["Stealth Rock","Earthquake","Taunt","Stone Edge"],"evs":{"at":252,"df":4,"sp":252}},
-    "Leader Clair": {"nature":"Jolly","ability":"Unnerve","level":80,"item":"Focus Sash","moves":["Earthquake","Stealth Rock","Stone Edge","Taunt"],"evs":{"at":252,"df":4,"sp":252}},
+    "Leader Clair": {"nature":"Jolly","ability":"Unnerve","level":80,"item":"Focus Sash","moves":["Earthquake","Stealth Rock","Stone Edge","Taunt"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Rocket Admin Archer": {"nature":"Jolly","ability":"Rock Head","level":100,"item":"Sharp Beak","moves":["Brave Bird","Earthquake","Fire Fang","Stone Edge"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Granbull": {
@@ -1563,19 +1563,19 @@ var SETDEX_SV = {
     "Tamer Edgar": {"level":62,"nature":"Relaxed","ability":"Rivalry","moves":["Chip Away","Thrash","Earth Power","Megahorn"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}},
     "*Crush Girl Sharon": {"nature":"Timid","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}},
     "*Professor Oak": {"nature":"Timid","ability":"Sheer Force","level":100,"item":"Life Orb","moves":["Earth Power","Flamethrower","Ice Beam","Sludge Wave"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Boss Giovanni": {"nature":"Timid","ability":"Sheer Force","level":45,"item":"Life Orb","moves":["Earth Power","Ice Beam","Sludge Bomb","Thunderbolt"],"evs":{"df":4,"sp":252,"sa":252}},
+    "Boss Giovanni": {"nature":"Timid","ability":"Sheer Force","level":45,"item":"Life Orb","moves":["Earth Power","Ice Beam","Sludge Bomb","Thunderbolt"],"evs":{"hp":6,"sp":252,"sa":252}},
     "Cue Ball Corey": {"level":56,"nature":"Lonely","ability":"Rivalry","moves":["Poison Sting","Chip Away","Thrash","Earth Power"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "Cool Couple Ray & Tyra": {"level":85,"nature":"Timid","ability":"Sheer Force","moves":["Ice Beam","Earth Power","Sludge Bomb","Flamethrower"],"item":"Life Orb","evs":{"hp":6,"sp":252,"sa":252}},
     "Camper Bryce": {"level":84,"nature":"Modest","ability":"Rivalry","moves":["Chip Away","Thrash","Earth Power","Megahorn"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Honchkrow": {
-    "Boss Giovanni": {"nature":"Jolly","ability":"Super Luck","level":45,"item":"Scope Lens","moves":["Drill Peck","Heat Wave","Night Slash","Sucker Punch"],"evs":{"at":252,"df":4,"sp":252}},
+    "Boss Giovanni": {"nature":"Jolly","ability":"Super Luck","level":45,"item":"Scope Lens","moves":["Drill Peck","Heat Wave","Night Slash","Sucker Punch"],"evs":{"hp":6,"at":252,"sp":252}},
     "Rocket Admin Ariana": {"nature":"Jolly","ability":"Super Luck","level":78,"item":"Scope Lens","moves":["Drill Peck","Night Slash","Sucker Punch","Superpower"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Infernape": {
-    "*Elite Four Bruno": {"nature":"Jolly","ability":"Blaze","level":85,"item":"Focus Sash","moves":["Taunt","Pyro Ball","Stealth Rock","Close Combat"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}},
+    "*Elite Four Bruno": {"nature":"Jolly","ability":"Blaze","level":85,"item":"Focus Sash","moves":["Taunt","Pyro Ball","Stealth Rock","Close Combat"],"shiny":1,"evs":{"hp":6,"at":252,"sp":252}},
     "*Crush Kin Mik & Kia": {"nature":"Jolly","ability":"Blaze","level":100,"item":"Focus Sash","moves":["Close Combat","Fake Out","Pyro Ball","Thunder Punch"],"ivs":{"at":30,"sa":30},"evs":{"at":252,"df":4,"sp":252}},
-    "Boss Giovanni": {"nature":"Jolly","ability":"Blaze","level":46,"item":"Focus Sash","moves":["Close Combat","Pyro Ball","Swords Dance","Thunder Punch"],"evs":{"at":252,"df":4,"sp":252}},
+    "Boss Giovanni": {"nature":"Jolly","ability":"Blaze","level":46,"item":"Focus Sash","moves":["Close Combat","Pyro Ball","Swords Dance","Thunder Punch"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Ace Trainer Andrew": {"nature":"Jolly","ability":"Blaze","level":100,"item":"Focus Sash","moves":["Close Combat","Pyro Ball","Stealth Rock","Thunder Punch"],"evs":{"at":252,"df":4,"sp":252}}
   },
   "Kangaskhan-Mega": {
@@ -1773,15 +1773,17 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"level":49,"nature":"Careful","ability":"Run Away","moves":["Night Slash","Dark Pulse","Mystical Fire","Foul Play"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Staraptor": {
-    "*Rival Blue Set 1": {"nature":"Jolly","ability":"Intimidate","level":52,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Rival Blue Set 2": {"nature":"Jolly","ability":"Intimidate","level":80,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Rival Blue Set 1": {"nature":"Jolly","ability":"Intimidate","level":52,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Rival Blue Set 2": {"nature":"Jolly","ability":"Intimidate","level":80,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Rival Blue Set 3": {"nature":"Jolly","ability":"Intimidate","level":52,"item":"Sharp Beak","moves":["Brave Bird","Close Combat","Quick Attack","U-turn"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Kingambit": {
     "*Rival Blue Set 1": {"nature":"Jolly","ability":"Supreme Overlord","level":53,"item":"Chople Berry","moves":["Iron Head","Knock Off","Sucker Punch","Swords Dance"],"evs":{"hp":252,"at":252,"sp":4}},
     "*Rival Blue Set 2": {"nature":"Adamant","ability":"Supreme Overlord","level":78,"item":"Chople Berry","moves":["Iron Head","Knock Off","Sucker Punch","Swords Dance"],"evs":{"hp":252,"at":252,"sd":4}}
   },
   "Jumpluff": {
-    "*Rival Blue": {"nature":"Jolly","ability":"Aerilate","level":53,"item":"Sharp Beak","moves":["Double-Edge","Leaf Blade","Sleep Powder","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Rival Blue": {"nature":"Jolly","ability":"Aerilate","level":53,"item":"Sharp Beak","moves":["Double-Edge","Leaf Blade","Sleep Powder","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Rival Blue Set 1": {"nature":"Jolly","ability":"Aerilate","level":53,"item":"Sharp Beak","moves":["Double-Edge","Leaf Blade","Sleep Powder","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Azumarill": {
     "*SwimmerF Abigail": {"nature":"Adamant","ability":"Huge Power","level":100,"item":"Sitrus Berry","moves":["Aqua Jet","Play Rough","Superpower","Waterfall"],"evs":{"hp":252,"at":252,"df":4}},
@@ -1796,9 +1798,10 @@ var SETDEX_SV = {
     "Leader Blaine": {"nature":"Timid","ability":"Drought","level":76,"item":"Charizardite Y","moves":["Air Slash","Dragon Pulse","Flamethrower","Solar Beam"],"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Darmanitan": {
-    "*Rival Blue Set 1": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Rival Blue Set 1": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Rival Blue Set 2": {"nature":"Jolly","ability":"Sheer Force","level":80,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}},
-    "*Rival Blue Set 3": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}}
+    "*Rival Blue Set 3": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"at":252,"sp":252,"sd":4}},
+    "*Rival Blue Set 4": {"nature":"Jolly","ability":"Sheer Force","level":53,"item":"Life Orb","moves":["Earthquake","Flare Blitz","Rock Slide","U-turn"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Blastoise-Mega": {
     "*Professor Oak": {"nature":"Timid","ability":"Mega Launcher","level":100,"item":"Blastoisinite","moves":["Aura Sphere","Dark Pulse","Shell Smash","Water Pulse"],"evs":{"df":4,"sp":252,"sa":252}},
@@ -1817,7 +1820,7 @@ var SETDEX_SV = {
   },
   "Gothitelle": {
     "Juggler Nelson": {"level":82,"nature":"Relaxed","ability":"Frisk","moves":["Psychic","Charm","Magic Room","Psycho Boost"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
-    "Rocket Admin Archer": {"nature":"Modest","ability":"Competitive","level":54,"item":"Colbur Berry","moves":["Hidden Power Fighting","Psychic","Shadow Ball","Thunder Wave"],"ivs":{"df":30,"sp":30,"sa":30,"sd":30},"evs":{"hp":252,"df":4,"sa":252}}
+    "Rocket Admin Archer": {"nature":"Modest","ability":"Competitive","level":54,"item":"Colbur Berry","moves":["Hidden Power Fighting","Psychic","Shadow Ball","Thunder Wave"],"ivs":{"df":30,"sp":30,"sa":30,"sd":30},"evs":{"hp":252,"sp":4,"sa":252}}
   },
   "Gholdengo": {
     "Rocket Admin Archer": {"nature":"Timid","ability":"Good as Gold","level":55,"item":"Sitrus Berry","moves":["Focus Blast","Make It Rain","Recover","Shadow Ball"],"shiny":1,"evs":{"df":4,"sp":252,"sa":252}},
@@ -1865,7 +1868,7 @@ var SETDEX_SV = {
   "Accelgor": {
     "Scientist Ed": {"level":44,"nature":"Modest","ability":"Unburden","moves":["Bug Buzz","Giga Drain","Sludge Bomb","U-turn"],"evs":{"hp":6,"sp":252,"sa":252}},
     "*Biker Ruben": {"nature":"Timid","ability":"Sheer Force","level":63,"item":"Life Orb","moves":["Bug Buzz","Focus Blast","Sludge Bomb","U-turn"],"evs":{"sp":252,"sa":252,"sd":4}},
-    "Leader Koga": {"nature":"Timid","ability":"Sheer Force","level":68,"item":"Life Orb","moves":["Bug Buzz","Focus Blast","Sludge Bomb","U-turn"],"evs":{"sp":252,"sa":252,"sd":4}}
+    "Leader Koga": {"nature":"Timid","ability":"Sheer Force","level":68,"item":"Life Orb","moves":["Bug Buzz","Focus Blast","Sludge Bomb","U-turn"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Heliolisk": {
     "Scientist Ed": {"level":45,"nature":"Modest","ability":"Dry Skin","moves":["Thunderbolt","Hyper Voice","Grass Knot","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}},
@@ -1937,21 +1940,21 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"level":44,"nature":"Jolly","ability":"Prankster","moves":["Miracle Eye","Reflect","Psychic","Role Play"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Hippowdon": {
-    "Boss Giovanni": {"nature":"Adamant","ability":"Sand Stream","level":56,"item":"Smooth Rock","moves":["Earthquake","Roar","Stealth Rock","Stone Edge"],"evs":{"hp":252,"at":252,"df":4}}
+    "Boss Giovanni": {"nature":"Adamant","ability":"Sand Stream","level":56,"item":"Smooth Rock","moves":["Earthquake","Roar","Stealth Rock","Stone Edge"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Excadrill": {
     "*Aroma Lady Violet": {"nature":"Jolly","ability":"Mold Breaker","level":100,"item":"Focus Sash","moves":["Earthquake","Iron Head","Stone Edge","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
     "*Ace Trainer Zac": {"nature":"Adamant","ability":"Mold Breaker","level":71,"item":"Soft Sand","moves":["High Horsepower","Iron Head","Rapid Spin","Rock Slide"],"evs":{"at":252,"df":4,"sp":252}},
-    "Boss Giovanni Set 1": {"nature":"Adamant","ability":"Sand Rush","level":57,"item":"Focus Sash","moves":["Earthquake","Iron Head","Rock Slide","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}},
-    "Boss Giovanni Set 2": {"nature":"Adamant","ability":"Sand Force","level":80,"item":"Focus Sash","moves":["High Horsepower","Iron Head","Rock Slide","Swords Dance"],"evs":{"hp":4,"at":252,"sp":252}},
-    "*Leader Jasmine": {"nature":"Jolly","ability":"Mold Breaker","level":71,"item":"Air Balloon","moves":["Earthquake","Iron Head","Rock Slide","Swords Dance"],"evs":{"at":252,"sp":252,"sd":4}}
+    "Boss Giovanni Set 1": {"nature":"Adamant","ability":"Sand Rush","level":57,"item":"Focus Sash","moves":["Earthquake","Iron Head","Rock Slide","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
+    "Boss Giovanni Set 2": {"nature":"Adamant","ability":"Sand Force","level":80,"item":"Focus Sash","moves":["High Horsepower","Iron Head","Rock Slide","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Leader Jasmine": {"nature":"Jolly","ability":"Mold Breaker","level":71,"item":"Air Balloon","moves":["Earthquake","Iron Head","Rock Slide","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Garganacl": {
     "Boss Giovanni": {"nature":"Impish","ability":"Purifying Salt","level":57,"item":"Leftovers","moves":["Body Press","Protect","Recover","Salt Cure"],"evs":{"hp":252,"df":252,"sd":4}}
   },
   "Garchomp": {
     "*Elite Four Lance": {"nature":"Jolly","ability":"Rough Skin","level":85,"item":"Focus Sash","moves":["Stealth Rock","Earthquake","Stone Edge","Roar"],"evs":{"at":252,"df":4,"sp":252}},
-    "Boss Giovanni": {"nature":"Jolly","ability":"Sand Veil","level":57,"item":"Yache Berry","moves":["Earthquake","Rock Slide","Scale Shot","Swords Dance"],"evs":{"at":252,"df":4,"sp":252}}
+    "Boss Giovanni": {"nature":"Jolly","ability":"Sand Veil","level":57,"item":"Yache Berry","moves":["Earthquake","Rock Slide","Scale Shot","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Torterra": {
     "Beauty Olivia": {"level":57,"nature":"Mild","ability":"Overgrow","moves":["Synthesis","Crunch","Giga Drain","Leaf Storm"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
@@ -2136,7 +2139,7 @@ var SETDEX_SV = {
     "*Biker Hideo": {"nature":"Jolly","ability":"Adaptability","level":63,"item":"Beedrillite","moves":["Drill Run","Poison Jab","Pursuit","U-turn"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Greninja": {
-    "Leader Koga": {"nature":"Timid","ability":"Battle Bond","level":68,"item":"Life Orb","moves":["Dark Pulse","Hydro Pump","Ice Beam","Water Shuriken"],"evs":{"sp":252,"sa":252,"sd":4}},
+    "Leader Koga": {"nature":"Timid","ability":"Battle Bond","level":68,"item":"Life Orb","moves":["Dark Pulse","Hydro Pump","Ice Beam","Water Shuriken"],"evs":{"hp":6,"sp":252,"sa":252}},
     "*SwimmerM Garrett": {"nature":"Timid","ability":"Protean","level":98,"item":"Choice Specs","moves":["Dark Pulse","Extrasensory","Ice Beam","Surf"],"evs":{"df":4,"sp":252,"sa":252}},
     "*Biker Hideo": {"nature":"Naive","ability":"Protean","level":63,"item":"Life Orb","moves":["Gunk Shot","Hydro Pump","Ice Beam","U-turn"],"evs":{"sp":252,"sa":252,"sd":4}},
     "*Ace Trainer Andrew": {"nature":"Timid","ability":"Battle Bond","level":100,"item":"Life Orb","moves":["Dark Hole","Hydro Cannon","Ice Beam","U-turn"],"evs":{"df":4,"sp":252,"sa":252}}
@@ -2225,7 +2228,8 @@ var SETDEX_SV = {
     "*Leader Bugsy": {"nature":"Timid","ability":"Magnet Pull","level":100,"item":"Life Orb","moves":["Flash Cannon","Hidden Power Grass","Thunderbolt","Volt Switch"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}},
     "*Camper Bryce": {"nature":"Jolly","ability":"Magnet Pull","level":100,"item":"Magnet","moves":["Body Press","Steel Beam","Thunderbolt","Volt Switch"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"hp":48,"sp":208,"sa":252}},
     "*Biker William": {"nature":"Naive","ability":"Sturdy","level":63,"item":"Custap Berry","moves":["Body Press","Explosion","Thunder","Volt Switch"],"evs":{"at":4,"sp":252,"sa":252}},
-    "*PkMn Trainer Haley": {"nature":"Timid","ability":"Sturdy","level":66,"item":"Air Balloon","moves":["Flash Cannon","Hidden Power Dark","Thunderbolt","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}}
+    "*PkMn Trainer Haley": {"nature":"Timid","ability":"Sturdy","level":66,"item":"Air Balloon","moves":["Flash Cannon","Hidden Power Dark","Thunderbolt","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}},
+    "*Leader Jasmine Set 1": {"nature":"Modest","ability":"Magnet Pull","level":71,"item":"Magnet","moves":["Flash Cannon","Hidden Power Fire","Thunderbolt","Volt Switch"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Salamence": {
     "*Biker William": {"nature":"Naive","ability":"Intimidate","level":63,"item":"Yache Berry","moves":["Dragon Pulse","Earthquake","Hurricane","Hydro Pump"],"evs":{"at":4,"sp":252,"sa":252}}
@@ -2276,7 +2280,7 @@ var SETDEX_SV = {
     "Picnicker Celia": {"level":58,"nature":"Rash","ability":"Wonder Skin","moves":["Sing","Attract","Round","Hyper Voice"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Hawlucha": {
-    "*Leader Erika": {"nature":"Adamant","ability":"Unburden","level":66,"item":"Grassy Seed","moves":["Swords Dance","Close Combat","Acrobatics","Stone Edge"],"evs":{"at":252,"sd":4,"sp":252}},
+    "*Leader Erika": {"nature":"Adamant","ability":"Unburden","level":66,"item":"Grassy Seed","moves":["Swords Dance","Close Combat","Acrobatics","Stone Edge"],"evs":{"hp":6,"at":252,"sp":252}},
     "*PkMn Trainer Haley": {"nature":"Jolly","ability":"Unburden","level":66,"item":"Power Herb","moves":["Acrobatics","Close Combat","Sky Attack","Swords Dance"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Cue Ball Paxton": {"nature":"Jolly","ability":"Unburden","level":100,"item":"Flying Gem","moves":["Acrobatics","Close Combat","Swords Dance","Throat Chop"],"evs":{"at":252,"df":4,"sp":252}}
   },
@@ -2394,7 +2398,7 @@ var SETDEX_SV = {
   "Exeggutor": {
     "*Professor Oak": {"nature":"Modest","ability":"Harvest","level":100,"item":"Sitrus Berry","moves":["Chloroblast","Earth Power","Psyshock","Sleep Powder"],"evs":{"hp":252,"df":4,"sa":252}},
     "*Bird Keeper Robert": {"nature":"Timid","ability":"Chlorophyll","level":63,"item":"Focus Sash","moves":["Psyshock","Sleep Powder","Solar Beam","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}},
-    "Leader Blaine": {"nature":"Timid","ability":"Chlorophyll","level":76,"item":"Lum Berry","moves":["Giga Drain","Growth","Psyshock","Weather Ball"],"evs":{"df":4,"sp":252,"sa":252}},
+    "Leader Blaine": {"nature":"Timid","ability":"Chlorophyll","level":76,"item":"Lum Berry","moves":["Giga Drain","Growth","Psyshock","Weather Ball"],"evs":{"hp":6,"sp":252,"sa":252}},
     "PkMn Ranger Jackson": {"level":49,"nature":"Relaxed","ability":"Chlorophyll","moves":["Egg Bomb","Sleep Powder","Stomp"],"ivs":{"hp":20,"at":20,"df":20,"sa":20,"sd":20,"sp":20}}
   },
   "Emboar": {
@@ -2431,7 +2435,7 @@ var SETDEX_SV = {
     "*Crush Girl Tanya": {"nature":"Adamant","ability":"Fluffy","level":100,"item":"Sitrus Berry","moves":["Close Combat","Darkest Lariat","Double-Edge","Drain Punch"],"evs":{"hp":252,"at":252,"sp":4}}
   },
   "Swellow": {
-    "Leader Koga": {"nature":"Timid","ability":"Aerilate","level":67,"item":"Choice Specs","moves":["Boomburst","U-turn"],"ivs":{"at":30},"evs":{"sp":252,"sa":252,"sd":4}}
+    "Leader Koga": {"nature":"Timid","ability":"Aerilate","level":67,"item":"Choice Specs","moves":["Boomburst","U-turn"],"ivs":{"at":30},"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Greninja-Ash": {
     "Leader Koga": {"nature":"Timid","ability":"Battle Bond","level":68,"item":"Life Orb","moves":["Dark Pulse","Hydro Pump","Ice Beam","Water Shuriken"],"evs":{"sp":252,"sa":252,"sd":4}},
@@ -2459,7 +2463,7 @@ var SETDEX_SV = {
   },
   "Rotom-Wash": {
     "*Leader Lt. Surge": {"nature":"Timid","ability":"Levitate","level":66,"item":"Life Orb","moves":["Hidden Power Ice","Rising Voltage","Scald","Volt Switch"],"ivs":{"at":30,"df":30},"evs":{"sp":252,"sa":252,"sd":4}},
-    "*Elite Four Lorelei": {"nature":"Timid","ability":"Levitate","level":85,"item":"Sitrus Berry","moves":["Volt Switch","Scald","Thunderbolt","Thunder Wave"],"evs":{"hp":252,"df":4,"sp":252}}
+    "*Elite Four Lorelei": {"nature":"Timid","ability":"Levitate","level":85,"item":"Sitrus Berry","moves":["Volt Switch","Scald","Thunderbolt","Thunder Wave"],"evs":{"hp":252,"sp":252,"sa":4}}
   },
   "Iron Hands": {
     "*Elite Four Bruno": {"nature":"Adamant","ability":"Quark Drive","level":85,"item":"Assault Vest","moves":["Drain Punch","Fake Out","Plasma Fists","Ice Punch"],"evs":{"hp":252,"at":252,"sd":4}},
@@ -2497,7 +2501,7 @@ var SETDEX_SV = {
   },
   "Tyranitar": {
     "*Ace Trainer Samantha": {"nature":"Brave","ability":"Unnerve","level":100,"item":"Assault Vest","moves":["Earthquake","Fire Blast","Solar Beam","Stone Edge"],"evs":{"hp":252,"at":252,"sa":4}},
-    "*Leader Brock": {"nature":"Jolly","ability":"Sand Stream","level":66,"item":"Weakness Policy","moves":["Dragon Dance","Fire Punch","Knock Off","Stone Edge"],"evs":{"at":252,"sp":252,"sd":4}},
+    "*Leader Brock": {"nature":"Jolly","ability":"Sand Stream","level":66,"item":"Weakness Policy","moves":["Dragon Dance","Fire Punch","Knock Off","Stone Edge"],"evs":{"hp":6,"at":252,"sp":252}},
     "Boss Giovanni": {"nature":"Careful","ability":"Sand Stream","level":80,"item":"Assault Vest","moves":["Fire Punch","High Horsepower","Knock Off","Rock Slide"],"evs":{"hp":252,"at":4,"sd":252}}
   },
   "Aerodactyl-Mega": {
@@ -2509,7 +2513,7 @@ var SETDEX_SV = {
     "Picnicker Marcy": {"level":49,"nature":"Rash","ability":"Dry Skin","moves":["Leech Life","Swords Dance","Sappy Seed","Crabhammer"],"ivs":{"hp":5,"at":5,"df":5,"sa":5,"sd":5,"sp":5}}
   },
   "Hoopa-Unbound": {
-    "*Dumbass Jojo Fan Set 1": {"nature":"Jolly","ability":"Magician","level":71,"item":"Focus Sash","moves":["Drain Punch","Fire Punch","Gunk Shot","Hyperspace Fury"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Dumbass Jojo Fan Set 1": {"nature":"Jolly","ability":"Magician","level":71,"item":"Focus Sash","moves":["Drain Punch","Fire Punch","Gunk Shot","Hyperspace Fury"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Dumbass Jojo Fan Set 2": {"nature":"Timid","ability":"Magician","level":100,"item":"Fightinium Z","moves":["Dark Pulse","Focus Blast","Nasty Plot","Psychic"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Aegislash-Shield": {
@@ -2525,7 +2529,7 @@ var SETDEX_SV = {
     "*Dumbass Jojo Fan": {"nature":"Quiet","ability":"Stance Change","level":71,"item":"Leftovers","moves":["Flash Cannon","King's Shield","Shadow Ball","Shadow Sneak"],"evs":{"hp":252,"at":4,"sa":252}}
   },
   "Celebi": {
-    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Natural Cure","level":71,"item":"Life Orb","moves":["Earth Power","Giga Drain","Nasty Plot","Psychic"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
+    "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Natural Cure","level":71,"item":"Life Orb","moves":["Earth Power","Giga Drain","Nasty Plot","Psychic"],"ivs":{"at":30,"sa":30},"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Machamp-Mega": {
     "*Dumbass Jojo Fan Set 1": {"nature":"Adamant","ability":"ORAORAORAORA","level":71,"item":"Machampite","moves":["Bullet Punch","Drain Punch","Ice Punch","Power-Up Punch"],"shiny":1,"evs":{"hp":252,"at":252,"df":4}},
@@ -2585,7 +2589,7 @@ var SETDEX_SV = {
   },
   "Politoed": {
     "SwimmerF Shirley": {"level":63,"nature":"Calm","ability":"Damp","moves":["Perish Song","Swagger","Bounce","Hyper Voice"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
-    "*Elite Four Lorelei": {"nature":"Timid","ability":"Drizzle","level":85,"item":"Damp Rock","moves":["Flip Turn","Scald","Haze","Rain Dance"],"evs":{"hp":252,"df":4,"sp":252}}
+    "*Elite Four Lorelei": {"nature":"Timid","ability":"Drizzle","level":85,"item":"Damp Rock","moves":["Flip Turn","Scald","Haze","Rain Dance"],"evs":{"hp":252,"sp":252,"sa":4}}
   },
   "Lapras": {
     "SwimmerF Tiffany": {"level":65,"nature":"Naive","ability":"Hydration","moves":["Dragon Pulse","Dragon Dance","Wish","Boomburst"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
@@ -2640,9 +2644,11 @@ var SETDEX_SV = {
     "*Leader Jasmine": {"nature":"Relaxed","ability":"Sturdy","level":71,"item":"Custap Berry","moves":["Earthquake","Explosion","Gyro Ball","Stealth Rock"],"ivs":{"sp":0},"evs":{"hp":252,"df":252,"sd":4}}
   },
   "Melmetal": {
-    "*Elite Four Lance": {"nature":"Adamant","ability":"Iron Fist","level":85,"item":"Assault Vest","moves":["Double Iron Bash","Earthquake","Thunder Punch","Ice Punch"],"evs":{"hp":252,"at":252,"sd":4}},
-    "*Leader Jasmine Set 1": {"nature":"Adamant","ability":"Iron Fist","level":71,"item":"Leftovers","moves":["Body Press","Double Iron Bash","Earthquake","Thunder Punch"],"evs":{"hp":252,"at":252,"sd":4}},
-    "*Leader Jasmine Set 2": {"nature":"Adamant","ability":"Iron Fist","level":71,"item":"Leftovers","moves":["Double Iron Bash","Earthquake","Ice Punch","Thunder Punch"],"evs":{"hp":252,"at":252,"sd":4}}
+    "*Elite Four Lance": {"nature":"Adamant","ability":"Iron Fist","level":85,"item":"Assault Vest","moves":["Double Iron Bash","Earthquake","Thunder Punch","Ice Punch"],"evs":{"hp":252,"at":252,"sp":6}},
+    "*Leader Jasmine Set 1": {"nature":"Adamant","ability":"Iron Fist","level":71,"item":"Leftovers","moves":["Body Press","Double Iron Bash","Earthquake","Thunder Punch"],"evs":{"hp":252,"at":252,"sp":6}},
+    "*Leader Jasmine Set 2": {"nature":"Adamant","ability":"Iron Fist","level":71,"item":"Leftovers","moves":["Double Iron Bash","Earthquake","Ice Punch","Thunder Punch"],"evs":{"hp":252,"at":252,"sp":6}},
+    "*Leader Jasmine Set 3": {"nature":"Adamant","ability":"Iron Fist","level":71,"item":"Leftovers","moves":["Body Press","Double Iron Bash","Earthquake","Thunder Punch"],"evs":{"hp":252,"at":252,"sp":6}},
+    "*Elite Four Lance Set 1": {"nature":"Adamant","ability":"Iron Fist","level":85,"item":"Assault Vest","moves":["Double Iron Bash","Earthquake","Thunder Punch","Ice Punch"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Aggron-Mega": {
     "*PkMn Trainer Ketchup": {"nature":"Careful","ability":"Filter","level":79,"item":"Aggronite","moves":["Curse","Heavy Slam","Rest","Sleep Talk"],"evs":{"hp":252,"df":4,"sd":252}},
@@ -2707,7 +2713,7 @@ var SETDEX_SV = {
     "Leader Blaine": {"nature":"Jolly","ability":"Protosynthesis","level":76,"item":"Life Orb","moves":["Close Combat","First Impression","Flare Blitz","U-turn"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}}
   },
   "Typhlosion": {
-    "Leader Blaine": {"nature":"Modest","ability":"Blazing Soul","level":76,"item":"Heavy-Duty Boots","moves":["Eruption","Flamethrower","Focus Blast","Hidden Power Grass"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
+    "Leader Blaine": {"nature":"Modest","ability":"Blazing Soul","level":76,"item":"Heavy-Duty Boots","moves":["Eruption","Flamethrower","Focus Blast","Hidden Power Grass"],"ivs":{"at":30,"sa":30},"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Ogerpon-Hearthflame": {
     "Leader Blaine": {"nature":"Jolly","ability":"Mold Breaker","level":76,"item":"Hearthflame Mask","moves":["Horn Leech","Ivy Cudgel","Knock Off","U-turn"],"evs":{"at":252,"df":4,"sp":252}}
@@ -2723,13 +2729,13 @@ var SETDEX_SV = {
     "Team Rocket Grunt": {"level":74,"nature":"Timid","ability":"Frisk","moves":["Embargo","Whirlwind","Brave Bird","Mirror Move"],"ivs":{"hp":15,"at":15,"df":15,"sa":15,"sd":15,"sp":15}}
   },
   "Tapu Lele": {
-    "Boss Giovanni": {"nature":"Timid","ability":"Psychic Surge","level":80,"item":"Terrain Extender","moves":["Aura Sphere","Moonblast","Psychic","Thunderbolt"],"evs":{"hp":4,"sp":252,"sa":252}}
+    "Boss Giovanni": {"nature":"Timid","ability":"Psychic Surge","level":80,"item":"Terrain Extender","moves":["Aura Sphere","Moonblast","Psychic","Thunderbolt"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Scrafty": {
     "Boss Giovanni": {"nature":"Adamant","ability":"Intimidate","level":80,"item":"Psychic Seed","moves":["Drain Punch","Ice Punch","Knock Off","Roar"],"evs":{"hp":252,"at":252,"df":4}}
   },
   "Celesteela": {
-    "Boss Giovanni": {"nature":"Modest","ability":"Beast Boost","level":80,"item":"Power Herb","moves":["Air Slash","Autotomize","Flamethrower","Meteor Beam"],"evs":{"hp":4,"sp":252,"sa":252}}
+    "Boss Giovanni": {"nature":"Modest","ability":"Beast Boost","level":80,"item":"Power Herb","moves":["Air Slash","Autotomize","Flamethrower","Meteor Beam"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Mewtwo": {
     "Boss Giovanni": {"nature":"Timid","ability":"Unnerve","level":80,"moves":["Aura Sphere","Expanding Force","Flamethrower","Soul Robbery"],"evs":{"hp":4,"sp":252,"sa":252}}
@@ -2767,8 +2773,8 @@ var SETDEX_SV = {
     "Leader Clair": {"nature":"Jolly","ability":"Protosynthesis","level":81,"item":"Booster Energy","moves":["Crunch","Dragon Dance","Earthquake","Iron Head"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}}
   },
   "Dragonite": {
-    "*Elite Four Lance Set 1": {"nature":"Jolly","ability":"Multiscale","level":85,"item":"Lum Berry","moves":["Dragon Dance","Extreme Speed","Earthquake","Dual Wingbeat"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Elite Four Lance Set 2": {"nature":"Jolly","ability":"Multiscale","level":85,"item":"Weakness Policy","moves":["Extreme Speed","Dragon Dance","Dual Wingbeat","Earthquake"],"evs":{"at":252,"df":4,"sp":252}},
+    "*Elite Four Lance Set 1": {"nature":"Jolly","ability":"Multiscale","level":85,"item":"Lum Berry","moves":["Dragon Dance","Extreme Speed","Earthquake","Dual Wingbeat"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Elite Four Lance Set 2": {"nature":"Jolly","ability":"Multiscale","level":85,"item":"Weakness Policy","moves":["Extreme Speed","Dragon Dance","Dual Wingbeat","Earthquake"],"evs":{"hp":6,"at":252,"sp":252}},
     "*Ace Trainer Symes": {"nature":"Jolly","ability":"Multiscale","level":100,"item":"Lum Berry","moves":["Dragon Dance","Dual Wingbeat","Fire Punch","Ice Punch"],"evs":{"at":252,"df":4,"sp":252}},
     "*Leader Clair": {"nature":"Lonely","ability":"Multiscale","level":100,"item":"Weakness Policy","moves":["Dragon Dance","Dragon Hammer","Dual Wingbeat","Fire Blast"],"evs":{"at":252,"sp":252,"sd":4}},
     "Leader Clair": {"nature":"Adamant","ability":"Multiscale","level":80,"item":"Weakness Policy","moves":["Dragon Dance","Dual Wingbeat","Extreme Speed","Fire Punch"],"evs":{"hp":252,"df":4,"sp":252}}
@@ -2780,12 +2786,12 @@ var SETDEX_SV = {
     "Leader Clair": {"nature":"Jolly","ability":"Protosynthesis","level":81,"item":"Booster Energy","moves":["Dragon Claw","Dragon Dance","Earthquake","Flare Blitz"],"evs":{"at":252,"sp":252,"sd":4}}
   },
   "Naganadel": {
-    "Leader Clair": {"nature":"Timid","ability":"Beast Boost","level":81,"item":"Life Orb","moves":["Draco Meteor","Flamethrower","Nasty Plot","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}}
+    "Leader Clair": {"nature":"Timid","ability":"Beast Boost","level":81,"item":"Life Orb","moves":["Draco Meteor","Flamethrower","Nasty Plot","Sludge Wave"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Ninetales-Alola": {
     "Burglar Simon": {"level":70,"nature":"Timid","ability":"Serene Grace","moves":["Ice Shard","Confuse Ray","Safeguard","Frost Breath"],"ivs":{"hp":10,"at":10,"df":10,"sa":10,"sd":10,"sp":10}},
     "*Ace Trainer Nick": {"nature":"Timid","ability":"Snow Warning","level":100,"item":"Light Clay","moves":["Aurora Veil","Freeze-Dry","Frost Breath","Moonblast"],"evs":{"hp":252,"df":4,"sp":252}},
-    "*Elite Four Lorelei": {"nature":"Timid","ability":"Snow Warning","level":85,"item":"Light Clay","moves":["Blizzard","Aurora Veil","Freeze-Dry","Snowscape"],"evs":{"df":4,"sa":252,"sp":252}}
+    "*Elite Four Lorelei": {"nature":"Timid","ability":"Snow Warning","level":85,"item":"Light Clay","moves":["Blizzard","Aurora Veil","Freeze-Dry","Snowscape"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Qwilfish-Hisui": {
     "*Burglar Max": {"nature":"Jolly","ability":"Intimidate","level":78,"item":"Eviolite","moves":["Liquidation","Throat Chop","Thunder Wave","Toxic Spikes"],"evs":{"at":252,"df":4,"sp":252}}
@@ -2850,7 +2856,7 @@ var SETDEX_SV = {
     "*Channeler Rachel": {"nature":"Jolly","ability":"Sharpness","level":100,"item":"Absolite","moves":["Night Slash","Play Rough","Psycho Cut","Swords Dance"],"evs":{"hp":4,"at":252,"sp":252}}
   },
   "Galvantula": {
-    "*Ace Trainer Naomi": {"nature":"Timid","ability":"Compound Eyes","level":81,"item":"Focus Sash","moves":["Bug Buzz","Energy Ball","Thunder","Volt Switch"],"evs":{"df":4,"sp":252,"sa":252}},
+    "*Ace Trainer Naomi": {"nature":"Timid","ability":"Compound Eyes","level":81,"item":"Focus Sash","moves":["Bug Buzz","Energy Ball","Thunder","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}},
     "*Dumbass Jojo Fan": {"nature":"Timid","ability":"Compound Eyes","level":100,"item":"Focus Sash","moves":["Bug Buzz","Sticky Web","Thunder","Volt Switch"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Passimian": {
@@ -2887,18 +2893,19 @@ var SETDEX_SV = {
     "*Elite Four Lorelei": {"nature":"Timid","ability":"Primordial Sea","level":85,"item":"Blue Orb","moves":["Water Spout","Origin Pulse","Thunder","Ice Beam"],"evs":{"df":4,"sa":252,"sp":252}}
   },
   "Glaceon": {
-    "*Elite Four Lorelei": {"nature":"Modest","ability":"Slush Rush","level":85,"item":"Choice Specs","moves":["Blizzard","Earth Power","Freeze-Dry","Hidden Power Fire"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"df":4,"sa":252,"sp":252}}
+    "*Elite Four Lorelei": {"nature":"Modest","ability":"Slush Rush","level":85,"item":"Choice Specs","moves":["Blizzard","Earth Power","Freeze-Dry","Hidden Power Fire"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Calyrex-Ice": {
     "*Leader Pryce": {"nature":"Brave","ability":"As One (Glastrier)","level":100,"item":"Mental Herb","moves":["Glacial Lance","High Horsepower","Trick Room","Zen Headbutt"],"ivs":{"sp":0},"evs":{"hp":248,"at":252,"df":8}},
-    "*Elite Four Lorelei": {"nature":"Adamant","ability":"As One (Glastrier)","level":85,"item":"Assault Vest","moves":["Glacial Lance","Zen Headbutt","Seed Bomb","High Horsepower"],"evs":{"hp":252,"at":252,"df":4}}
+    "*Elite Four Lorelei": {"nature":"Adamant","ability":"As One (Glastrier)","level":85,"item":"Assault Vest","moves":["Glacial Lance","Zen Headbutt","Seed Bomb","High Horsepower"],"evs":{"hp":252,"at":252,"sp":6}}
   },
   "Abomasnow-Mega": {
     "*Leader Pryce": {"nature":"Quiet","ability":"Snow Warning","level":100,"item":"Abomasite","moves":["Blizzard","Earth Power","Hidden Power Ice","Wood Hammer"],"ivs":{"sp":0},"evs":{"hp":248,"at":8,"sa":252}},
     "*Elite Four Lorelei": {"nature":"Timid","ability":"Slush Rush","level":85,"item":"Abomasite","moves":["Blizzard","Focus Blast","Hidden Power Fire","Giga Drain"],"ivs":{"at":30,"sp":30,"sa":30},"evs":{"df":4,"sa":252,"sp":252}}
   },
   "Zacian-Crowned": {
-    "*Elite Four Bruno": {"nature":"Jolly","ability":"Intrepid Sword","level":85,"item":"Rusted Sword","moves":["Swords Dance","Behemoth Blade","Close Combat","Wild Charge"],"shiny":1,"evs":{"at":252,"df":4,"sp":252}}
+    "*Elite Four Bruno": {"nature":"Jolly","ability":"Intrepid Sword","level":85,"item":"Rusted Sword","moves":["Swords Dance","Behemoth Blade","Close Combat","Wild Charge"],"shiny":1,"evs":{"hp":6,"at":252,"sp":252}},
+    "*Elite Four Bruno Set 1": {"nature":"Jolly","ability":"Intrepid Sword","level":85,"item":"Rusted Sword","moves":["Swords Dance","Behemoth Blade","Close Combat","Wild Charge"],"shiny":1,"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Lucario-Mega": {
     "*Elite Four Bruno Set 1": {"nature":"Timid","ability":"Adaptability","level":85,"item":"Lucarionite","moves":["Nasty Plot","Aura Sphere","Vacuum Wave","Flash Cannon"],"evs":{"df":4,"sa":252,"sp":252}},
@@ -2906,12 +2913,12 @@ var SETDEX_SV = {
   },
   "Kommo-o": {
     "*Ace Trainer Barry": {"nature":"Naive","ability":"Soundproof","level":100,"item":"Kommonium Z","moves":["Clanging Scales","Close Combat","Poison Jab","Rock Slide"],"evs":{"at":252,"sp":252,"sa":4}},
-    "*Elite Four Bruno": {"nature":"Timid","ability":"Overcoat","level":85,"item":"Throat Spray","moves":["Clanging Scales","Clangorous Soul","Aura Sphere","Flash Cannon"],"evs":{"df":4,"sa":252,"sp":252}}
+    "*Elite Four Bruno": {"nature":"Timid","ability":"Overcoat","level":85,"item":"Throat Spray","moves":["Clanging Scales","Clangorous Soul","Aura Sphere","Flash Cannon"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Marshadow": {
     "*Leader Morty": {"nature":"Jolly","ability":"Technician","level":100,"item":"Focus Sash","moves":["Bulk Up","Drain Punch","Shadow Sneak","Spectral Thief"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Elite Four Agatha Set 1": {"nature":"Jolly","ability":"Technician","level":85,"item":"Focus Sash","moves":["Drain Punch","Bulk Up","Spectral Thief","Shadow Sneak"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Elite Four Agatha Set 2": {"nature":"Jolly","ability":"Technician","level":85,"item":"Focus Sash","moves":["Spectral Thief","Close Combat","Shadow Sneak","Bulk Up"],"evs":{"at":252,"df":4,"sp":252}}
+    "*Elite Four Agatha Set 1": {"nature":"Jolly","ability":"Technician","level":85,"item":"Focus Sash","moves":["Drain Punch","Bulk Up","Spectral Thief","Shadow Sneak"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Elite Four Agatha Set 2": {"nature":"Jolly","ability":"Technician","level":85,"item":"Focus Sash","moves":["Spectral Thief","Close Combat","Shadow Sneak","Bulk Up"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Chi-Yu": {
     "*Elite Four Agatha": {"nature":"Timid","ability":"Beads of Ruin","level":83,"item":"Charcoal","moves":["Dark Pulse","Flamethrower","Hidden Power Grass","Psychic"],"ivs":{"at":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
@@ -2919,7 +2926,7 @@ var SETDEX_SV = {
   "Zoroark": {
     "*Ace Trainer Sharon": {"nature":"Timid","ability":"Illusion","level":100,"item":"Focus Sash","moves":["Dark Hole","Flamethrower","Nasty Plot","Sludge Bomb"],"evs":{"df":4,"sp":252,"sa":252}},
     "*Channeler Rachel": {"nature":"Hasty","ability":"Illusion","level":100,"item":"Choice Scarf","moves":["Dark Hole","Flamethrower","Focus Blast","U-turn"],"evs":{"hp":4,"sp":252,"sa":252}},
-    "*Elite Four Agatha": {"nature":"Timid","ability":"Illusion","level":85,"item":"Focus Sash","moves":["Taunt","Dark Pulse","Flamethrower","Sludge Bomb"],"evs":{"df":4,"sa":252,"sp":252}}
+    "*Elite Four Agatha": {"nature":"Timid","ability":"Illusion","level":85,"item":"Focus Sash","moves":["Taunt","Dark Pulse","Flamethrower","Sludge Bomb"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Flutter Mane": {
     "*Elite Four Agatha": {"nature":"Timid","ability":"Protosynthesis","level":85,"item":"Booster Energy","moves":["Shadow Ball","Moonblast","Mystical Fire","Psyshock"],"evs":{"df":4,"sa":252,"sp":252}}
@@ -2936,8 +2943,9 @@ var SETDEX_SV = {
     "*Leader Clair": {"nature":"Modest","ability":"Primal Armor","level":100,"item":"Adamant Orb","moves":["Flamethrower","Flash Cannon","Roar of Time","Thunderbolt"],"evs":{"hp":252,"sa":252,"sd":4}}
   },
   "Pheromosa": {
-    "Champion Blue": {"nature":"Jolly","ability":"Beast Boost","level":85,"item":"Focus Sash","moves":["Close Combat","Poison Jab","Triple Axel","U-turn"],"evs":{"at":252,"df":4,"sp":252}},
-    "*Leader Bugsy": {"nature":"Hasty","ability":"Beast Boost","level":100,"item":"Focus Sash","moves":["Close Combat","Drill Run","Ice Beam","U-turn"],"evs":{"at":252,"sp":252}}
+    "Champion Blue": {"nature":"Jolly","ability":"Beast Boost","level":85,"item":"Focus Sash","moves":["Close Combat","Poison Jab","Triple Axel","U-turn"],"evs":{"hp":6,"at":252,"sp":252}},
+    "*Leader Bugsy": {"nature":"Hasty","ability":"Beast Boost","level":100,"item":"Focus Sash","moves":["Close Combat","Drill Run","Ice Beam","U-turn"],"evs":{"at":252,"sp":252}},
+    "Champion Blue Set 1": {"nature":"Jolly","ability":"Beast Boost","level":85,"item":"Focus Sash","moves":["Close Combat","Poison Jab","Triple Axel","U-turn"],"evs":{"hp":6,"at":252,"sp":252}}
   },
   "Metagross-Mega": {
     "*Crush Kin Mik & Kia": {"nature":"Jolly","ability":"Tough Claws","level":99,"item":"Metagrossite","moves":["Earthquake","Ice Punch","Meteor Mash","Zen Headbutt"],"evs":{"at":252,"df":4,"sp":252}},
@@ -2948,11 +2956,13 @@ var SETDEX_SV = {
     "Champion Blue Set 2": {"nature":"Timid","ability":"Hadron Engine","level":85,"item":"Leftovers","moves":["Calm Mind","Dragon Pulse","Electro Drift","Hidden Power Fire"],"shiny":1,"ivs":{"at":30,"sp":30,"sa":30},"evs":{"df":4,"sp":252,"sa":252}}
   },
   "Yveltal": {
-    "Champion Blue Set 1": {"nature":"Modest","ability":"Dark Aura","level":85,"item":"Assault Vest","moves":["Oblivion Wing","Dark Hole","Heat Wave","Sucker Punch"],"evs":{"hp":252,"df":4,"sa":252}},
-    "Champion Blue Set 2": {"nature":"Modest","ability":"Dark Aura","level":85,"item":"Assault Vest","moves":["Oblivion Wing","Dark Hole","Heat Wave","Sucker Punch"],"evs":{"hp":252,"sa":252,"sd":4}}
+    "Champion Blue Set 1": {"nature":"Modest","ability":"Dark Aura","level":85,"item":"Assault Vest","moves":["Oblivion Wing","Dark Hole","Heat Wave","Sucker Punch"],"evs":{"hp":252,"sp":6,"sa":252}},
+    "Champion Blue Set 2": {"nature":"Modest","ability":"Dark Aura","level":85,"item":"Assault Vest","moves":["Oblivion Wing","Dark Hole","Heat Wave","Sucker Punch"],"evs":{"hp":252,"sp":6,"sa":252}},
+    "Champion Blue Set 3": {"nature":"Modest","ability":"Dark Aura","level":85,"item":"Assault Vest","moves":["Oblivion Wing","Dark Hole","Heat Wave","Sucker Punch"],"evs":{"hp":252,"sp":6,"sa":252}}
   },
   "Eternatus": {
-    "Champion Blue": {"nature":"Timid","ability":"Pressure","level":85,"item":"Power Herb","moves":["Dynamax Cannon","Flamethrower","Meteor Beam","Sludge Wave"],"evs":{"df":4,"sp":252,"sa":252}}
+    "Champion Blue": {"nature":"Timid","ability":"Pressure","level":85,"item":"Power Herb","moves":["Dynamax Cannon","Flamethrower","Meteor Beam","Sludge Wave"],"evs":{"hp":6,"sp":252,"sa":252}},
+    "Champion Blue Set 1": {"nature":"Timid","ability":"Pressure","level":85,"item":"Power Herb","moves":["Dynamax Cannon","Flamethrower","Meteor Beam","Sludge Wave"],"evs":{"hp":6,"sp":252,"sa":252}}
   },
   "Ditto": {
     "Champion Blue": {"nature":"Timid","ability":"Imposter","level":85,"item":"Choice Scarf","moves":["Transform"],"evs":{"hp":252,"df":4,"sp":252}}
