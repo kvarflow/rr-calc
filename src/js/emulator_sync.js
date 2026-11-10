@@ -21,7 +21,7 @@ var EMULATOR_STAT_ROWS = [null, "at", "df", "sp", "sa", "sd"];
 // How often to ask, in ms: while connected, and while nothing answers.
 var EMULATOR_POLL_MS = 1000;
 var EMULATOR_WAIT_POLL_MS = 3000;
-var emulatorSync = {timer: null, busy: false, applied: {}, lastRaw: "", connected: false, lastPoll: 0};
+var emulatorSync = {timer: null, busy: false, applied: {}, history: {}, historyChanged: false, lastRaw: "", connected: false, lastPoll: 0};
 
 function isEmulatorSyncOn() {
 	var setting = readSetting(EMULATOR_SYNC_KEY);
@@ -92,6 +92,75 @@ function applyEmulatorBattler(panel, battler) {
 	$(panel + " .current-hp").change();
 }
 
+/*
+ * What has happened in the battle (battle_history.js), from the game's own state, when the sync
+ * sends it (script 2 on: status2, status3, lastMove, lockedMove, disable, wish for each battler):
+ * the trainer AI's predictions then follow the battle turn by turn.
+ */
+function getEmulatorVolatile(key, battler) {
+	if (battler.status2 === undefined || !battler.disable || typeof AI_VOLATILE_DEFAULTS === "undefined") return null;
+	var disable = [];
+	for (var i = 0; i < battler.disable.length; i += 2) disable.push(parseInt(battler.disable.substr(i, 2), 16));
+	var u16 = function (at) {
+		return disable[at] | (disable[at + 1] << 8);
+	};
+	var known = getBattleHistoryMoves(key);
+	// A move id as the panel names it (its Hidden Power carries the type).
+	var moveName = function (id) {
+		var name = id && id !== 0xFFFF ? RADICAL_RED_SAVE_DATA.moves[id] || "" : "";
+		if (!name) return "";
+		for (var k = 0; k < known.length; k++) {
+			if (known[k] === name || known[k].indexOf(name + " ") === 0) return known[k];
+		}
+		return name;
+	};
+	var status2 = battler.status2 >>> 0;
+	var status3 = battler.status3 >>> 0;
+	var has2 = function (mask) {
+		return (status2 & mask) !== 0;
+	};
+	var perish = (status3 & 0x20) !== 0;
+	return $.extend({}, AI_VOLATILE_DEFAULTS, {
+		firstTurn: disable[0x16] !== 0,
+		lastMove: moveName(battler.lastMove),
+		protectUses: disable[0x08],
+		sub: has2(0x01000000),
+		taunt: (disable[0x13] & 0xF) !== 0,
+		encore: (disable[0x0E] & 0xF) !== 0,
+		torment: has2(0x80000000),
+		disabled: (disable[0x0B] & 0xF) !== 0 ? moveName(u16(0x04)) : "",
+		yawn: (status3 & 0x1800) !== 0,
+		perish: perish,
+		perishLast: perish && (disable[0x0F] & 0xF) === 0,
+		confused: has2(0x7),
+		infatuated: has2(0x000F0000),
+		wrapped: has2(0x0000E000),
+		noEscape: has2(0x04000000),
+		destinyBond: has2(0x02000000),
+		recharge: has2(0x00400000),
+		locked: has2(0x00001000) && !!battler.lockedMove,
+		stockpile: Math.min(3, disable[0x09]),
+		wish: battler.wish > 0
+	});
+}
+
+// Sets a side's history from the game, once its Pokémon is in its panel.
+function applyEmulatorHistory(key, battler) {
+	var vol = getEmulatorVolatile(key, battler);
+	if (!vol) return;
+	// Encored: the game keeps the move it is held to.
+	if (vol.encore && battler.disable) {
+		var encored = parseInt(battler.disable.substr(14, 2) + battler.disable.substr(12, 2), 16);
+		var name = encored ? RADICAL_RED_SAVE_DATA.moves[encored] : "";
+		if (name) vol.lastMove = name;
+	}
+	var text = JSON.stringify(vol);
+	if (emulatorSync.history[key] === text && getBattleVolatile(key)) return;
+	emulatorSync.history[key] = text;
+	battleHistory[key] = {setId: getBattleHistorySetId(key), vol: vol, synced: true};
+	emulatorSync.historyChanged = true;
+}
+
 // Running inside the Pcalc Android app, whose user agent ends in "Pcalc/<version>".
 function isInPcalcApp() {
 	return /\bPcalc\//.test(navigator.userAgent);
@@ -123,6 +192,7 @@ function applyEmulatorState(state) {
 			$("#p1 input.set-selector").val(setId).change();
 		}
 		applyEmulatorBattler("#p1", state.mons[0]);
+		applyEmulatorHistory("p1", state.mons[0]);
 	} else if (yours) {
 		notes.push(yours.species + " is not in your box: import your .sav");
 	}
@@ -148,11 +218,17 @@ function applyEmulatorState(state) {
 				loadTrainerPokemon(sets[slot], slot);
 			}
 			applyEmulatorBattler("#p2", state.mons[1]);
+			applyEmulatorHistory("p2", state.mons[1]);
 		} else {
 			notes.push("the trainer's " + theirs.species + " is not in its team here");
 		}
 	} else if (theirs) {
 		notes.push(state.trainer ? "this trainer is not in the calc yet" : "a wild " + theirs.species);
+	}
+	// The AI's predictions again, with what has happened in the battle.
+	if (emulatorSync.historyChanged) {
+		emulatorSync.historyChanged = false;
+		if (typeof performCalculations === "function") performCalculations();
 	}
 	setEmulatorStatus("Connected · in battle" + (notes.length ? " · " + notes.join("; ") : ""), true);
 }
@@ -196,6 +272,7 @@ function setEmulatorSync(on) {
 	emulatorSync.timer = null;
 	emulatorSync.lastRaw = "";
 	emulatorSync.applied = {};
+	emulatorSync.history = {};
 	emulatorSync.connected = false;
 	emulatorSync.lastPoll = 0;
 	if (on) {

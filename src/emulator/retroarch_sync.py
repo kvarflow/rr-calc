@@ -19,7 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 31125
 RETROARCH = ("127.0.0.1", 55355)
-SCRIPT_VERSION = 1
+SCRIPT_VERSION = 2
 
 # FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 ADDR = {
@@ -33,7 +33,14 @@ ADDR = {
     "gEnemyPartyCount": 0x02024028,
     "gEnemyParty": 0x0202402C,
     "gTrainerBattleOpponent_A": 0x020386AE,
+    # What has happened in the battle, for the trainer AI's predictions.
+    "gLastUsedMoves": 0x02023D98,  # u16 a battler
+    "gLockedMoves": 0x02023DB8,  # u16 a battler
+    "gStatuses3": 0x02023DFC,  # u32 a battler
+    "gDisableStructs": 0x02023E0C,  # 0x1C bytes a battler
+    "gWishFutureKnock": 0x02023F20,  # wishCounter: a byte a battler at +0x20
 }
+DISABLE_STRUCT_SIZE = 0x1C
 PARTY_MON_SIZE = 100
 BATTLE_MON_SIZE = 0x58
 CHUNK = 256
@@ -83,11 +90,21 @@ def state():
     if battlers:
         index_bytes = read(ADDR["gBattlerPartyIndexes"], 2 * battlers)
         battle = read(ADDR["gBattleMons"], BATTLE_MON_SIZE * battlers)
+        last = read(ADDR["gLastUsedMoves"], 2 * battlers)
+        locked = read(ADDR["gLockedMoves"], 2 * battlers)
+        statuses3 = read(ADDR["gStatuses3"], 4 * battlers)
+        disable = read(ADDR["gDisableStructs"], DISABLE_STRUCT_SIZE * battlers)
+        wish = read(ADDR["gWishFutureKnock"] + 0x20, battlers)
         for i in range(battlers):
             indexes.append(u16(index_bytes, 2 * i))
             mon = battle[i * BATTLE_MON_SIZE:(i + 1) * BATTLE_MON_SIZE]
             mons.append({"species": u16(mon), "hp": u16(mon, 0x28), "maxHp": u16(mon, 0x2C), "level": mon[0x2A],
-                         "stages": list(mon[0x18:0x20]), "status": u32(mon, 0x4C), "pid": u32(mon, 0x48)})
+                         "stages": list(mon[0x18:0x20]), "status": u32(mon, 0x4C), "pid": u32(mon, 0x48),
+                         # Since script 2: status2 (confusion, Substitute...), status3 (Yawn, Perish Song...),
+                         # the move used last and the one it is locked into, its DisableStruct, its Wish counter.
+                         "status2": u32(mon, 0x50), "status3": u32(statuses3, 4 * i), "lastMove": u16(last, 2 * i),
+                         "lockedMove": u16(locked, 2 * i),
+                         "disable": disable[i * DISABLE_STRUCT_SIZE:(i + 1) * DISABLE_STRUCT_SIZE].hex(), "wish": wish[i]})
     return {
         "game": "radicalred", "script": SCRIPT_VERSION, "via": "retroarch", "inBattle": in_battle,
         "battleType": u32(read(ADDR["gBattleTypeFlags"], 4)), "trainer": u16(read(ADDR["gTrainerBattleOpponent_A"], 2)),
