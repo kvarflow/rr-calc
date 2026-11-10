@@ -508,10 +508,13 @@ function getTrainerNavOrder(all) {
 }
 
 /*
- * Route trainers in the order you meet them. The game's data only says which boss fight a trainer
- * comes before and where it stands, so within a place (a gym, a building) they come in id order;
- * you can move one earlier or later (the Mastersheet's arrows), saved per mode, on top of the fixes
- * that come with the calc (TRAINER_ORDER_FIXES). A group's order is kept as its trainers' keys.
+ * Route trainers in the order you meet them. The game's data only says where a trainer stands, so
+ * the boss fight it comes before is worked out, and those of a place come in the order you walk to
+ * them. You can put that right on the Mastersheet (Reorder): move a trainer earlier or later, past
+ * boss fights too, or a whole place before another fight. It is saved per mode, on top of the fixes
+ * that come with the calc (TRAINER_ORDER_FIXES). Either is, for a boss fight (its key), the keys of
+ * the route trainers before it, in order: a trainer listed there comes before that fight, wherever
+ * the calc had put it.
  */
 var TRAINER_ORDER_FIXES_KEY = "trainerOrderFixes";
 
@@ -535,10 +538,40 @@ function readOwnTrainerOrderFixes() {
 	}
 }
 
-function getTrainerOrderFixes() {
-	var builtIn = typeof TRAINER_ORDER_FIXES !== "undefined" ? TRAINER_ORDER_FIXES[getPageMode()] || {} : {};
-	return $.extend({}, builtIn, readOwnTrainerOrderFixes());
+function getBuiltInTrainerOrderFixes() {
+	return typeof TRAINER_ORDER_FIXES !== "undefined" ? TRAINER_ORDER_FIXES[getPageMode()] || {} : {};
 }
+
+function getTrainerOrderFixes() {
+	return $.extend({}, getBuiltInTrainerOrderFixes(), readOwnTrainerOrderFixes());
+}
+
+// Puts each route trainer before the fight the fixes list it under (the calc's, then yours), or
+// back where the calc placed it (route.home).
+function applyTrainerOrderFixes() {
+	var byKey = {};
+	TRAINER_ORDER.forEach(function (trainer, index) {
+		if (trainer.route) {
+			if (trainer.route.home === undefined) trainer.route.home = trainer.route.before;
+			trainer.route.before = trainer.route.home;
+		}
+		var key = getTrainerKey(index);
+		if (byKey[key] === undefined) byKey[key] = index;
+	});
+	[getBuiltInTrainerOrderFixes(), readOwnTrainerOrderFixes()].forEach(function (fixes) {
+		Object.keys(fixes).forEach(function (group) {
+			var before = group === "end" ? null : byKey[group];
+			if (before === undefined || (before !== null && TRAINER_ORDER[before].route) || !$.isArray(fixes[group])) return;
+			fixes[group].forEach(function (key) {
+				var index = byKey[key];
+				if (index !== undefined && TRAINER_ORDER[index].route) TRAINER_ORDER[index].route.before = before;
+			});
+		});
+	});
+	// The arcs follow where the route trainers are.
+	trainerArcCaps = null;
+}
+if (typeof TRAINER_ORDER !== "undefined") applyTrainerOrderFixes();
 
 // The route trainers before the same fight as this one, in the order they come.
 function getRouteGroup(index) {
@@ -548,24 +581,105 @@ function getRouteGroup(index) {
 	});
 }
 
-// Moves a route trainer one place earlier (-1) or later (+1) among those before the same fight.
+// Saves the order of the route trainers before these fights (each a `before`: an index, or null).
+function saveRouteGroups(groups) {
+	var fixes = readOwnTrainerOrderFixes();
+	groups.forEach(function (group) {
+		fixes[getRouteGroupKey(group.before)] = group.trainers.map(getTrainerKey);
+	});
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify(fixes));
+	applyTrainerOrderFixes();
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
+}
+
+// The route trainers before a fight (`before`: its index, or null for those after the last), in order.
+function getRouteGroupBefore(before) {
+	return getTrainerNavOrder(true).filter(function (other) {
+		return TRAINER_ORDER[other].route && TRAINER_ORDER[other].route.before === before;
+	});
+}
+
+/*
+ * The fight a route trainer lands before when it steps out of its group: going earlier, the fight
+ * before this group's (it joins the end of that one's trainers); going later, the fight after
+ * (joining the start of its trainers; null past the last fight). Fights that are not listed
+ * (a duplicate) are stepped over. undefined: nowhere to go.
+ */
+function getNeighbourRouteGroup(before, step) {
+	var last = getStoryLength() - 1;
+	var to;
+	if (step < 0) {
+		to = before === null ? last : before - 1;
+		while (to > 0 && TRAINER_ORDER[to].duplicate) to--;
+		return to < 0 ? undefined : to;
+	}
+	if (before === null) return undefined;
+	to = before;
+	do {
+		to++;
+	} while (to <= last && TRAINER_ORDER[to - 1].duplicate);
+	return to > last ? null : to;
+}
+
+// Can a route trainer move one place earlier (-1) or later (+1)?
+function canMoveRouteTrainer(index, step) {
+	var group = getRouteGroup(index);
+	var to = group.indexOf(index) + step;
+	return (to >= 0 && to < group.length) || getNeighbourRouteGroup(TRAINER_ORDER[index].route.before, step) !== undefined;
+}
+
+// Moves a route trainer one place earlier (-1) or later (+1): among those before the same fight,
+// or past that fight to the trainers of the next.
 function moveRouteTrainer(index, step) {
+	var before = TRAINER_ORDER[index].route.before;
 	var group = getRouteGroup(index);
 	var at = group.indexOf(index);
 	var to = at + step;
-	if (at === -1 || to < 0 || to >= group.length) return false;
-	group[at] = group[to];
-	group[to] = index;
-	var fixes = readOwnTrainerOrderFixes();
-	fixes[getRouteGroupKey(TRAINER_ORDER[index].route.before)] = group.map(getTrainerKey);
-	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify(fixes));
-	updateTrainerNavButtons();
-	$(document).trigger("trainer:order");
+	if (at === -1) return false;
+	if (to >= 0 && to < group.length) {
+		group[at] = group[to];
+		group[to] = index;
+		saveRouteGroups([{before: before, trainers: group}]);
+		return true;
+	}
+	var target = getNeighbourRouteGroup(before, step);
+	if (target === undefined) return false;
+	group.splice(at, 1);
+	var joined = getRouteGroupBefore(target);
+	if (step < 0) joined.push(index);
+	else joined.unshift(index);
+	saveRouteGroups([{before: before, trainers: group}, {before: target, trainers: joined}]);
+	return true;
+}
+
+// Moves route trainers (in the order given) to just before a fight (`before`: its index, or null
+// for after the last), after the trainers already before it.
+function moveRouteTrainersBefore(trainers, before) {
+	trainers = trainers.filter(function (index) {
+		return TRAINER_ORDER[index] && TRAINER_ORDER[index].route;
+	});
+	if (!trainers.length || (before !== null && (!TRAINER_ORDER[before] || TRAINER_ORDER[before].route))) return false;
+	var groups = [];
+	var seen = [];
+	trainers.forEach(function (index) {
+		var from = TRAINER_ORDER[index].route.before;
+		if (from === before || seen.indexOf(from) !== -1) return;
+		seen.push(from);
+		groups.push({before: from, trainers: getRouteGroupBefore(from).filter(function (other) {
+			return trainers.indexOf(other) === -1;
+		})});
+	});
+	groups.push({before: before, trainers: getRouteGroupBefore(before).filter(function (other) {
+		return trainers.indexOf(other) === -1;
+	}).concat(trainers)});
+	saveRouteGroups(groups);
 	return true;
 }
 
 function resetTrainerOrderFixes() {
 	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify({}));
+	applyTrainerOrderFixes();
 	updateTrainerNavButtons();
 	$(document).trigger("trainer:order");
 }

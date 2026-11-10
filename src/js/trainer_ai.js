@@ -4592,6 +4592,84 @@ function renderAISwitch(battle, prediction) {
 	markAISwitchesOnTeam();
 }
 
+/*
+ * The fight as the AI sees it now, as text to send in when a prediction was wrong: both Pokémon
+ * (HP, status, stat changes, sets), the field, the trainer and what the calc predicted. With it the
+ * turn can be run again against the game's own code.
+ */
+function buildAIReport() {
+	var battle = null;
+	try {
+		battle = readAIBattle();
+	} catch (e) {
+		battle = null;
+	}
+	if (!battle) return "";
+	var prediction = predictAIMoves(battle);
+	var describe = function (pokemon, results) {
+		return {name: pokemon.name, level: pokemon.level, hp: pokemon.curHP() + "/" + pokemon.maxHP(), status: pokemon.status || "",
+			toxicCounter: pokemon.toxicCounter || 0, boosts: pokemon.boosts, ability: pokemon.ability, item: pokemon.item || "",
+			nature: pokemon.nature, gender: pokemon.gender || "", evs: pokemon.evs, ivs: pokemon.ivs, stats: pokemon.stats,
+			moves: results.map(function (result) {
+				var range = result.range();
+				return {name: result.move.name, damage: range[0] + "-" + range[1]};
+			})};
+	};
+	var p1 = damageResults[0][0].attacker;
+	var p2 = damageResults[1][0].attacker;
+	var trainer = typeof TRAINER_ORDER !== "undefined" ? TRAINER_ORDER[currentTrainerIndex] : null;
+	var variant = trainer && typeof getTrainerVariant === "function" ? getTrainerVariant(trainer) : null;
+	var predicted = battle.ai.moves.map(function (move, i) {
+		return move ? move.name + " " + formatAIShare(prediction.shares[i]) : null;
+	}).filter(Boolean);
+	prediction.switches.forEach(function (entry) {
+		predicted.push("switch to " + shortMonName(entry.mon) + " " + formatAIShare(entry.share));
+	});
+	var report = {
+		version: typeof getLatestVersion === "function" ? getLatestVersion() : "", mode: getPageMode(),
+		trainer: trainer ? {index: currentTrainerIndex, name: trainer.name, place: trainer.location || "",
+			team: variant ? variant.label : "", ids: variant ? variant.trainerIds || [] : [],
+			slot: typeof activeTrainerSlot === "number" ? activeTrainerSlot : null,
+			knockedOut: typeof getKOSlots === "function" ? getKOSlots(currentTrainerIndex) : []} : null,
+		foe: describe(p2, damageResults[1]), you: describe(p1, damageResults[0]),
+		speeds: {you: battle.player.speed, foe: battle.ai.speed}, yourMonsLeft: battle.player.monsLeft, foeMonsLeft: battle.ai.monsLeft,
+		field: damageResults[1][0].field, trickRoom: battle.trickRoom, justSwitchedIn: battle.justSwitchedIn,
+		bench: (battle.party || []).map(function (mon) {
+			return shortMonName(mon);
+		}),
+		predicted: predicted
+	};
+	return "Trainer AI report (Radical Red calc " + report.version + ", " + report.mode + ")\n" +
+		(trainer ? trainer.name + (trainer.location ? ", " + trainer.location : "") + "\n" : "") +
+		p2.name + " (" + report.foe.hp + ") against your " + p1.name + " (" + report.you.hp + ")\n" +
+		"The calc predicted: " + predicted.join(", ") + "\n" +
+		"What it did instead: \n\n" + JSON.stringify(report);
+}
+
+// "Copy AI report" (Settings): the report on the clipboard, to paste where you report the miss.
+function copyAIReport(button) {
+	var text = buildAIReport();
+	var say = function (message) {
+		var label = button.text();
+		button.text(message);
+		setTimeout(function () {
+			button.text(label);
+		}, 1800);
+	};
+	if (!text) {
+		say("Pick a trainer's Pok\u00e9mon first");
+		return;
+	}
+	var done = function () {
+		say("Copied \u2713");
+	};
+	var fallback = function () {
+		window.prompt("Copy the report:", text);
+	};
+	if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).then(done, fallback);
+	else fallback();
+}
+
 // Desktop too: the AI's chances on the foe's moves and its switches (small_screen.js binds the
 // small layout's).
 $(document).on("calc:done", function () {

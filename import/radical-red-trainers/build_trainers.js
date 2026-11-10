@@ -13,6 +13,7 @@
  *   python3 parse_docs.py "<Default Mode Bosses>.xlsx" normal.json
  *   node build_trainers.js normal normal.json normal-report.md [--apply]
  * and the same with "hardcore" and the Hardcore Mode Bosses document.
+ *   node build_trainers.js normal --routes    (no document: only adds route trainers not yet there)
  *
  * The documents only cover bosses and give many levels relative to the player ("Highest
  * Lv -3"), so each documented team is matched to the calc's sets by species: first the
@@ -27,7 +28,8 @@ const {calc, toKey, resolve, MOVE_NAMES, ITEM_NAMES, ABILITY_NAMES} = require('.
 
 const args = process.argv.slice(2);
 const APPLY = args.indexOf('--apply') !== -1;
-const [mode, docPath, reportPath] = args.filter(a => a !== '--apply');
+const ROUTES_ONLY = args.indexOf('--routes') !== -1;
+const [mode, docPath, reportPath] = args.filter(a => a !== '--apply' && a !== '--routes');
 const ROOT = path.resolve(__dirname, '../..');
 const SETS_FILE = path.join(ROOT, 'src/js/data/sets', mode + '.js');
 const SPECIES = calc.SPECIES[9];
@@ -629,8 +631,8 @@ function applyRomFixes(order, setdex) {
  * it comes before in Previous / Next (route.before): the gym leader where it stands (its gym), else
  * the first boss there (a Silph Co. floor, Victory Road), else the first boss past where it stands
  * in the game's order of places; a team above that fight's level cap goes before the first required
- * fight at a cap that covers it. Trainers with custom moves (the game's
- * pseudo-bosses, whose sets come from its EV spreads) are not added yet.
+ * fight at a cap that covers it. Trainers with custom moves use them in both modes, and those with
+ * an item too take the nature, IVs, EVs and ability of the game's spread for each Pokémon.
  */
 const {LOCATION_ORDER, LOCATION_ALIASES} = require('./locations');
 // Kanto's gym leaders: a trainer where one stands is in the gym (the Johto leaders stand elsewhere:
@@ -652,7 +654,9 @@ function addRouteTrainers(order, setdex) {
 	const rank = name => LOCATION_ORDER.indexOf(place(name));
 	// Where each boss fight is (its trainer's map, else the document's place) and how far into the
 	// game it is (never going back).
-	const bossPlaces = order.map(t => {
+	// Only the boss fights place a trainer (with --routes, the order already ends with route trainers).
+	const bosses = order.filter(t => !t.route);
+	const bossPlaces = bosses.map(t => {
 		const mapped = [].concat(...t.variants.map(v => v.trainerIds || [])).map(id => byId.get(id))
 			.find(r => r && r.locations.length);
 		return mapped ? mapped.locations[0].location : place(t.location);
@@ -664,23 +668,53 @@ function addRouteTrainers(order, setdex) {
 	});
 	const named = {};
 	let added = 0;
-	all.forEach(trainer => {
-		if (inOrder.has(trainer.id) || trainer.flags & 1 || !trainer.locations.length || !trainer.team.length) return;
+	// The boss fight a trainer comes before (-1: after the last), and its highest level.
+	const placeTrainer = trainer => {
 		const where = trainer.locations[0].location;
-		let before = order.findIndex((t, i) => bossPlaces[i] === where && GYM_LEADERS.indexOf(t.name) !== -1);
-		if (before === -1) before = bossPlaces.indexOf(where);
+		let before = bosses.findIndex((t, i) => bossPlaces[i] === where && GYM_LEADERS.indexOf(t.name) !== -1);
+		const highest = Math.max(...trainer.team.map(mon => mon.level));
+		const capAt = i => parseInt(bosses[i].levelCap) || 0;
+		if (before === -1) {
+			before = bossPlaces.indexOf(where);
+			// Not an optional fight you come back for much later (Route 8's Ace Cole, cap 59, among
+			// Lv 36 trainers you pass on the way to Celadon City): those go by where the place is.
+			if (before !== -1 && bosses[before].optional && highest + 10 < capAt(before)) before = -1;
+		}
 		if (before === -1 && rank(where) !== -1) before = progress.findIndex(p => p >= rank(where));
 		// A team above that fight's level cap is for later (Route 4's Lass Crissy, Lv 59, across the
 		// ledge): before the first required fight at a cap that covers it.
-		const highest = Math.max(...trainer.team.map(mon => mon.level));
-		const capAt = i => parseInt(order[i].levelCap) || 0;
 		const arcCap = i => {
-			for (let j = i; j < order.length; j++) if (!order[j].optional && capAt(j)) return capAt(j);
+			for (let j = i; j < bosses.length; j++) if (!bosses[j].optional && capAt(j)) return capAt(j);
 			return Infinity;
 		};
 		if (before !== -1 && highest > arcCap(before)) {
-			const later = order.findIndex((t, i) => i > before && !t.optional && !t.route && capAt(i) >= highest);
+			const later = bosses.findIndex((t, i) => i > before && !t.optional && capAt(i) >= highest);
 			before = later;
+		}
+		return before;
+	};
+	// With --routes: the route trainers already there, placed again by today's rules.
+	order.forEach(t => {
+		const trainer = t.route && byId.get(t.variants[0].trainerIds[0]);
+		if (!trainer || !trainer.locations.length) return;
+		const before = placeTrainer(trainer);
+		t.route.before = before === -1 ? null : before;
+	});
+	all.forEach(trainer => {
+		if (inOrder.has(trainer.id) || !trainer.locations.length || !trainer.team.length) return;
+		const where = trainer.locations[0].location;
+		const highest = Math.max(...trainer.team.map(mon => mon.level));
+		const capAt = i => parseInt(bosses[i].levelCap) || 0;
+		const arcCap = i => {
+			for (let j = i; j < bosses.length; j++) if (!bosses[j].optional && capAt(j)) return capAt(j);
+			return Infinity;
+		};
+		const before = placeTrainer(trainer);
+		// FireRed's own team left on a map the game no longer uses it on (Viridian Gym's Lv 38 Ace
+		// Trainers, beside Clair's at Lv 80): not a fight you get.
+		if (before !== -1 && arcCap(before) !== Infinity && highest + 30 < arcCap(before)) {
+			console.log(`  left out: ${trainer.className} ${trainer.name} (${where}, Lv ${highest})`);
+			return;
 		}
 		const name = (CLASS_NAMES[trainer.className] || trainer.className) + ' ' + trainer.name;
 		const sets = trainer.team.filter(mon => SPECIES[mon.species]).map(mon => {
@@ -694,7 +728,10 @@ function addRouteTrainers(order, setdex) {
 			const set = {level: mon.level, nature: mon.nature, ability: mon.ability,
 				moves: mode === 'hardcore' && mon.hardcoreMoves ? mon.hardcoreMoves : mon.moves};
 			if (mon.item) set.item = mon.item;
-			if (trainer.classIV < 31) set.ivs = Object.fromEntries(STATS.map(stat => [stat, trainer.classIV]));
+			// A spread (custom moves and an item) brings its own IVs and EVs; the rest have their class's IVs.
+			const iv = mon.ivs === undefined ? trainer.classIV : mon.ivs;
+			if (iv < 31) set.ivs = Object.fromEntries(STATS.map(stat => [stat, iv]));
+			if (mon.evs && Object.keys(mon.evs).length) set.evs = mon.evs;
 			setdex[mon.species][setName] = set;
 			return mon.species + ' (' + setName + ')';
 		});
@@ -723,6 +760,24 @@ function writeReport(setdex, report, stats, trainerCount, namesFixed) {
 	fs.writeFileSync(reportPath, lines.join('\n') + '\n');
 }
 
+const TRAINERS_FILE = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
+const TRAINERS_HEADER = '/* Generated by import/radical-red-trainers/build_trainers.js from the ' + mode + ' boss document; do not edit by hand.\n' +
+	' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). The rival\'s\n' +
+	' * teams for each starter come from rival_teams.json (the game\'s trainer data). */\n';
+
+// --routes: without the boss document, adds the trainers of route_trainers.json that the order does
+// not have yet, after the rest (so every fight keeps its place).
+function addMissingRouteTrainers() {
+	const setdex = loadSetdex();
+	const order = new Function(fs.readFileSync(TRAINERS_FILE, 'utf8') + '; return TRAINER_ORDER;')();
+	const added = addRouteTrainers(order, setdex);
+	if (added) writeSetdex(setdex);
+	{
+		fs.writeFileSync(TRAINERS_FILE, TRAINERS_HEADER + 'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
+	}
+	console.log(`${mode}: ${added} route trainers added, ${order.length} trainers`);
+}
+
 function build() {
 	const setdex = loadSetdex();
 	const namesFixed = APPLY ? fixUnreadableNames(setdex) : 0;
@@ -738,16 +793,12 @@ function build() {
 	const routeTrainers = addRouteTrainers(order, setdex);
 	if (APPLY || romSets || romFixes || routeTrainers) writeSetdex(setdex);
 
-	const outFile = path.join(ROOT, 'src/js/data/trainers', mode + '.js');
-	fs.mkdirSync(path.dirname(outFile), {recursive: true});
-	fs.writeFileSync(outFile,
-		'/* Generated by import/radical-red-trainers/build_trainers.js from the ' + mode + ' boss document; do not edit by hand.\n' +
-		' * Boss fights in game order. Each team lists calc set ids ("Species (Set Name)"). The rival\'s\n' +
-		' * teams for each starter come from rival_teams.json (the game\'s trainer data). */\n' +
-		'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
+	fs.mkdirSync(path.dirname(TRAINERS_FILE), {recursive: true});
+	fs.writeFileSync(TRAINERS_FILE, TRAINERS_HEADER + 'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
 		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked; ${routeTrainers} route trainers added` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
-build();
+if (ROUTES_ONLY) addMissingRouteTrainers();
+else build();

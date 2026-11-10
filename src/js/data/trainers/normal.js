@@ -3884,7 +3884,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -3906,7 +3906,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -3929,7 +3929,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -3954,7 +3954,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -4663,7 +4663,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -5900,7 +5900,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -5923,7 +5923,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -8558,7 +8558,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -8937,7 +8937,7 @@ var TRAINER_ORDER = [
   "levelCap": null,
   "optional": true,
   "route": {
-   "before": 30
+   "before": 25
   },
   "variants": [
    {
@@ -10356,6 +10356,1142 @@ var TRAINER_ORDER = [
     ],
     "trainerIds": [
      620
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Camper Liam",
+  "location": "Pewter City",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 5
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Rolycoly (Camper Liam)",
+     "Drilbur (Camper Liam)"
+    ],
+    "trainerIds": [
+     142
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Super Nerd Aidan",
+  "location": "Route 8",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 25
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Voltorb (Super Nerd Aidan)",
+     "Koffing (Super Nerd Aidan)",
+     "Eelektrik (Super Nerd Aidan)",
+     "Elgyem (Super Nerd Aidan)"
+    ],
+    "trainerIds": [
+     171
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Super Nerd Leslie",
+  "location": "Route 8",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 25
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Weezing (Super Nerd Leslie)"
+    ],
+    "trainerIds": [
+     173
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hiker Alan",
+  "location": "Route 9",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 23
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Larvitar (Hiker Alan)",
+     "Carkol (Hiker Alan)"
+    ],
+    "trainerIds": [
+     185
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hiker Clark",
+  "location": "Route 10",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 24
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Boldore (Hiker Clark)",
+     "Mawile (Hiker Clark)"
+    ],
+    "trainerIds": [
+     187
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hiker Dudley",
+  "location": "Rock Tunnel",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 24
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Lairon (Hiker Dudley)",
+     "Ferroseed (Hiker Dudley)",
+     "Dwebble (Hiker Dudley)"
+    ],
+    "trainerIds": [
+     189
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hiker Allen",
+  "location": "Rock Tunnel",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 24
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Golett (Hiker Allen)"
+    ],
+    "trainerIds": [
+     190
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Hiker Lucas",
+  "location": "Rock Tunnel",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 24
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Honedge (Hiker Lucas)",
+     "Teddiursa (Hiker Lucas)"
+    ],
+    "trainerIds": [
+     194
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Malik",
+  "location": "Route 14",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Seviper (Biker Malik)",
+     "Roserade (Biker Malik)"
+    ],
+    "trainerIds": [
+     196
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Ernest",
+  "location": "Route 15",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Weezing (Biker Ernest)",
+     "Weezing (Biker Ernest Set 2)",
+     "Weezing (Biker Ernest Set 3)",
+     "Salazzle (Biker Ernest)",
+     "Gengar (Biker Ernest)"
+    ],
+    "trainerIds": [
+     197
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Alex",
+  "location": "Route 15",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Drapion (Biker Alex)",
+     "Toxicroak (Biker Alex)",
+     "Weavile (Biker Alex)"
+    ],
+    "trainerIds": [
+     198
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Nikolas",
+  "location": "Route 17",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 58
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Electrode (Biker Nikolas)",
+     "Probopass (Biker Nikolas)"
+    ],
+    "trainerIds": [
+     204
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Jaxon",
+  "location": "Route 17",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 58
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Swalot (Biker Jaxon)",
+     "Qwilfish (Biker Jaxon)"
+    ],
+    "trainerIds": [
+     205
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Lukas",
+  "location": "Route 14",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Toxicroak (Biker Lukas)",
+     "Dragalge (Biker Lukas)",
+     "Swalot (Biker Lukas)",
+     "Weezing (Biker Lukas)"
+    ],
+    "trainerIds": [
+     207
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Isaac",
+  "location": "Route 14",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Garbodor (Biker Isaac)",
+     "Crobat (Biker Isaac)",
+     "Rhydon (Biker Isaac)"
+    ],
+    "trainerIds": [
+     208
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Gerald",
+  "location": "Route 14",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 51
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Breloom (Biker Gerald)",
+     "Copperajah (Biker Gerald)"
+    ],
+    "trainerIds": [
+     209
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Juggler Gregory",
+  "location": "Victory Road",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 85
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Mr. Mime (Juggler Gregory)"
+    ],
+    "trainerIds": [
+     290
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Juggler Edward",
+  "location": "Water Path",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Voltorb (Juggler Edward)",
+     "Voltorb (Juggler Edward Set 2)",
+     "Electrode (Juggler Edward)",
+     "Mr. Mime (Juggler Edward)"
+    ],
+    "trainerIds": [
+     291
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Connor",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Muk-Alola (Scientist Connor)",
+     "Weezing (Scientist Connor)",
+     "Klinklang (Scientist Connor)",
+     "Beheeyem (Scientist Connor)"
+    ],
+    "trainerIds": [
+     336
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Jose",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Eelektross (Scientist Jose)",
+     "Porygon2 (Scientist Jose)"
+    ],
+    "trainerIds": [
+     338
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Beau",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Electabuzz (Scientist Beau)",
+     "Kecleon (Scientist Beau)",
+     "Gardevoir (Scientist Beau)",
+     "Arcanine (Scientist Beau)"
+    ],
+    "trainerIds": [
+     340
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Taylor",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Electrode (Scientist Taylor)",
+     "Weezing (Scientist Taylor)",
+     "Musharna (Scientist Taylor)",
+     "Amoonguss (Scientist Taylor)",
+     "Scolipede (Scientist Taylor)"
+    ],
+    "trainerIds": [
+     341
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Ed",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Accelgor (Scientist Ed)",
+     "Heliolisk (Scientist Ed)",
+     "Archeops (Scientist Ed)"
+    ],
+    "trainerIds": [
+     344
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Grunt",
+  "location": "Rocket Hideout",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 27
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Ariados (Team Rocket Grunt)",
+     "Weezing (Team Rocket Grunt Set 2)",
+     "Centiskorch (Team Rocket Grunt Set 2)"
+    ],
+    "trainerIds": [
+     360
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Grunt",
+  "location": "Rocket Hideout",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 27
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Muk-Alola (Team Rocket Grunt)",
+     "Weezing-Galar (Team Rocket Grunt)"
+    ],
+    "trainerIds": [
+     362
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Grunt",
+  "location": "Rocket Hideout",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 27
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Golbat (Team Rocket Grunt Set 8)",
+     "Muk (Team Rocket Grunt Set 3)",
+     "Cacturne (Team Rocket Grunt Set 2)",
+     "Bisharp (Team Rocket Grunt Set 2)",
+     "Vullaby (Team Rocket Grunt)"
+    ],
+    "trainerIds": [
+     363
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Grunt",
+  "location": "Silph Co.",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 34
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Crawdaunt (Team Rocket Grunt)",
+     "Zangoose (Team Rocket Grunt)",
+     "Mightyena (Team Rocket Grunt Set 2)",
+     "Drapion (Team Rocket Grunt)"
+    ],
+    "trainerIds": [
+     382
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Virgil",
+  "location": "Route 17",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 58
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Klinklang (Biker Virgil)",
+     "Seismitoad (Biker Virgil)",
+     "Bouffalant (Biker Virgil)"
+    ],
+    "trainerIds": [
+     470
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Cool Couple Ray & Tyra",
+  "location": "Victory Road",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 85
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": "Doubles",
+    "sets": [
+     "Nidoqueen (Cool Couple Ray & Tyra)",
+     "Nidoking (Cool Couple Ray & Tyra)"
+    ],
+    "trainerIds": [
+     485
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Psychic Jaclyn",
+  "location": "Green Path",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Natu (Psychic Jaclyn)",
+     "Slowbro (Psychic Jaclyn)",
+     "Kadabra (Psychic Jaclyn)"
+    ],
+    "trainerIds": [
+     517
+    ]
+   }
+  ]
+ },
+ {
+  "name": "PkMn Ranger Nicolas",
+  "location": "Canyon Entrance",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Weepinbell (PkMn Ranger Nicolas)",
+     "Victreebel (PkMn Ranger Nicolas)"
+    ],
+    "trainerIds": [
+     521
+    ]
+   }
+  ]
+ },
+ {
+  "name": "PkMn Ranger Madeline",
+  "location": "Canyon Entrance",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Gloom (PkMn Ranger Madeline)",
+     "Vileplume (PkMn Ranger Madeline)"
+    ],
+    "trainerIds": [
+     522
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Painter Daisy",
+  "location": "Resort Gorgeous",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Smeargle (Painter Daisy)"
+    ],
+    "trainerIds": [
+     526
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Biker Ricardo",
+  "location": "Route 8",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": 25
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Weezing (Biker Ricardo)",
+     "Weezing-Galar (Biker Ricardo)",
+     "Salazzle (Biker Ricardo)"
+    ],
+    "trainerIds": [
+     535
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Admin",
+  "location": "Rocket Warehouse",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Muk (Team Rocket Admin)",
+     "Arbok (Team Rocket Admin)",
+     "Vileplume (Team Rocket Admin)"
+    ],
+    "trainerIds": [
+     543
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Admin",
+  "location": "Rocket Warehouse",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Golbat (Team Rocket Admin)",
+     "Weezing (Team Rocket Admin)",
+     "Houndoom (Team Rocket Admin)"
+    ],
+    "trainerIds": [
+     544
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Scientist Gideon",
+  "location": "Rocket Warehouse",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Voltorb (Scientist Gideon)",
+     "Electrode (Scientist Gideon)",
+     "Magnemite (Scientist Gideon)",
+     "Magneton (Scientist Gideon)",
+     "Porygon (Scientist Gideon)"
+    ],
+    "trainerIds": [
+     545
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Painter Celina",
+  "location": "Resort Gorgeous",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Smeargle (Painter Celina)"
+    ],
+    "trainerIds": [
+     562
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Painter Rayna",
+  "location": "Resort Gorgeous",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Smeargle (Painter Rayna)"
+    ],
+    "trainerIds": [
+     563
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Team Rocket Grunt",
+  "location": "Five Isle Meadow",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Koffing (Team Rocket Grunt)",
+     "Weezing (Team Rocket Grunt Set 3)"
+    ],
+    "trainerIds": [
+     568
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Psychic Dario",
+  "location": "Trainer Tower",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Girafarig (Psychic Dario)"
+    ],
+    "trainerIds": [
+     586
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Psychic Rodette",
+  "location": "Trainer Tower",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Natu (Psychic Rodette)",
+     "Drowzee (Psychic Rodette)",
+     "Hypno (Psychic Rodette)"
+    ],
+    "trainerIds": [
+     587
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Juggler Mason",
+  "location": "Canyon Entrance",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Voltorb (Juggler Mason)",
+     "Pineco (Juggler Mason)",
+     "Voltorb (Juggler Mason Set 2)",
+     "Pineco (Juggler Mason Set 2)"
+    ],
+    "trainerIds": [
+     590
+    ]
+   }
+  ]
+ },
+ {
+  "name": "PkMn Ranger Jackson",
+  "location": "Sevault Canyon",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Tangela (PkMn Ranger Jackson)",
+     "Exeggcute (PkMn Ranger Jackson)",
+     "Exeggutor (PkMn Ranger Jackson)"
+    ],
+    "trainerIds": [
+     596
+    ]
+   }
+  ]
+ },
+ {
+  "name": "PkMn Ranger Katelyn",
+  "location": "Sevault Canyon",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Chansey (PkMn Ranger Katelyn)"
+    ],
+    "trainerIds": [
+     598
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ace Trainer Leroy",
+  "location": "Sevault Canyon",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Rhydon (Ace Trainer Leroy)",
+     "Slowbro (Ace Trainer Leroy)",
+     "Kangaskhan (Ace Trainer Leroy)",
+     "Machoke (Ace Trainer Leroy)",
+     "Ursaring (Ace Trainer Leroy)"
+    ],
+    "trainerIds": [
+     599
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ace Trainer Michelle",
+  "location": "Sevault Canyon",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Persian (Ace Trainer Michelle)",
+     "Dewgong (Ace Trainer Michelle)",
+     "Ninetales (Ace Trainer Michelle)",
+     "Rapidash (Ace Trainer Michelle)",
+     "Girafarig (Ace Trainer Michelle)"
+    ],
+    "trainerIds": [
+     600
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Cool Couple Lex & Nya",
+  "location": "Sevault Canyon",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": "Doubles",
+    "sets": [
+     "Miltank (Cool Couple Lex & Nya)",
+     "Tauros (Cool Couple Lex & Nya)"
+    ],
+    "trainerIds": [
+     601
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Ruin Maniac Benjamin",
+  "location": "Tanoby Ruins",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Geodude (Ruin Maniac Benjamin)",
+     "Graveler (Ruin Maniac Benjamin)",
+     "Graveler (Ruin Maniac Benjamin Set 2)"
+    ],
+    "trainerIds": [
+     603
+    ]
+   }
+  ]
+ },
+ {
+  "name": "Painter Edna",
+  "location": "Tanoby Ruins",
+  "levelCap": null,
+  "optional": true,
+  "route": {
+   "before": null
+  },
+  "variants": [
+   {
+    "label": "Team 1",
+    "battleEffect": null,
+    "sets": [
+     "Smeargle (Painter Edna)"
+    ],
+    "trainerIds": [
+     604
     ]
    }
   ]

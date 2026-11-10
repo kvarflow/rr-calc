@@ -4075,6 +4075,21 @@ html.small-screen .sev-notes {
     opacity: 0.35;
     cursor: default;
 }
+.ms-place-move {
+    display: block;
+    max-width: 100%;
+    margin: 4px 0 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    font-size: 12px;
+}
+.ms-place-folded .ms-place-move {
+    display: none;
+}
 .ms-order-tools {
     display: flex;
     flex-wrap: wrap;

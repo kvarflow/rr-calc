@@ -178,8 +178,44 @@ function getArcCaps() {
 			trainerArcCaps.push(previous || running);
 		}
 	});
+	endArcsAtTheirBoss(trainerArcCaps);
 	for (var i = trainerArcCaps.length; i < TRAINER_ORDER.length; i++) trainerArcCaps.push(trainerArcCaps[getStoryIndex(i)]);
 	return trainerArcCaps;
+}
+
+// The fight an arc is named after, among the fights first..last at one cap: its gym leader; else
+// its last required fight listed at that cap; else its last required fight; else the last.
+function findArcBoss(first, last, cap) {
+	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
+	var i;
+	for (i = last; i >= first; i--) {
+		if (leaders.indexOf(TRAINER_ORDER[i].name) !== -1) return i;
+	}
+	for (i = last; i >= first; i--) {
+		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === cap) return i;
+	}
+	for (i = last; i >= first; i--) {
+		if (!TRAINER_ORDER[i].optional) return i;
+	}
+	return last;
+}
+
+/*
+ * An arc ends with its boss: the fights the documents list after it at the same cap (the S.S. Anne
+ * after Misty, Route 9 and Morty after Lt. Surge) are on the way to the next boss, so they open the
+ * next arc. Those after the last arc's boss (the postgame) stay.
+ */
+function endArcsAtTheirBoss(caps) {
+	var first = 0;
+	while (first < caps.length) {
+		var last = first;
+		while (last < caps.length - 1 && caps[last + 1] === caps[first]) last++;
+		if (last < caps.length - 1) {
+			var next = caps[last + 1];
+			for (var i = findArcBoss(first, last, caps[first]) + 1; i <= last; i++) caps[i] = next;
+		}
+		first = last + 1;
+	}
 }
 
 // The cap of the next required fight that raises the level cap above `running`.
@@ -199,20 +235,8 @@ function getArc(index) {
 	var last = index;
 	while (first > 0 && caps[first - 1] === caps[index]) first--;
 	while (last < getStoryLength() - 1 && caps[last + 1] === caps[index]) last++;
-	var boss = -1;
-	// Named after its gym leader; else its last required fight at the arc's cap.
-	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
-	for (var g = last; g >= first && boss === -1; g--) {
-		if (leaders.indexOf(TRAINER_ORDER[g].name) !== -1) boss = g;
-	}
-	for (var i = last; i >= first && boss === -1; i--) {
-		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === caps[index]) boss = i;
-	}
-	for (i = last; i >= first && boss === -1; i--) {
-		if (!TRAINER_ORDER[i].optional) boss = i;
-	}
-	return {first: first, last: last, boss: boss === -1 ? last : boss, cap: caps[index],
-		name: TRAINER_ORDER[boss === -1 ? last : boss].name};
+	var boss = findArcBoss(first, last, caps[index]);
+	return {first: first, last: last, boss: boss, cap: caps[index], name: TRAINER_ORDER[boss].name};
 }
 
 // Every arc in game order.

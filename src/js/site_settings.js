@@ -62,6 +62,14 @@ var CHANGELOG = [
 		"In the Pcalc app: the game's save is imported by itself each time it changes (Import / Export \u2192 " +
 			"Auto-import), the tabs start at the bottom, and the full-screen and Install buttons are gone",
 		"In the Pcalc app: emulator sync is on from the start and connects to RetroArch by itself"
+	]},
+	{version: "1.11", notes: [
+		"Arcs end with their boss: what comes after a gym leader is in the next arc (Route 9, Rock Tunnel, Morty and Route 8 lead up to Erika)",
+		"50 route trainers that were missing, with the moves the game gives them (Rock Tunnel's Hikers Lucas, Allen and Dudley among them)",
+		"Mastersheet \u2192 Reorder: \u25B2 / \u25BC now carry a trainer past boss fights, and each place has a menu to move all its trainers before another fight. Copy order changes sends your order in",
+		"Copy AI report (beside What's new): when the trainer's AI did something else than predicted, it copies the fight as it stands to send in"
+	], fixes: [
+		"Route 10 comes on both sides of Rock Tunnel, and the S.S. Anne's sailors with the rest of the ship"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
@@ -164,6 +172,13 @@ $(document).ready(function () {
 		$('<button type="button" id="show-changelog">What\'s new</button>').click(showChangelog),
 		" ",
 		$('<button type="button" id="show-credits">Credits</button>').click(showCredits));
+	// A wrong prediction from the trainer's AI: the fight as it stands, to send in.
+	if (typeof copyAIReport === "function" && typeof TRAINER_ORDER !== "undefined" && TRAINER_ORDER.length) {
+		panel.append(" ", $('<button type="button" id="copy-ai-report" title="A prediction was wrong? This copies the fight as it stands now (both Pok\u00e9mon, HP, the field, what was predicted) to send in.">Copy AI report</button>')
+			.click(function () {
+				copyAIReport($(this));
+			}));
+	}
 	$(".credits").append(panel);
 	if (readSetting(LAST_CHANGELOG_KEY) !== getLatestVersion()) showChangelog();
 });

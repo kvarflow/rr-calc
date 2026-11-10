@@ -25,8 +25,10 @@ with Radical Red's data read from the game itself.
 - **Every trainer in order**: bosses from the Normal and Hardcore boss documents, route trainers
   from the ROM, sorted by where they stand on the map. Previous / Next steps through them; the
   level cap follows your badges.
-- **Mastersheet**: the whole game in order with every team and wild encounter. Reorder trainers
-  there if your route differs.
+- **Mastersheet**: the whole game in order, an arc for each level cap ending with its boss, with
+  every team and wild encounter. If your route differs, turn on Reorder: ▲ / ▼ carry a trainer
+  earlier or later (past boss fights too), a place's menu moves all its trainers before another
+  fight, and Copy order changes gives you the changes to send in.
 - **Trainer AI**: the chance the foe picks each move, and when it switches and to whom (see below).
 - **Genders** as the game rolls them, so Rivalry and Attract work.
 - **Trainer pictures** beside each trainer (their own for leaders, rivals and the Elite Four, else
@@ -69,6 +71,8 @@ AI for single battles, checked against Radical Red's own code decompiled from th
 - **Assumptions**: no moves used yet this battle, benched Pokémon at full HP, no Substitutes. Set
   the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
   Double battles show damage but the predictions are for single battles.
+- **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
+  Pokémon, the field and what was predicted, to send in.
 
 Each trainer's AI flags and every move's effect come from the ROM
 (`import/radical-red-trainers/ai_flags.js`).
