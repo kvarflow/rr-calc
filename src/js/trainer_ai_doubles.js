@@ -643,7 +643,9 @@ function predictAIDoubles(d) {
  * The page: who is out beside the two Pokémon in the panels, and the Doubles dialog.
  */
 // The second Pokémon on each side, for the fight they were chosen in: yours (a set id from your
-// team) and the trainer's (a place in its team), each with its HP as a percentage.
+// team) and the trainer's (a place in its team), each with its HP as a percentage. Emulator sync
+// sets them from the game (synced), with each one's status, stat changes and history (yoursState,
+// foeState: {status, boosts, vol}).
 var doublesPartners = {fight: null, yours: "", yoursHP: 100, foe: null, foeHP: 100};
 
 function isDoublesFight() {
@@ -684,13 +686,23 @@ function resolveDoublesPartners() {
 	var foe = foes.filter(function (option) {
 		return option.slot === chosen.foe;
 	})[0] || (chosen.foe === "none" ? null : foes[0]) || null;
-	var mine = yours.indexOf(chosen.yours) !== -1 ? chosen.yours : chosen.yours === "none" ? "" : yours[0] || "";
-	return {foe: foe, yours: mine, foeHP: chosen.foeHP, yoursHP: chosen.yoursHP};
+	// (From the game, yours may be a Pokémon outside the team you have laid out.)
+	var known = yours.indexOf(chosen.yours) !== -1 || (chosen.synced && chosen.yours && chosen.yours !== "none" &&
+		chosen.yours !== $("#p1 input.set-selector").val());
+	var mine = known ? chosen.yours : chosen.yours === "none" ? "" : yours[0] || "";
+	return {foe: foe, yours: mine, foeHP: chosen.foeHP, yoursHP: chosen.yoursHP,
+		foeState: foe && foe.slot === chosen.foe ? chosen.foeState || null : null,
+		yoursState: mine && mine === chosen.yours ? chosen.yoursState || null : null};
 }
 
-function createDoublesPartner(setId, hpPercent) {
+function createDoublesPartner(setId, hpPercent, state) {
 	var pokemon = createPokemon(setId);
 	if (hpPercent < 100) pokemon.originalCurHP = Math.max(1, Math.floor(pokemon.maxHP() * hpPercent / 100));
+	// From the game (emulator sync): its status and stat changes.
+	if (state) {
+		pokemon.status = state.status || "";
+		pokemon.boosts = $.extend({}, pokemon.boosts, state.boosts);
+	}
 	return pokemon;
 }
 
@@ -715,8 +727,8 @@ function readAIDoublesBattle() {
 	var aiField = damageResults[1][0].field;
 	var playerField = damageResults[0][0].field;
 	var focus = {p1: $("#focusEnergyL").prop("checked"), p2: $("#focusEnergyR").prop("checked")};
-	var foeMons = [damageResults[1][0].attacker, partners.foe ? createDoublesPartner(partners.foe.setId, partners.foeHP) : null];
-	var yourMons = [damageResults[0][0].attacker, partners.yours ? createDoublesPartner(partners.yours, partners.yoursHP) : null];
+	var foeMons = [damageResults[1][0].attacker, partners.foe ? createDoublesPartner(partners.foe.setId, partners.foeHP, partners.foeState) : null];
+	var yourMons = [damageResults[0][0].attacker, partners.yours ? createDoublesPartner(partners.yours, partners.yoursHP, partners.yoursState) : null];
 	var foeLeft = countFoeMonsLeft();
 	var yoursLeft = countYourMonsLeft();
 	var sideStates = {foe: readSideState("R"), yours: readSideState("L")};
@@ -750,13 +762,13 @@ function readAIDoublesBattle() {
 			d.out[x][y] = build("f" + x, foe, out, mine, {
 				speed: x === 0 ? getBattleSpeed(foe, "p2") : doublesPartnerSpeed(foe), monsLeft: foeLeft,
 				firstTurn: foe.curHP() === foe.maxHP(), sideState: sideStates.foe, focusEnergy: x === 0 && focus.p2,
-				vol: x === 0 && typeof getBattleVolatile === "function" ? getBattleVolatile("p2") : null
+				vol: x === 0 ? (typeof getBattleVolatile === "function" ? getBattleVolatile("p2") : null) : partners.foeState && partners.foeState.vol
 			});
 			d.out[x][y].slot = d.foeSlots[x];
 			d.inc[y][x] = build("y" + y, mine, inc, foe, {
 				speed: y === 0 ? getBattleSpeed(mine, "p1") : doublesPartnerSpeed(mine), monsLeft: yoursLeft,
 				firstTurn: mine.curHP() === mine.maxHP(), sideState: sideStates.yours, focusEnergy: y === 0 && focus.p1,
-				vol: y === 0 && typeof getBattleVolatile === "function" ? getBattleVolatile("p1") : null
+				vol: y === 0 ? (typeof getBattleVolatile === "function" ? getBattleVolatile("p1") : null) : partners.yoursState && partners.yoursState.vol
 			});
 			d.foes[x] = d.foes[x] || d.out[x][y];
 			d.yours[y] = d.yours[y] || d.inc[y][x];
@@ -862,15 +874,19 @@ function drawDoublesDialog() {
 	foeSelect.append('<option value="none">Nobody</option>').val(partners.foe ? partners.foe.slot : "none").change(function () {
 		chosen.foe = $(this).val() === "none" ? "none" : +$(this).val();
 		chosen.foeHP = 100;
+		chosen.foeState = null;
 		recalculateDoubles();
 	});
 	var yourSelect = $('<select class="dbl-select" aria-label="Your other Pokémon"></select>');
-	getDoublesYourOptions().forEach(function (setId) {
+	var yourOptions = getDoublesYourOptions();
+	if (partners.yours && yourOptions.indexOf(partners.yours) === -1) yourOptions.push(partners.yours);
+	yourOptions.forEach(function (setId) {
 		yourSelect.append($("<option></option>").val(setId).text(shortSetName(setId)));
 	});
 	yourSelect.append('<option value="none">Nobody</option>').val(partners.yours || "none").change(function () {
 		chosen.yours = $(this).val();
 		chosen.yoursHP = 100;
+		chosen.yoursState = null;
 		recalculateDoubles();
 	});
 	body.empty().append($('<h3 id="dbl-title">Double battle</h3>'),
@@ -887,7 +903,8 @@ function drawDoublesDialog() {
 			if (prediction.battle.foes[x]) body.append(buildDoublesFoeTable(prediction, x));
 		});
 		body.append($('<p class="bh-help"></p>').text("Not predicted yet: switching out, and moves it aims at its own partner (Helping Hand, healing it). " +
-			"To set a partner's HP, status or stat changes exactly, load it into the calculator instead."));
+			(chosen.synced ? "The Pok\u00e9mon beside them come from the game (emulator sync), with their HP, status and stat changes." :
+				"To set a partner's status or stat changes, load it into the calculator instead (emulator sync fills them in from the game).")));
 	}
 	body.append($('<div class="box-dialog-buttons"></div>').append($('<button type="button">Done</button>').click(function () {
 		$(".dbl-backdrop").remove();

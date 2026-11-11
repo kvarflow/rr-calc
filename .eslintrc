@@ -211,6 +211,7 @@
         "moveRouteTrainersBefore": false,
         "copyAIReport": false,
         "getBattleVolatile": false,
+        "getDoublesPartners": false,
         "doublesClass": false,
         "canBeSlept": false,
         "moveBlockedBySubstitute": false,

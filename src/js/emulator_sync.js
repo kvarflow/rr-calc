@@ -104,7 +104,7 @@ function getEmulatorVolatile(key, battler) {
 	var u16 = function (at) {
 		return disable[at] | (disable[at + 1] << 8);
 	};
-	var known = getBattleHistoryMoves(key);
+	var known = key ? getBattleHistoryMoves(key) : [];
 	// A move id as the panel names it (its Hidden Power carries the type).
 	var moveName = function (id) {
 		var name = id && id !== 0xFFFF ? RADICAL_RED_SAVE_DATA.moves[id] || "" : "";
@@ -171,34 +171,83 @@ function setEmulatorStatus(text, connected) {
 	$("#emulator-sync-status").text(text).toggleClass("emulator-sync-connected", !!connected);
 }
 
+// A battler's status as the calc's code, and its stat changes.
+function emulatorStatusCode(status) {
+	if (status & 7) return "slp";
+	if (status & 0x80) return "tox";
+	if (status & 8) return "psn";
+	if (status & 0x10) return "brn";
+	if (status & 0x20) return "frz";
+	if (status & 0x40) return "par";
+	return "";
+}
+
+function emulatorBoosts(battler) {
+	var stage = function (index) {
+		return Math.max(-6, Math.min(6, battler.stages[index] - 6));
+	};
+	return {atk: stage(1), def: stage(2), spe: stage(3), spa: stage(4), spd: stage(5)};
+}
+
+// The place in the trainer's team of the Pokémon at a place in the game's party.
+function findEmulatorTrainerSlot(sets, partyIndex, species) {
+	return partyIndex < sets.length && getPokemonName(sets[partyIndex]) === species ? partyIndex : sets.map(getPokemonName).indexOf(species);
+}
+
+/*
+ * A double battle: the Pokémon beside the one in each panel (trainer_ai_doubles.js), with its HP,
+ * status, stat changes and history from the game. `which` is "yours" or "foe"; `id` your set, the
+ * place in the trainer's team, or "none".
+ */
+function setEmulatorPartner(which, id, battler) {
+	if (typeof getDoublesPartners !== "function") return;
+	var chosen = getDoublesPartners();
+	var before = JSON.stringify([chosen[which], chosen[which + "HP"], chosen[which + "State"]]);
+	chosen[which] = id;
+	chosen[which + "HP"] = battler && battler.maxHp ? Math.max(1, Math.round(1000 * battler.hp / battler.maxHp) / 10) : 100;
+	chosen[which + "State"] = battler ? {status: emulatorStatusCode(battler.status), boosts: emulatorBoosts(battler),
+		vol: getEmulatorVolatile(null, battler)} : null;
+	chosen.synced = true;
+	if (JSON.stringify([chosen[which], chosen[which + "HP"], chosen[which + "State"]]) !== before) emulatorSync.historyChanged = true;
+}
+
 function applyEmulatorState(state) {
 	if (!state.inBattle) {
 		setEmulatorStatus("Connected · not in a battle", true);
 		return;
 	}
-	if (state.mons.length > 2) {
-		setEmulatorStatus("Connected · double battles are not followed yet", true);
-		return;
-	}
 	var party = decodeEmulatorParty(state.party);
 	var enemy = decodeEmulatorParty(state.enemyParty);
 	var notes = [];
-	// Yours: battler 0, from your box.
-	var yours = party[state.partyIndexes[0]];
+	// A double battle has four battlers: yours are 0 and 2, the trainer's 1 and 3. The first still
+	// standing on each side goes in the panel, the other beside it.
+	var doubles = state.mons.length > 2;
+	var standing = function (battlers) {
+		return battlers.filter(function (index) {
+			return state.mons[index] && state.mons[index].hp > 0;
+		});
+	};
+	var mine = doubles ? standing([0, 2]) : [0];
+	var theirsOut = doubles ? standing([1, 3]) : [1];
+	if (!mine.length) mine = [0];
+	if (!theirsOut.length) theirsOut = [1];
+	// Yours, from your box.
+	var yours = party[state.partyIndexes[mine[0]]];
 	var setId = yours ? findSetForPid(yours.pid) : null;
 	if (setId) {
 		if ($("#p1 input.set-selector").val() !== setId) {
 			emulatorSync.applied["#p1"] = null;
 			$("#p1 input.set-selector").val(setId).change();
 		}
-		applyEmulatorBattler("#p1", state.mons[0]);
-		applyEmulatorHistory("p1", state.mons[0]);
+		applyEmulatorBattler("#p1", state.mons[mine[0]]);
+		applyEmulatorHistory("p1", state.mons[mine[0]]);
 	} else if (yours) {
 		notes.push(yours.species + " is not in your box: import your .sav");
 	}
-	// Theirs: battler 1, from the trainer's team.
+	// Theirs, from the trainer's team.
 	var fight = state.trainer ? findFightForTrainerId(state.trainer) : null;
-	var theirs = enemy[state.partyIndexes[1]];
+	var theirs = enemy[state.partyIndexes[theirsOut[0]]];
+	var sets = null;
 	if (fight && theirs) {
 		if (currentTrainerIndex !== fight.index) {
 			// A fight with teams to pick from shows the one the game sent out (the rival's follows your
@@ -209,28 +258,39 @@ function applyEmulatorState(state) {
 			showTrainer(fight.index);
 			emulatorSync.applied["#p2"] = null;
 		}
-		var sets = getTrainerVariant(TRAINER_ORDER[fight.index]).sets;
-		var slot = state.partyIndexes[1] < sets.length && getPokemonName(sets[state.partyIndexes[1]]) === theirs.species ?
-			state.partyIndexes[1] : sets.map(getPokemonName).indexOf(theirs.species);
+		sets = getTrainerVariant(TRAINER_ORDER[fight.index]).sets;
+		var slot = findEmulatorTrainerSlot(sets, state.partyIndexes[theirsOut[0]], theirs.species);
 		if (slot !== -1) {
 			if (activeTrainerSlot !== slot || $("#p2 input.set-selector").val() !== sets[slot]) {
 				emulatorSync.applied["#p2"] = null;
 				loadTrainerPokemon(sets[slot], slot);
 			}
-			applyEmulatorBattler("#p2", state.mons[1]);
-			applyEmulatorHistory("p2", state.mons[1]);
+			applyEmulatorBattler("#p2", state.mons[theirsOut[0]]);
+			applyEmulatorHistory("p2", state.mons[theirsOut[0]]);
 		} else {
 			notes.push("the trainer's " + theirs.species + " is not in its team here");
 		}
 	} else if (theirs) {
 		notes.push(state.trainer ? "this trainer is not in the calc yet" : "a wild " + theirs.species);
 	}
+	// The Pokémon beside them.
+	if (doubles && fight && sets) {
+		var partner = mine.length > 1 ? party[state.partyIndexes[mine[1]]] : null;
+		var partnerSet = partner ? findSetForPid(partner.pid) : null;
+		if (partner && !partnerSet) notes.push(partner.species + " is not in your box");
+		setEmulatorPartner("yours", partnerSet || "none", partnerSet ? state.mons[mine[1]] : null);
+		var foePartner = theirsOut.length > 1 ? enemy[state.partyIndexes[theirsOut[1]]] : null;
+		var foeSlot = foePartner ? findEmulatorTrainerSlot(sets, state.partyIndexes[theirsOut[1]], foePartner.species) : -1;
+		if (foePartner && foeSlot === -1) notes.push("the trainer's " + foePartner.species + " is not in its team here");
+		setEmulatorPartner("foe", foeSlot === -1 ? "none" : foeSlot, foeSlot === -1 ? null : state.mons[theirsOut[1]]);
+		if (typeof isDoublesFight === "function" && !isDoublesFight()) notes.push("a double battle the calc has as a single one");
+	}
 	// The AI's predictions again, with what has happened in the battle.
 	if (emulatorSync.historyChanged) {
 		emulatorSync.historyChanged = false;
 		if (typeof performCalculations === "function") performCalculations();
 	}
-	setEmulatorStatus("Connected · in battle" + (notes.length ? " · " + notes.join("; ") : ""), true);
+	setEmulatorStatus("Connected · in " + (doubles ? "a double battle" : "battle") + (notes.length ? " · " + notes.join("; ") : ""), true);
 }
 
 function pollEmulator() {
