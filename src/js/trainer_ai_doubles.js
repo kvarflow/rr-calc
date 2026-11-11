@@ -15,9 +15,14 @@
  * partner's move; the second knows it. The chances are sampled (the same sample every time for
  * the same battle), not enumerated as in single battles.
  *
+ * Status moves follow the doubles rules too (trainer_ai.js, where it asks turn.doubles): the
+ * doubles roles' bonuses, Trick Room by the sides' average Speed, Fake Out, Protect and the team's
+ * guards, Follow Me, Tailwind, speed control, a sleep move on both of yours, and not repeating
+ * what its partner has chosen.
+ *
  * Not modelled yet: switching out, moves aimed at its own partner (Helping Hand, healing it),
- * the doubles rules for status moves (they are scored as in a single battle against that
- * target), Fly and Dig in progress. Radical Red's own doubles code has not been checked against
+ * Fly and Dig in progress, and the rarer doubles cases (pledges, terrains for a partner's
+ * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
  * CFRU's the way its singles code was.
  */
 
@@ -43,6 +48,13 @@ var DOUBLES_SAMPLES = 240;
 
 function isSpreadMove(move) {
 	return (move.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY)) !== 0;
+}
+
+// A move aimed at one Pokémon (not a spread move, nor one for itself, its side or the field).
+function isAimedAtOne(move) {
+	return !isSpreadMove(move) && !isSelfTargeting(move) && (move.target & MOVE_TARGET_FOES_FIELD) === 0 &&
+		!has([E.PROTECT, E.FIELD_EFFECTS, E.TEAM_EFFECTS, E.SET_TERRAIN, E.RAIN_DANCE, E.SUNNY_DAY, E.SANDSTORM, E.HAIL, E.REFLECT, E.LIGHT_SCREEN,
+			E.SPIKES, E.FOLLOW_ME], move.effect);
 }
 
 function hitsPartnerToo(move) {
@@ -351,17 +363,101 @@ DoublesTurn.prototype.totalDamage = function (x, y, i) {
 	return percent;
 };
 
+/*
+ * What trainer_ai.js asks about the double battle while the trainer's x scores its moves against
+ * yours y (turn.doubles): its doubles role, its partner and what the partner has chosen, and the
+ * rules that differ from a single battle.
+ */
+DoublesTurn.prototype.context = function (x, y) {
+	var d = this.d;
+	var self = this;
+	var me = d.out[x][y];
+	var foe = d.inc[y][x];
+	var partner = this.alive(d.foes[1 - x]) ? d.foes[1 - x] : null;
+	var choice = partner ? this.chosen[1 - x] : null;
+	var partnerMove = choice && choice.move ? choice.move : null;
+	var otherFoe = this.alive(d.yours[1 - y]) ? d.inc[1 - y][x] : null;
+	var cls = doublesClass(d.foes[x]);
+	return {
+		cls: cls,
+		partner: partner,
+		// The points a damaging move gets for its doubles killing score.
+		bonus: function (i) {
+			return DOUBLES_DAMAGE_BONUS[cls][self.killingScore(x, y, i)];
+		},
+		partnerUses: function (names) {
+			return !!partnerMove && has(names, partnerMove.name);
+		},
+		partnerUsesStatus: function () {
+			return !!partnerMove && partnerMove.split === SPLIT_STATUS;
+		},
+		// The partner has chosen a move of the same effect (with `sameTarget`: on this target, or one
+		// that is not aimed at a single Pokémon).
+		partnerSameEffect: function (move, sameTarget) {
+			if (!partnerMove || partnerMove.effect !== move.effect) return false;
+			if (!sameTarget) return true;
+			return choice.target === y || isSpreadMove(partnerMove) || isSelfTargeting(partnerMove) ||
+				(partnerMove.target & MOVE_TARGET_FOES_FIELD) !== 0;
+		},
+		// GetPokemonOnSideSpeedAverage: the trainer's side (mine) or yours.
+		sideSpeed: function (mine) {
+			var sides = mine ? [me, partner] : [foe, otherFoe];
+			var alive = sides.filter(Boolean);
+			return Math.floor(alive.reduce(function (sum, side) {
+				return sum + side.speed;
+			}, 0) / alive.length);
+		},
+		// IncreaseViabilityForSpeedControl: the supporting roles slow down a foe that outspeeds either of them.
+		speedControl: function (up) {
+			if (d.trickRoom || !(foe.speed >= me.speed || (partner && foe.speed >= partner.speed))) return false;
+			if (cls !== DOUBLES_CLASS.UTILITY && cls !== DOUBLES_CLASS.SUPPORT && cls !== DOUBLES_CLASS.TOTAL_SUPPORT) return false;
+			up(11);
+			return true;
+		},
+		// The partner has chosen a move that hits everyone around it, this Pokémon included.
+		partnerHitsMe: function () {
+			return !!partnerMove && hitsPartnerToo(partnerMove) && me.ability !== "Telepathy" && self.hurtsPartner(1 - x, partnerMove);
+		},
+		partnerKillingScore: function () {
+			return partnerMove && choice.target !== null ? self.killingScore(1 - x, choice.target, choice.index) : 0;
+		},
+		// IncreaseFakeOutViability: by role, a point less when the other of yours is the bigger threat,
+		// nothing when its partner is already using Fake Out on this one.
+		fakeOutBonus: function (style) {
+			var partnerFakesOut = function (t) {
+				return !!partnerMove && partnerMove.name === "Fake Out" && choice.target === t;
+			};
+			if (partnerFakesOut(y)) return 0;
+			var decrement = 0;
+			if (otherFoe && !partnerFakesOut(1 - y)) {
+				var threat = function (t) {
+					var count = canKnockOut(self.turn(x, t), d.inc[t][x], d.out[x][t]) ? 1 : 0;
+					if (partner && canKnockOut(self.turn(1 - x, t), d.inc[t][1 - x], d.out[1 - x][t])) count++;
+					return count;
+				};
+				if (threat(1 - y) > threat(y) && typeEffectiveness("Normal", foe.types) !== 0) decrement = 1;
+			}
+			if (style === STYLE.D_TR_ATTACKER && d.trickRoom) return 0;
+			return ({11: 15, 12: 15, 13: 17, 14: 17, 15: 19, 16: 19, 17: 17, 18: 17}[style] || 8) - decrement;
+		},
+		// A sleep move that would put both of yours to sleep.
+		spreadSleep: function (move) {
+			return !!otherFoe && isSpreadMove(move) && canBeSlept(me, otherFoe, d.field) && !moveBlockedBySubstitute(me, otherFoe, move);
+		},
+		// Your predicted move against its partner.
+		predictedOnPartner: function () {
+			if (!partner) return null;
+			return self.turn(1 - x, y).predicted(d.inc[y][1 - x]);
+		}
+	};
+};
+
 // The best move of the trainer's x against yours y, and its points (a tie is broken at random).
 DoublesTurn.prototype.bestMoveAgainst = function (x, y) {
 	var d = this.d;
 	var self = this;
 	var turn = this.turn(x, y);
-	var cls = doublesClass(d.foes[x]);
-	turn.doubles = {
-		bonus: function (i) {
-			return DOUBLES_DAMAGE_BONUS[cls][self.killingScore(x, y, i)];
-		}
-	};
+	turn.doubles = this.context(x, y);
 	var scores = runScripts(turn, d.out[x][y], d.inc[y][x], d.flags, true);
 	turn.doubles = null;
 	var moves = d.out[x][y].moves;
@@ -705,7 +801,7 @@ function buildDoublesFoeTable(prediction, x) {
 	var shares = prediction.foes[x].shares;
 	var best = 0;
 	shares.forEach(function (pair, i) {
-		var both = side.moves[i] && isSpreadMove(side.moves[i]) && d.yours[0] && d.yours[1];
+		var both = side.moves[i] && !isAimedAtOne(side.moves[i]) && d.yours[0] && d.yours[1];
 		best = both ? Math.max(best, pair[0] + pair[1]) : Math.max(best, pair[0], pair[1]);
 	});
 	var table = $('<table class="dbl-table"></table>');
@@ -718,8 +814,9 @@ function buildDoublesFoeTable(prediction, x) {
 		if (!move) return;
 		var row = $("<tr></tr>").append($('<td class="dbl-move"></td>').text(move.name + (isSpreadMove(move) ? " ⤳" : ""))
 			.attr("title", isSpreadMove(move) ? "Hits both of yours" + (hitsPartnerToo(move) ? " and its partner" : "") : null));
-		// A spread move hits both of yours: one chance, the damage to each.
-		var spread = isSpreadMove(move) && d.yours[0] && d.yours[1];
+		// A spread move hits both of yours, and a move like Trick Room or Protect has no target: one chance
+		// (with the damage to each for an attack).
+		var spread = !isAimedAtOne(move) && d.yours[0] && d.yours[1];
 		var total = shares[i][0] + shares[i][1];
 		[0, 1].forEach(function (y) {
 			if (!d.yours[y]) return;
@@ -729,8 +826,8 @@ function buildDoublesFoeTable(prediction, x) {
 			var share = spread ? total : shares[i][y];
 			var cell = $('<td class="dbl-cell"></td>').toggleClass("dbl-likely", share > 0 && share >= best)
 				.toggleClass("dbl-ko", range[1] >= d.yours[y].hp && move.split !== SPLIT_STATUS);
-			cell.append($('<span class="dbl-share"></span>').text(spread && y === 1 ? "\u2190" : formatAIShare(share))
-				.attr("title", spread ? "It hits both of yours" : null));
+			cell.append($('<span class="dbl-share"></span>').text(spread && y === 1 ? (isSpreadMove(move) ? "\u2190" : "") : formatAIShare(share))
+				.attr("title", spread && isSpreadMove(move) ? "It hits both of yours" : null));
 			if (move.split !== SPLIT_STATUS) {
 				cell.append($('<span class="dbl-damage"></span>').text((Math.round(range[0] * 1000 / max) / 10) + "\u2013" + (Math.round(range[1] * 1000 / max) / 10) + "%"));
 			}
@@ -789,7 +886,7 @@ function drawDoublesDialog() {
 		[0, 1].forEach(function (x) {
 			if (prediction.battle.foes[x]) body.append(buildDoublesFoeTable(prediction, x));
 		});
-		body.append($('<p class="bh-help"></p>').text("Not predicted yet: switching out, and moves it aims at its own partner. Status moves are scored as in a single battle. " +
+		body.append($('<p class="bh-help"></p>').text("Not predicted yet: switching out, and moves it aims at its own partner (Helping Hand, healing it). " +
 			"To set a partner's HP, status or stat changes exactly, load it into the calculator instead."));
 	}
 	body.append($('<div class="box-dialog-buttons"></div>').append($('<button type="button">Done</button>').click(function () {

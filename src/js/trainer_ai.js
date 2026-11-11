@@ -69,8 +69,10 @@ var AI_POSITIVES = 4;
 var AI_SMART_FLAGS = 7;
 
 // Fighting styles (ai_advanced.c), singles.
+// (D_*: the roles of a double battle, trainer_ai_doubles.js's doublesClass + 11.)
 var STYLE = {NONE: 0, KILL: 1, SETUP_STATS: 2, SETUP_STATUS: 3, SETUP_SCREENS: 4, STALL: 5, BATON_PASS: 6,
-	CLERIC: 7, SUPPORT_SCREENS: 8, PHAZING: 9, HAZARDS: 10};
+	CLERIC: 7, SUPPORT_SCREENS: 8, PHAZING: 9, HAZARDS: 10, D_ALL_OUT: 11, D_SETUP: 12, D_TR_ATTACKER: 13, D_TR_SETUP: 14,
+	D_UTILITY: 15, D_PHAZING: 16, D_SUPPORT: 17, D_TOTAL_SUPPORT: 18};
 var MOVE_TARGET_BOTH = 0x8;
 var MOVE_TARGET_USER = 0x10;
 var MOVE_TARGET_FOES_AND_ALLY = 0x20;
@@ -1020,6 +1022,8 @@ function fightingStyle(side, foe, battle) {
 }
 
 function styleOf(turn, side) {
+	// The trainer's Pokémon choosing in a double battle has a doubles role.
+	if (turn.doubles && side === turn.battle.ai) return STYLE.D_ALL_OUT + turn.doubles.cls;
 	return turn.memo("style" + side.key, function () {
 		return fightingStyle(side, side === turn.battle.ai ? turn.battle.player : turn.battle.ai, turn.battle);
 	});
@@ -1030,7 +1034,8 @@ function isSweeper(style) {
 }
 
 function isDamager(style) {
-	return isSweeper(style) || style === STYLE.SETUP_SCREENS;
+	return isSweeper(style) || style === STYLE.SETUP_SCREENS || style === STYLE.D_ALL_OUT || style === STYLE.D_SETUP ||
+		style === STYLE.D_TR_ATTACKER;
 }
 
 function isGoodToTaunt(style) {
@@ -1058,6 +1063,18 @@ function statusBonus(turn, atk, def, boost) {
 		return 2 + boost;
 	case STYLE.HAZARDS:
 		return 3;
+	case STYLE.D_SETUP:
+	case STYLE.D_TR_ATTACKER:
+		return 4 + boost;
+	case STYLE.D_TR_SETUP:
+		return 7 + boost;
+	case STYLE.D_UTILITY:
+		return 3 + boost;
+	case STYLE.D_PHAZING:
+		return 8 + boost;
+	case STYLE.D_SUPPORT:
+	case STYLE.D_TOTAL_SUPPORT:
+		return 2 + boost;
 	}
 	return 0;
 }
@@ -1309,6 +1326,11 @@ function statBonus(turn, atk, def, move, stat, limit, boost) {
 		if (stat === "eva") return stage(atk, "eva") < 12 ? 6 : 0;
 		if (stat === "def" || stat === "spd") return stage(atk, stat) < 10 ? 4 : 0;
 		return stage(atk, stat) < 10 ? 5 : 0;
+	case STYLE.D_ALL_OUT:
+		return 0;
+	case STYLE.D_SETUP:
+		// One boost to an attacking stat, Speed, accuracy or evasion comes before anything else.
+		return has(["atk", "spa", "spe", "acc", "eva"], stat) && stage(atk, stat) < 7 ? 17 : 0;
 	default:
 		return shouldTrySetUp(turn, atk, def, move, stat) ? statusBonus(turn, atk, def, 1) : 0;
 	}
@@ -1324,6 +1346,10 @@ function scoreNegatives(turn, atk, def, i, score) {
 	if (result === score && volatileOf(def).sub && move.split === SPLIT_STATUS && !isSelfTargeting(move) &&
 		SUBSTITUTE_CHECK_EFFECTS.indexOf(AI_EFFECT_NAMES[move.effect]) !== -1 && moveBlockedBySubstitute(atk, def, move)) {
 		result = Math.max(0, result - (turn.doubles ? 20 : 10));
+	}
+	// A double battle: not the status move its partner has already chosen (on the same target, or one for the whole field).
+	if (turn.doubles && result === score && move.split === SPLIT_STATUS && turn.doubles.partnerSameEffect(move, true)) {
+		result = Math.max(0, result - 20);
 	}
 	return result;
 }
@@ -1715,7 +1741,9 @@ function scoreNegativesCore(turn, atk, def, i, score) {
 		return score;
 	case E.PROTECT:
 		if (def.ability === "Unseen Fist") return down(10);
-		if (has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) return down(10);
+		// (The team's guards do something in a double battle.)
+		if (!turn.doubles && has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) return down(10);
+		if (turn.doubles && has(["Quick Guard", "Wide Guard", "Crafty Shield"], move.name)) return score;
 		if (move.name === "Mat Block" && !atk.firstTurn) return down(10);
 		if (move.name === "Endure" && (atk.hp === 1 || secondaryDamage(atk, field) > 0)) down(10);
 		// Nothing to protect from while the foe recharges.
@@ -1752,13 +1780,18 @@ function scoreNegativesCore(turn, atk, def, i, score) {
 		return score;
 	case E.FIELD_EFFECTS:
 		if (move.name === "Trick Room") {
-			if (turn.battle.trickRoom ? atk.speed < def.speed : atk.speed > def.speed) down(10);
+			// (A double battle compares the two sides' average Speed, and leaves it to a partner already setting it or Tailwind.)
+			if (turn.doubles && turn.doubles.partnerUses(["Tailwind", "Trick Room"])) down(10);
+			var mine = turn.doubles ? turn.doubles.sideSpeed(true) : atk.speed;
+			var theirs = turn.doubles ? turn.doubles.sideSpeed(false) : def.speed;
+			if (turn.battle.trickRoom ? mine < theirs : mine > theirs) down(10);
 		} else if (move.name === "Gravity" && field.isGravity && atk.types.indexOf("Flying") === -1 && atk.item !== "Air Balloon") {
 			down(10);
 		}
 		return score;
 	case E.TEAM_EFFECTS:
-		if (move.name === "Tailwind" && (atk.sideState.tailwind || turn.battle.trickRoom)) down(10);
+		if (move.name === "Tailwind" && (atk.sideState.tailwind || turn.battle.trickRoom ||
+			(turn.doubles && turn.doubles.partnerUses(["Tailwind", "Trick Room"])))) down(10);
 		return score;
 	case E.FAKE_OUT:
 		if (!atk.firstTurn) {
@@ -1879,8 +1912,13 @@ function scoreNegativesCore(turn, atk, def, i, score) {
 	case E.MEMENTO:
 		if (atk.monsLeft <= 1) return down(10);
 		return move.name === "Final Gambit" ? standardDamage() : score;
-	case E.HELPING_HAND:
 	case E.FOLLOW_ME:
+		// A double battle: with a partner to draw attacks from, one that is attacking and not doing the same.
+		if (turn.doubles && turn.doubles.partner && !turn.doubles.partnerSameEffect(move) && !turn.doubles.partnerUsesStatus() &&
+			!has(["Propeller Tail", "Stalwart"], def.ability)) return score;
+		down(10);
+		return score;
+	case E.HELPING_HAND:
 	case E.INSTRUCT_AFTER_YOU_QUASH:
 		down(10);
 		return score;
@@ -2166,6 +2204,7 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.PARALYZE_HIT:
 		if (effect === E.PARALYZE_HIT && chance < 75) break;
 		if (!canBeParalyzed(atk, def, field) || badIdeaToStatus(atk, def, "par", field)) break;
+		if (turn.doubles && effect === E.PARALYZE && turn.doubles.speedControl(up)) break;
 		status((def.speed >= atk.speed && def.speed / 2 < atk.speed) || hasDoubleDamageMove(atk) ||
 			hasEffect(atk, [E.FLINCH_HIT]) ? 2 : 1);
 		break;
@@ -2361,6 +2400,10 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.SPEED_DOWN:
 	case E.SPEED_DOWN_2:
+		if (turn.doubles) {
+			if (canStatBeLowered(atk, def, "spe")) turn.doubles.speedControl(up);
+			break;
+		}
 		if (goodIdeaToLower(turn, def, atk, move, "spe")) status(2);
 		break;
 	case E.SPECIAL_ATTACK_DOWN:
@@ -2385,6 +2428,11 @@ function scorePositives(turn, atk, def, i, score) {
 	// Radical Red: a speed-lowering attack (Low Sweep, Icy Wind) and grounding a foe in the air (Smack
 	// Down) only get their "past the strongest move" +3 on half the rolls; CFRU master always gives it.
 	case E.SPEED_DOWN_HIT:
+		// Icy Wind, Electroweb: speed control for the supporting roles of a double battle.
+		if (turn.doubles) {
+			if (chance >= 50 && canStatBeLowered(atk, def, "spe")) turn.doubles.speedControl(up);
+			break;
+		}
 		if (chance >= 50 && goodIdeaToLower(turn, def, atk, move, "spe") && turn.coin("speedDrop" + turn.phase + atk.key + i, 0.5)) up(3);
 		break;
 	case E.SMACK_DOWN:
@@ -2466,10 +2514,20 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.PROTECT:
 		// Quick Guard, Wide Guard, Crafty Shield and Mat Block count as Protect when your predicted move
 		// is one they stop.
+		if (turn.doubles && move.name === "Wide Guard" && !(predicted && (predicted.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY)))) {
+			// Wide Guard against its own partner's Earthquake.
+			if (turn.doubles.partnerHitsMe()) up(ALLY_PROTECTION_BONUS[style]);
+			break;
+		}
 		if (move.name === "Quick Guard" && !(predicted && priorityOf(def, predicted, field) > 0)) break;
 		if (move.name === "Wide Guard" && !(predicted && (predicted.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY)))) break;
 		if (move.name === "Crafty Shield" && !(predicted && predicted.split === SPLIT_STATUS && !isSelfTargeting(predicted))) break;
 		if (move.name === "Mat Block" && !(atk.firstTurn && predicted && isDamaging(predicted) && !isSelfTargeting(predicted))) break;
+		// In a double battle these guard the team.
+		if (turn.doubles && has(["Quick Guard", "Wide Guard", "Crafty Shield", "Mat Block"], move.name)) {
+			up(TEAM_PROTECTION_BONUS[style]);
+			break;
+		}
 		// Radical Red: an Aegislash in Blade Forme uses King's Shield half the time it can.
 		if (move.name === "King's Shield" && atk.ability === "Stance Change" && atk.name === "Aegislash-Blade" && !isIncapacitated(def) &&
 			turn.coin("kingsShield" + turn.phase + atk.key + i, 0.5)) {
@@ -2480,6 +2538,16 @@ function scorePositives(turn, atk, def, i, score) {
 		if (move.name === "Endure") {
 			if (canKnockOut(turn, def, atk) && ((/Berry$/.test(atk.item) && atk.hp > atk.maxHP / 4) ||
 				(hasMoveNamed(atk, ["Flail", "Reversal", "Endeavor"]) && atk.hp > 1))) status(3);
+			break;
+		}
+		if (turn.doubles) {
+			// ShouldProtect, doubles: from its partner's Earthquake, while its partner deals with the foes,
+			// or (Radical Red) half the time after the battle's first turn if it did not protect last turn.
+			if (turn.doubles.partner && turn.doubles.partnerHitsMe()) up(ALLY_PROTECTION_BONUS[style]);
+			else if ((turn.doubles.partner && turn.doubles.partnerKillingScore() >= 11) ||
+				(!(atk.firstTurn && def.firstTurn) && !atkVol.protectUses && turn.coin("doublesProtect" + atk.key, 0.5))) {
+				up(protectBonus(turn, atk, def));
+			}
 			break;
 		}
 		if (shouldProtect(turn, atk, def)) up(protectBonus(turn, atk, def));
@@ -2509,6 +2577,14 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.FIELD_EFFECTS:
 		if (move.name === "Trick Room") {
+			if (turn.doubles) {
+				// The slower side sets it; its Trick Room roles above all else.
+				if (!turn.battle.trickRoom && turn.doubles.sideSpeed(true) < turn.doubles.sideSpeed(false)) {
+					if (style === STYLE.D_TR_ATTACKER || style === STYLE.D_TR_SETUP) up(19);
+					else status(3);
+				}
+				break;
+			}
 			if (!turn.battle.trickRoom && atk.speed < def.speed) status(3);
 		} else if (move.name === "Magic Room") {
 			status(1);
@@ -2527,7 +2603,17 @@ function scorePositives(turn, atk, def, i, score) {
 		}
 		break;
 	case E.TEAM_EFFECTS:
-		if (move.name === "Tailwind") {
+		if (move.name === "Tailwind" && turn.doubles) {
+			if (style === STYLE.D_SETUP) {
+				if (atk.speed < def.speed) up(18);
+			} else if (style === STYLE.D_UTILITY) {
+				up(11);
+			} else if (style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) {
+				up(18);
+			} else {
+				status(3);
+			}
+		} else if (move.name === "Tailwind") {
 			status(has([STYLE.SETUP_SCREENS, STYLE.BATON_PASS, STYLE.CLERIC, STYLE.SUPPORT_SCREENS, STYLE.PHAZING], style) ? 2 : 1);
 		} else if (move.name === "Lucky Chant") {
 			status(1);
@@ -2695,9 +2781,20 @@ function scorePositives(turn, atk, def, i, score) {
 			status(3);
 		}
 		break;
+	case E.FOLLOW_ME:
+		// A double battle: draw the attack your Pokémon is about to land on its partner.
+		if (turn.doubles && turn.doubles.partner && move.name !== "Spotlight" && !isIncapacitated(def) &&
+			!(move.name === "Rage Powder" && (def.types.indexOf("Grass") !== -1 || def.ability === "Overcoat" || def.item === "Safety Goggles"))) {
+			var onPartner = turn.doubles.predictedOnPartner();
+			if (!onPartner || onPartner.split !== SPLIT_STATUS) {
+				if (style === STYLE.D_UTILITY) up(16);
+				else status(3);
+			}
+		}
+		break;
 	case E.FAKE_OUT:
 		// Radical Red: only Fake Out itself (not First Impression).
-		if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) up(8);
+		if (move.name === "Fake Out" && shouldUseFakeOut(turn, atk, def, move)) up(turn.doubles ? turn.doubles.fakeOutBonus(style) : 8);
 		break;
 	case E.BATON_PASS:
 	case E.TELEPORT:
@@ -2809,6 +2906,19 @@ function sleepBonus(turn, atk, def, move) {
 		return accurate ? 8 : three;
 	case STYLE.CLERIC:
 		return accurate ? 7 : three;
+	case STYLE.D_ALL_OUT:
+		return three;
+	case STYLE.D_UTILITY:
+		return 17;
+	case STYLE.D_SETUP:
+	case STYLE.D_TR_ATTACKER:
+	case STYLE.D_TR_SETUP:
+	case STYLE.D_PHAZING:
+	case STYLE.D_SUPPORT:
+	case STYLE.D_TOTAL_SUPPORT:
+		// Putting both of yours to sleep at once is worth nearly anything.
+		if (!turn.doubles.spreadSleep(move)) return three;
+		return {12: 18, 13: 16, 14: 16, 16: 17, 17: 19, 18: 19}[styleOf(turn, atk)];
 	}
 	return three;
 }
@@ -2848,8 +2958,12 @@ function hazardBonus(turn, atk, def, move) {
 		return statusBonus(turn, atk, def, def.monsLeft === 2 ? 2 : 3);
 	case STYLE.HAZARDS:
 		return {"Sticky Web": 7, "Stealth Rock": 6, "Toxic Spikes": 5}[move.name] || 4;
+	case STYLE.D_ALL_OUT:
+		return 0;
+	case STYLE.D_TR_ATTACKER:
+		return move.name === "Stealth Rock" ? 13 : statusBonus(turn, atk, def, 2);
 	}
-	return 0;
+	return style >= STYLE.D_ALL_OUT ? statusBonus(turn, atk, def, 2) : 0;
 }
 
 function healAmount(atk, def, move, field) {
@@ -2936,7 +3050,13 @@ function twoHitsAfterHealing(turn, atk, def, heal) {
 	return false;
 }
 
+// IncreaseAllyProtectionViability (its partner's Earthquake) and IncreaseTeamProtectionViability (Wide Guard...), by doubles role.
+var ALLY_PROTECTION_BONUS = {11: 15, 12: 14, 13: 12, 14: 14, 15: 14, 16: 14, 17: 14, 18: 14};
+var TEAM_PROTECTION_BONUS = {11: 8, 12: 3, 13: 3, 14: 13, 15: 12, 16: 3, 17: 12, 18: 12};
+
 function protectBonus(turn, atk, def) {
+	var doubles = {11: 12, 12: 10, 13: 4, 14: 7, 15: 10, 16: 13, 17: 1, 18: 1}[styleOf(turn, atk)];
+	if (doubles) return doubles;
 	switch (styleOf(turn, atk)) {
 	case STYLE.STALL:
 		return isTrappedBy(def, atk, turn.battle.field) ? 7 : 3;
@@ -2958,6 +3078,7 @@ function shouldUseSubstitute(turn, atk, def, move) {
 }
 
 function substituteBonus(turn, atk, def) {
+	if (styleOf(turn, atk) >= STYLE.D_ALL_OUT) return styleOf(turn, atk) === STYLE.D_ALL_OUT ? 0 : statusBonus(turn, atk, def, 1);
 	return {1: 0, 2: 8, 3: statusBonus(turn, atk, def, 2), 5: 5, 6: 4, 7: 4, 4: 3, 8: 3, 9: 5, 10: 3}[styleOf(turn, atk)] || 0;
 }
 
@@ -3008,7 +3129,10 @@ function withZMoves(turn, battle) {
 function shouldUseFakeOut(turn, atk, def, move) {
 	if (!atk.firstTurn || isAsleep(def) || has(["Inner Focus", "Shield Dust"], defAbility(atk, def))) return false;
 	if (!hitsFirst(turn, atk, move, def)) return false;
-	if (canBeChoiceLocked(atk) && atk.monsLeft <= 1) return def.monsLeft <= 1 && knocksOut(turn, atk, def, atk.moves.indexOf(move), 1);
+	// A double battle: not into a predicted Protect; a Choice lock needs a third Pokémon to switch to.
+	var predicted = turn.predicted(def);
+	if (turn.doubles && predicted && predicted.effect === E.PROTECT) return false;
+	if (canBeChoiceLocked(atk) && atk.monsLeft <= (turn.doubles ? 2 : 1)) return def.monsLeft <= 1 && knocksOut(turn, atk, def, atk.moves.indexOf(move), 1);
 	return true;
 }
 
@@ -3079,7 +3203,7 @@ function shouldPivot(turn, atk, def, i) {
 }
 
 function pivotBonus(style) {
-	return {1: 3, 2: 9, 3: 9, 5: 9, 6: 9, 7: 7, 4: 7, 8: 7, 9: 4, 10: 3}[style] || 3;
+	return {1: 3, 2: 9, 3: 9, 5: 9, 6: 9, 7: 7, 4: 7, 8: 7, 9: 4, 10: 3, 11: 18, 12: 18, 13: 16, 14: 16, 15: 16, 16: 14, 17: 15, 18: 15}[style] || 3;
 }
 
 // RecalcStrongestMoveIgnoringMove: a pivot move the AI won't use stops counting as its strongest.

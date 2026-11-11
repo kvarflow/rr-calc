@@ -87,6 +87,11 @@ var CHANGELOG = [
 		"Double battles, a first version: Doubles (beside Turn) shows both Pok\u00e9mon on each side, and for each of the trainer's two how " +
 			"often it uses each move on each of yours, with the damage. Pick who is out beside the two in the calculator",
 		"In a double battle the chances on Battle are the doubles ones. Not predicted yet: switching, and moves aimed at its own partner"
+	]},
+	{version: "1.14", notes: [
+		"Double battles: status moves follow the doubles rules. Trick Room when its side is the slower one, Fake Out on the bigger threat, " +
+			"Protect and Wide Guard (from its own partner's Earthquake too), Follow Me, Tailwind, Icy Wind and the like for speed control, " +
+			"a sleep move on both of yours, and no repeating what its partner is already doing"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

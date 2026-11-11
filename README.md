@@ -78,9 +78,10 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   status as they are; benched Pokémon are taken at full HP.
 - **Double battles** (a first version): Doubles, beside Turn, shows both Pokémon on each side and,
   for each of the trainer's two, how often it uses each move on each of yours. It follows CFRU's
-  doubles AI for attacking moves and targets (who it knocks out, who threatens it, what its
-  partner is already doing); switching, moves aimed at its own partner and the doubles rules for
-  status moves are not in yet.
+  doubles AI: attacking moves and targets (who it knocks out, who threatens it, what its partner
+  is already doing) and the doubles rules for status moves (Trick Room, Fake Out, Protect and
+  Wide Guard, Follow Me, Tailwind, speed control). Switching and moves aimed at its own partner
+  are not in yet.
 - **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
   Pokémon, the field and what was predicted, to send in.
 
