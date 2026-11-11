@@ -76,7 +76,11 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   Taunt, Protects in a row, a Substitute, Yawn, Perish Song, recharging...). Left alone it is a
   fresh battle. Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
   status as they are; benched Pokémon are taken at full HP.
-  Double battles show damage but the predictions are for single battles.
+- **Double battles** (a first version): Doubles, beside Turn, shows both Pokémon on each side and,
+  for each of the trainer's two, how often it uses each move on each of yours. It follows CFRU's
+  doubles AI for attacking moves and targets (who it knocks out, who threatens it, what its
+  partner is already doing); switching, moves aimed at its own partner and the doubles rules for
+  status moves are not in yet.
 - **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
   Pokémon, the field and what was predicted, to send in.
 

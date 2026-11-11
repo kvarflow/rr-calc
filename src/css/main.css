@@ -1539,6 +1539,58 @@ html.small-screen .result-move-header .bh-button {
     font: inherit;
     font-size: 12px;
 }
+/* Double battles (trainer_ai_doubles.js): the Doubles dialog. */
+.dbl-partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0 0 10px;
+    font-size: 12px;
+}
+.dbl-select {
+    font: inherit;
+    font-size: 12px;
+    max-width: 150px;
+}
+.dbl-hp {
+    width: 52px;
+    font: inherit;
+    font-size: 12px;
+}
+.dbl-table {
+    width: 100%;
+    margin: 0 0 12px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.dbl-table th {
+    padding: 4px 6px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--ss-line, #c9ccd6);
+}
+.dbl-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--ss-line, #e3e5ec);
+}
+.dbl-share {
+    display: inline-block;
+    min-width: 38px;
+    font-weight: 600;
+}
+.dbl-damage {
+    opacity: 0.75;
+}
+.dbl-likely .dbl-share {
+    color: var(--ss-accent, #d9342b);
+}
+.dbl-ko .dbl-damage {
+    opacity: 1;
+    color: var(--ss-accent, #d9342b);
+}
+html.small-screen .result-move-header .dbl-button {
+    margin-left: 4px;
+}
 .ai-switch {
     margin-top: 6px;
     font-size: 12px;

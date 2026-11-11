@@ -82,6 +82,11 @@ var CHANGELOG = [
 	], fixes: [
 		"70 boss Pok\u00e9mon had EVs a few points off the game's (4 Def where it has 6 HP); Falkner's Rufflet and Brock's Onix were missing theirs",
 		"Hardcore: the route trainers added in 1.11 had EVs the game does not give them"
+	]},
+	{version: "1.13", notes: [
+		"Double battles, a first version: Doubles (beside Turn) shows both Pok\u00e9mon on each side, and for each of the trainer's two how " +
+			"often it uses each move on each of yours, with the damage. Pick who is out beside the two in the calculator",
+		"In a double battle the chances on Battle are the doubles ones. Not predicted yet: switching, and moves aimed at its own partner"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

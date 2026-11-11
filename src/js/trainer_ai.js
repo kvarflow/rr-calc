@@ -1323,7 +1323,7 @@ function scoreNegatives(turn, atk, def, i, score) {
 	// AI_SUBSTITUTE_CHECK: a status move that nothing else counted against is no good into a Substitute.
 	if (result === score && volatileOf(def).sub && move.split === SPLIT_STATUS && !isSelfTargeting(move) &&
 		SUBSTITUTE_CHECK_EFFECTS.indexOf(AI_EFFECT_NAMES[move.effect]) !== -1 && moveBlockedBySubstitute(atk, def, move)) {
-		result = Math.max(0, result - 10);
+		result = Math.max(0, result - (turn.doubles ? 20 : 10));
 	}
 	return result;
 }
@@ -1337,8 +1337,9 @@ function scoreNegativesCore(turn, atk, def, i, score) {
 	var predicted = turn.predicted(def);
 	var effect = move.effect;
 	var damaging = isDamaging(move);
+	// (DecreaseViability takes twice as much off in a double battle.)
 	var down = function (amount) {
-		score = Math.max(0, score - amount);
+		score = Math.max(0, score - amount * (turn.doubles ? 2 : 1));
 		return score;
 	};
 	var up = function (amount) {
@@ -2781,7 +2782,8 @@ function scorePositives(turn, atk, def, i, score) {
 		if (isAsleep(atk)) up(10);
 		break;
 	}
-	if (isDamaging(move)) score = damageMoveBonus(turn, atk, def, i, score);
+	// A double battle (trainer_ai_doubles.js) has its own bonus for damaging moves.
+	if (isDamaging(move)) score = turn.doubles ? Math.min(255, score + turn.doubles.bonus(i)) : damageMoveBonus(turn, atk, def, i, score);
 	// Radical Red: a frozen AI wants a move that thaws it (Scald, Flare Blitz...), +10.
 	if (atk.status === "frz" && has(UNFREEZE_MOVES, move.name)) score += 10;
 	return Math.min(score, 255);
@@ -4180,7 +4182,7 @@ function runScripts(turn, atk, def, flags, signed) {
 			var value = scores[j] & 0xFF;
 			if (bit === AI_NEGATIVES) value = scoreNegatives(turn, atk, def, j, value);
 			else if (bit === AI_POSITIVES) value = scorePositives(turn, atk, def, j, value);
-			else if (isDamaging(atk.moves[j])) value = damageMoveBonus(turn, atk, def, j, value);
+			else if (isDamaging(atk.moves[j])) value = turn.doubles ? Math.min(255, value + turn.doubles.bonus(j)) : damageMoveBonus(turn, atk, def, j, value);
 			scores[j] = signed && value >= 128 ? value - 256 : value;
 		}
 	});
@@ -4709,6 +4711,15 @@ function markFoeLikelyMoves() {
 		return;
 	}
 	var prediction = predictAIMoves(battle);
+	// A double battle: the chances of the Pokémon in Pokémon 2 from the doubles AI (on either of yours),
+	// with no switching shown.
+	var doubles = typeof getDoublesPrediction === "function" ? getDoublesPrediction() : null;
+	if (doubles && doubles.battle) {
+		prediction = {shares: doubles.foes[0].shares.map(function (pair) {
+			return pair[0] + pair[1];
+		}), zShares: [0, 0, 0, 0], switches: [], switchShare: 0, doubles: doubles};
+		battle = $.extend({}, battle, {party: []});
+	}
 	var shares = prediction.shares;
 	renderAISwitch(battle, prediction);
 	var best = Math.max.apply(null, shares.concat(prediction.switches.map(function (entry) {
@@ -4725,6 +4736,14 @@ function markFoeLikelyMoves() {
 		label.attr("data-ai", formatAIShare(share) + (zMove ? " Z" : ""));
 		var damage = zMove ? Math.max(move.maxDamage, zMove.maxDamage) : move.maxDamage;
 		var ko = damage >= hp && hp > 0 && share > 0;
+		if (prediction.doubles) {
+			var pair = prediction.doubles.foes[0].shares[i];
+			var names = prediction.doubles.battle.yourSets.map(shortSetName);
+			label.attr("title", "Double battle: " + formatAIShare(pair[0]) + " on " + names[0] +
+				(prediction.doubles.battle.yours[1] ? ", " + formatAIShare(pair[1]) + " on " + names[1] : "") + " (Doubles has both of its Pok\u00e9mon)");
+			if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
+			return;
+		}
 		var title = (prediction.forced === "locked" && share > 0 ? "It is locked into this move" :
 			prediction.forced === "recharge" ? "It must recharge this turn" :
 				"The trainer's AI uses this " + formatAIShare(share) + " of the time") +
@@ -4775,9 +4794,11 @@ function markAISwitchesOnTeam() {
 function placeBattleHistoryButton() {
 	if (typeof buildBattleHistoryButton !== "function") return;
 	$(".bh-button").remove();
-	var button = buildBattleHistoryButton();
-	if ($("html").hasClass("small-screen")) button.appendTo($("#resultHeaderR").closest(".result-move-header"));
-	else button.appendTo($('label[for="resultMoveR4"]').closest(".move-result-subgroup"));
+	var buttons = [buildBattleHistoryButton()];
+	if (typeof isDoublesFight === "function" && isDoublesFight()) buttons.push(buildDoublesButton());
+	var holder = $("html").hasClass("small-screen") ? $("#resultHeaderR").closest(".result-move-header") :
+		$('label[for="resultMoveR4"]').closest(".move-result-subgroup");
+	holder.append(buttons);
 }
 
 // Under the foe's moves: its chance of switching out and to whom (with why), and who it sends out
