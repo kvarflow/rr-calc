@@ -80,8 +80,8 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   for each of the trainer's two, how often it uses each move on each of yours. It follows CFRU's
   doubles AI: attacking moves and targets (who it knocks out, who threatens it, what its partner
   is already doing) and the doubles rules for status moves (Trick Room, Fake Out, Protect and
-  Wide Guard, Follow Me, Tailwind, speed control). Switching and moves aimed at its own partner
-  are not in yet.
+  Wide Guard, Follow Me, Tailwind, speed control), and switching out. Moves aimed at its own
+  partner (Helping Hand) are not in yet. Emulator sync fills in who is out on both sides.
 - **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
   Pokémon, the field and what was predicted, to send in.
 

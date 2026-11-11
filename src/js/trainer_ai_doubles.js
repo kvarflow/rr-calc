@@ -20,8 +20,11 @@
  * guards, Follow Me, Tailwind, speed control, a sleep move on both of yours, and not repeating
  * what its partner has chosen.
  *
- * Not modelled yet: switching out, moves aimed at its own partner (Helping Hand, healing it),
- * Fly and Dig in progress, and the rarer doubles cases (pledges, terrains for a partner's
+ * Before its move each may switch out (switchDecision): the single-battle checks against the foe
+ * opposite, with the doubles conditions.
+ *
+ * Not modelled yet: moves aimed at its own partner (Helping Hand, healing it), Fly and Dig in
+ * progress, switching to pass a Wish or against Wonder Guard, and the rarer doubles cases (pledges, terrains for a partner's
  * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
  * CFRU's the way its singles code was.
  */
@@ -593,6 +596,102 @@ DoublesTurn.prototype.choose = function (x) {
 	return {index: picks[target].index, move: moveFor(target), target: target, points: picks[target].points};
 };
 
+/*
+ * ShouldSwitch for the trainer's x in a double battle: the benched Pokémon it switches to, or null.
+ * The checks of a single battle (trainer_ai.js) run against the foe opposite it, with the doubles
+ * conditions: it stays when it can do real damage to your side (its doubles killing score), bad
+ * moves must be bad against both of yours, and there is no switching to avoid a knock-out or to
+ * save a sweeper. Radical Red skips all of it on a quarter of its turns.
+ */
+DoublesTurn.prototype.switchDecision = function (x) {
+	var d = this.d;
+	var self = this;
+	var me = d.foes[x];
+	if (!this.alive(me) || forcedMoveIndex(me) !== undefined) return null;
+	var partnerChoice = this.chosen[1 - x];
+	var taken = partnerChoice && partnerChoice.switchTo !== undefined ? partnerChoice.switchTo : null;
+	var targets = [x, 1 - x].filter(function (y) {
+		return self.alive(d.yours[y]);
+	});
+	if (!targets.length) return null;
+	var y1 = targets[0];
+	var y2 = targets.length > 1 ? targets[1] : null;
+	var bench = (d.bench[y1] || []).filter(function (side) {
+		return side.slot !== taken;
+	});
+	if (!bench.length) return null;
+	if (targets.some(function (y) {
+		return isTrappedBy(d.out[x][y], d.inc[y][x], d.field);
+	})) return null;
+	if (this.rng.pick([0.25, 0.75]) === 0) return null;
+	// The thinking against one of yours, with its bench against that one.
+	var thinking = function (y) {
+		var turn = new AITurn(self.rng, {ai: d.out[x][y], player: d.inc[y][x], field: d.field, trickRoom: d.trickRoom, flags: d.flags,
+			party: (d.bench[y] || []).filter(function (side) {
+				return side.slot !== taken;
+			}), justSwitchedIn: d.justSwitchedIn[x]});
+		predictPlayer(turn);
+		predictAISelf(turn);
+		turn.phase = "w";
+		turn.cache = {};
+		turn.prediction[d.out[x][y].key] = turn.aiPrediction ? d.out[x][y].moves.indexOf(turn.aiPrediction) : null;
+		return turn;
+	};
+	var turn1 = thinking(y1);
+	var turn2 = y2 !== null ? thinking(y2) : null;
+	var justIn = d.justSwitchedIn[x];
+	var ai = d.out[x][y1];
+	var vol = volatileOf(ai);
+	var kill1 = this.bestKilling(x, y1).total;
+	var kill2 = y2 !== null ? this.bestKilling(x, y2).total : 0;
+	var best = function () {
+		var scored = scoreSwitchIns(turn1).best;
+		return scored ? scored.mon : bench[0];
+	};
+	var decision = null;
+	var why = "";
+	var decide = function (reason, found) {
+		if (!decision && found) {
+			decision = found;
+			why = reason;
+		}
+	};
+	// Absorbing a predicted move with an ability: not when it can do major damage instead.
+	if (!justIn && stage(ai, "eva") < 9 && !(kill1 >= 10 || kill2 >= 10) && !(anyStageAbove(ai, 7) && (kill1 >= 6 || kill2 >= 6))) {
+		var damaging = [turn1, turn2].filter(function (turn) {
+			var predicted = turn && turn.predicted(turn.battle.player);
+			return !!predicted && predicted.split !== SPLIT_STATUS;
+		});
+		if (damaging.length) {
+			var against = damaging.length === 2 && this.rng.pick([0.5, 0.5]) === 1 ? damaging[1] : damaging[0];
+			decide("to take your move with its ability", absorbingSwitchIn(against, justIn));
+		}
+	}
+	// Perish Song's last turn.
+	if (vol.perishLast) decide("because Perish Song is about to take it", {mon: best()});
+	// Nothing useful to do against either of yours.
+	if (!decision && !justIn && !vol.destinyBond && !(vol.sub && !canBreakThroughSubstitute(d.inc[y1][x], ai)) &&
+		onlyBadMovesLeft(turn1) && (!turn2 || onlyBadMovesLeft(turn2))) decide("because its moves are no good here", {mon: best()});
+	// Natural Cure or Regenerator.
+	if (!decision) decide("to heal with its ability", switchToHeal(turn1));
+	// About to fall asleep, unless it can do major damage first.
+	if (!decision && !(kill1 >= 12 || kill2 >= 12)) decide("because of Yawn", switchWhenYawned(turn1));
+	// Asleep: half the time, unless something wakes it or it has boosts worth keeping.
+	if (!decision && !justIn && isAsleep(ai) && this.rng.pick([0.5, 0.5]) === 0) {
+		var boosted = stage(ai, "atk") >= 8 || stage(ai, "spa") >= 8 || stage(ai, "spe") >= 8 || stage(ai, "eva") >= 9;
+		var partner = d.foes[1 - x];
+		if (!(boosted && this.rng.pick([0.5, 0.5]) === 0) && !has(["Shed Skin", "Early Bird"], ai.ability) &&
+			!(ai.ability === "Hydration" && /Rain/.test(d.field.weather || "")) && !(this.alive(partner) && partner.ability === "Healer") &&
+			!hasEffect(ai, [E.SLEEP_TALK, E.SNORE, E.REST])) decide("because it is asleep", {mon: best()});
+	}
+	// Leech Seed or a long Toxic.
+	if (!decision) decide("because of Leech Seed or poison", switchFromLeechSeed(turn1));
+	// Its attacking stats are down.
+	if (!decision) decide("because its attacking stat is down", switchFromLowStats(turn1, justIn));
+	if (!decision || decision.pivot) return null;
+	return {mon: decision.mon || best(), why: why};
+};
+
 // A small seeded generator, so the same battle always shows the same chances.
 function seededPicker(seed) {
 	var state = seed >>> 0;
@@ -621,7 +720,7 @@ function seededPicker(seed) {
  */
 function predictAIDoubles(d) {
 	var result = [0, 1].map(function () {
-		return {shares: [[0, 0], [0, 0], [0, 0], [0, 0]], none: 0};
+		return {shares: [[0, 0], [0, 0], [0, 0], [0, 0]], none: 0, switches: {}, switchShare: 0, why: []};
 	});
 	// The earlier Pokémon in the trainer's team chooses first.
 	var order = d.foes[1] && d.foes[0] && d.foes[1].slot < d.foes[0].slot ? [1, 0] : [0, 1];
@@ -630,6 +729,16 @@ function predictAIDoubles(d) {
 		var turn = new DoublesTurn(rng, d);
 		order.forEach(function (x) {
 			if (!d.foes[x]) return;
+			// It may switch out before choosing a move.
+			var incoming = turn.switchDecision(x);
+			if (incoming) {
+				var slot = incoming.mon.slot;
+				turn.chosen[x] = {index: null, move: null, target: null, switchTo: slot};
+				result[x].switches[slot] = (result[x].switches[slot] || 0) + 1 / DOUBLES_SAMPLES;
+				result[x].switchShare += 1 / DOUBLES_SAMPLES;
+				if (result[x].why.indexOf(incoming.why) === -1) result[x].why.push(incoming.why);
+				return;
+			}
 			var choice = turn.choose(x);
 			turn.chosen[x] = choice || {index: null, move: null, target: null};
 			if (choice) result[x].shares[choice.index][choice.target] += 1 / DOUBLES_SAMPLES;
@@ -732,7 +841,9 @@ function readAIDoublesBattle() {
 	var foeLeft = countFoeMonsLeft();
 	var yoursLeft = countYourMonsLeft();
 	var sideStates = {foe: readSideState("R"), yours: readSideState("L")};
+	var kos = typeof getKOSlots === "function" ? getKOSlots(currentTrainerIndex) : [];
 	var d = {foes: [null, null], yours: [null, null], out: [[null, null], [null, null]], inc: [[null, null], [null, null]],
+		bench: [[], []], justSwitchedIn: [false, false],
 		results: [[null, null], [null, null]], field: aiField, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags(),
 		foeSlots: [activeTrainerSlot, partners.foe ? partners.foe.slot : null], yourSets: [$("#p1 input.set-selector").val(), partners.yours]};
 	var build = function (key, pokemon, results, foe, options) {
@@ -774,6 +885,21 @@ function readAIDoublesBattle() {
 			d.yours[y] = d.yours[y] || d.inc[y][x];
 		}
 	}
+	// It came in this turn (at full HP after a knock-out, not as one of the two leads): the switching checks wait a turn.
+	[0, 1].forEach(function (x) {
+		d.justSwitchedIn[x] = !!d.foes[x] && d.foes[x].firstTurn && (kos.length > 0 || d.foeSlots[x] > 1);
+	});
+	// The trainer's bench, each against each of yours.
+	var trainer = TRAINER_ORDER[currentTrainerIndex];
+	[0, 1].forEach(function (y) {
+		if (!yourMons[y]) return;
+		getTrainerVariant(trainer).sets.forEach(function (setId, slot) {
+			if (d.foeSlots.indexOf(slot) !== -1 || kos.indexOf(slot) !== -1) return;
+			var side = buildBenchSide(trainer, setId, slot, yourMons[y], playerField, aiField,
+				{monsLeft: foeLeft, sideState: sideStates.foe, playerFocus: y === 0 && focus.p1});
+			if (side) d.bench[y].push(side);
+		});
+	});
 	return d;
 }
 
@@ -847,6 +973,12 @@ function buildDoublesFoeTable(prediction, x) {
 		});
 		table.append(row);
 	});
+	Object.keys(prediction.foes[x].switches).forEach(function (slot) {
+		var setId = getTrainerVariant(TRAINER_ORDER[currentTrainerIndex]).sets[slot];
+		table.append($("<tr></tr>").attr("title", "It switches out " + prediction.foes[x].why.join(", or "))
+			.append($('<td class="dbl-move"></td>').text("Switches to " + shortSetName(setId)),
+				$('<td class="dbl-cell"></td>').attr("colspan", 2).append($('<span class="dbl-share"></span>').text(formatAIShare(prediction.foes[x].switches[slot])))));
+	});
 	if (prediction.foes[x].none > 0.005) {
 		table.append($("<tr></tr>").append($('<td class="dbl-move"></td>').text("Does nothing"),
 			$('<td class="dbl-cell"></td>').attr("colspan", 2).text(formatAIShare(prediction.foes[x].none))));
@@ -902,7 +1034,7 @@ function drawDoublesDialog() {
 		[0, 1].forEach(function (x) {
 			if (prediction.battle.foes[x]) body.append(buildDoublesFoeTable(prediction, x));
 		});
-		body.append($('<p class="bh-help"></p>').text("Not predicted yet: switching out, and moves it aims at its own partner (Helping Hand, healing it). " +
+		body.append($('<p class="bh-help"></p>').text("Not predicted yet: moves it aims at its own partner (Helping Hand, healing it). " +
 			(chosen.synced ? "The Pok\u00e9mon beside them come from the game (emulator sync), with their HP, status and stat changes." :
 				"To set a partner's status or stat changes, load it into the calculator instead (emulator sync fills them in from the game).")));
 	}

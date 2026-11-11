@@ -92,6 +92,11 @@ var CHANGELOG = [
 		"Double battles: status moves follow the doubles rules. Trick Room when its side is the slower one, Fake Out on the bigger threat, " +
 			"Protect and Wide Guard (from its own partner's Earthquake too), Follow Me, Tailwind, Icy Wind and the like for speed control, " +
 			"a sleep move on both of yours, and no repeating what its partner is already doing"
+	]},
+	{version: "1.15", notes: [
+		"Emulator sync follows double battles: the Pok\u00e9mon beside each one come from the game, with their HP, status, stat changes and history",
+		"Double battles: the trainer's Pok\u00e9mon can switch out (to absorb your move, when its moves do nothing to either of yours, " +
+			"asleep, Yawn, Leech Seed, lowered attacking stats), shown in Doubles and on Battle"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

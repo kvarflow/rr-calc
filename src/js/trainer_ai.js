@@ -3768,7 +3768,16 @@ function switchToAbsorb(turn, justIn) {
 		return null;
 	}
 	if (!canKnockOut(turn, foe, ai) && anyStageAbove(ai, 7)) return null;
-	if (isMoldBreaker(foe)) return null;
+	return absorbingSwitchIn(turn, justIn);
+}
+
+// The benched Pokémon whose ability takes your predicted move (the type checks of FindMonThatAbsorbsOpponentsMove).
+function absorbingSwitchIn(turn, justIn) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	var foe = battle.player;
+	var move = turn.predicted(foe);
+	if (!move || move.split === SPLIT_STATUS || isMoldBreaker(foe)) return null;
 	var abilities = SWITCH_ABSORBING[move.type];
 	if (!abilities || has(abilities, ai.ability)) return null;
 	var list = switchInsInOrder(turn);
@@ -4614,63 +4623,74 @@ function maxCritRoll(result) {
 
 /*
  * The trainer's other Pokémon still standing (not KO'd, not the one on the field), at full HP,
- * each against yours and yours against each. None in double battles, which aren't modelled.
+ * each against yours and yours against each. None while two are out in a double battle.
  */
 function readAIParty(p1, playerField, aiField, options) {
 	if (typeof TRAINER_ORDER === "undefined" || typeof getTrainerVariant !== "function" || typeof activeTrainerSlot !== "number") return [];
 	var trainer = TRAINER_ORDER[currentTrainerIndex];
-	if (!trainer || /Doubles/i.test(typeof currentBattleEffect === "string" ? currentBattleEffect : "")) return [];
+	if (!trainer) return [];
+	// A double battle with a second Pokémon out has its own switching (trainer_ai_doubles.js).
+	if (typeof isDoublesFight === "function" && isDoublesFight()) {
+		var partners = resolveDoublesPartners();
+		if (partners.foe || partners.yours) return [];
+	}
 	var kos = typeof getKOSlots === "function" ? getKOSlots(currentTrainerIndex) : [];
 	var party = [];
 	getTrainerVariant(trainer).sets.forEach(function (setId, slot) {
 		if (slot === activeTrainerSlot || kos.indexOf(slot) !== -1) return;
-		var pokemon;
-		try {
-			pokemon = createPokemon(setId);
-			// A benched Mega hasn't Mega Evolved: the game scores it in its base form.
-			if (/-Mega/.test(pokemon.name)) {
-				var baseName = pokemon.name.split("-Mega")[0];
-				var variant = getTrainerVariant(trainer);
-				pokemon = new calc.Pokemon(gen, baseName, {level: pokemon.level, gender: pokemon.gender, nature: pokemon.nature,
-					item: pokemon.item, evs: pokemon.evs, ivs: pokemon.ivs, moves: pokemon.moves, abilityOn: true,
-					ability: (variant.preMega && variant.preMega[slot]) || pokedex[baseName].abilities[0]});
-			}
-		} catch (e) {
-			return;
-		}
-		var out = [];
-		var incoming = [];
-		for (var m = 0; m < 4; m++) {
-			out[m] = calc.calculate(gen, pokemon, p1, pokemon.moves[m], aiField);
-			incoming[m] = calc.calculate(gen, p1, pokemon, p1.moves[m], playerField);
-		}
-		var mon = out[0].attacker;
-		var side = buildAISide("b" + slot, mon, out, p1, {
-			speed: getBattleSpeed(mon, "p2"), monsLeft: options.monsLeft, firstTurn: true, sideState: options.sideState,
-			critChance: function (move) {
-				return typeof getCritChance === "function" ? getCritChance(mon, p1, move, false) || 0 : 0;
-			},
-			critDamage: function (i) {
-				return maxCritRoll(out[i]);
-			}
-		});
-		side.slot = slot;
-		side.setId = setId;
-		side.incoming = incoming.map(function (result) {
-			var move = result.move;
-			if (!move || !move.name || move.name === "(No Move)") return null;
-			var crit = typeof getCritChance === "function" ? getCritChance(p1, mon, move, options.playerFocus) || 0 : 0;
-			var max = result.range()[1];
-			return {
-				maxDamage: max,
-				maxCritDamage: crit >= 0.5 && crit < 1 ? maxCritRoll(result) : max,
-				critChance: crit,
-				effectiveness: typeEffectiveness(move.type, side.types)
-			};
-		});
-		party.push(side);
+		var side = buildBenchSide(trainer, setId, slot, p1, playerField, aiField, options);
+		if (side) party.push(side);
 	});
 	return party;
+}
+
+// One of the trainer's benched Pokémon against yours (`p1`), and yours against it (side.incoming).
+function buildBenchSide(trainer, setId, slot, p1, playerField, aiField, options) {
+	var pokemon;
+	try {
+		pokemon = createPokemon(setId);
+		// A benched Mega hasn't Mega Evolved: the game scores it in its base form.
+		if (/-Mega/.test(pokemon.name)) {
+			var baseName = pokemon.name.split("-Mega")[0];
+			var variant = getTrainerVariant(trainer);
+			pokemon = new calc.Pokemon(gen, baseName, {level: pokemon.level, gender: pokemon.gender, nature: pokemon.nature,
+				item: pokemon.item, evs: pokemon.evs, ivs: pokemon.ivs, moves: pokemon.moves, abilityOn: true,
+				ability: (variant.preMega && variant.preMega[slot]) || pokedex[baseName].abilities[0]});
+		}
+	} catch (e) {
+		return null;
+	}
+	var out = [];
+	var incoming = [];
+	for (var m = 0; m < 4; m++) {
+		out[m] = calc.calculate(gen, pokemon, p1, pokemon.moves[m], aiField);
+		incoming[m] = calc.calculate(gen, p1, pokemon, p1.moves[m], playerField);
+	}
+	var mon = out[0].attacker;
+	var side = buildAISide("b" + slot, mon, out, p1, {
+		speed: getBattleSpeed(mon, "p2"), monsLeft: options.monsLeft, firstTurn: true, sideState: options.sideState,
+		critChance: function (move) {
+			return typeof getCritChance === "function" ? getCritChance(mon, p1, move, false) || 0 : 0;
+		},
+		critDamage: function (i) {
+			return maxCritRoll(out[i]);
+		}
+	});
+	side.slot = slot;
+	side.setId = setId;
+	side.incoming = incoming.map(function (result) {
+		var move = result.move;
+		if (!move || !move.name || move.name === "(No Move)") return null;
+		var crit = typeof getCritChance === "function" ? getCritChance(p1, mon, move, options.playerFocus) || 0 : 0;
+		var max = result.range()[1];
+		return {
+			maxDamage: max,
+			maxCritDamage: crit >= 0.5 && crit < 1 ? maxCritRoll(result) : max,
+			critChance: crit,
+			effectiveness: typeEffectiveness(move.type, side.types)
+		};
+	});
+	return side;
 }
 
 // The battle as the AI sees it, from the last calculation (damageResults).
@@ -4839,10 +4859,15 @@ function markFoeLikelyMoves() {
 	// with no switching shown.
 	var doubles = typeof getDoublesPrediction === "function" ? getDoublesPrediction() : null;
 	if (doubles && doubles.battle) {
+		var bench = doubles.battle.bench[0].length ? doubles.battle.bench[0] : doubles.battle.bench[1];
 		prediction = {shares: doubles.foes[0].shares.map(function (pair) {
 			return pair[0] + pair[1];
-		}), zShares: [0, 0, 0, 0], switches: [], switchShare: 0, doubles: doubles};
-		battle = $.extend({}, battle, {party: []});
+		}), zShares: [0, 0, 0, 0], switches: bench.filter(function (mon) {
+			return doubles.foes[0].switches[mon.slot] > 0;
+		}).map(function (mon) {
+			return {mon: mon, share: doubles.foes[0].switches[mon.slot], reasons: {}};
+		}), switchShare: doubles.foes[0].switchShare, doubles: doubles};
+		battle = $.extend({}, battle, {party: bench});
 	}
 	var shares = prediction.shares;
 	renderAISwitch(battle, prediction);
@@ -4955,6 +4980,7 @@ function renderAISwitch(battle, prediction) {
 					marks.switches.push({slot: entry.mon.slot, share: entry.share});
 					return shortMonName(entry.mon) + (prediction.switches.length > 1 ? " " + formatAIShare(entry.share) : "");
 				}).join(" \u00b7 ")));
+		if (prediction.doubles) why = prediction.doubles.foes[0].why;
 		line.attr("title", "The trainer's AI switches out " + why.join(", or ") + ".");
 		marks.why = why.join(", or ");
 		lines.push(line);
