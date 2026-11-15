@@ -23,8 +23,11 @@
  * Before its move each may switch out (switchDecision): the single-battle checks against the foe
  * opposite, with the doubles conditions.
  *
- * Not modelled yet: moves aimed at its own partner (Helping Hand, healing it), Fly and Dig in
- * progress, switching to pass a Wish or against Wonder Guard, and the rarer doubles cases (pledges, terrains for a partner's
+ * Its own partner is a target too (bestMoveForPartner, after AIScript_Partner): Helping Hand,
+ * healing it, a move its ability absorbs, weather it uses.
+ *
+ * Not modelled yet: Fly and Dig in progress, switching to pass a Wish or against Wonder Guard,
+ * the rarer partner cases (Skill Swap, Soak, Beat Up, Mummy), and the rarer doubles cases (pledges, terrains for a partner's
  * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
  * CFRU's the way its singles code was.
  */
@@ -589,11 +592,155 @@ DoublesTurn.prototype.choose = function (x) {
 			usingDefault = false;
 		}
 	})();
+	// Its own partner is a target too, for a move that helps it (it needs 101 points or more).
+	var helping = forced === undefined ? this.bestMoveForPartner(x) : null;
+	if (helping && helping.points > most) viable = ["partner"];
+	else if (helping && helping.points === most) viable.push("partner");
 	var target = viable.length === 1 ? viable[0] : viable[this.rng.pick(viable.map(function () {
 		return 1 / viable.length;
 	}))];
+	if (target === "partner") return {index: helping.index, move: me.moves[helping.index], target: null, onPartner: true, points: helping.points};
 	if (picks[target].index === null) return null;
 	return {index: picks[target].index, move: moveFor(target), target: target, points: picks[target].points};
+};
+
+// IncreaseHelpingHandViability and IncreaseHealPartnerViability, by doubles class.
+var HELPING_HAND_BONUS = [6, 1, 1, 15, 13, 1, 10, 10];
+var HEAL_PARTNER_BONUS = [7, 2, 2, 12, 15, 2, 13, 13];
+
+/*
+ * AIScript_Partner: the best move of the trainer's x to use on its own partner, {index, points}, or
+ * null when none is worth it. Helping Hand (and Decorate, Coaching, Howl, Aromatic Mist) for a
+ * partner that is attacking, healing it at two thirds HP or less (Heal Pulse, Life Dew, or a move
+ * its ability absorbs), feeding its Lightning Rod, Storm Drain, Motor Drive, Flash Fire or Sap
+ * Sipper, weather it uses, After You and Instruct.
+ */
+DoublesTurn.prototype.bestMoveForPartner = function (x) {
+	var d = this.d;
+	var self = this;
+	var me = d.foes[x];
+	var partner = d.foes[1 - x];
+	if (!this.alive(partner) || !(d.flags & AI_POSITIVES)) return null;
+	var cls = doublesClass(me);
+	var partnerSupports = doublesClass(partner) === DOUBLES_CLASS.TOTAL_SUPPORT;
+	var choice = this.chosen[1 - x];
+	var partnerMove = choice && choice.move ? choice.move : null;
+	var partnerProtects = !!partnerMove && partnerMove.effect === E.PROTECT;
+	var ability = ignoresAbilities(me) ? "" : partner.ability;
+	var needsHealing = partner.hp <= Math.floor(partner.maxHP * 2 / 3);
+	var canRise = function (stat) {
+		return stage(partner, stat) < 12 && ability !== "Contrary";
+	};
+	var slowerThanYou = [0, 1].some(function (y) {
+		return self.alive(d.yours[y]) && partner.speed < d.yours[y].speed;
+	});
+	var weatherHelps = function (move) {
+		var types = partner.types;
+		var knows = function (names) {
+			return hasMoveNamed(partner, names);
+		};
+		var damagingType = function (type) {
+			return hasMoveWhere(partner, function (m) {
+				return isDamaging(m) && m.type === type;
+			});
+		};
+		switch (move.effect) {
+		case E.SANDSTORM:
+			return has(["Sand Veil", "Sand Rush", "Sand Force", "Overcoat", "Magic Guard"], ability) || partner.item === "Safety Goggles" ||
+				types.indexOf("Rock") !== -1 || types.indexOf("Steel") !== -1 || types.indexOf("Ground") !== -1 || knows(["Shore Up", "Weather Ball"]);
+		case E.RAIN_DANCE:
+			return partner.item !== "Utility Umbrella" && (has(["Swift Swim", "Forecast", "Hydration", "Rain Dish", "Dry Skin"], ability) ||
+				partner.item === "Damp Rock" || knows(["Thunder", "Hurricane", "Weather Ball"]) || damagingType("Water"));
+		case E.SUNNY_DAY:
+			return partner.item !== "Utility Umbrella" && (has(["Chlorophyll", "Flower Gift", "Forecast", "Leaf Guard", "Solar Power", "Harvest"], ability) ||
+				knows(["Solar Beam", "Solar Blade", "Weather Ball", "Growth", "Morning Sun", "Synthesis", "Moonlight"]) || damagingType("Fire"));
+		case E.HAIL:
+			return has(["Snow Cloak", "Ice Body", "Forecast", "Slush Rush", "Magic Guard", "Overcoat"], ability) ||
+				knows(["Blizzard", "Aurora Veil", "Weather Ball"]);
+		}
+		return false;
+	};
+	var best = null;
+	me.moves.forEach(function (move, i) {
+		if (!move || !isUsable(me, i, d.field)) return;
+		var bonus = 0;
+		var help = function () {
+			bonus = Math.max(bonus, HELPING_HAND_BONUS[cls]);
+		};
+		var heal = function () {
+			if (needsHealing) bonus = Math.max(bonus, HEAL_PARTNER_BONUS[cls]);
+		};
+		// A move its partner's ability takes in: healing it, or raising its stats.
+		if (!partnerProtects && !((move.target & MOVE_TARGET_BOTH) && !hitsPartnerToo(move)) && !isSelfTargeting(move)) {
+			if (move.type === "Electric" && ability === "Volt Absorb") heal();
+			if (move.type === "Water" && has(["Water Absorb", "Dry Skin"], ability)) heal();
+			if (!partnerSupports) {
+				if (move.type === "Electric" && ability === "Motor Drive" && canRise("spe") && slowerThanYou && !d.trickRoom) help();
+				if (move.type === "Electric" && ability === "Lightning Rod" && hasSpecial(partner) && canRise("spa")) help();
+				if (move.type === "Water" && ability === "Storm Drain" && hasSpecial(partner) && canRise("spa")) help();
+				if (move.type === "Fire" && ability === "Flash Fire" && hasMoveWhere(partner, function (m) {
+					return isDamaging(m) && m.type === "Fire";
+				})) help();
+				if (move.type === "Grass" && ability === "Sap Sipper" && hasRealPhysical(partner) && canRise("atk")) help();
+			}
+		}
+		switch (move.effect) {
+		case E.HELPING_HAND:
+			if (partnerSupports || partnerProtects) break;
+			if (move.name === "Decorate") {
+				if ((hasRealPhysical(partner) && canRise("atk")) || (hasSpecial(partner) && canRise("spa"))) help();
+			} else if (move.name === "Coaching") {
+				if (hasRealPhysical(partner) && canRise("atk")) help();
+			} else if (partnerMove && partnerMove.split !== SPLIT_STATUS) {
+				// Not when the partner already knocks its one target out.
+				if (!(choice.target !== null && !isSpreadMove(partnerMove) && self.knocksOut(1 - x, choice.target, choice.index))) help();
+			}
+			break;
+		case E.ATTACK_UP:
+			if (move.name === "Howl" && ability !== "Soundproof" && canRise("atk")) help();
+			break;
+		case E.SPECIAL_DEFENSE_UP:
+			if (move.name === "Aromatic Mist" && !partnerProtects && canRise("spd")) help();
+			break;
+		case E.RESTORE_HP:
+			if (has(["Life Dew", "Jungle Healing"], move.name) && !partnerProtects) heal();
+			break;
+		case E.HEAL_TARGET:
+			if (!partnerProtects) heal();
+			break;
+		case E.SWAGGER:
+			if (stage(partner, "atk") < 12 && !partnerSupports && (has(["Own Tempo", "Oblivious"], ability) || has(["Persim Berry", "Lum Berry"], partner.item))) help();
+			break;
+		case E.FLATTER:
+			if (stage(partner, "spa") < 12 && !partnerSupports && (has(["Own Tempo", "Oblivious"], ability) || has(["Persim Berry", "Lum Berry"], partner.item))) help();
+			break;
+		case E.SANDSTORM:
+		case E.RAIN_DANCE:
+		case E.SUNNY_DAY:
+		case E.HAIL:
+			// Weather its partner uses (not the weather already up; the foe-side rules run against yours).
+			if (weatherHelps(move)) bonus = Math.max(bonus, cls === DOUBLES_CLASS.SUPPORT || cls === DOUBLES_CLASS.TOTAL_SUPPORT ? 17 : [0, 6, 6, 9, 5, 10, 4, 4][cls]);
+			break;
+		case E.INSTRUCT_AFTER_YOU_QUASH:
+			if (partnerProtects || !partnerMove) break;
+			if (move.name === "After You") {
+				if (partnerMove.effect !== E.COUNTER && partnerMove.effect !== E.MIRROR_COAT && slowerThanYou) help();
+			} else if (move.name === "Instruct" && partnerMove.split !== SPLIT_STATUS) {
+				if (isSpreadMove(partnerMove)) help();
+				else bonus = Math.max(bonus, 1);
+			}
+			break;
+		}
+		if (!bonus) return;
+		// The same move twice, or weather that is already up, is no help.
+		if (partnerMove && partnerMove.effect === move.effect && move.split === SPLIT_STATUS) return;
+		var weather = d.field.weather || "";
+		if ((move.effect === E.SANDSTORM && /Sand/.test(weather)) || (move.effect === E.RAIN_DANCE && /Rain/.test(weather)) ||
+			(move.effect === E.SUNNY_DAY && /Sun/.test(weather)) || (move.effect === E.HAIL && /Hail|Snow/.test(weather))) return;
+		var points = Math.min(255, 100 + bonus);
+		if (!best || points > best.points) best = {index: i, points: points};
+	});
+	return best && best.points >= 101 ? best : null;
 };
 
 /*
@@ -720,7 +867,7 @@ function seededPicker(seed) {
  */
 function predictAIDoubles(d) {
 	var result = [0, 1].map(function () {
-		return {shares: [[0, 0], [0, 0], [0, 0], [0, 0]], none: 0, switches: {}, switchShare: 0, why: []};
+		return {shares: [[0, 0], [0, 0], [0, 0], [0, 0]], onPartner: [0, 0, 0, 0], none: 0, switches: {}, switchShare: 0, why: []};
 	});
 	// The earlier Pokémon in the trainer's team chooses first.
 	var order = d.foes[1] && d.foes[0] && d.foes[1].slot < d.foes[0].slot ? [1, 0] : [0, 1];
@@ -741,7 +888,8 @@ function predictAIDoubles(d) {
 			}
 			var choice = turn.choose(x);
 			turn.chosen[x] = choice || {index: null, move: null, target: null};
-			if (choice) result[x].shares[choice.index][choice.target] += 1 / DOUBLES_SAMPLES;
+			if (choice && choice.onPartner) result[x].onPartner[choice.index] += 1 / DOUBLES_SAMPLES;
+			else if (choice) result[x].shares[choice.index][choice.target] += 1 / DOUBLES_SAMPLES;
 			else result[x].none += 1 / DOUBLES_SAMPLES;
 		});
 	}
@@ -947,6 +1095,15 @@ function buildDoublesFoeTable(prediction, x) {
 	[0, 1].forEach(function (y) {
 		if (d.yours[y]) head.append($('<th class="dbl-target"></th>').text("→ " + shortSetName(d.yourSets[y])));
 	});
+	// Moves it uses on its own partner get a column of their own.
+	var onPartner = prediction.foes[x].onPartner;
+	var helps = onPartner.some(function (share) {
+		return share > 0.005;
+	});
+	if (helps) head.append($('<th class="dbl-target"></th>').text("\u2192 its " + shortMonName(d.foes[1 - x])));
+	onPartner.forEach(function (share) {
+		best = Math.max(best, share);
+	});
 	table.append(head);
 	side.moves.forEach(function (move, i) {
 		if (!move) return;
@@ -971,6 +1128,10 @@ function buildDoublesFoeTable(prediction, x) {
 			}
 			row.append(cell);
 		});
+		if (helps) {
+			row.append($('<td class="dbl-cell"></td>').toggleClass("dbl-likely", onPartner[i] > 0 && onPartner[i] >= best)
+				.append($('<span class="dbl-share"></span>').text(onPartner[i] > 0 ? formatAIShare(onPartner[i]) : "")));
+		}
 		table.append(row);
 	});
 	Object.keys(prediction.foes[x].switches).forEach(function (slot) {
@@ -1034,7 +1195,7 @@ function drawDoublesDialog() {
 		[0, 1].forEach(function (x) {
 			if (prediction.battle.foes[x]) body.append(buildDoublesFoeTable(prediction, x));
 		});
-		body.append($('<p class="bh-help"></p>').text("Not predicted yet: moves it aims at its own partner (Helping Hand, healing it). " +
+		body.append($('<p class="bh-help"></p>').text(
 			(chosen.synced ? "The Pok\u00e9mon beside them come from the game (emulator sync), with their HP, status and stat changes." :
 				"To set a partner's status or stat changes, load it into the calculator instead (emulator sync fills them in from the game).")));
 	}

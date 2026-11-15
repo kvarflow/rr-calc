@@ -4860,8 +4860,8 @@ function markFoeLikelyMoves() {
 	var doubles = typeof getDoublesPrediction === "function" ? getDoublesPrediction() : null;
 	if (doubles && doubles.battle) {
 		var bench = doubles.battle.bench[0].length ? doubles.battle.bench[0] : doubles.battle.bench[1];
-		prediction = {shares: doubles.foes[0].shares.map(function (pair) {
-			return pair[0] + pair[1];
+		prediction = {shares: doubles.foes[0].shares.map(function (pair, i) {
+			return pair[0] + pair[1] + doubles.foes[0].onPartner[i];
 		}), zShares: [0, 0, 0, 0], switches: bench.filter(function (mon) {
 			return doubles.foes[0].switches[mon.slot] > 0;
 		}).map(function (mon) {
@@ -4889,7 +4889,8 @@ function markFoeLikelyMoves() {
 			var pair = prediction.doubles.foes[0].shares[i];
 			var names = prediction.doubles.battle.yourSets.map(shortSetName);
 			label.attr("title", "Double battle: " + formatAIShare(pair[0]) + " on " + names[0] +
-				(prediction.doubles.battle.yours[1] ? ", " + formatAIShare(pair[1]) + " on " + names[1] : "") + " (Doubles has both of its Pok\u00e9mon)");
+				(prediction.doubles.battle.yours[1] ? ", " + formatAIShare(pair[1]) + " on " + names[1] : "") +
+				(prediction.doubles.foes[0].onPartner[i] > 0 ? ", " + formatAIShare(prediction.doubles.foes[0].onPartner[i]) + " on its own partner" : "") + " (Doubles has both of its Pok\u00e9mon)");
 			if (share > 0 && share === best) label.addClass("ss-ai-likely ss-threat").toggleClass("ss-threat-ko", ko);
 			return;
 		}

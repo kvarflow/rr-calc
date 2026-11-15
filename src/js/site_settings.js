@@ -97,6 +97,11 @@ var CHANGELOG = [
 		"Emulator sync follows double battles: the Pok\u00e9mon beside each one come from the game, with their HP, status, stat changes and history",
 		"Double battles: the trainer's Pok\u00e9mon can switch out (to absorb your move, when its moves do nothing to either of yours, " +
 			"asleep, Yawn, Leech Seed, lowered attacking stats), shown in Doubles and on Battle"
+	]},
+	{version: "1.16", notes: [
+		"Double battles: moves the trainer's Pok\u00e9mon use on their own partner. Helping Hand while it attacks, Heal Pulse and Life Dew " +
+			"at two thirds HP or less, a move its ability takes in (Water Absorb, Lightning Rod, Flash Fire...), weather it uses, " +
+			"After You and Instruct. Doubles shows them in a column of their own"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

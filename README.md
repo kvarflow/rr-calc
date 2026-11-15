@@ -80,8 +80,9 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   for each of the trainer's two, how often it uses each move on each of yours. It follows CFRU's
   doubles AI: attacking moves and targets (who it knocks out, who threatens it, what its partner
   is already doing) and the doubles rules for status moves (Trick Room, Fake Out, Protect and
-  Wide Guard, Follow Me, Tailwind, speed control), and switching out. Moves aimed at its own
-  partner (Helping Hand) are not in yet. Emulator sync fills in who is out on both sides.
+  Wide Guard, Follow Me, Tailwind, speed control), switching out, and moves for its own partner
+  (Helping Hand, healing it, feeding its Lightning Rod). Emulator sync fills in who is out on
+  both sides.
 - **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
   Pokémon, the field and what was predicted, to send in.
 
@@ -119,6 +120,7 @@ npm install && (cd calc && npm install)
 node build          # compiles calc/ and builds the site into dist/
 node build view     # faster: rebuilds only the site (src/), not calc/
 npm test            # calc tests, build and lint
+node test/browser/run.js   # browser checks of the built site (needs Playwright installed)
 ./publish-pages     # builds and publishes dist/ to the gh-pages branch (GitHub Pages)
 ```
 
@@ -130,6 +132,8 @@ Open `dist/normal.html` (or serve `dist/`) to try it.
   `src/css/desktop.css` style it; `src/sw.js` is the offline service worker.
 - `calc/` is the damage engine (`@smogon/calc`, TypeScript) with Radical Red's mechanics changes.
 - `import/` holds the scripts that build `src/js/data/` from the boss documents and game data.
+- `test/browser/` holds the browser checks: each drives the built pages (trainers and arcs, the
+  Turn history, Minimal Grinding, emulator sync with a made-up game state, every double battle).
 
 The engine's own documentation (installing and using `@smogon/calc` as a package) is upstream at
 [smogon/damage-calc](https://github.com/smogon/damage-calc#smogoncalc).
