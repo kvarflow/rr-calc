@@ -238,6 +238,7 @@ function enumerateChances(decide, limit) {
 	var path = [];
 	var total = [];
 	var runs = 0;
+	var weights = 0;
 	for (;;) {
 		var depth = 0;
 		var weight = 1;
@@ -253,16 +254,17 @@ function enumerateChances(decide, limit) {
 			}
 		};
 		var shares = decide(rng);
-		for (var i = 0; i < shares.length; i++) total[i] = (total[i] || 0) + weight * shares[i];
+		weights += weight;
+		for (var i = 0; i < shares.length; i++) total[i] = (total[i] || 0) + weight * (shares[i] || 0);
 		path.length = depth;
 		while (path.length && path[path.length - 1] + 1 >= sizes[path.length - 1]) path.pop();
 		if (!path.length || ++runs >= limit) break;
 		path[path.length - 1]++;
 	}
-	var sum = 0;
-	for (var j = 0; j < total.length; j++) sum += total[j] || 0;
+	// Over the runs' weight (each run's answer adds up to 1, its Z-Move marks aside), so the runs a limit cut off
+	// don't count and a Z-Move's share isn't counted twice.
 	var out = [];
-	for (var k = 0; k < total.length; k++) out.push(sum ? (total[k] || 0) / sum : 0);
+	for (var k = 0; k < total.length; k++) out.push(weights ? (total[k] || 0) / weights : 0);
 	return out;
 }
 
@@ -4056,7 +4058,9 @@ function predictAIMoves(battle) {
 	var zBase = 4 + party.length * reasons;
 	var outcomes = enumerateChances(function (rng) {
 		var turn = new AITurn(rng, megaPhaseBattle(battle, false));
-		var outcome = [0, 0, 0, 0];
+		// Every slot set: a run that switches fills only its own, and a hole would add up to NaN.
+		var outcome = [];
+		for (var o = 0; o < zBase + 4; o++) outcome.push(0);
 		predictPlayer(turn);
 		turn.battle = withZMoves(turn, turn.battle);
 		if (party.length) {
