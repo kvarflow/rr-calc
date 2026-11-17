@@ -112,6 +112,14 @@ var CHANGELOG = [
 			"other Pok\u00e9mon's Lightning Rod, Storm Drain, Magic Bounce or the Veils would ruin"
 	], fixes: [
 		"Single battles: a Baton Pass Pok\u00e9mon's Protect was a point short of the game's"
+	]},
+	{version: "1.18", notes: [
+		"Turn \u2192 Flying / digging: your Pok\u00e9mon in the air or underground (Fly, Dig, Bounce, Dive, Phantom Force). The AI sets up or " +
+			"Protects while it can't be hit, and in a double battle goes for your other Pok\u00e9mon. Emulator sync fills it in",
+		"With emulator sync the trainer's benched Pok\u00e9mon have their real HP and status, so its switch-ins are judged as the game does; " +
+			"and it switches to pass a Wish to a hurt one",
+		"Double battles: the last partner moves (Skill Swap, Role Play, Entrainment, Worry Seed, Gastro Acid and Simple Beam on Truant or Slow Start, " +
+			"Soak on Wonder Guard, Beat Up and hits into Justified, Rattled, Steam Engine or Stamina, Purify, Magnet Rise, Acupressure)"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

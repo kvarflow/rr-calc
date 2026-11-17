@@ -17,7 +17,7 @@ ok(await p.evaluate(()=>$('.bh-button:visible').length===1&&$('.bh-button').text
 // dialog
 await p.click('.bh-button');await p.waitForTimeout(300);
 const dlg=await p.evaluate(()=>({sides:$('.bh-side').length,moves:$('.bh-side').first().find('.bh-move').length,flags:$('.bh-side').first().find('.bh-flag').length,fits:$('.bh-dialog')[0].getBoundingClientRect().right<=window.innerWidth&&$('.bh-dialog')[0].getBoundingClientRect().bottom<=window.innerHeight}));
-ok(dlg.sides===2&&dlg.moves===5&&dlg.flags===17&&dlg.fits,tag+'dialog '+JSON.stringify(dlg));
+ok(dlg.sides===2&&dlg.moves===5&&dlg.flags===18&&dlg.fits,tag+'dialog '+JSON.stringify(dlg));
 await p.screenshot({path:SHOTS+'/hist_'+vp.width+'.png'});
 // tap the foe's 2nd move
 await p.evaluate(()=>$('.bh-side').first().find('.bh-move').eq(1).click());await p.waitForTimeout(500);

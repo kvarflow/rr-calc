@@ -24,7 +24,8 @@ var BATTLE_HISTORY_FLAGS = [
 	{key: "destinyBond", label: "Destiny Bond up", title: "It used Destiny Bond last turn"},
 	{key: "recharge", label: "Must recharge", title: "After Hyper Beam and the like"},
 	{key: "locked", label: "Locked in", title: "Into the move it used last: Outrage, Petal Dance, a move it is charging"},
-	{key: "wish", label: "Wish coming"}
+	{key: "wish", label: "Wish coming"},
+	{key: "semiInv", label: "Flying / digging", title: "In the air or underground: Fly, Dig, Bounce, Dive, Phantom Force"}
 ];
 
 function getBattleHistoryPanel(key) {

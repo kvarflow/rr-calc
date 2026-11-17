@@ -140,7 +140,9 @@ function getEmulatorVolatile(key, battler) {
 		recharge: has2(0x00400000),
 		locked: has2(0x00001000) && !!battler.lockedMove,
 		stockpile: Math.min(3, disable[0x09]),
-		wish: battler.wish > 0
+		wish: battler.wish > 0,
+		// In the air, underground, underwater or vanished (Phantom Force, Shadow Force).
+		semiInv: (status3 & (0x40 | 0x80 | 0x40000 | 0x2000000)) !== 0
 	});
 }
 
@@ -169,6 +171,33 @@ function isInPcalcApp() {
 function setEmulatorStatus(text, connected) {
 	if (connected && emulatorSync.via) text = text.replace(/^Connected/, "Connected to " + emulatorSync.via);
 	$("#emulator-sync-status").text(text).toggleClass("emulator-sync-connected", !!connected);
+}
+
+// The trainer's benched Pokémon as the game has them (HP and status), for the fight on the page.
+var emulatorBench = {fight: null, slots: {}};
+
+function getEmulatorBenchState(slot) {
+	if (!emulatorSync.connected || emulatorBench.fight !== currentTrainerIndex) return null;
+	return emulatorBench.slots[slot] || null;
+}
+
+// The party bytes keep each Pokémon's status (+0x50) and HP (+0x56, max +0x58).
+function readEmulatorBench(fightIndex, sets, enemy, enemyHex) {
+	var bytes = hexToBytes(enemyHex);
+	var slots = {};
+	enemy.forEach(function (mon, partyIndex) {
+		var slot = findEmulatorTrainerSlot(sets, partyIndex, mon.species);
+		if (slot === -1 || slots[slot]) return;
+		var at = partyIndex * PARTY_MON_SIZE;
+		var status = bytes[at + 0x50] | (bytes[at + 0x51] << 8) | (bytes[at + 0x52] << 16) | (bytes[at + 0x53] << 24);
+		var hp = bytes[at + 0x56] | (bytes[at + 0x57] << 8);
+		var max = bytes[at + 0x58] | (bytes[at + 0x59] << 8);
+		if (!max) return;
+		slots[slot] = {hpPercent: Math.max(hp ? 1 : 0, Math.round(1000 * hp / max) / 10), status: emulatorStatusCode(status)};
+	});
+	var text = JSON.stringify(slots);
+	if (emulatorBench.fight !== fightIndex || JSON.stringify(emulatorBench.slots) !== text) emulatorSync.historyChanged = true;
+	emulatorBench = {fight: fightIndex, slots: slots};
 }
 
 // A battler's status as the calc's code, and its stat changes.
@@ -273,6 +302,7 @@ function applyEmulatorState(state) {
 	} else if (theirs) {
 		notes.push(state.trainer ? "this trainer is not in the calc yet" : "a wild " + theirs.species);
 	}
+	if (fight && sets && state.enemyParty && state.enemyParty.hex) readEmulatorBench(fight.index, sets, enemy, state.enemyParty.hex);
 	// The Pokémon beside them.
 	if (doubles && fight && sets) {
 		var partner = mine.length > 1 ? party[state.partyIndexes[mine[1]]] : null;

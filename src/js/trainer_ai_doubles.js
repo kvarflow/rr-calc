@@ -32,8 +32,10 @@
  * (0x090C5C90-0x090C6EA4, gDoublesDamageViabilityMapping at 0x093504B0) and the doubles cases of
  * AIScript_Positives and AIScript_Partner (0x090CFEF4) are CFRU's, except where marked "Radical Red".
  *
- * Not modelled yet: Fly and Dig in progress, switching to pass a Wish or against Wonder Guard,
- * the rarer partner cases (Skill Swap, Soak, Beat Up, Mummy), and the rarer doubles cases (pledges, terrains for a partner's
+ * Not in the game (so not here): switching against Wonder Guard in doubles (ShouldSwitchIfWonderGuard
+ * returns FALSE there), and the switches to dodge a locked move or a Fly / Dig (RunAllSemiInvulnerable-
+ * LockedMoveCalcs emits the switch but returns FALSE, and the move choice after it overwrites it, in
+ * CFRU master and in Radical Red alike). Not modelled: Mummy passed on with a contact move, and the rarer doubles cases (pledges, terrains for a partner's
  * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
  * CFRU's the way its singles code was.
  */
@@ -531,6 +533,19 @@ DoublesTurn.prototype.choose = function (x) {
 	var moveFor = function (y) {
 		return picks[y].index === null ? null : d.out[x][y].moves[picks[y].index];
 	};
+	// WontHitTargetWithMove: one of yours in the air or underground when the move lands is no target,
+	// unless both are.
+	var wontHit = function (y) {
+		var move = moveFor(y);
+		var foe = d.inc[y][x];
+		if (!move || !volatileOf(foe).semiInv) return false;
+		if (isSpreadMove(move) && !(hitsPartnerToo(move) && self.hurtsPartner(x, move))) return false;
+		if (isSelfTargeting(move) || (move.target & MOVE_TARGET_FOES_FIELD)) return false;
+		return !moveWillHit(d.out[x][y], foe, move, d.field) && hitsFirst(self.turn(x, y), d.out[x][y], move, foe);
+	};
+	if (self.alive(d.yours[0]) && self.alive(d.yours[1]) && wontHit(0) !== wontHit(1)) {
+		picks[wontHit(0) ? 0 : 1].points = -1;
+	}
 	var cls = doublesClass(me);
 	var attacker = isDoublesAttacker(cls);
 	var smart = (d.flags & AI_POSITIVES) !== 0;
@@ -629,6 +644,25 @@ DoublesTurn.prototype.choose = function (x) {
 	return {index: picks[target].index, move: moveFor(target), target: target, points: picks[target].points};
 };
 
+// A damaging move of the trainer's x that its partner can take without falling.
+DoublesTurn.prototype.partnerTakesIt = function (x, i) {
+	var d = this.d;
+	var me = d.foes[x];
+	var partner = d.foes[1 - x];
+	var move = me.moves[i];
+	if (!move || move.split === SPLIT_STATUS || typeEffectiveness(move.type, partner.types) === 0) return false;
+	var calcMove = d.results[x][0] && d.results[x][0][i] && d.results[x][0][i].move;
+	if (!calcMove) return false;
+	var partnerMon = d.partnerMons && d.partnerMons[1 - x];
+	if (!partnerMon) return false;
+	try {
+		var result = calc.calculate(gen, d.results[x][0][0].attacker, partnerMon, calcMove, d.field);
+		return result.range()[1] < partner.hp;
+	} catch (e) {
+		return false;
+	}
+};
+
 // IncreaseHelpingHandViability and IncreaseHealPartnerViability, by doubles class.
 var HELPING_HAND_BONUS = [6, 1, 1, 15, 13, 1, 10, 10];
 // (Radical Red's IncreaseHealPartnerViability, 0x090C6C74, has no case for total team support.)
@@ -698,6 +732,14 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 		};
 		// A move its partner's ability takes in: healing it, or raising its stats.
 		if (!partnerProtects && !((move.target & MOVE_TARGET_BOTH) && !hitsPartnerToo(move)) && !isSelfTargeting(move)) {
+			// A hit its ability turns into a boost: Justified (Dark), Rattled (Dark, Ghost, Bug), Steam Engine
+			// (Fire, Water), as long as it doesn't knock it out; Contrary turns a stat drop around.
+			if (!partnerSupports && self.partnerTakesIt(x, i)) {
+				if (ability === "Justified" && move.type === "Dark" && hasRealPhysical(partner) && canRise("atk")) help();
+				if (ability === "Rattled" && has(["Dark", "Ghost", "Bug"], move.type) && !d.trickRoom && canRise("spe") && slowerThanYou) help();
+				if (ability === "Steam Engine" && has(["Fire", "Water"], move.type) && !d.trickRoom && canRise("spe") && slowerThanYou) help();
+			}
+			if (!partnerSupports && ability === "Contrary" && move.split === SPLIT_STATUS && /_DOWN(_2)?$/.test(AI_EFFECT_NAMES[move.effect] || "")) help();
 			if (move.type === "Electric" && ability === "Volt Absorb") heal();
 			if (move.type === "Water" && has(["Water Absorb", "Dry Skin"], ability)) heal();
 			if (!partnerSupports) {
@@ -711,6 +753,29 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 			}
 		}
 		switch (move.effect) {
+		case E.SKILL_SWAP:
+		case E.ROLE_PLAY:
+			// An ability that holds it back (Truant, Slow Start, Defeatist): take it away, or swap a good one in.
+			var badPartner = has(["Truant", "Slow Start", "Defeatist"], partner.ability);
+			var badSelf = has(["Truant", "Slow Start", "Defeatist"], me.ability);
+			if (partnerProtects) break;
+			if (has(["Worry Seed", "Gastro Acid", "Simple Beam"], move.name) && badPartner) help();
+			else if (move.name === "Entrainment" && badPartner && !badSelf) help();
+			else if (move.name === "Skill Swap" && badPartner && !badSelf) help();
+			else if (move.name === "Role Play" && badSelf && !badPartner) bonus = Math.max(bonus, DOUBLES_DAMAGE_BONUS[cls][12]);
+			break;
+		case E.TYPE_CHANGES:
+			// Soak on a Wonder Guard partner: one type, fewer weaknesses.
+			if (move.name === "Soak" && !partnerProtects && partner.ability === "Wonder Guard" &&
+				(partner.types.length !== 1 || partner.types[0] !== "Water")) help();
+			break;
+		case E.BEAT_UP:
+			// Beat Up into a partner whose ability turns the hits into boosts.
+			if (self.partnerTakesIt(x, i)) {
+				if (ability === "Justified" && hasRealPhysical(partner) && canRise("atk")) help();
+				else if (ability === "Stamina" && canRise("def")) help();
+			}
+			break;
 		case E.HELPING_HAND:
 			if (partnerSupports || partnerProtects) break;
 			if (move.name === "Decorate") {
@@ -733,6 +798,16 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 			break;
 		case E.RESTORE_HP:
 			if (has(["Life Dew", "Jungle Healing"], move.name) && !partnerProtects) heal();
+			// Purify: a status that does it harm.
+			if (move.name === "Purify" && !partnerProtects && partner.status && !(partner.status === "slp" && partnerMove &&
+				has(["Sleep Talk", "Snore"], partnerMove.name)) && !has(["Guts", "Marvel Scale", "Quick Feet", "Poison Heal", "Toxic Boost", "Flare Boost"], ability) &&
+				!hasMoveNamed(partner, ["Facade"])) help();
+			break;
+		case E.TEAM_EFFECTS:
+			// Magnet Rise against its partner's Earthquake.
+			if (move.name === "Magnet Rise" && isGrounded(me, d.field) && hasMoveWhere(partner, function (m) {
+				return isDamaging(m) && m.type === "Ground" && hitsPartnerToo(m);
+			}) && typeEffectiveness("Ground", me.types) >= 1) bonus = Math.max(bonus, [0, 6, 6, 9, 5, 10, 4, 4][cls]);
 			break;
 		case E.HEAL_TARGET:
 			if (!partnerProtects) heal();
@@ -843,6 +918,8 @@ DoublesTurn.prototype.switchDecision = function (x) {
 			decide("to take your move with its ability", absorbingSwitchIn(against, justIn));
 		}
 	}
+	// Its Wish lands next turn: a hurt benched Pokémon comes in for it.
+	decide("to pass on its Wish", passOnWish(turn1, true));
 	// Perish Song's last turn.
 	if (vol.perishLast) decide("because Perish Song is about to take it", {mon: best()});
 	// Nothing useful to do against either of yours.
@@ -1019,7 +1096,7 @@ function readAIDoublesBattle() {
 	var yoursLeft = countYourMonsLeft();
 	var sideStates = {foe: readSideState("R"), yours: readSideState("L")};
 	var kos = typeof getKOSlots === "function" ? getKOSlots(currentTrainerIndex) : [];
-	var d = {foes: [null, null], yours: [null, null], out: [[null, null], [null, null]], inc: [[null, null], [null, null]],
+	var d = {partnerMons: foeMons, foes: [null, null], yours: [null, null], out: [[null, null], [null, null]], inc: [[null, null], [null, null]],
 		bench: [[], []], justSwitchedIn: [false, false],
 		results: [[null, null], [null, null]], field: aiField, trickRoom: $("#trickroom").prop("checked"), flags: getAIFlags(),
 		foeSlots: [activeTrainerSlot, partners.foe ? partners.foe.slot : null], yourSets: [$("#p1 input.set-selector").val(), partners.yours]};

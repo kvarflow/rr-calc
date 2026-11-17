@@ -404,11 +404,12 @@ function isAsleep(side) {
  * torment, disabled (a move's name), healBlock, yawn, perish (Perish Song counting; perishLast: it
  * faints this turn), confused, infatuated, wrapped (Bind, Fire Spin...), noEscape (Mean Look),
  * destinyBond (it used it last turn), recharge (Hyper Beam's turn off), locked (into lastMove:
- * Outrage, a charging move), stockpile (0-3), wish (one is on its way).
+ * Outrage, a charging move), stockpile (0-3), wish (one is on its way), semiInv (in the air or
+ * underground: Fly, Dig, Bounce, Dive, Phantom Force).
  */
 var AI_VOLATILE_DEFAULTS = {firstTurn: null, lastMove: "", protectUses: 0, sub: false, taunt: false, encore: false,
 	torment: false, disabled: "", healBlock: false, yawn: false, perish: false, perishLast: false, confused: false,
-	infatuated: false, wrapped: false, noEscape: false, destinyBond: false, recharge: false, locked: false, stockpile: 0, wish: false};
+	infatuated: false, wrapped: false, noEscape: false, destinyBond: false, recharge: false, locked: false, stockpile: 0, wish: false, semiInv: false};
 
 function volatileOf(side) {
 	return side.vol || AI_VOLATILE_DEFAULTS;
@@ -1297,6 +1298,8 @@ function shouldTrySetUp(turn, atk, def, move, stat) {
 	var predicted = turn.predicted(def);
 	if (hitsFirst(turn, atk, move, def)) {
 		if (canKnockOutWithChip(turn, def, atk)) return false;
+		// It can't be hit anyway (in the air or underground): set up.
+		if (volatileOf(def).semiInv) return true;
 		return stage(atk, stat) <= 8;
 	}
 	if (predicted && predicted.effect === E.SEMI_INVULNERABLE) return true;
@@ -1865,6 +1868,7 @@ function scoreNegativesCore(turn, atk, def, i, score) {
 		}) && !ignoresAbilities(atk)) return down(10);
 		// Radical Red: not into a foe that can Protect or hide (Fly, Dig); no type check after.
 		if (hasProtectMove(def) || hasEffect(def, [E.SEMI_INVULNERABLE])) return down(10);
+		if (volatileOf(def).semiInv && hitsFirst(turn, atk, move, def)) return down(10);
 		var explosionKOs = knocksOut(turn, atk, def, i, 1);
 		if (def.monsLeft <= 1 && explosionKOs) return score;
 		if (!explosionKOs || (def.monsLeft >= 2 && anotherMoveKnocksOut(turn, atk, def, i))) down(4);
@@ -3125,6 +3129,8 @@ function shouldProtect(turn, atk, def) {
 	if (atk.ability === "Speed Boost" && atk.speed <= def.speed && stage(atk, "spe") < 12) return true;
 	var predicted = turn.predicted(def);
 	if (predicted && predicted.effect === E.EXPLOSION) return true;
+	// The foe coming down from Fly or up from Dig.
+	if (predicted && predicted.effect === E.SEMI_INVULNERABLE && volatileOf(def).semiInv) return true;
 	var passive = passiveRecovery(atk, field);
 	if (canKnockOut(turn, def, atk)) return !canKnockOutAfterHealing(turn, def, atk, passive) || secondaryDamage(def, field) > 0;
 	if (can2HKO(turn, def, atk)) return secondaryDamage(def, field) > 0 || !twoHitsAfterHealing(turn, def, atk, passive);
@@ -3837,6 +3843,23 @@ function switchInsInOrder(turn) {
 
 /* The checks in ShouldSwitch, in order. Each returns null or {mon, pivot}; mon null means the best. */
 
+// PassOnWish: its Wish lands next turn; a benched Pokémon under half HP comes in for it, unless this
+// one is under half itself and can take a hit (or Protect). `doubles`: no check of your next hit.
+function passOnWish(turn, doubles) {
+	var battle = turn.battle;
+	var ai = battle.ai;
+	if (!volatileOf(ai).wish) return null;
+	if (ai.hp < ai.maxHP / 2 && (!canKnockOut(turn, battle.player, ai) || hasProtectMove(ai))) return null;
+	var list = switchInsInOrder(turn);
+	for (var k = 0; k < list.length; k++) {
+		var mon = list[k].entry.mon;
+		if (mon.hp < mon.maxHP / 2 && !willFaintFromHazards(mon, ai.sideState, battle.field) && (doubles || predictedHitWontKO(turn, mon))) {
+			return {mon: mon};
+		}
+	}
+	return null;
+}
+
 // FindMonThatAbsorbsOpponentsMove.
 function switchToAbsorb(turn, justIn) {
 	var battle = turn.battle;
@@ -4331,6 +4354,8 @@ function switchChecks(turn) {
 		decide(function () {
 			return switchToAbsorb(turn, justIn);
 		}), decide(function () {
+			return passOnWish(turn, false);
+		}), decide(function () {
 			// ShouldSwitchIfPerishSong: on the count's last turn.
 			return volatileOf(battle.ai).perishLast ? {mon: null} : null;
 		}), decide(function () {
@@ -4477,7 +4502,7 @@ function chooseShares(scores, moves) {
 }
 
 // Why the AI switches, in ShouldSwitch's order (for the Battle tab's tooltip).
-var SWITCH_REASONS = ["to take your move with its ability", "because Perish Song is about to take it", "against your Wonder Guard",
+var SWITCH_REASONS = ["to take your move with its ability", "to pass on its Wish", "because Perish Song is about to take it", "against your Wonder Guard",
 	"because its moves are no good here", "to heal with its ability", "because of Yawn", "because it is asleep", "because of Leech Seed",
 	"to avoid being knocked out", "because its attacking stat is down", "to save it for later"];
 
@@ -4709,8 +4734,8 @@ function maxCritRoll(result) {
 }
 
 /*
- * The trainer's other Pokémon still standing (not KO'd, not the one on the field), at full HP,
- * each against yours and yours against each. None while two are out in a double battle.
+ * The trainer's other Pokémon still standing (not KO'd, not the one on the field), at full HP
+ * (or as the game has them, with emulator sync), each against yours and yours against each. None while two are out in a double battle.
  */
 function readAIParty(p1, playerField, aiField, options) {
 	if (typeof TRAINER_ORDER === "undefined" || typeof getTrainerVariant !== "function" || typeof activeTrainerSlot !== "number") return [];
@@ -4746,6 +4771,12 @@ function buildBenchSide(trainer, setId, slot, p1, playerField, aiField, options)
 		}
 	} catch (e) {
 		return null;
+	}
+	// Its HP and status as the game has them (emulator sync), else full HP and healthy.
+	var state = typeof getEmulatorBenchState === "function" ? getEmulatorBenchState(slot) : null;
+	if (state) {
+		pokemon.originalCurHP = Math.max(1, Math.round(pokemon.maxHP() * state.hpPercent / 100));
+		pokemon.status = state.status || "";
 	}
 	var out = [];
 	var incoming = [];
