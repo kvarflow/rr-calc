@@ -467,8 +467,10 @@ function getTrainerNavOrder(all) {
 	var showRoutes = all || areRouteTrainersShown();
 	var skipped = readSkippedFights();
 	TRAINER_ORDER.forEach(function (trainer, index) {
-		if (!trainer.route || !(showRoutes || index === currentTrainerIndex)) return;
-		var before = trainer.route.before === null ? "end" : trainer.route.before;
+		// A moved boss fight goes with the trainers before the fight it now comes before.
+		var placed = trainer.route || trainer.moved;
+		if (!placed || (trainer.route && !(showRoutes || index === currentTrainerIndex))) return;
+		var before = placed.before === null ? "end" : placed.before;
 		(routes[before] = routes[before] || []).push(index);
 	});
 	// Those before the same fight, a place at a time (Route 6's, then the S.S. Anne's), each place's in
@@ -495,16 +497,25 @@ function getTrainerNavOrder(all) {
 			});
 		}
 	});
+	// A group, with the trainers before each moved fight in it just ahead of that fight.
+	var group = function (key) {
+		var out = [];
+		(routes[key] || []).forEach(function (index) {
+			if (TRAINER_ORDER[index].moved && routes[index]) out = out.concat(routes[index]);
+			out.push(index);
+		});
+		return out;
+	};
 	TRAINER_ORDER.forEach(function (trainer, index) {
-		if (trainer.route) return;
-		if (routes[index]) order = order.concat(routes[index]);
+		if (trainer.route || trainer.moved) return;
+		if (routes[index]) order = order.concat(group(index));
 		if (trainer.parallel && skipped.indexOf(index) !== -1 && !isBeatenFight(index)) (waiting[trainer.parallel.gate] = waiting[trainer.parallel.gate] || []).push(index);
 		else if (!trainer.duplicate || index === currentTrainerIndex) order.push(index);
 		Object.keys(ends).forEach(function (gate) {
 			if (ends[gate] === index && waiting[gate]) order = order.concat(waiting[gate]);
 		});
 	});
-	return order.concat(routes.end || []);
+	return order.concat(group("end"));
 }
 
 /*
@@ -555,6 +566,7 @@ function applyTrainerOrderFixes() {
 			if (trainer.route.home === undefined) trainer.route.home = trainer.route.before;
 			trainer.route.before = trainer.route.home;
 		}
+		delete trainer.moved;
 		var key = getTrainerKey(index);
 		if (byKey[key] === undefined) byKey[key] = index;
 	});
@@ -564,7 +576,11 @@ function applyTrainerOrderFixes() {
 			if (before === undefined || (before !== null && TRAINER_ORDER[before].route) || !$.isArray(fixes[group])) return;
 			fixes[group].forEach(function (key) {
 				var index = byKey[key];
-				if (index !== undefined && TRAINER_ORDER[index].route) TRAINER_ORDER[index].route.before = before;
+				if (index === undefined || index === before) return;
+				var trainer = TRAINER_ORDER[index];
+				if (trainer.route) trainer.route.before = before;
+				// A boss fight listed under another comes before it (not duplicates; not a chain of moves).
+				else if (!trainer.duplicate) trainer.moved = {before: before};
 			});
 		});
 	});
@@ -602,10 +618,36 @@ if (typeof TRAINER_ORDER !== "undefined") applyMinimalGrinding();
 
 // The route trainers before the same fight as this one, in the order they come.
 function getRouteGroup(index) {
-	var before = TRAINER_ORDER[index].route.before;
-	return getTrainerNavOrder(true).filter(function (other) {
-		return TRAINER_ORDER[other].route && TRAINER_ORDER[other].route.before === before;
+	return getRouteGroupBefore(getPlacedBefore(index));
+}
+
+// The fight a route trainer or a moved boss fight comes before (null: after the last); undefined for
+// a boss fight in its own place.
+function getPlacedBefore(index) {
+	var trainer = TRAINER_ORDER[index];
+	var placed = trainer && (trainer.route || trainer.moved);
+	return placed ? placed.before : undefined;
+}
+
+// A fight that can be moved on the Mastersheet: a route trainer, or a boss fight (not a duplicate).
+function isMovableFight(index) {
+	var trainer = TRAINER_ORDER[index];
+	return !!trainer && (!!trainer.route || !trainer.duplicate);
+}
+
+// Puts a moved boss fight back in its own place.
+function unmoveFight(index) {
+	var key = getTrainerKey(index);
+	var fixes = readOwnTrainerOrderFixes();
+	Object.keys(fixes).forEach(function (group) {
+		if ($.isArray(fixes[group])) fixes[group] = fixes[group].filter(function (other) {
+			return other !== key;
+		});
 	});
+	writeSetting(TRAINER_ORDER_FIXES_KEY + ":" + getPageMode(), JSON.stringify(fixes));
+	applyTrainerOrderFixes();
+	updateTrainerNavButtons();
+	$(document).trigger("trainer:order");
 }
 
 // Saves the order of the route trainers before these fights (each a `before`: an index, or null).
@@ -620,10 +662,11 @@ function saveRouteGroups(groups) {
 	$(document).trigger("trainer:order");
 }
 
-// The route trainers before a fight (`before`: its index, or null for those after the last), in order.
+// The route trainers (and moved boss fights) before a fight (`before`: its index, or null for those
+// after the last), in order.
 function getRouteGroupBefore(before) {
 	return getTrainerNavOrder(true).filter(function (other) {
-		return TRAINER_ORDER[other].route && TRAINER_ORDER[other].route.before === before;
+		return getPlacedBefore(other) === before;
 	});
 }
 
@@ -638,14 +681,14 @@ function getNeighbourRouteGroup(before, step) {
 	var to;
 	if (step < 0) {
 		to = before === null ? last : before - 1;
-		while (to > 0 && TRAINER_ORDER[to].duplicate) to--;
+		while (to > 0 && (TRAINER_ORDER[to].duplicate || TRAINER_ORDER[to].moved)) to--;
 		return to < 0 ? undefined : to;
 	}
 	if (before === null) return undefined;
 	to = before;
 	do {
 		to++;
-	} while (to <= last && TRAINER_ORDER[to - 1].duplicate);
+	} while (to <= last && (TRAINER_ORDER[to].duplicate || TRAINER_ORDER[to].moved || TRAINER_ORDER[to - 1].duplicate));
 	return to > last ? null : to;
 }
 
@@ -653,13 +696,13 @@ function getNeighbourRouteGroup(before, step) {
 function canMoveRouteTrainer(index, step) {
 	var group = getRouteGroup(index);
 	var to = group.indexOf(index) + step;
-	return (to >= 0 && to < group.length) || getNeighbourRouteGroup(TRAINER_ORDER[index].route.before, step) !== undefined;
+	return (to >= 0 && to < group.length) || getNeighbourRouteGroup(getPlacedBefore(index), step) !== undefined;
 }
 
 // Moves a route trainer one place earlier (-1) or later (+1): among those before the same fight,
 // or past that fight to the trainers of the next.
 function moveRouteTrainer(index, step) {
-	var before = TRAINER_ORDER[index].route.before;
+	var before = getPlacedBefore(index);
 	var group = getRouteGroup(index);
 	var at = group.indexOf(index);
 	var to = at + step;
@@ -684,14 +727,15 @@ function moveRouteTrainer(index, step) {
 // for after the last), after the trainers already before it.
 function moveRouteTrainersBefore(trainers, before) {
 	trainers = trainers.filter(function (index) {
-		return TRAINER_ORDER[index] && TRAINER_ORDER[index].route;
+		return isMovableFight(index) && index !== before;
 	});
-	if (!trainers.length || (before !== null && (!TRAINER_ORDER[before] || TRAINER_ORDER[before].route))) return false;
+	// Only before a boss fight in its own place.
+	if (!trainers.length || (before !== null && (!TRAINER_ORDER[before] || TRAINER_ORDER[before].route || TRAINER_ORDER[before].moved))) return false;
 	var groups = [];
 	var seen = [];
 	trainers.forEach(function (index) {
-		var from = TRAINER_ORDER[index].route.before;
-		if (from === before || seen.indexOf(from) !== -1) return;
+		var from = getPlacedBefore(index);
+		if (from === undefined || from === before || seen.indexOf(from) !== -1) return;
 		seen.push(from);
 		groups.push({before: from, trainers: getRouteGroupBefore(from).filter(function (other) {
 			return trainers.indexOf(other) === -1;

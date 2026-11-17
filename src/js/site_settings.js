@@ -126,6 +126,12 @@ var CHANGELOG = [
 			"Simple Beam now score as in the game (taking a good ability away, never into Wonder Guard, Insomnia or Simple)",
 		"Mirror Move and Copycat are scored as the status move they would copy",
 		"Double battles: Mummy (an ally with Truant or Slow Start hits its Mummy partner to lose it) and Ion Deluge into its partner's Volt Absorb"
+	]},
+	{version: "1.20", notes: [
+		"Mastersheet \u2192 Reorder: boss fights move too, optional ones included. A fight's Move before\u2026 menu puts it before another fight, " +
+			"where it then counts for the arc and level cap; Own place puts it back. Your KOs stay with it",
+		"Boss Pok\u00e9mon follow the game's own spreads: Normal Mode takes the game's EVs and natures where the document differs " +
+			"(Misty's Frogadier, Brock's team, Clair's Dragonite and more); Hardcore takes the game's natures and, as the game does, no EVs"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

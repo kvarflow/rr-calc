@@ -189,8 +189,20 @@ function buildMastersheetTrainer(index, folds, reorder) {
 	var head = $('<div class="ms-trainer-head sheet-fold-head" role="button" tabindex="0"></div>').appendTo(card);
 	var fold = head;
 	if (typeof buildTrainerSprites === "function") head.append(buildTrainerSprites(trainer, "ms-trainer-sprite"));
-	// Reordering: a route trainer moves earlier or later, past boss fights too.
-	if (reorder && trainer.route) {
+	// Reordering: a route trainer (or a boss fight that has been moved) moves earlier or later, past
+	// boss fights too; a boss fight can be moved before another, or put back in its own place.
+	if (reorder && !trainer.route && !trainer.duplicate) {
+		var mover = buildMastersheetPlaceMover(trainer.name, [index], true);
+		if (trainer.moved) {
+			mover = mover.add($('<button type="button" class="ms-move ms-unmove">Own place</button>')
+				.attr({title: "Put it back where the calc has it", "aria-label": "Put " + trainer.name + " back in its own place"})
+				.click(function () {
+					unmoveFight(index);
+				}));
+		}
+		head.append($('<span class="ms-boss-mover"></span>').append(mover));
+	}
+	if (reorder && (trainer.route || trainer.moved)) {
 		var arrow = function (step, label, text) {
 			return $('<button type="button" class="ms-move"></button>').text(text).attr({title: label, "aria-label": label + ": " + trainer.name})
 				.prop("disabled", !canMoveRouteTrainer(index, step))
@@ -298,15 +310,16 @@ function mastersheetMatches(query, place, index) {
 }
 
 // "Move these N before…": every boss fight by arc (and the end of the game), for a place's route trainers.
-function buildMastersheetPlaceMover(name, trainers) {
-	var label = "Move " + (trainers.length === 1 ? "this trainer" : "these " + trainers.length + " trainers") + " before\u2026";
+function buildMastersheetPlaceMover(name, trainers, boss) {
+	var label = boss ? "Move before\u2026" : "Move " + (trainers.length === 1 ? "this trainer" : "these " + trainers.length + " trainers") + " before\u2026";
 	var select = $('<select class="ms-place-move"></select>').attr("aria-label", name + ": " + label);
 	select.append($('<option value=""></option>').text(label));
 	getArcs().forEach(function (arc) {
 		var group = $("<optgroup></optgroup>").attr("label", arc.name + " Arc (cap " + arc.cap + ")").appendTo(select);
 		for (var index = arc.first; index <= arc.last; index++) {
 			var boss = TRAINER_ORDER[index];
-			if (boss.duplicate) continue;
+			// Not before a duplicate, a fight that has itself been moved, or itself.
+			if (boss.duplicate || boss.moved || trainers.indexOf(index) !== -1) continue;
 			group.append($("<option></option>").val(index).text(boss.name + (boss.location ? " (" + boss.location + ")" : "")));
 		}
 	});
@@ -399,7 +412,8 @@ function renderMastersheet(container) {
 		orderTools.empty().toggle(!!filters.reorder);
 		if (!filters.reorder) return;
 		orderTools.append($('<span class="ms-order-note"></span>').text(filters.routes ?
-			"\u25B2 / \u25BC move a route trainer earlier or later, past boss fights too. A place's menu moves all its route trainers before another fight. Saved for this mode; boss fights stay put." :
+			"\u25B2 / \u25BC move a route trainer earlier or later, past boss fights too. A place's menu moves all its route trainers before another fight; " +
+			"a boss fight's menu moves it (optional ones too), and it then counts in that fight's arc. Saved for this mode." :
 			"Turn on Route trainers to reorder them."));
 		if (!changes) return;
 		orderTools.append(

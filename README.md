@@ -28,7 +28,8 @@ with Radical Red's data read from the game itself.
 - **Mastersheet**: the whole game in order, an arc for each level cap ending with its boss, with
   every team and wild encounter. If your route differs, turn on Reorder: ▲ / ▼ carry a trainer
   earlier or later (past boss fights too), a place's menu moves all its trainers before another
-  fight, and Copy order changes gives you the changes to send in.
+  fight, a boss fight's menu moves it (optional ones too) into the arc where you fight it, and
+  Copy order changes gives you the changes to send in.
 - **Trainer AI**: the chance the foe picks each move, and when it switches and to whom (see below).
 - **Genders** as the game rolls them, so Rivalry and Attract work.
 - **Minimal Grinding** (Settings; set by importing your `.sav`): with it on the game gives
