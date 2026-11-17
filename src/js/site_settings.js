@@ -12,30 +12,17 @@ var SITE_SETTINGS = [
 // Newest last. Bump the version to show "What's new" again; keep each entry to a few short lines.
 var CHANGELOG = [
 	{version: "1.0", notes: [
-		"Team / Box panel and .sav import, with matchup colour coding"
-	]},
-	{version: "1.1", notes: [
-		"Previous / Next through every boss, rival teams per starter, Professor Oak's new run"
-	]},
-	{version: "1.2", notes: [
-		"Crit chances, Range Compare, Export All, Fight Notes and ability info"
-	]},
-	{version: "1.3", notes: [
+		"Team / Box panel and .sav import, with matchup colour coding",
+		"Previous / Next through every boss, rival teams per starter, Professor Oak's new run",
+		"Crit chances, Range Compare, Export All, Fight Notes and ability info",
 		"Small-screen layout for the Thor and phones, the Wild tab, offline and install"
 	]},
-	{version: "1.4", notes: [
-		"Trainer AI: how likely each move is, and when the foe switches"
-	]},
-	{version: "1.5", notes: [
-		"KO and fight tracking, run progress, level caps from your save"
-	]},
-	{version: "1.6", notes: [
+	{version: "1.1", notes: [
+		"Trainer AI: how likely each move is and when the foe switches, with Radical Red's move scoring",
+		"KO and fight tracking, run progress, level caps from your save",
 		"Protean, consecutive-use moves, box ranking and item info"
 	]},
-	{version: "1.7", notes: [
-		"Trainer AI: the rest of Radical Red's move scoring"
-	]},
-	{version: "1.8", notes: [
+	{version: "1.2", notes: [
 		"Every trainer in the order you walk to them, with sprites",
 		"Mastersheet, Frag sheet and Dex",
 		"Suggested EVs, and genders as in the game",
@@ -45,93 +32,27 @@ var CHANGELOG = [
 	], fixes: [
 		"Rivalry against the other gender, Unburden in the box, frostbite and the Toxic counter"
 	]},
-	{version: "1.9", notes: [
+	{version: "1.3", notes: [
 		"Faster: calculations and trainer changes in about half the time, and half as much to load",
 		"Backup (Import / Export): everything as one file, to restore here or on another device",
 		"Trainer pictures on the Battle tab, item icons, and type badges",
-		"Tap a heading in the Dex, Mastersheet or Frag sheet to fold it; the Frag sheet groups Team, Box and Fainted",
-		"In the Pcalc app: RetroArch sync built in, and automatic backups"
+		"Settings \u2192 Theme: Light, Dark or Black (true black, for OLED screens), and the tab bar at the top or the bottom",
+		"In the Pcalc app: RetroArch sync built in and on from the start, the save imported by itself each time it changes, and automatic backups"
 	], fixes: [
-		"Small screens: Rivalry never applied (genders were read as genderless)",
-		"Small screens: Metronome's use count was ignored on the Battle tab",
-		"A Pok\u00e9mon with no sprite keeps its place in the Dex"
+		"Small screens: Rivalry never applied, and Metronome's use count was ignored on the Battle tab"
 	]},
-	{version: "1.10", notes: [
-		"Settings \u2192 Theme: Light, Dark or Black (true black, for OLED screens like the AYN Thor's)",
-		"Settings \u2192 Tabs: the tab bar at the top or the bottom of the screen",
-		"In the Pcalc app: the game's save is imported by itself each time it changes (Import / Export \u2192 " +
-			"Auto-import), the tabs start at the bottom, and the full-screen and Install buttons are gone",
-		"In the Pcalc app: emulator sync is on from the start and connects to RetroArch by itself"
-	]},
-	{version: "1.11", notes: [
-		"Arcs end with their boss: what comes after a gym leader is in the next arc (Route 9, Rock Tunnel, Morty and Route 8 lead up to Erika)",
-		"50 route trainers that were missing, with the moves the game gives them (Rock Tunnel's Hikers Lucas, Allen and Dudley among them)",
-		"Mastersheet \u2192 Reorder: \u25B2 / \u25BC now carry a trainer past boss fights, and each place has a menu to move all its trainers before another fight. Copy order changes sends your order in",
-		"Copy AI report (beside What's new): when the trainer's AI did something else than predicted, it copies the fight as it stands to send in"
-	], fixes: [
-		"Route 10 comes on both sides of Rock Tunnel, and the S.S. Anne's sailors with the rest of the ship"
-	]},
-	{version: "1.12", notes: [
-		"Turn (beside the foe's moves): tell the trainer's AI what has happened this battle. Tap the move each side used last turn " +
-			"and tick what applies: a Choice lock, Encore, Disable, Taunt, Protects in a row, a Substitute, Yawn, Perish Song, " +
-			"recharging, locked into Outrage and more",
-		"The AI switches out of Yawn and on Perish Song's last turn, stays in behind a Substitute or with Destiny Bond up, " +
-			"and won't use a status move into your Substitute",
-		"Emulator sync sends the battle's history too, so Turn fills itself in (sync script 2: fetch the script again)",
-		"Minimal Grinding (Settings; set by importing your .sav): with it on the game gives trainers' Pok\u00e9mon no EVs, and so does the calc now"
-	], fixes: [
-		"70 boss Pok\u00e9mon had EVs a few points off the game's (4 Def where it has 6 HP); Falkner's Rufflet and Brock's Onix were missing theirs",
-		"Hardcore: the route trainers added in 1.11 had EVs the game does not give them"
-	]},
-	{version: "1.13", notes: [
-		"Double battles, a first version: Doubles (beside Turn) shows both Pok\u00e9mon on each side, and for each of the trainer's two how " +
-			"often it uses each move on each of yours, with the damage. Pick who is out beside the two in the calculator",
-		"In a double battle the chances on Battle are the doubles ones. Not predicted yet: switching, and moves aimed at its own partner"
-	]},
-	{version: "1.14", notes: [
-		"Double battles: status moves follow the doubles rules. Trick Room when its side is the slower one, Fake Out on the bigger threat, " +
-			"Protect and Wide Guard (from its own partner's Earthquake too), Follow Me, Tailwind, Icy Wind and the like for speed control, " +
-			"a sleep move on both of yours, and no repeating what its partner is already doing"
-	]},
-	{version: "1.15", notes: [
-		"Emulator sync follows double battles: the Pok\u00e9mon beside each one come from the game, with their HP, status, stat changes and history",
-		"Double battles: the trainer's Pok\u00e9mon can switch out (to absorb your move, when its moves do nothing to either of yours, " +
-			"asleep, Yawn, Leech Seed, lowered attacking stats), shown in Doubles and on Battle"
-	]},
-	{version: "1.16", notes: [
-		"Double battles: moves the trainer's Pok\u00e9mon use on their own partner. Helping Hand while it attacks, Heal Pulse and Life Dew " +
-			"at two thirds HP or less, a move its ability takes in (Water Absorb, Lightning Rod, Flash Fire...), weather it uses, " +
-			"After You and Instruct. Doubles shows them in a column of their own"
-	]},
-	{version: "1.17", notes: [
-		"Double battles checked against Radical Red's own code (decompiled from the game), not only CFRU's: the target choice, " +
-			"the killing scores and every role table match. Where Radical Red differs, the calc now follows it: roles from 2 attacks and " +
-			"2 boosting moves, no healing its partner for pure support Pok\u00e9mon, Pledge combos +20, Teleport under Trick Room",
-		"Double battles: the doubles versions of more moves (draining, Fell Stinger, Throat Chop, Sky Drop, Flame Burst, terrains, " +
-			"screens, Haze and Roar, Will-O-Wisp, U-turn and the other pivots, Rapid Spin and Defog, King's Shield), and moves your " +
-			"other Pok\u00e9mon's Lightning Rod, Storm Drain, Magic Bounce or the Veils would ruin"
-	], fixes: [
-		"Single battles: a Baton Pass Pok\u00e9mon's Protect was a point short of the game's"
-	]},
-	{version: "1.18", notes: [
-		"Turn \u2192 Flying / digging: your Pok\u00e9mon in the air or underground (Fly, Dig, Bounce, Dive, Phantom Force). The AI sets up or " +
-			"Protects while it can't be hit, and in a double battle goes for your other Pok\u00e9mon. Emulator sync fills it in",
-		"With emulator sync the trainer's benched Pok\u00e9mon have their real HP and status, so its switch-ins are judged as the game does; " +
-			"and it switches to pass a Wish to a hurt one",
-		"Double battles: the last partner moves (Skill Swap, Role Play, Entrainment, Worry Seed, Gastro Acid and Simple Beam on Truant or Slow Start, " +
-			"Soak on Wonder Guard, Beat Up and hits into Justified, Rattled, Steam Engine or Stamina, Purify, Magnet Rise, Acupressure)"
-	]},
-	{version: "1.19", notes: [
-		"The trainer AI reads the game's own ability ratings and ban lists: Skill Swap, Role Play, Entrainment, Worry Seed, Gastro Acid and " +
-			"Simple Beam now score as in the game (taking a good ability away, never into Wonder Guard, Insomnia or Simple)",
-		"Mirror Move and Copycat are scored as the status move they would copy",
-		"Double battles: Mummy (an ally with Truant or Slow Start hits its Mummy partner to lose it) and Ion Deluge into its partner's Volt Absorb"
-	]},
-	{version: "1.20", notes: [
-		"Mastersheet \u2192 Reorder: boss fights move too, optional ones included. A fight's Move before\u2026 menu puts it before another fight, " +
-			"where it then counts for the arc and level cap; Own place puts it back. Your KOs stay with it",
-		"Boss Pok\u00e9mon follow the game's own spreads: Normal Mode takes the game's EVs and natures where the document differs " +
-			"(Misty's Frogadier, Brock's team, Clair's Dragonite and more); Hardcore takes the game's natures and, as the game does, no EVs"
+	{version: "1.4", notes: [
+		"Arcs follow the game's routing and end with their boss (Route 9, Rock Tunnel, Morty and Route 8 lead up to Erika), " +
+			"with 50 route trainers that were missing",
+		"Mastersheet \u2192 Reorder: move any trainer or boss fight, optional ones included, before another fight; " +
+			"it then counts for that arc and level cap. Copy order changes sends your order in",
+		"Turn (beside the foe's moves): tell the AI what has happened this battle (Choice lock, Encore, Taunt, Substitute, " +
+			"Fly / Dig and more). Emulator sync fills it in, with the benched Pok\u00e9mon's real HP (sync script 2)",
+		"Double battles: Doubles (beside Turn) shows how often each of the trainer's two uses each move on each of yours, " +
+			"its switches and moves on its own partner, checked against Radical Red's own code",
+		"The AI uses the game's ability ratings; Mirror Move and Copycat are scored as the move they copy",
+		"Boss Pok\u00e9mon have the game's own EVs and natures; Hardcore and Minimal Grinding give no EVs, as the game does",
+		"Copy AI report (beside What's new): when the AI did something else than predicted, send in the fight"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
