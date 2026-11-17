@@ -35,8 +35,7 @@
  * Not in the game (so not here): switching against Wonder Guard in doubles (ShouldSwitchIfWonderGuard
  * returns FALSE there), and the switches to dodge a locked move or a Fly / Dig (RunAllSemiInvulnerable-
  * LockedMoveCalcs emits the switch but returns FALSE, and the move choice after it overwrites it, in
- * CFRU master and in Radical Red alike). Not modelled: Mummy passed on with a
- * contact move, and Ion Deluge.
+ * CFRU master and in Radical Red alike).
  */
 
 // PredictFightingStyle's doubles classes, as rows of DOUBLES_DAMAGE_BONUS.
@@ -643,6 +642,25 @@ DoublesTurn.prototype.choose = function (x) {
 	return {index: picks[target].index, move: moveFor(target), target: target, points: picks[target].points};
 };
 
+// The place of the trainer's x's weakest contact move against its partner (the most accurate first).
+DoublesTurn.prototype.weakestContactMove = function (x) {
+	var me = this.d.foes[x];
+	var best = -1;
+	me.moves.forEach(function (move, i) {
+		if (!move || move.split === SPLIT_STATUS || !(move.flags & FLAG_CONTACT)) return;
+		if (best === -1 || move.bp < me.moves[best].bp || (move.bp === me.moves[best].bp && move.accuracy > me.moves[best].accuracy)) best = i;
+	});
+	return best;
+};
+
+// Can either of yours knock the trainer's x out before it acts again?
+DoublesTurn.prototype.yoursKnockOut = function (x) {
+	var self = this;
+	return [0, 1].some(function (y) {
+		return self.alive(self.d.yours[y]) && canKnockOut(self.turn(x, y), self.d.inc[y][x], self.d.out[x][y]);
+	});
+};
+
 // A damaging move of the trainer's x that its partner can take without falling.
 DoublesTurn.prototype.partnerTakesIt = function (x, i) {
 	var d = this.d;
@@ -739,6 +757,12 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 				if (ability === "Steam Engine" && has(["Fire", "Water"], move.type) && !d.trickRoom && canRise("spe") && slowerThanYou) help();
 			}
 			if (!partnerSupports && ability === "Contrary" && move.split === SPLIT_STATUS && /_DOWN(_2)?$/.test(AI_EFFECT_NAMES[move.effect] || "")) help();
+			// Mummy: its weakest contact move onto a Mummy partner rids it of Truant, Slow Start or Defeatist,
+			// if neither of yours knocks it out before it can use its new ability.
+			if (ability === "Mummy" && has(["Truant", "Slow Start", "Defeatist"], me.ability) && (move.flags & FLAG_CONTACT) &&
+				self.partnerTakesIt(x, i) && self.weakestContactMove(x) === i && !self.yoursKnockOut(x)) {
+				bonus = Math.max(bonus, DOUBLES_DAMAGE_BONUS[cls][12]);
+			}
 			if (move.type === "Electric" && ability === "Volt Absorb") heal();
 			if (move.type === "Water" && has(["Water Absorb", "Dry Skin"], ability)) heal();
 			if (!partnerSupports) {
@@ -801,6 +825,14 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 			if (move.name === "Purify" && !partnerProtects && partner.status && !(partner.status === "slp" && partnerMove &&
 				has(["Sleep Talk", "Snore"], partnerMove.name)) && !has(["Guts", "Marvel Scale", "Quick Feet", "Poison Heal", "Toxic Boost", "Flare Boost"], ability) &&
 				!hasMoveNamed(partner, ["Facade"])) help();
+			break;
+		case E.FIELD_EFFECTS:
+			// Ion Deluge: your Normal-type move on its partner becomes Electric, into Volt Absorb, Motor Drive or Lightning Rod.
+			if (move.name === "Ion Deluge" && has(["Volt Absorb", "Motor Drive", "Lightning Rod"], ability) && [0, 1].some(function (y) {
+				if (!self.alive(d.yours[y])) return false;
+				var yours = self.turn(1 - x, y).predicted(d.inc[y][1 - x]);
+				return !!yours && yours.type === "Normal" && yours.split !== SPLIT_STATUS && !(partnerMove && partnerMove.effect === E.PROTECT);
+			})) bonus = Math.max(bonus, [0, 6, 6, 9, 5, 10, 4, 4][cls]);
 			break;
 		case E.TEAM_EFFECTS:
 			// Magnet Rise against its partner's Earthquake.

@@ -120,6 +120,12 @@ var CHANGELOG = [
 			"and it switches to pass a Wish to a hurt one",
 		"Double battles: the last partner moves (Skill Swap, Role Play, Entrainment, Worry Seed, Gastro Acid and Simple Beam on Truant or Slow Start, " +
 			"Soak on Wonder Guard, Beat Up and hits into Justified, Rattled, Steam Engine or Stamina, Purify, Magnet Rise, Acupressure)"
+	]},
+	{version: "1.19", notes: [
+		"The trainer AI reads the game's own ability ratings and ban lists: Skill Swap, Role Play, Entrainment, Worry Seed, Gastro Acid and " +
+			"Simple Beam now score as in the game (taking a good ability away, never into Wonder Guard, Insomnia or Simple)",
+		"Mirror Move and Copycat are scored as the status move they would copy",
+		"Double battles: Mummy (an ally with Truant or Slow Start hits its Mummy partner to lose it) and Ion Deluge into its partner's Volt Absorb"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

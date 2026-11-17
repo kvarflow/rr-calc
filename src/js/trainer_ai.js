@@ -1352,6 +1352,36 @@ function statBonus(turn, atk, def, move, stat, limit, boost) {
  */
 var AROMA_VEIL_MOVES = ["Taunt", "Torment", "Encore", "Disable", "Attract", "Heal Block"];
 
+// gAbilityRatings (data/ability_ratings.js, from the game): how much the AI values an ability; 0 unknown.
+function abilityRating(ability) {
+	if (!ability || typeof AI_ABILITY_RATINGS === "undefined") return 0;
+	return AI_ABILITY_RATINGS[ability] || 0;
+}
+
+function isAbilityBanned(list, ability) {
+	return typeof AI_ABILITY_BANS !== "undefined" && has(AI_ABILITY_BANS[list], ability);
+}
+
+// Mirror Move and Copycat as the move they would copy (going first: the foe's last move; going second:
+// the move you are about to use), as this side's move in slot i; null when there is none to copy.
+var COPY_BANNED_MOVES = ["Copycat", "Mirror Move", "Assist", "Metronome", "Me First", "Sleep Talk", "Struggle", "Chatter", "Counter",
+	"Mirror Coat", "Protect", "Detect", "Endure", "Transform", "Focus Punch", "Dynamax Cannon"];
+
+function copiedMove(turn, atk, def, i) {
+	var move = atk.moves[i];
+	var copy = hitsFirst(turn, atk, move, def) ? lastMoveOf(def) : turn.predicted(def);
+	if (!copy || has(COPY_BANNED_MOVES, copy.name) || hasMoveNamed(atk, [copy.name])) return null;
+	// Only a status move keeps its meaning (an attack's damage is the foe's against the AI, not the AI's).
+	if (copy.split !== SPLIT_STATUS) return null;
+	return $.extend({}, copy, {index: i});
+}
+
+function withMove(side, i, move) {
+	var copy = $.extend({}, side, {moves: side.moves.slice()});
+	copy.moves[i] = move;
+	return copy;
+}
+
 function doublesAbilityPenalty(turn, atk, move) {
 	var ctx = turn.doubles;
 	var def = turn.battle.player;
@@ -1395,6 +1425,26 @@ function scoreNegatives(turn, atk, def, i, score) {
 
 function scoreNegativesCore(turn, atk, def, i, score) {
 	var move = atk.moves[i];
+	// Mirror Move and Copycat: nothing to copy (-10), else what they copy, scored as itself.
+	if (move.effect === E.MIRROR_MOVE) {
+		var first = hitsFirst(turn, atk, move, def);
+		if (first ? !volatileOf(def).lastMove : !turn.predicted(def)) return Math.max(0, score - (turn.doubles ? 20 : 10));
+		var copy = copiedMove(turn, atk, def, i);
+		return copy ? scoreNegativesCore(turn, withMove(atk, i, copy), def, i, score) : score;
+	}
+	// Skill Swap, Role Play and the moves that change the foe's ability: the game's ban lists.
+	if (move.effect === E.SKILL_SWAP || move.effect === E.ROLE_PLAY) {
+		var mine = atk.ability;
+		var theirs = defAbility(atk, def);
+		var banned = false;
+		if (move.name === "Skill Swap") banned = mine === theirs || !mine || !theirs || isAbilityBanned("skillSwap", mine) || isAbilityBanned("skillSwap", theirs);
+		else if (move.name === "Role Play") banned = mine === theirs || !theirs || isAbilityBanned("cantCopy", theirs) || isAbilityBanned("cantReplace", mine);
+		else if (move.name === "Worry Seed") banned = theirs === "Insomnia" || isAbilityBanned("worrySeed", theirs);
+		else if (move.name === "Simple Beam") banned = theirs === "Simple" || isAbilityBanned("simpleBeam", theirs);
+		else if (move.name === "Gastro Acid") banned = !theirs || isAbilityBanned("gastroAcid", theirs);
+		else if (move.name === "Entrainment") banned = mine === theirs || isAbilityBanned("cantCopy", mine) || isAbilityBanned("worrySeed", theirs);
+		if (banned) return Math.max(0, score - (turn.doubles ? 20 : 10));
+	}
 	var field = turn.battle.field;
 	var flags = turn.flags;
 	var goodAI = flags > 1;
@@ -2826,6 +2876,22 @@ function scorePositives(turn, atk, def, i, score) {
 			if (turn.doubles) up(turn.doubles.toScore(5));
 			else if (isSweeper(style)) up(3);
 		}
+		break;
+	case E.SKILL_SWAP:
+		// gAbilityRatings: take a good ability away, or swap a worse one for it.
+		var theirRating = abilityRating(defAbility(atk, def));
+		if (has(["Worry Seed", "Gastro Acid", "Simple Beam"], move.name)) {
+			if (theirRating >= 5) status(2);
+		} else if (move.name === "Entrainment") {
+			if ((theirRating >= 5 || abilityRating(atk.ability) <= 0) && def.ability !== atk.ability) status(2);
+		} else if (move.name === "Skill Swap") {
+			if (theirRating > abilityRating(atk.ability)) status(1);
+		}
+		break;
+	case E.MIRROR_MOVE:
+		// Scored as the move it copies (a status move; see copiedMove).
+		var copied = copiedMove(turn, atk, def, i);
+		if (copied) score = scorePositives(turn, withMove(atk, i, copied), def, i, score);
 		break;
 	case E.TYPE_CHANGES:
 		if (move.name === "Soak") {
