@@ -8,7 +8,7 @@ const ctx=await b.newContext({viewport:vp,serviceWorkers:'block',permissions:['c
 await p.addInitScript(VERSION=>{localStorage.setItem('lastChangelogVersion',VERSION)},VERSION);
 await p.goto(BASE+'/'+mode+'.html');await p.waitForTimeout(2500);
 const tag=mode+' '+vp.width+': ';
-ok(await p.evaluate(()=>!$('.info-dialog:visible, .list-dialog:visible').length),tag+'no What\'s new with 1.11 seen');
+ok(await p.evaluate(()=>!$('.info-dialog:visible, .list-dialog:visible').length),tag+'no What\'s new once seen');
 // every trainer's sets exist
 const missing=await p.evaluate(()=>{const bad=[];TRAINER_ORDER.forEach(t=>t.variants.forEach(v=>v.sets.forEach(id=>{const sp=id.slice(0,id.indexOf(' ('));const nm=id.slice(sp.length+2,-1);if(!(setdex[sp]&&setdex[sp][nm]))bad.push(id)})));return bad});
 ok(missing.length===0,tag+'every trainer set exists '+missing.slice(0,3));

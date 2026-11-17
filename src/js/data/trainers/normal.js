@@ -1017,7 +1017,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 3)",
+     "Staraptor (*Rival Blue Set 1)",
      "Kingambit (*Rival Blue Set 1)",
      "Jumpluff (*Rival Blue Set 1)",
      "Darmanitan (*Rival Blue Set 4)",
@@ -1041,9 +1041,9 @@ var TRAINER_ORDER = [
     "label": "Rival Has Bulbasaur",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 3)",
+     "Staraptor (*Rival Blue Set 1)",
      "Kingambit (*Rival Blue Set 1)",
-     "Azumarill (*Rival Blue Set 1)",
+     "Azumarill (*Rival Blue Set 4)",
      "Darmanitan (*Rival Blue Set 1)",
      "Venusaur-Mega (*Rival Blue Set 1)"
     ],
@@ -1062,7 +1062,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Charmander",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 3)",
+     "Staraptor (*Rival Blue Set 1)",
      "Kingambit (*Rival Blue Set 1)",
      "Jumpluff (*Rival Blue)",
      "Azumarill (*Rival Blue Set 1)",
@@ -2545,7 +2545,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 3)",
+     "Staraptor (*Rival Blue Set 1)",
      "Kingambit (*Rival Blue Set 2)",
      "Azumarill (*Rival Blue Set 3)",
      "Iron Moth (*Rival Blue)",
@@ -3035,7 +3035,7 @@ var TRAINER_ORDER = [
      "Koraidon (Champion Blue)",
      "Yveltal (Champion Blue Set 3)",
      "Eternatus (Champion Blue Set 1)",
-     "Ditto (Champion Blue)"
+     "Ditto (Champion Blue Set 1)"
     ],
     "preMega": {
      "1": "Tough Claws"
@@ -3053,7 +3053,7 @@ var TRAINER_ORDER = [
      "Miraidon (Champion Blue Set 1)",
      "Yveltal (Champion Blue Set 2)",
      "Eternatus (Champion Blue Set 1)",
-     "Ditto (Champion Blue)"
+     "Ditto (Champion Blue Set 1)"
     ],
     "preMega": {
      "1": "Tough Claws"

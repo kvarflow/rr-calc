@@ -1235,9 +1235,9 @@
     "label": "Rival Has Bulbasaur",
     "species": "Darmanitan",
     "evs": {
+     "hp": 6,
      "at": 252,
-     "sp": 252,
-     "sd": 4
+     "sp": 252
     },
     "note": "the Silph Co. rivals share this set with 4 Def EVs; the Route 22 one has 4 Sp. Def"
    },
@@ -1997,6 +1997,368 @@
      "sp": 252,
      "sa": 252
     }
+   },
+   {
+    "trainer": "Brock",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Geodude-Alola",
+    "evs": {
+     "hp": 100,
+     "sp": 40
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Brock",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Archen",
+    "evs": {
+     "hp": 100,
+     "sp": 40
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Archer",
+    "location": "Mt. Moon",
+    "label": "Team 1",
+    "species": "Houndour",
+    "evs": {
+     "hp": 60,
+     "sp": 40
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Archer",
+    "location": "Mt. Moon",
+    "label": "Team 1",
+    "species": "Mightyena",
+    "evs": {
+     "hp": 100,
+     "sp": 40
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Bugsy",
+    "location": "Route 25",
+    "label": "Pre Lt. Surge",
+    "species": "Ledian",
+    "evs": {
+     "at": 4,
+     "sp": 252,
+     "sa": 16
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Bugsy",
+    "location": "Route 25",
+    "label": "Pre Lt. Surge",
+    "species": "Scyther",
+    "evs": {
+     "at": 4,
+     "sp": 252,
+     "sa": 16
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Bugsy",
+    "location": "Route 25",
+    "label": "Pre Lt. Surge",
+    "species": "Scizor",
+    "evs": {
+     "at": 4,
+     "sp": 252,
+     "sa": 16
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Misty",
+    "location": "Cerulean City",
+    "label": "Team 1",
+    "species": "Frogadier",
+    "evs": {
+     "hp": 6,
+     "at": 128,
+     "sp": 252,
+     "sa": 128
+    },
+    "nature": "Naughty"
+   },
+   {
+    "trainer": "Misty",
+    "location": "Cerulean City",
+    "label": "Team 1",
+    "species": "Floatzel",
+    "evs": {
+     "at": 8,
+     "sp": 252,
+     "sa": 8
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Whitney",
+    "location": "Route 11",
+    "label": "Team 1",
+    "species": "Drampa",
+    "evs": {
+     "hp": 252,
+     "sp": 6,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Lt. Surge",
+    "location": "Vermillion City",
+    "label": "Team 1",
+    "species": "Pincurchin",
+    "evs": {
+     "hp": 100,
+     "at": 100,
+     "sp": 40,
+     "sa": 100
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Lt. Surge",
+    "location": "Vermillion City",
+    "label": "Team 1",
+    "species": "Vikavolt",
+    "evs": {
+     "hp": 200,
+     "sp": 4,
+     "sa": 100
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Bulbasaur",
+    "species": "Azumarill",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Charmander",
+    "species": "Azumarill",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Sabrina",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Hatterene",
+    "evs": {
+     "hp": 252,
+     "df": 252,
+     "sa": 4
+    },
+    "nature": "Relaxed"
+   },
+   {
+    "trainer": "Sabrina",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Porygon2",
+    "evs": {
+     "hp": 252,
+     "df": 252,
+     "sa": 4
+    },
+    "nature": "Bold"
+   },
+   {
+    "trainer": "Dumass Kid",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Swampert",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Brock (Rematch)",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Omastar",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Misty (Rematch)",
+    "location": "Cerulean City",
+    "label": "Team 1",
+    "species": "Gorebyss",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Misty (Rematch)",
+    "location": "Cerulean City",
+    "label": "Team 1",
+    "species": "Kingdra",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Koga",
+    "location": "Fuchsia City",
+    "label": "Team 1",
+    "species": "Drapion",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    },
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "label": "Team 1",
+    "species": "Simisear",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team Two",
+    "species": "Bronzong",
+    "evs": {
+     "hp": 252,
+     "df": 252
+    },
+    "nature": "Impish"
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Cerulean Cave",
+    "label": "Team 1",
+    "species": "Scrafty",
+    "evs": {
+     "hp": 252,
+     "sp": 6,
+     "sa": 252
+    },
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Clair",
+    "location": "Viridian City",
+    "label": "Team 1",
+    "species": "Dragonite",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Clair",
+    "location": "Viridian City",
+    "label": "Team 1",
+    "species": "Magearna",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Ace Naomi",
+    "location": "Victory Road",
+    "label": "Team 1",
+    "species": "Shedinja",
+    "evs": {
+     "hp": 4,
+     "sp": 40
+    },
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Dumass Creator",
+    "location": "Indigo Plateau",
+    "label": "Team 1",
+    "species": "Gigalith",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    },
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Squirtle",
+    "species": "Ditto",
+    "evs": {
+     "hp": 252,
+     "at": 4,
+     "sp": 252
+    },
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Charmander",
+    "species": "Ditto",
+    "evs": {
+     "hp": 252,
+     "at": 4,
+     "sp": 252
+    },
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Bulbasaur",
+    "species": "Ditto",
+    "evs": {
+     "hp": 252,
+     "at": 4,
+     "sp": 252
+    },
+    "nature": "Jolly"
    }
   ],
   "hardcore": [
@@ -2211,6 +2573,97 @@
      "sp": 252
     },
     "note": "not in the Hardcore table; the Default entry it shares (same moves, items, natures) has these EVs"
+   },
+   {
+    "trainer": "Archer",
+    "location": "Mt. Moon",
+    "label": "Team 1",
+    "species": "Houndour",
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Bugsy",
+    "location": "Route 25",
+    "label": "Pre Lt. Surge",
+    "species": "Scizor",
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Silph Co.",
+    "label": "Team 1",
+    "species": "Excadrill",
+    "nature": "Adamant"
+   },
+   {
+    "trainer": "Ace Cole",
+    "location": "Route 8",
+    "label": "Team 1",
+    "species": "Ferrothorn",
+    "nature": "Impish"
+   },
+   {
+    "trainer": "Dumass Kid",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Frosmoth",
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Ace Haley",
+    "location": "Route 15",
+    "label": "Team 1",
+    "species": "Hawlucha",
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "label": "Team 1",
+    "species": "Simisear",
+    "nature": "Modest"
+   },
+   {
+    "trainer": "Ace Naomi",
+    "location": "Victory Road",
+    "label": "Team 1",
+    "species": "Shedinja",
+    "nature": "Bashful"
+   },
+   {
+    "trainer": "Dumass Creator",
+    "location": "Indigo Plateau",
+    "label": "Team 1",
+    "species": "Gigalith",
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Dragonite",
+    "nature": "Jolly"
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Melmetal",
+    "nature": "Adamant"
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Melmetal",
+    "nature": "Adamant"
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Dragonite",
+    "nature": "Jolly"
    }
   ]
  },

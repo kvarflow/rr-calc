@@ -211,6 +211,8 @@
         "moveRouteTrainersBefore": false,
         "copyAIReport": false,
         "getBattleVolatile": false,
+        "unmoveFight": false,
+        "isMovedFight": false,
         "AI_ABILITY_RATINGS": false,
         "AI_ABILITY_BANS": false,
         "FLAG_CONTACT": false,

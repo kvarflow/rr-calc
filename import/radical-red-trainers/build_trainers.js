@@ -581,8 +581,19 @@ function addTrainerIds(order) {
 	return added;
 }
 
+// Hardcore always has Minimal Grinding on, and the game then gives trainers' Pokémon no EVs (the
+// party builder at 0x0907BAAE skips the spread's EVs when flag 0x1032 is set), whatever the document says.
+function stripHardcoreEvs(order, setdex) {
+	if (mode !== 'hardcore') return;
+	order.forEach(t => t.variants.forEach(v => v.sets.forEach(id => {
+		const at = id.lastIndexOf(' (');
+		const set = setdex[id.slice(0, at)] && setdex[id.slice(0, at)][id.slice(at + 2, -1)];
+		if (set) delete set.evs;
+	})));
+}
+
 // Corrections checked against the game's trainer data (rom_teams.json "fixes"): a team Pokémon's
-// ability before it Mega Evolves, its level below your highest, or its set's EVs (on a copy of
+// ability before it Mega Evolves, its level below your highest, or its set's EVs and nature (on a copy of
 // the set when other fights share it).
 function applyRomFixes(order, setdex) {
 	const fixes = (JSON.parse(fs.readFileSync(path.join(__dirname, 'rom_teams.json'), 'utf8')).fixes || {})[mode] || [];
@@ -601,21 +612,25 @@ function applyRomFixes(order, setdex) {
 				variant.levelBelowHighest = variant.levelBelowHighest || variant.sets.map(() => null);
 				variant.levelBelowHighest[slot] = fix.levelBelowHighest;
 			}
-			if (fix.evs) {
+			if (fix.evs || fix.nature) {
 				let setName = id.slice(id.lastIndexOf(' (') + 2, -1);
 				// A set other fights share gets a copy of its own, so only this fight changes.
 				const shared = order.some(t => t.variants.some(v => v !== variant && v.sets.indexOf(id) !== -1));
+				// The game's spread gives the nature too.
+				const change = {};
+				if (fix.evs) change.evs = fix.evs;
+				if (fix.nature) change.nature = fix.nature;
 				if (shared) {
 					// The copy an earlier build made, or a new one.
 					const base = setName.replace(/ Set \d+$/, '');
-					const copy = Object.assign(JSON.parse(JSON.stringify(setdex[species][setName])), {evs: fix.evs});
+					const copy = Object.assign(JSON.parse(JSON.stringify(setdex[species][setName])), change);
 					let n = 1;
 					while (setdex[species][base + ' Set ' + n] && JSON.stringify(setdex[species][base + ' Set ' + n]) !== JSON.stringify(copy)) n++;
 					setdex[species][base + ' Set ' + n] = copy;
 					setName = base + ' Set ' + n;
 					variant.sets[slot] = species + ' (' + setName + ')';
 				}
-				setdex[species][setName].evs = fix.evs;
+				Object.assign(setdex[species][setName], change);
 			}
 			applied++;
 		});
@@ -781,6 +796,7 @@ function addMissingRouteTrainers() {
 	const order = new Function(fs.readFileSync(TRAINERS_FILE, 'utf8') + '; return TRAINER_ORDER;')();
 	const added = addRouteTrainers(order, setdex);
 	const fixed = applyRomFixes(order, setdex);
+	stripHardcoreEvs(order, setdex);
 	console.log(`  ${fixed} fixes from the game`);
 	writeSetdex(setdex);
 	{
@@ -801,6 +817,7 @@ function build() {
 	const withIds = addTrainerIds(order);
 	const duplicates = markDuplicates(order);
 	const romFixes = applyRomFixes(order, setdex);
+	stripHardcoreEvs(order, setdex);
 	const routeTrainers = addRouteTrainers(order, setdex);
 	if (APPLY || romSets || romFixes || routeTrainers) writeSetdex(setdex);
 

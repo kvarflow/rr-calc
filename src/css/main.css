@@ -4234,6 +4234,22 @@ html.small-screen .sev-notes {
     font: inherit;
     font-size: 12px;
 }
+.ms-boss-mover {
+    display: inline-flex;
+    flex: 0 1 auto;
+    align-items: center;
+    gap: 4px;
+    min-width: 0;
+}
+.ms-boss-mover .ms-place-move {
+    display: inline-block;
+    max-width: 170px;
+    margin: 0;
+}
+.ms-unmove {
+    min-width: 0;
+    white-space: nowrap;
+}
 .ms-place-folded .ms-place-move {
     display: none;
 }

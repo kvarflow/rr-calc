@@ -148,9 +148,27 @@ function getStoryLength() {
 
 // The boss fight a trainer is placed by: itself, or the one a route trainer comes before.
 function getStoryIndex(index) {
-	if (!isRouteTrainer(index)) return index;
-	var before = TRAINER_ORDER[index].route.before;
-	return before === null || before === undefined ? getStoryLength() - 1 : before;
+	var placed = isRouteTrainer(index) ? TRAINER_ORDER[index].route : isMovedFight(index) ? TRAINER_ORDER[index].moved : null;
+	if (!placed) return index;
+	var before = placed.before;
+	return before === null || before === undefined ? getLastStoryFight() : before;
+}
+
+/*
+ * A boss fight you have moved (Mastersheet, Reorder; trainer_controls.js's applyTrainerOrderFixes):
+ * `moved.before` is the fight it now comes before (null: after the last). It keeps its place in
+ * TRAINER_ORDER (so saved KOs stay with it) but counts in that fight's arc, like a route trainer.
+ */
+function isMovedFight(index) {
+	return !!(TRAINER_ORDER[index] && TRAINER_ORDER[index].moved);
+}
+
+// The last boss fight still in its own place.
+function getLastStoryFight() {
+	for (var i = getStoryLength() - 1; i > 0; i--) {
+		if (!isMovedFight(i)) return i;
+	}
+	return 0;
 }
 
 /*
@@ -165,10 +183,16 @@ function getArcCaps() {
 	if (trainerArcCaps) return trainerArcCaps;
 	trainerArcCaps = [];
 	var running = 0;
+	var previous = 0;
 	TRAINER_ORDER.forEach(function (trainer, index) {
 		if (trainer.route) return;
+		// A moved fight takes the arc of the one it now comes before (below).
+		if (trainer.moved) {
+			trainerArcCaps.push(null);
+			return;
+		}
 		var cap = getCapLevel(index);
-		var previous = index ? trainerArcCaps[index - 1] : running;
+		previous = previous || running;
 		if (!trainer.optional && cap > running) {
 			running = cap;
 			trainerArcCaps.push(cap);
@@ -177,8 +201,12 @@ function getArcCaps() {
 		} else {
 			trainerArcCaps.push(previous || running);
 		}
+		previous = trainerArcCaps[index];
 	});
 	endArcsAtTheirBoss(trainerArcCaps);
+	for (var m = 0; m < trainerArcCaps.length; m++) {
+		if (trainerArcCaps[m] === null) trainerArcCaps[m] = trainerArcCaps[getStoryIndex(m)];
+	}
 	for (var i = trainerArcCaps.length; i < TRAINER_ORDER.length; i++) trainerArcCaps.push(trainerArcCaps[getStoryIndex(i)]);
 	return trainerArcCaps;
 }
@@ -189,14 +217,15 @@ function findArcBoss(first, last, cap) {
 	var leaders = typeof LEVEL_CAP_LEADERS !== "undefined" ? LEVEL_CAP_LEADERS : [];
 	var i;
 	for (i = last; i >= first; i--) {
-		if (leaders.indexOf(TRAINER_ORDER[i].name) !== -1) return i;
+		if (!isMovedFight(i) && leaders.indexOf(TRAINER_ORDER[i].name) !== -1) return i;
 	}
 	for (i = last; i >= first; i--) {
-		if (!TRAINER_ORDER[i].optional && getCapLevel(i) === cap) return i;
+		if (!isMovedFight(i) && !TRAINER_ORDER[i].optional && getCapLevel(i) === cap) return i;
 	}
 	for (i = last; i >= first; i--) {
-		if (!TRAINER_ORDER[i].optional) return i;
+		if (!isMovedFight(i) && !TRAINER_ORDER[i].optional) return i;
 	}
+	while (last > first && isMovedFight(last)) last--;
 	return last;
 }
 
@@ -206,13 +235,21 @@ function findArcBoss(first, last, cap) {
  * next arc. Those after the last arc's boss (the postgame) stay.
  */
 function endArcsAtTheirBoss(caps) {
+	// Over the fights in their own place (a moved one, null here, is skipped).
+	var own = [];
+	caps.forEach(function (cap, index) {
+		if (cap !== null) own.push(index);
+	});
 	var first = 0;
-	while (first < caps.length) {
+	while (first < own.length) {
 		var last = first;
-		while (last < caps.length - 1 && caps[last + 1] === caps[first]) last++;
-		if (last < caps.length - 1) {
-			var next = caps[last + 1];
-			for (var i = findArcBoss(first, last, caps[first]) + 1; i <= last; i++) caps[i] = next;
+		while (last < own.length - 1 && caps[own[last + 1]] === caps[own[first]]) last++;
+		if (last < own.length - 1) {
+			var next = caps[own[last + 1]];
+			var boss = findArcBoss(own[first], own[last], caps[own[first]]);
+			for (var i = first; i <= last; i++) {
+				if (own[i] > boss) caps[own[i]] = next;
+			}
 		}
 		first = last + 1;
 	}
@@ -221,7 +258,7 @@ function endArcsAtTheirBoss(caps) {
 // The cap of the next required fight that raises the level cap above `running`.
 function getNextArcCap(index, running) {
 	for (var i = index + 1; i < getStoryLength(); i++) {
-		if (!TRAINER_ORDER[i].optional && getCapLevel(i) > running) return getCapLevel(i);
+		if (!isMovedFight(i) && !TRAINER_ORDER[i].optional && getCapLevel(i) > running) return getCapLevel(i);
 	}
 	return 0;
 }
@@ -233,8 +270,15 @@ function getArc(index) {
 	var caps = getArcCaps();
 	var first = index;
 	var last = index;
-	while (first > 0 && caps[first - 1] === caps[index]) first--;
-	while (last < getStoryLength() - 1 && caps[last + 1] === caps[index]) last++;
+	// Across the moved fights in between (they belong to the fight they now come before).
+	var step = function (from, by) {
+		for (var i = from + by; i >= 0 && i < getStoryLength(); i += by) {
+			if (!isMovedFight(i)) return caps[i] === caps[index] ? i : -1;
+		}
+		return -1;
+	};
+	for (var j = step(first, -1); j !== -1; j = step(first, -1)) first = j;
+	for (j = step(last, 1); j !== -1; j = step(last, 1)) last = j;
 	var boss = findArcBoss(first, last, caps[index]);
 	return {first: first, last: last, boss: boss, cap: caps[index], name: TRAINER_ORDER[boss].name};
 }
@@ -242,8 +286,11 @@ function getArc(index) {
 // Every arc in game order.
 function getArcs() {
 	var arcs = [];
-	for (var index = 0; index < getStoryLength(); index = arcs[arcs.length - 1].last + 1) {
-		arcs.push(getArc(index));
+	for (var index = 0; index < getStoryLength(); index++) {
+		if (isMovedFight(index)) continue;
+		var arc = getArc(index);
+		arcs.push(arc);
+		index = arc.last;
 	}
 	return arcs;
 }
