@@ -26,6 +26,12 @@
  * Its own partner is a target too (bestMoveForPartner, after AIScript_Partner): Helping Hand,
  * healing it, a move its ability absorbs, weather it uses.
  *
+ * Checked against Radical Red 4.1's own code (rr-rom analysis/ai, switch_names.txt): the move
+ * choice (BattleAI_ChooseMoveOrAction 0x090C82C0), UpdateBestDoubleKillingMoveScore (0x090E03C4),
+ * the target rules (0x090C470C-0x090C7330), PredictFightingStyle (0x090C40C4), every role table
+ * (0x090C5C90-0x090C6EA4, gDoublesDamageViabilityMapping at 0x093504B0) and the doubles cases of
+ * AIScript_Positives and AIScript_Partner (0x090CFEF4) are CFRU's, except where marked "Radical Red".
+ *
  * Not modelled yet: Fly and Dig in progress, switching to pass a Wish or against Wonder Guard,
  * the rarer partner cases (Skill Swap, Soak, Beat Up, Mummy), and the rarer doubles cases (pledges, terrains for a partner's
  * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
@@ -111,7 +117,8 @@ function doublesClass(side) {
 	if (redirection || (side.ability === "Intimidate" && fakeOut) || (fakeOut && pivot)) return DOUBLES_CLASS.UTILITY;
 	if (phazing) return attacks === 3 || (attacks === 2 && protect) ? DOUBLES_CLASS.SETUP : DOUBLES_CLASS.PHAZING;
 	if (attacks >= 4 || (attacks === 3 && protect)) return slowItem ? DOUBLES_CLASS.TR_ATTACKER : DOUBLES_CLASS.ALL_OUT;
-	if (attacks + boosts >= 3 || (attacks + boosts === 2 && protect)) return slowItem ? DOUBLES_CLASS.TR_ATTACKER : DOUBLES_CLASS.SETUP;
+	// (Radical Red tests == 3, at 0x090C4576: CFRU master >= 3, so 2 attacks and 2 boosts fall through.)
+	if (attacks + boosts === 3 || (attacks + boosts === 2 && protect)) return slowItem ? DOUBLES_CLASS.TR_ATTACKER : DOUBLES_CLASS.SETUP;
 	if (teamSupport) return attacks <= 1 ? DOUBLES_CLASS.TOTAL_SUPPORT : DOUBLES_CLASS.SUPPORT;
 	return DOUBLES_CLASS.UTILITY;
 }
@@ -387,6 +394,24 @@ DoublesTurn.prototype.context = function (x, y) {
 	return {
 		cls: cls,
 		partner: partner,
+		otherFoe: otherFoe,
+		// A benched Pokémon to switch to.
+		hasBench: (d.bench[y] || []).length > 0,
+		foesHavePhysical: function () {
+			return [foe, otherFoe].some(function (side) {
+				return side && hasPhysical(side);
+			});
+		},
+		// IncreaseDoublesDamageViabilityToScore: the points for a killing score, or the least when its
+		// partner already knocks this one out.
+		toScore: function (score) {
+			if (choice && partnerMove && choice.target === y && !isSpreadMove(partnerMove) && choice.index !== null &&
+				self.knocksOut(1 - x, y, choice.index)) return DOUBLES_DAMAGE_BONUS[cls][1];
+			return DOUBLES_DAMAGE_BONUS[cls][score];
+		},
+		helpingHandBonus: function () {
+			return HELPING_HAND_BONUS[cls];
+		},
 		// The points a damaging move gets for its doubles killing score.
 		bonus: function (i) {
 			return DOUBLES_DAMAGE_BONUS[cls][self.killingScore(x, y, i)];
@@ -606,7 +631,8 @@ DoublesTurn.prototype.choose = function (x) {
 
 // IncreaseHelpingHandViability and IncreaseHealPartnerViability, by doubles class.
 var HELPING_HAND_BONUS = [6, 1, 1, 15, 13, 1, 10, 10];
-var HEAL_PARTNER_BONUS = [7, 2, 2, 12, 15, 2, 13, 13];
+// (Radical Red's IncreaseHealPartnerViability, 0x090C6C74, has no case for total team support.)
+var HEAL_PARTNER_BONUS = [7, 2, 2, 12, 15, 2, 13, 0];
 
 /*
  * AIScript_Partner: the best move of the trainer's x to use on its own partner, {index, points}, or
@@ -698,6 +724,9 @@ DoublesTurn.prototype.bestMoveForPartner = function (x) {
 			break;
 		case E.ATTACK_UP:
 			if (move.name === "Howl" && ability !== "Soundproof" && canRise("atk")) help();
+			break;
+		case E.EVASION_UP:
+			if (move.name === "Acupressure" && !partnerProtects && ability !== "Contrary" && !partnerSupports) help();
 			break;
 		case E.SPECIAL_DEFENSE_UP:
 			if (move.name === "Aromatic Mist" && !partnerProtects && canRise("spd")) help();

@@ -1339,7 +1339,43 @@ function statBonus(turn, atk, def, move, stat, limit, boost) {
 /* ---------------------------------------------------------------------------------------------
  * AIScript_Negatives: points off moves that fail or waste the turn.
  */
+/*
+ * A double battle: abilities beside the target, and beside the AI, that ruin a move (CFRU's
+ * Negatives head; Radical Red has the block at 0x090C9348): your other Pokémon's Lightning Rod or
+ * Storm Drain draws the move (-20), its Magic Bounce sends it back, Sweet Veil, Flower Veil and
+ * Aroma Veil protect the target, Dazzling and Queenly Majesty stop priority (-10); the AI's own
+ * partner's Lightning Rod or Storm Drain draws a single-target move (-10). Doubled, as all
+ * decreases are in a double battle.
+ */
+var AROMA_VEIL_MOVES = ["Taunt", "Torment", "Encore", "Disable", "Attract", "Heal Block"];
+
+function doublesAbilityPenalty(turn, atk, move) {
+	var ctx = turn.doubles;
+	var def = turn.battle.player;
+	if (!ctx || isMoldBreaker(atk)) return 0;
+	var redirectable = !isSelfTargeting(move) && !has(["Stalwart", "Propeller Tail"], atk.ability) && move.name !== "Snipe Shot";
+	var other = ctx.otherFoe;
+	if (other) {
+		var ability = other.ability;
+		if (redirectable && ((ability === "Lightning Rod" && move.type === "Electric") || (ability === "Storm Drain" && move.type === "Water"))) return 20;
+		if (ability === "Magic Bounce" && (move.flags & FLAG_MAGIC_COAT) && (move.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY | MOVE_TARGET_FOES_FIELD))) return 20;
+		if (ability === "Sweet Veil" && (move.effect === E.SLEEP || move.effect === E.YAWN)) return 10;
+		if (ability === "Flower Veil" && def.types.indexOf("Grass") !== -1 && move.split === SPLIT_STATUS &&
+			(has(SET_STATUS_EFFECTS, move.effect) || /_DOWN(_2)?$/.test(AI_EFFECT_NAMES[move.effect] || "") || move.name === "Parting Shot")) return 10;
+		if (ability === "Aroma Veil" && has(AROMA_VEIL_MOVES, move.name)) return 10;
+		if (has(["Dazzling", "Queenly Majesty", "Armor Tail"], ability) && priorityOf(atk, move, turn.battle.field) > 0) return 10;
+	}
+	var partner = ctx.partner;
+	if (partner && redirectable && !(move.target & (MOVE_TARGET_BOTH | MOVE_TARGET_FOES_AND_ALLY)) &&
+		((partner.ability === "Lightning Rod" && move.type === "Electric") || (partner.ability === "Storm Drain" && move.type === "Water"))) return 10;
+	return 0;
+}
+
 function scoreNegatives(turn, atk, def, i, score) {
+	if (turn.doubles) {
+		var cut = doublesAbilityPenalty(turn, atk, atk.moves[i]);
+		if (cut) return Math.max(0, score - cut * 2);
+	}
 	var result = scoreNegativesCore(turn, atk, def, i, score);
 	var move = atk.moves[i];
 	// AI_SUBSTITUTE_CHECK: a status move that nothing else counted against is no good into a Substitute.
@@ -2212,7 +2248,9 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.BURN_HIT:
 		if (effect === E.BURN_HIT && chance < 75) break;
 		if (!canBeBurned(atk, def, field) || badIdeaToStatus(atk, def, "brn", field)) break;
-		if (predicted && predicted.split === SPLIT_PHYSICAL && knocksOut(turn, def, atk, def.moves.indexOf(predicted), 1)) status(3);
+		// A double battle's supporting roles burn a physical attacker first of all.
+		if ((style === STYLE.D_UTILITY || style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) && hasPhysical(def)) up(11);
+		else if (predicted && predicted.split === SPLIT_PHYSICAL && knocksOut(turn, def, atk, def.moves.indexOf(predicted), 1)) status(3);
 		else status(hasDoubleDamageMove(atk) || hasMoveNamed(atk, ["Infernal Parade"]) || hasPhysical(def) ? 2 : 1);
 		break;
 	case E.POISON:
@@ -2355,7 +2393,8 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.ATTACK_UP_HIT:
 		if (atk.ability === "Contrary") break;
 		if (move.name === "Fell Stinger" && stage(atk, "atk") < 12 && knocksOut(turn, atk, def, i, 1)) {
-			up(hitsFirst(turn, atk, move, def) ? 9 : 3);
+			if (turn.doubles) up(turn.doubles.toScore(6));
+			else up(hitsFirst(turn, atk, move, def) ? 9 : 3);
 			break;
 		}
 		if (atk.ability === "Parental Bond" && goodIdeaToRaise(turn, atk, def, "atk")) up(statBonus(turn, atk, def, move, "atk", 8, 2));
@@ -2386,7 +2425,7 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.TRIPLE_KICK:
 		// A sweeper's King's Rock flinches, or Scale Shot's Speed.
 		var strongest = atk.moves[strongestMove(turn, atk, def)];
-		if (isSweeper(style) && !isStrongest(turn, atk, def, i) && strongest && !isMultiHit(strongest) &&
+		if (!turn.doubles && isSweeper(style) && !isStrongest(turn, atk, def, i) && strongest && !isMultiHit(strongest) &&
 			has(["King's Rock", "Razor Fang"], atk.item)) up(3);
 		else if (move.name === "Scale Shot") raise("spe", 8, 3);
 		break;
@@ -2443,6 +2482,7 @@ function scorePositives(turn, atk, def, i, score) {
 		if (shouldSetUpScreens(turn, atk, def, move)) {
 			// Radical Red: +15 for Reflect and Light Screen (CFRU master +7).
 			if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(move.name === "Aurora Veil" ? 8 : 15);
+			else if (style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) up(15);
 			else status(2);
 		}
 		break;
@@ -2476,11 +2516,25 @@ function scorePositives(turn, atk, def, i, score) {
 		// With Aurora Veil to follow, only a screen setter gets anything.
 		if (hasMoveNamed(atk, ["Aurora Veil"])) {
 			if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(8);
+			else if (style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) up(17);
 		} else if (has(["Ice Body", "Forecast", "Slush Rush", "Magic Guard", "Overcoat"], atk.ability) ||
 			hasMoveNamed(atk, ["Blizzard", "Aurora Veil", "Weather Ball"]) || atk.item === "Icy Rock" || hasEffect(def, [E.MORNING_SUN])) status(2);
 		break;
 	case E.SET_TERRAIN:
-		status(2);
+		// A double battle: a setup attacker's terrain, or one for its partner's Expanding Force.
+		if (turn.doubles && style === STYLE.D_SETUP) up(17);
+		else if (turn.doubles && (style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT || style === STYLE.D_UTILITY) &&
+			turn.doubles.partner && hasMoveNamed(turn.doubles.partner, ["Expanding Force"])) up(15);
+		else status(2);
+		break;
+	case E.PLEDGE:
+		// Radical Red: +20 when its partner has a Pledge too (CFRU master +3).
+		if (turn.doubles && turn.doubles.partner && hasEffect(turn.doubles.partner, [E.PLEDGE])) up(20);
+		break;
+	case E.FLAMEBURST:
+		// Its splash finishes the other of yours.
+		if (turn.doubles && turn.doubles.otherFoe && healthPercent(turn.doubles.otherFoe) < 12 &&
+			turn.doubles.otherFoe.ability !== "Magic Guard" && turn.doubles.otherFoe.types.indexOf("Fire") === -1) up(turn.doubles.toScore(10));
 		break;
 	case E.RESTORE_HP:
 	case E.MORNING_SUN:
@@ -2490,8 +2544,13 @@ function scorePositives(turn, atk, def, i, score) {
 		break;
 	case E.ABSORB:
 	case E.DREAM_EATER:
-		// Radical Red: draining moves only help a staller in singles (CFRU master: +3 for anyone).
-		if (shouldRecover(turn, atk, def, move) && style === STYLE.STALL) status(2);
+		// Radical Red: draining moves only help a staller in singles (CFRU master: +3 for anyone); in a
+		// double battle the Trick Room setter +16, the others by the doubles killing score.
+		if (shouldRecover(turn, atk, def, move)) {
+			if (style === STYLE.STALL) status(2);
+			else if (style === STYLE.D_TR_SETUP) up(16);
+			else if (turn.doubles) up(turn.doubles.toScore(5));
+		}
 		break;
 	case E.WISH:
 		if (shouldUseWish(turn, atk, def)) up(8);
@@ -2532,6 +2591,7 @@ function scorePositives(turn, atk, def, i, score) {
 		if (move.name === "King's Shield" && atk.ability === "Stance Change" && atk.name === "Aegislash-Blade" && !isIncapacitated(def) &&
 			turn.coin("kingsShield" + turn.phase + atk.key + i, 0.5)) {
 			if (style === STYLE.STALL) up(3);
+			else if (turn.doubles) up(19);
 			else status(3);
 			break;
 		}
@@ -2633,10 +2693,14 @@ function scorePositives(turn, atk, def, i, score) {
 		} else if (shouldTrap(turn, atk, def, move)) up(7);
 		break;
 	case E.MIST:
-		if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(6);
+		if (turn.doubles) {
+			if ((style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) && def.monsLeft > 1) up(8);
+		} else if (style === STYLE.SETUP_SCREENS || style === STYLE.SUPPORT_SCREENS) up(6);
 		break;
 	case E.SAFEGUARD:
-		if (has([STYLE.BATON_PASS, STYLE.CLERIC, STYLE.SUPPORT_SCREENS, STYLE.PHAZING], style) &&
+		if (turn.doubles) {
+			if ((style === STYLE.D_SUPPORT || style === STYLE.D_TOTAL_SUPPORT) && def.monsLeft > 1) up(8);
+		} else if (has([STYLE.BATON_PASS, STYLE.CLERIC, STYLE.SUPPORT_SCREENS, STYLE.PHAZING], style) &&
 			!(field.terrain === "Misty" && isGrounded(atk, field))) status(1);
 		break;
 	case E.PERISH_SONG:
@@ -2646,7 +2710,7 @@ function scorePositives(turn, atk, def, i, score) {
 		if ((def.status === "slp" || def.ability === "Comatose") && defAbility(atk, def) !== "Magic Guard") status(3);
 		break;
 	case E.ATTRACT:
-		if (willFaintFromChip(def, field) && atk.speed < def.speed) break;
+		if (!turn.doubles && willFaintFromChip(def, field) && atk.speed < def.speed) break;
 		status(def.status || isTrappedBy(def, atk, field) ? 2 : 1);
 		break;
 	case E.PURSUIT:
@@ -2657,8 +2721,13 @@ function scorePositives(turn, atk, def, i, score) {
 		// Hazards on its own side with someone left to protect: worth clearing. Defog also for the
 		// foe's screens (or to lower evasion); Court Change when swapping the sides helps; Rapid Spin
 		// and Mortal Spin to free a seeded AI.
-		if ((atk.sideState.sr || atk.sideState.spikes || atk.sideState.toxicSpikes || atk.sideState.stickyWeb) && atk.monsLeft > 1) {
-			status(3);
+		// (A double battle needs two to switch to, and scores clearing like Helping Hand.)
+		if ((atk.sideState.sr || atk.sideState.spikes || atk.sideState.toxicSpikes || atk.sideState.stickyWeb) &&
+			atk.monsLeft > (turn.doubles ? 2 : 1)) {
+			if (turn.doubles) up(turn.doubles.helpingHandBonus());
+			else status(3);
+		} else if (turn.doubles && move.name === "Defog" && (def.sideState.reflect || def.sideState.lightScreen || def.sideState.auroraVeil)) {
+			up(turn.doubles.helpingHandBonus());
 		} else if (move.name === "Defog") {
 			if (def.sideState.reflect || def.sideState.lightScreen || def.sideState.auroraVeil) status(3);
 			else if (!(def.sideState.sr || def.sideState.spikes || def.sideState.toxicSpikes || def.sideState.stickyWeb) &&
@@ -2716,7 +2785,7 @@ function scorePositives(turn, atk, def, i, score) {
 			(atk.speed > def.speed ? !canKnockOut(turn, def, atk) : !can2HKO(turn, def, atk))) status(1);
 		break;
 	case E.FURY_CUTTER:
-		if (isSweeper(style) && atk.item === "Metronome") up(3);
+		if (!turn.doubles && isSweeper(style) && atk.item === "Metronome") up(3);
 		break;
 	case E.TORMENT:
 		status(/^Choice /.test(def.item) || def.ability === "Gorilla Tactics" ? 2 : 0);
@@ -2742,14 +2811,17 @@ function scorePositives(turn, atk, def, i, score) {
 		if ((atk.hp + def.hp) / 2 > atk.hp * 1.2 && style === STYLE.STALL) status(2);
 		break;
 	case E.SEMI_INVULNERABLE:
-		if (isSweeper(style)) {
+		if (!turn.doubles && isSweeper(style)) {
 			if (hitsFirst(turn, atk, move, def) ? predicted && has([E.EXPLOSION, E.PROTECT], predicted.effect) :
 				predicted && predicted.effect === E.SEMI_INVULNERABLE) up(3);
 		}
 		break;
 	case E.LAST_RESORT:
 		// Radical Red: Sky Drop against a foe taking chip damage, for a sweeper.
-		if (move.name === "Sky Drop" && isSweeper(style) && secondaryDamage(def, field) > 0) up(3);
+		if (move.name === "Sky Drop" && secondaryDamage(def, field) > 0) {
+			if (turn.doubles) up(turn.doubles.toScore(5));
+			else if (isSweeper(style)) up(3);
+		}
 		break;
 	case E.TYPE_CHANGES:
 		if (move.name === "Soak") {
@@ -2764,6 +2836,7 @@ function scorePositives(turn, atk, def, i, score) {
 		var healer = hasEffect(def, [E.RESTORE_HP, E.MORNING_SUN, E.SWALLOW, E.WISH, E.REST]);
 		if (move.name === "Throat Chop") {
 			if (hitsFirst(turn, atk, move, def) && predicted && predicted.sound) status(3);
+			else if (turn.doubles) up(turn.doubles.toScore(5));
 			else if (isSweeper(style) && hasMoveWhere(def, function (m) {
 				return m.sound;
 			})) up(3);
@@ -2807,6 +2880,20 @@ function scorePositives(turn, atk, def, i, score) {
 			if (atk.monsLeft > 1) up(3);
 			break;
 		}
+		// Radical Red: a Zero Form Palafin always wants to switch out (+18).
+		if (turn.doubles) {
+			// A double battle has no pivot logic: an Intimidate user against a side with a physical
+			// attacker comes back in; Radical Red adds Teleport under Trick Room (+9).
+			if (turn.doubles.hasBench) {
+				if (atk.ability === "Intimidate" && turn.doubles.foesHavePhysical()) {
+					if (style === STYLE.D_UTILITY) up(16);
+					else if (style === STYLE.D_ALL_OUT) up(18);
+				}
+				if (move.name === "Teleport" && turn.battle.trickRoom) up(9);
+			}
+			if (atk.name === "Palafin") up(18);
+			break;
+		}
 		var pivot = shouldPivot(turn, atk, def, i);
 		if (pivot === "pivot") up(pivotBonus(style));
 		else if (pivot === "immediately") up(9);
@@ -2844,15 +2931,18 @@ function scorePositives(turn, atk, def, i, score) {
 	case E.HAZE:
 	case E.REMOVE_TARGET_STAT_CHANGES:
 		if (shouldPhaze(turn, atk, def, i)) {
-			if (style === STYLE.PHAZING) up(8);
+			if (style === STYLE.D_PHAZING) up(15);
+			else if (style === STYLE.PHAZING) up(8);
+			else if (style === STYLE.D_SETUP) up(12);
 			else status(2);
 		} else if (effect === E.HAZE && usefulStatChanges(atk, -1) > 0) {
 			status(1);
 		}
 		break;
 	case E.ROAR:
-		if (shouldPhaze(turn, atk, def, i)) {
-			if (style === STYLE.PHAZING) up(canKnockOut(turn, def, atk) && move.priority < 0 ? 1 : 8);
+		if (!moveBlockedBySubstitute(atk, def, move) && shouldPhaze(turn, atk, def, i)) {
+			if (style === STYLE.D_PHAZING) up(16);
+			else if (style === STYLE.PHAZING) up(canKnockOut(turn, def, atk) && move.priority < 0 ? 1 : 8);
 			else status(2);
 		}
 		break;
@@ -3060,9 +3150,6 @@ function protectBonus(turn, atk, def) {
 	switch (styleOf(turn, atk)) {
 	case STYLE.STALL:
 		return isTrappedBy(def, atk, turn.battle.field) ? 7 : 3;
-	case STYLE.KILL:
-	case STYLE.BATON_PASS:
-		return 0;
 	}
 	return statusBonus(turn, atk, def, 3);
 }

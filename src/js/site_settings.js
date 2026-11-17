@@ -102,6 +102,16 @@ var CHANGELOG = [
 		"Double battles: moves the trainer's Pok\u00e9mon use on their own partner. Helping Hand while it attacks, Heal Pulse and Life Dew " +
 			"at two thirds HP or less, a move its ability takes in (Water Absorb, Lightning Rod, Flash Fire...), weather it uses, " +
 			"After You and Instruct. Doubles shows them in a column of their own"
+	]},
+	{version: "1.17", notes: [
+		"Double battles checked against Radical Red's own code (decompiled from the game), not only CFRU's: the target choice, " +
+			"the killing scores and every role table match. Where Radical Red differs, the calc now follows it: roles from 2 attacks and " +
+			"2 boosting moves, no healing its partner for pure support Pok\u00e9mon, Pledge combos +20, Teleport under Trick Room",
+		"Double battles: the doubles versions of more moves (draining, Fell Stinger, Throat Chop, Sky Drop, Flame Burst, terrains, " +
+			"screens, Haze and Roar, Will-O-Wisp, U-turn and the other pivots, Rapid Spin and Defog, King's Shield), and moves your " +
+			"other Pok\u00e9mon's Lightning Rod, Storm Drain, Magic Bounce or the Veils would ruin"
+	], fixes: [
+		"Single battles: a Baton Pass Pok\u00e9mon's Protect was a point short of the game's"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

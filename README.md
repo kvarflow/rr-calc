@@ -77,8 +77,8 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   fresh battle. Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
   status as they are; benched Pokémon are taken at full HP.
 - **Double battles** (a first version): Doubles, beside Turn, shows both Pokémon on each side and,
-  for each of the trainer's two, how often it uses each move on each of yours. It follows CFRU's
-  doubles AI: attacking moves and targets (who it knocks out, who threatens it, what its partner
+  for each of the trainer's two, how often it uses each move on each of yours. It follows Radical
+  Red's doubles AI (checked against the game's code; it is CFRU's with a few changes): attacking moves and targets (who it knocks out, who threatens it, what its partner
   is already doing) and the doubles rules for status moves (Trick Room, Fake Out, Protect and
   Wide Guard, Follow Me, Tailwind, speed control), switching out, and moves for its own partner
   (Helping Hand, healing it, feeding its Lightning Rod). Emulator sync fills in who is out on

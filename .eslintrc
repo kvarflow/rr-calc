@@ -211,6 +211,7 @@
         "moveRouteTrainersBefore": false,
         "copyAIReport": false,
         "getBattleVolatile": false,
+        "hasPhysical": false,
         "ignoresAbilities": false,
         "hasMoveWhere": false,
         "isDamaging": false,
