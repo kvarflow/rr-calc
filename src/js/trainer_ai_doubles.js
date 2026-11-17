@@ -35,9 +35,8 @@
  * Not in the game (so not here): switching against Wonder Guard in doubles (ShouldSwitchIfWonderGuard
  * returns FALSE there), and the switches to dodge a locked move or a Fly / Dig (RunAllSemiInvulnerable-
  * LockedMoveCalcs emits the switch but returns FALSE, and the move choice after it overwrites it, in
- * CFRU master and in Radical Red alike). Not modelled: Mummy passed on with a contact move, and the rarer doubles cases (pledges, terrains for a partner's
- * Expanding Force, Lucky Chant). Radical Red's own doubles code has not been checked against
- * CFRU's the way its singles code was.
+ * CFRU master and in Radical Red alike). Not modelled: Mummy passed on with a
+ * contact move, and Ion Deluge.
  */
 
 // PredictFightingStyle's doubles classes, as rows of DOUBLES_DAMAGE_BONUS.
