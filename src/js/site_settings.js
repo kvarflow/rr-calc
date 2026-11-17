@@ -202,13 +202,12 @@ function getLatestVersion() {
 	return CHANGELOG[CHANGELOG.length - 1].version;
 }
 
-// Newest first; a version's bug fixes under their own heading (some versions only fix bugs).
+// The latest version only; its bug fixes under their own heading (some versions only fix bugs).
 function showChangelog() {
 	var sections = [];
-	CHANGELOG.slice().reverse().forEach(function (entry) {
-		if (entry.notes) sections.push({heading: "Version " + entry.version, items: entry.notes});
-		if (entry.fixes) sections.push({heading: "Version " + entry.version + ": bug fixes", items: entry.fixes});
-	});
+	var entry = CHANGELOG[CHANGELOG.length - 1];
+	if (entry.notes) sections.push({heading: "Version " + entry.version, items: entry.notes});
+	if (entry.fixes) sections.push({heading: "Version " + entry.version + ": bug fixes", items: entry.fixes});
 	showListDialog("What's new", sections, function () {
 		writeSetting(LAST_CHANGELOG_KEY, getLatestVersion());
 	});
