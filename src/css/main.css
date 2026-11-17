@@ -1444,6 +1444,153 @@ html.small-screen .move-result-subgroup .visually-hidden:checked + .btn[data-ai]
 }
 /* Under the foe's moves (trainer_ai.js renderAISwitch): the AI's chance of switching out and to
    whom, and who it sends out next after a KO. */
+/* "This turn" (battle_history.js): the Turn button and its dialog. */
+.bh-button {
+    margin: 6px 0 0;
+    padding: 3px 10px;
+    border: 1px solid var(--ss-line, #c9ccd6);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+.bh-button-set {
+    border-color: var(--ss-accent, #d9342b);
+    color: var(--ss-accent, #d9342b);
+    font-weight: 600;
+}
+html.small-screen .result-move-header .bh-button {
+    margin: 0 0 0 auto;
+    padding: 1px 8px;
+    font-size: 11px;
+    flex: 0 0 auto;
+}
+.bh-dialog {
+    max-width: 640px;
+    width: calc(100vw - 24px);
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+    box-sizing: border-box;
+}
+.bh-help {
+    margin: 0 0 8px;
+    font-size: 12px;
+    opacity: 0.8;
+}
+.bh-side {
+    margin: 0 0 10px;
+    padding: 6px 10px 8px;
+    border: 1px solid var(--ss-line, #c9ccd6);
+    border-radius: 10px;
+}
+.bh-side legend {
+    padding: 0 6px;
+    font-weight: 600;
+}
+.bh-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 4px 0;
+}
+.bh-label {
+    font-size: 12px;
+    opacity: 0.8;
+}
+.bh-moves {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+.bh-move,
+.bh-clear {
+    padding: 4px 10px;
+    border: 1px solid var(--ss-line, #c9ccd6);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 12px;
+    cursor: pointer;
+}
+.bh-move[aria-pressed="true"] {
+    border-color: var(--ss-accent, #d9342b);
+    background: var(--ss-accent, #d9342b);
+    color: #fff;
+}
+.bh-clear {
+    margin-left: auto;
+}
+.bh-flags {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 2px 8px;
+    margin: 6px 0;
+}
+.bh-flag,
+.bh-inline {
+    font-size: 12px;
+    white-space: nowrap;
+}
+.bh-select {
+    font: inherit;
+    font-size: 12px;
+}
+/* Double battles (trainer_ai_doubles.js): the Doubles dialog. */
+.dbl-partners {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    margin: 0 0 10px;
+    font-size: 12px;
+}
+.dbl-select {
+    font: inherit;
+    font-size: 12px;
+    max-width: 150px;
+}
+.dbl-hp {
+    width: 52px;
+    font: inherit;
+    font-size: 12px;
+}
+.dbl-table {
+    width: 100%;
+    margin: 0 0 12px;
+    border-collapse: collapse;
+    font-size: 12px;
+}
+.dbl-table th {
+    padding: 4px 6px;
+    text-align: left;
+    font-weight: 600;
+    border-bottom: 1px solid var(--ss-line, #c9ccd6);
+}
+.dbl-table td {
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--ss-line, #e3e5ec);
+}
+.dbl-share {
+    display: inline-block;
+    min-width: 38px;
+    font-weight: 600;
+}
+.dbl-damage {
+    opacity: 0.75;
+}
+.dbl-likely .dbl-share {
+    color: var(--ss-accent, #d9342b);
+}
+.dbl-ko .dbl-damage {
+    opacity: 1;
+    color: var(--ss-accent, #d9342b);
+}
+html.small-screen .result-move-header .dbl-button {
+    margin-left: 4px;
+}
 .ai-switch {
     margin-top: 6px;
     font-size: 12px;
@@ -4074,6 +4221,21 @@ html.small-screen .sev-notes {
 .ms-move:disabled {
     opacity: 0.35;
     cursor: default;
+}
+.ms-place-move {
+    display: block;
+    max-width: 100%;
+    margin: 4px 0 6px;
+    padding: 4px 8px;
+    border: 1px solid var(--sh-line);
+    border-radius: 6px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    font: inherit;
+    font-size: 12px;
+}
+.ms-place-folded .ms-place-move {
+    display: none;
 }
 .ms-order-tools {
     display: flex;

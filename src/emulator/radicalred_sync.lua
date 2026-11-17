@@ -8,7 +8,7 @@
 -- The script only reads the game's memory; it changes nothing in the game.
 
 local PORT = 31125
-local SCRIPT_VERSION = 1
+local SCRIPT_VERSION = 2
 
 -- FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 local ADDR = {
@@ -22,6 +22,12 @@ local ADDR = {
 	gEnemyPartyCount = 0x02024028,
 	gEnemyParty = 0x0202402C,
 	gTrainerBattleOpponent_A = 0x020386AE,
+	-- What has happened in the battle, for the trainer AI's predictions.
+	gLastUsedMoves = 0x02023D98, -- u16 a battler
+	gLockedMoves = 0x02023DB8, -- u16 a battler
+	gStatuses3 = 0x02023DFC, -- u32 a battler
+	gDisableStructs = 0x02023E0C, -- 0x1C bytes a battler
+	gWishFutureKnock = 0x02023F20, -- wishCounter: a byte a battler at +0x20
 }
 local PARTY_MON_SIZE = 100
 local BATTLE_MON_SIZE = 0x58
@@ -48,9 +54,18 @@ local function battleMon(index)
 	for stat = 0, 7 do
 		stages[#stages + 1] = tostring(emu:read8(base + 0x18 + stat))
 	end
-	return string.format('{"species":%d,"hp":%d,"maxHp":%d,"level":%d,"stages":[%s],"status":%d,"pid":%d}',
+	-- Since script 2: status2 (confusion, Substitute...), status3 (Yawn, Perish Song...), the move used
+	-- last and the one it is locked into, its DisableStruct (as hex) and its Wish counter.
+	local disable = {}
+	for i = 0, 0x1B do
+		disable[#disable + 1] = string.format("%02x", emu:read8(ADDR.gDisableStructs + index * 0x1C + i))
+	end
+	return string.format('{"species":%d,"hp":%d,"maxHp":%d,"level":%d,"stages":[%s],"status":%d,"pid":%d,' ..
+		'"status2":%d,"status3":%d,"lastMove":%d,"lockedMove":%d,"disable":"%s","wish":%d}',
 		emu:read16(base), emu:read16(base + 0x28), emu:read16(base + 0x2C), emu:read8(base + 0x2A),
-		table.concat(stages, ","), emu:read32(base + 0x4C), emu:read32(base + 0x48))
+		table.concat(stages, ","), emu:read32(base + 0x4C), emu:read32(base + 0x48),
+		emu:read32(base + 0x50), emu:read32(ADDR.gStatuses3 + index * 4), emu:read16(ADDR.gLastUsedMoves + index * 2),
+		emu:read16(ADDR.gLockedMoves + index * 2), table.concat(disable), emu:read8(ADDR.gWishFutureKnock + 0x20 + index))
 end
 
 local function stateJson()

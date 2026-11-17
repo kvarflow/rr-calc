@@ -25,10 +25,14 @@ with Radical Red's data read from the game itself.
 - **Every trainer in order**: bosses from the Normal and Hardcore boss documents, route trainers
   from the ROM, sorted by where they stand on the map. Previous / Next steps through them; the
   level cap follows your badges.
-- **Mastersheet**: the whole game in order with every team and wild encounter. Reorder trainers
-  there if your route differs.
+- **Mastersheet**: the whole game in order, an arc for each level cap ending with its boss, with
+  every team and wild encounter. If your route differs, turn on Reorder: ▲ / ▼ carry a trainer
+  earlier or later (past boss fights too), a place's menu moves all its trainers before another
+  fight, and Copy order changes gives you the changes to send in.
 - **Trainer AI**: the chance the foe picks each move, and when it switches and to whom (see below).
 - **Genders** as the game rolls them, so Rivalry and Attract work.
+- **Minimal Grinding** (Settings; set by importing your `.sav`): with it on the game gives
+  trainers' Pokémon no EVs, and the calc follows. Hardcore always has it on.
 - **Trainer pictures** beside each trainer (their own for leaders, rivals and the Elite Four, else
   their class), **item icons** before each item, and **type badges** on the Battle tab.
 
@@ -50,8 +54,9 @@ with Radical Red's data read from the game itself.
 - **Install** it as an app (More → App, or Chrome's ⋮ → Add to Home screen) and it **works
   offline**. The [Pcalc](https://github.com/kvarflow/Pcalc) Android app packs it too, with
   RetroArch sync built in and automatic backups to a folder on the device.
-- **Emulator sync**: your party sent live from mGBA (a Lua script) or RetroArch (a Python
-  script), both in `src/emulator/`.
+- **Emulator sync**: the battle sent live from mGBA (a Lua script) or RetroArch (a Python
+  script), both in `src/emulator/`: who is out, HP, status, stat changes, and what has happened
+  (the moves used last, Substitute, Taunt, Encore...) for the trainer's AI.
 
 ## Trainer AI
 
@@ -66,9 +71,20 @@ AI for single battles, checked against Radical Red's own code decompiled from th
   are all bad, and so on). The best replacement is scored on whether it KOs you, resists you,
   outspeeds you or revenge kills. Battle shows the chance and who comes in, and who comes in after
   a KO.
-- **Assumptions**: no moves used yet this battle, benched Pokémon at full HP, no Substitutes. Set
-  the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and status as they are.
-  Double battles show damage but the predictions are for single battles.
+- **This turn**: the Turn button beside the foe's moves holds what has happened in the battle:
+  tap the move each side used last turn and tick what applies (a Choice lock, Encore, Disable,
+  Taunt, Protects in a row, a Substitute, Yawn, Perish Song, recharging...). Left alone it is a
+  fresh battle. Set the field (weather, screens, hazards, Trick Room) and both Pokémon's HP and
+  status as they are; benched Pokémon are taken at full HP.
+- **Double battles** (a first version): Doubles, beside Turn, shows both Pokémon on each side and,
+  for each of the trainer's two, how often it uses each move on each of yours. It follows Radical
+  Red's doubles AI (checked against the game's code; it is CFRU's with a few changes): attacking moves and targets (who it knocks out, who threatens it, what its partner
+  is already doing) and the doubles rules for status moves (Trick Room, Fake Out, Protect and
+  Wide Guard, Follow Me, Tailwind, speed control), switching out, and moves for its own partner
+  (Helping Hand, healing it, feeding its Lightning Rod). Emulator sync fills in who is out on
+  both sides.
+- **A wrong prediction?** Copy AI report (beside What's new) copies the fight as it stands, both
+  Pokémon, the field and what was predicted, to send in.
 
 Each trainer's AI flags and every move's effect come from the ROM
 (`import/radical-red-trainers/ai_flags.js`).
@@ -104,6 +120,7 @@ npm install && (cd calc && npm install)
 node build          # compiles calc/ and builds the site into dist/
 node build view     # faster: rebuilds only the site (src/), not calc/
 npm test            # calc tests, build and lint
+node test/browser/run.js   # browser checks of the built site (needs Playwright installed)
 ./publish-pages     # builds and publishes dist/ to the gh-pages branch (GitHub Pages)
 ```
 
@@ -115,6 +132,8 @@ Open `dist/normal.html` (or serve `dist/`) to try it.
   `src/css/desktop.css` style it; `src/sw.js` is the offline service worker.
 - `calc/` is the damage engine (`@smogon/calc`, TypeScript) with Radical Red's mechanics changes.
 - `import/` holds the scripts that build `src/js/data/` from the boss documents and game data.
+- `test/browser/` holds the browser checks: each drives the built pages (trainers and arcs, the
+  Turn history, Minimal Grinding, emulator sync with a made-up game state, every double battle).
 
 The engine's own documentation (installing and using `@smogon/calc` as a package) is upstream at
 [smogon/damage-calc](https://github.com/smogon/damage-calc#smogoncalc).

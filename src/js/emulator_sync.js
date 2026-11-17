@@ -21,7 +21,7 @@ var EMULATOR_STAT_ROWS = [null, "at", "df", "sp", "sa", "sd"];
 // How often to ask, in ms: while connected, and while nothing answers.
 var EMULATOR_POLL_MS = 1000;
 var EMULATOR_WAIT_POLL_MS = 3000;
-var emulatorSync = {timer: null, busy: false, applied: {}, lastRaw: "", connected: false, lastPoll: 0};
+var emulatorSync = {timer: null, busy: false, applied: {}, history: {}, historyChanged: false, lastRaw: "", connected: false, lastPoll: 0};
 
 function isEmulatorSyncOn() {
 	var setting = readSetting(EMULATOR_SYNC_KEY);
@@ -92,6 +92,77 @@ function applyEmulatorBattler(panel, battler) {
 	$(panel + " .current-hp").change();
 }
 
+/*
+ * What has happened in the battle (battle_history.js), from the game's own state, when the sync
+ * sends it (script 2 on: status2, status3, lastMove, lockedMove, disable, wish for each battler):
+ * the trainer AI's predictions then follow the battle turn by turn.
+ */
+function getEmulatorVolatile(key, battler) {
+	if (battler.status2 === undefined || !battler.disable || typeof AI_VOLATILE_DEFAULTS === "undefined") return null;
+	var disable = [];
+	for (var i = 0; i < battler.disable.length; i += 2) disable.push(parseInt(battler.disable.substr(i, 2), 16));
+	var u16 = function (at) {
+		return disable[at] | (disable[at + 1] << 8);
+	};
+	var known = key ? getBattleHistoryMoves(key) : [];
+	// A move id as the panel names it (its Hidden Power carries the type).
+	var moveName = function (id) {
+		var name = id && id !== 0xFFFF ? RADICAL_RED_SAVE_DATA.moves[id] || "" : "";
+		if (!name) return "";
+		for (var k = 0; k < known.length; k++) {
+			if (known[k] === name || known[k].indexOf(name + " ") === 0) return known[k];
+		}
+		return name;
+	};
+	var status2 = battler.status2 >>> 0;
+	var status3 = battler.status3 >>> 0;
+	var has2 = function (mask) {
+		return (status2 & mask) !== 0;
+	};
+	var perish = (status3 & 0x20) !== 0;
+	return $.extend({}, AI_VOLATILE_DEFAULTS, {
+		firstTurn: disable[0x16] !== 0,
+		lastMove: moveName(battler.lastMove),
+		protectUses: disable[0x08],
+		sub: has2(0x01000000),
+		taunt: (disable[0x13] & 0xF) !== 0,
+		encore: (disable[0x0E] & 0xF) !== 0,
+		torment: has2(0x80000000),
+		disabled: (disable[0x0B] & 0xF) !== 0 ? moveName(u16(0x04)) : "",
+		yawn: (status3 & 0x1800) !== 0,
+		perish: perish,
+		perishLast: perish && (disable[0x0F] & 0xF) === 0,
+		confused: has2(0x7),
+		infatuated: has2(0x000F0000),
+		wrapped: has2(0x0000E000),
+		noEscape: has2(0x04000000),
+		destinyBond: has2(0x02000000),
+		recharge: has2(0x00400000),
+		locked: has2(0x00001000) && !!battler.lockedMove,
+		stockpile: Math.min(3, disable[0x09]),
+		wish: battler.wish > 0,
+		// In the air, underground, underwater or vanished (Phantom Force, Shadow Force).
+		semiInv: (status3 & (0x40 | 0x80 | 0x40000 | 0x2000000)) !== 0
+	});
+}
+
+// Sets a side's history from the game, once its Pokémon is in its panel.
+function applyEmulatorHistory(key, battler) {
+	var vol = getEmulatorVolatile(key, battler);
+	if (!vol) return;
+	// Encored: the game keeps the move it is held to.
+	if (vol.encore && battler.disable) {
+		var encored = parseInt(battler.disable.substr(14, 2) + battler.disable.substr(12, 2), 16);
+		var name = encored ? RADICAL_RED_SAVE_DATA.moves[encored] : "";
+		if (name) vol.lastMove = name;
+	}
+	var text = JSON.stringify(vol);
+	if (emulatorSync.history[key] === text && getBattleVolatile(key)) return;
+	emulatorSync.history[key] = text;
+	battleHistory[key] = {setId: getBattleHistorySetId(key), vol: vol, synced: true};
+	emulatorSync.historyChanged = true;
+}
+
 // Running inside the Pcalc Android app, whose user agent ends in "Pcalc/<version>".
 function isInPcalcApp() {
 	return /\bPcalc\//.test(navigator.userAgent);
@@ -102,33 +173,110 @@ function setEmulatorStatus(text, connected) {
 	$("#emulator-sync-status").text(text).toggleClass("emulator-sync-connected", !!connected);
 }
 
+// The trainer's benched Pokémon as the game has them (HP and status), for the fight on the page.
+var emulatorBench = {fight: null, slots: {}};
+
+function getEmulatorBenchState(slot) {
+	if (!emulatorSync.connected || emulatorBench.fight !== currentTrainerIndex) return null;
+	return emulatorBench.slots[slot] || null;
+}
+
+// The party bytes keep each Pokémon's status (+0x50) and HP (+0x56, max +0x58).
+function readEmulatorBench(fightIndex, sets, enemy, enemyHex) {
+	var bytes = hexToBytes(enemyHex);
+	var slots = {};
+	enemy.forEach(function (mon, partyIndex) {
+		var slot = findEmulatorTrainerSlot(sets, partyIndex, mon.species);
+		if (slot === -1 || slots[slot]) return;
+		var at = partyIndex * PARTY_MON_SIZE;
+		var status = bytes[at + 0x50] | (bytes[at + 0x51] << 8) | (bytes[at + 0x52] << 16) | (bytes[at + 0x53] << 24);
+		var hp = bytes[at + 0x56] | (bytes[at + 0x57] << 8);
+		var max = bytes[at + 0x58] | (bytes[at + 0x59] << 8);
+		if (!max) return;
+		slots[slot] = {hpPercent: Math.max(hp ? 1 : 0, Math.round(1000 * hp / max) / 10), status: emulatorStatusCode(status)};
+	});
+	var text = JSON.stringify(slots);
+	if (emulatorBench.fight !== fightIndex || JSON.stringify(emulatorBench.slots) !== text) emulatorSync.historyChanged = true;
+	emulatorBench = {fight: fightIndex, slots: slots};
+}
+
+// A battler's status as the calc's code, and its stat changes.
+function emulatorStatusCode(status) {
+	if (status & 7) return "slp";
+	if (status & 0x80) return "tox";
+	if (status & 8) return "psn";
+	if (status & 0x10) return "brn";
+	if (status & 0x20) return "frz";
+	if (status & 0x40) return "par";
+	return "";
+}
+
+function emulatorBoosts(battler) {
+	var stage = function (index) {
+		return Math.max(-6, Math.min(6, battler.stages[index] - 6));
+	};
+	return {atk: stage(1), def: stage(2), spe: stage(3), spa: stage(4), spd: stage(5)};
+}
+
+// The place in the trainer's team of the Pokémon at a place in the game's party.
+function findEmulatorTrainerSlot(sets, partyIndex, species) {
+	return partyIndex < sets.length && getPokemonName(sets[partyIndex]) === species ? partyIndex : sets.map(getPokemonName).indexOf(species);
+}
+
+/*
+ * A double battle: the Pokémon beside the one in each panel (trainer_ai_doubles.js), with its HP,
+ * status, stat changes and history from the game. `which` is "yours" or "foe"; `id` your set, the
+ * place in the trainer's team, or "none".
+ */
+function setEmulatorPartner(which, id, battler) {
+	if (typeof getDoublesPartners !== "function") return;
+	var chosen = getDoublesPartners();
+	var before = JSON.stringify([chosen[which], chosen[which + "HP"], chosen[which + "State"]]);
+	chosen[which] = id;
+	chosen[which + "HP"] = battler && battler.maxHp ? Math.max(1, Math.round(1000 * battler.hp / battler.maxHp) / 10) : 100;
+	chosen[which + "State"] = battler ? {status: emulatorStatusCode(battler.status), boosts: emulatorBoosts(battler),
+		vol: getEmulatorVolatile(null, battler)} : null;
+	chosen.synced = true;
+	if (JSON.stringify([chosen[which], chosen[which + "HP"], chosen[which + "State"]]) !== before) emulatorSync.historyChanged = true;
+}
+
 function applyEmulatorState(state) {
 	if (!state.inBattle) {
 		setEmulatorStatus("Connected · not in a battle", true);
 		return;
 	}
-	if (state.mons.length > 2) {
-		setEmulatorStatus("Connected · double battles are not followed yet", true);
-		return;
-	}
 	var party = decodeEmulatorParty(state.party);
 	var enemy = decodeEmulatorParty(state.enemyParty);
 	var notes = [];
-	// Yours: battler 0, from your box.
-	var yours = party[state.partyIndexes[0]];
+	// A double battle has four battlers: yours are 0 and 2, the trainer's 1 and 3. The first still
+	// standing on each side goes in the panel, the other beside it.
+	var doubles = state.mons.length > 2;
+	var standing = function (battlers) {
+		return battlers.filter(function (index) {
+			return state.mons[index] && state.mons[index].hp > 0;
+		});
+	};
+	var mine = doubles ? standing([0, 2]) : [0];
+	var theirsOut = doubles ? standing([1, 3]) : [1];
+	if (!mine.length) mine = [0];
+	if (!theirsOut.length) theirsOut = [1];
+	// Yours, from your box.
+	var yours = party[state.partyIndexes[mine[0]]];
 	var setId = yours ? findSetForPid(yours.pid) : null;
 	if (setId) {
 		if ($("#p1 input.set-selector").val() !== setId) {
 			emulatorSync.applied["#p1"] = null;
 			$("#p1 input.set-selector").val(setId).change();
 		}
-		applyEmulatorBattler("#p1", state.mons[0]);
+		applyEmulatorBattler("#p1", state.mons[mine[0]]);
+		applyEmulatorHistory("p1", state.mons[mine[0]]);
 	} else if (yours) {
 		notes.push(yours.species + " is not in your box: import your .sav");
 	}
-	// Theirs: battler 1, from the trainer's team.
+	// Theirs, from the trainer's team.
 	var fight = state.trainer ? findFightForTrainerId(state.trainer) : null;
-	var theirs = enemy[state.partyIndexes[1]];
+	var theirs = enemy[state.partyIndexes[theirsOut[0]]];
+	var sets = null;
 	if (fight && theirs) {
 		if (currentTrainerIndex !== fight.index) {
 			// A fight with teams to pick from shows the one the game sent out (the rival's follows your
@@ -139,22 +287,40 @@ function applyEmulatorState(state) {
 			showTrainer(fight.index);
 			emulatorSync.applied["#p2"] = null;
 		}
-		var sets = getTrainerVariant(TRAINER_ORDER[fight.index]).sets;
-		var slot = state.partyIndexes[1] < sets.length && getPokemonName(sets[state.partyIndexes[1]]) === theirs.species ?
-			state.partyIndexes[1] : sets.map(getPokemonName).indexOf(theirs.species);
+		sets = getTrainerVariant(TRAINER_ORDER[fight.index]).sets;
+		var slot = findEmulatorTrainerSlot(sets, state.partyIndexes[theirsOut[0]], theirs.species);
 		if (slot !== -1) {
 			if (activeTrainerSlot !== slot || $("#p2 input.set-selector").val() !== sets[slot]) {
 				emulatorSync.applied["#p2"] = null;
 				loadTrainerPokemon(sets[slot], slot);
 			}
-			applyEmulatorBattler("#p2", state.mons[1]);
+			applyEmulatorBattler("#p2", state.mons[theirsOut[0]]);
+			applyEmulatorHistory("p2", state.mons[theirsOut[0]]);
 		} else {
 			notes.push("the trainer's " + theirs.species + " is not in its team here");
 		}
 	} else if (theirs) {
 		notes.push(state.trainer ? "this trainer is not in the calc yet" : "a wild " + theirs.species);
 	}
-	setEmulatorStatus("Connected · in battle" + (notes.length ? " · " + notes.join("; ") : ""), true);
+	if (fight && sets && state.enemyParty && state.enemyParty.hex) readEmulatorBench(fight.index, sets, enemy, state.enemyParty.hex);
+	// The Pokémon beside them.
+	if (doubles && fight && sets) {
+		var partner = mine.length > 1 ? party[state.partyIndexes[mine[1]]] : null;
+		var partnerSet = partner ? findSetForPid(partner.pid) : null;
+		if (partner && !partnerSet) notes.push(partner.species + " is not in your box");
+		setEmulatorPartner("yours", partnerSet || "none", partnerSet ? state.mons[mine[1]] : null);
+		var foePartner = theirsOut.length > 1 ? enemy[state.partyIndexes[theirsOut[1]]] : null;
+		var foeSlot = foePartner ? findEmulatorTrainerSlot(sets, state.partyIndexes[theirsOut[1]], foePartner.species) : -1;
+		if (foePartner && foeSlot === -1) notes.push("the trainer's " + foePartner.species + " is not in its team here");
+		setEmulatorPartner("foe", foeSlot === -1 ? "none" : foeSlot, foeSlot === -1 ? null : state.mons[theirsOut[1]]);
+		if (typeof isDoublesFight === "function" && !isDoublesFight()) notes.push("a double battle the calc has as a single one");
+	}
+	// The AI's predictions again, with what has happened in the battle.
+	if (emulatorSync.historyChanged) {
+		emulatorSync.historyChanged = false;
+		if (typeof performCalculations === "function") performCalculations();
+	}
+	setEmulatorStatus("Connected · in " + (doubles ? "a double battle" : "battle") + (notes.length ? " · " + notes.join("; ") : ""), true);
 }
 
 function pollEmulator() {
@@ -196,6 +362,7 @@ function setEmulatorSync(on) {
 	emulatorSync.timer = null;
 	emulatorSync.lastRaw = "";
 	emulatorSync.applied = {};
+	emulatorSync.history = {};
 	emulatorSync.connected = false;
 	emulatorSync.lastPoll = 0;
 	if (on) {

@@ -1240,6 +1240,763 @@
      "sd": 4
     },
     "note": "the Silph Co. rivals share this set with 4 Def EVs; the Route 22 one has 4 Sp. Def"
+   },
+   {
+    "trainer": "Falkner",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Rufflet",
+    "evs": {
+     "hp": 4,
+     "sp": 40
+    }
+   },
+   {
+    "trainer": "Brock",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Onix",
+    "evs": {
+     "hp": 100,
+     "sp": 40
+    }
+   },
+   {
+    "trainer": "Morty",
+    "location": "Lavender Town",
+    "label": "Team 1",
+    "species": "Mimikyu",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Erika",
+    "location": "Celadon City",
+    "label": "Team 1",
+    "species": "Rillaboom",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Erika",
+    "location": "Celadon City",
+    "label": "Team 1",
+    "species": "Meganium",
+    "evs": {
+     "hp": 252,
+     "df": 6,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Rocket Hideout",
+    "label": "Team 1",
+    "species": "Nidoking",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Rocket Hideout",
+    "label": "Team 1",
+    "species": "Honchkrow",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Rocket Hideout",
+    "label": "Team 1",
+    "species": "Infernape",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Squirtle",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Squirtle",
+    "species": "Darmanitan",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Squirtle",
+    "species": "Jumpluff",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Bulbasaur",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Bulbasaur",
+    "species": "Darmanitan",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Charmander",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Silph Co.",
+    "label": "Rival Has Charmander",
+    "species": "Jumpluff",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Ariana & Archer",
+    "location": "Silph Co.",
+    "label": "Team 1",
+    "species": "Gothitelle",
+    "evs": {
+     "hp": 252,
+     "sp": 4,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Silph Co.",
+    "label": "Team 1",
+    "species": "Hippowdon",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Silph Co.",
+    "label": "Team 1",
+    "species": "Excadrill",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Silph Co.",
+    "label": "Team 1",
+    "species": "Garchomp",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Chuck",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Hitmontop",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Chuck",
+    "location": "Saffron City",
+    "label": "Team 1",
+    "species": "Breloom",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Brock (Rematch)",
+    "location": "Pewter City",
+    "label": "Team 1",
+    "species": "Tyranitar",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Erika (Rematch)",
+    "location": "Celadon City",
+    "label": "Team 1",
+    "species": "Hawlucha",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Koga",
+    "location": "Fuchsia City",
+    "label": "Team 1",
+    "species": "Swellow",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Koga",
+    "location": "Fuchsia City",
+    "label": "Team 1",
+    "species": "Accelgor",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Koga",
+    "location": "Fuchsia City",
+    "label": "Team 1",
+    "species": "Greninja",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "label": "Team 1",
+    "species": "Celebi",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Dumass Jojo Fan",
+    "location": "Power Plant",
+    "label": "Team 1",
+    "species": "Hoopa-Unbound",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team One",
+    "species": "Melmetal",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team Two",
+    "species": "Melmetal",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team Two",
+    "species": "Excadrill",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team Two",
+    "species": "Magnezone",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Jasmine",
+    "location": "Cinnabar Island Lab",
+    "label": "Team Three",
+    "species": "Melmetal",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Blaine",
+    "location": "Cinnabar Island",
+    "label": "Team 1",
+    "species": "Exeggutor",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Blaine",
+    "location": "Cinnabar Island",
+    "label": "Team 1",
+    "species": "Typhlosion",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Cerulean Cave",
+    "label": "Team 1",
+    "species": "Tapu Lele",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Cerulean Cave",
+    "label": "Team 1",
+    "species": "Excadrill",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Giovanni",
+    "location": "Cerulean Cave",
+    "label": "Team 1",
+    "species": "Celesteela",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Clair",
+    "location": "Viridian City",
+    "label": "Team 1",
+    "species": "Aerodactyl",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Clair",
+    "location": "Viridian City",
+    "label": "Team 1",
+    "species": "Naganadel",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Squirtle",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Bulbasaur",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Route 22",
+    "label": "Rival Has Charmander",
+    "species": "Staraptor",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Ace Naomi",
+    "location": "Victory Road",
+    "label": "Team 1",
+    "species": "Galvantula",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Lorelei",
+    "location": "Elite Four",
+    "label": "Rain Team",
+    "species": "Politoed",
+    "evs": {
+     "hp": 252,
+     "sp": 252,
+     "sa": 4
+    }
+   },
+   {
+    "trainer": "Lorelei",
+    "location": "Elite Four",
+    "label": "Snow Team",
+    "species": "Ninetales-Alola",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Lorelei",
+    "location": "Elite Four",
+    "label": "Snow Team",
+    "species": "Glaceon",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Lorelei",
+    "location": "Elite Four",
+    "label": "Snow Team",
+    "species": "Rotom-Wash",
+    "evs": {
+     "hp": 252,
+     "sp": 252,
+     "sa": 4
+    }
+   },
+   {
+    "trainer": "Lorelei",
+    "location": "Elite Four",
+    "label": "Snow Team",
+    "species": "Calyrex-Ice",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Bruno",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Zacian-Crowned",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Bruno",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Infernape",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Bruno",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Kommo-o",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Bruno",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Zacian-Crowned",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Agatha",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Marshadow",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Agatha",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Zoroark",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Agatha",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Marshadow",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Dragonite",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team One",
+    "species": "Melmetal",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Melmetal",
+    "evs": {
+     "hp": 252,
+     "at": 252,
+     "sp": 6
+    }
+   },
+   {
+    "trainer": "Lance",
+    "location": "Elite Four",
+    "label": "Team Two",
+    "species": "Dragonite",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Squirtle",
+    "species": "Pheromosa",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Squirtle",
+    "species": "Yveltal",
+    "evs": {
+     "hp": 252,
+     "sp": 6,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Squirtle",
+    "species": "Eternatus",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Charmander",
+    "species": "Pheromosa",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Charmander",
+    "species": "Yveltal",
+    "evs": {
+     "hp": 252,
+     "sp": 6,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Charmander",
+    "species": "Eternatus",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Bulbasaur",
+    "species": "Pheromosa",
+    "evs": {
+     "hp": 6,
+     "at": 252,
+     "sp": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Bulbasaur",
+    "species": "Yveltal",
+    "evs": {
+     "hp": 252,
+     "sp": 6,
+     "sa": 252
+    }
+   },
+   {
+    "trainer": "Rival",
+    "location": "Champion",
+    "label": "Rival Has Bulbasaur",
+    "species": "Eternatus",
+    "evs": {
+     "hp": 6,
+     "sp": 252,
+     "sa": 252
+    }
    }
   ],
   "hardcore": [
