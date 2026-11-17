@@ -42,3 +42,50 @@ if (pcalcBridge.available()) {
 		if (callback) callback(message);
 	};
 }
+
+/*
+ * Calculator updates: the app downloads a newer calculator by itself (once a day) and says so here.
+ * A small bar offers to reload into it now; otherwise it's used the next time the app starts. What
+ * the calculator has saved stays as it is.
+ */
+function showPcalcCalcUpdate(message) {
+	if (document.getElementById("pcalc-calc-update")) return;
+	var bar = document.createElement("div");
+	bar.id = "pcalc-calc-update";
+	bar.className = "pcalc-calc-update";
+	bar.setAttribute("role", "status");
+	var date = new Date(message.date);
+	var text = document.createElement("span");
+	text.textContent = "Calculator updated";
+	if (!isNaN(date)) text.title = "Its newest version, from " + date.toLocaleDateString();
+	var reload = document.createElement("button");
+	reload.type = "button";
+	reload.className = "bs-btn bs-btn-default";
+	reload.textContent = "Reload now";
+	reload.onclick = function () {
+		reload.disabled = true;
+		pcalcBridge.send({type: "calc:apply"});
+	};
+	var later = document.createElement("button");
+	later.type = "button";
+	later.className = "bs-btn bs-btn-default";
+	later.textContent = "Later";
+	later.title = "It's used the next time the app starts";
+	later.onclick = function () {
+		bar.parentNode.removeChild(bar);
+	};
+	bar.appendChild(text);
+	bar.appendChild(reload);
+	bar.appendChild(later);
+	document.body.appendChild(bar);
+}
+
+if (pcalcBridge.available()) {
+	pcalcBridge.on("calc:updated", function (message) {
+		if (document.body) showPcalcCalcUpdate(message);
+		else document.addEventListener("DOMContentLoaded", function () {
+			showPcalcCalcUpdate(message);
+		});
+	});
+	pcalcBridge.send({type: "calc:hello"});
+}

@@ -126,6 +126,10 @@ var CHANGELOG = [
 			"Simple Beam now score as in the game (taking a good ability away, never into Wonder Guard, Insomnia or Simple)",
 		"Mirror Move and Copycat are scored as the status move they would copy",
 		"Double battles: Mummy (an ally with Truant or Slow Start hits its Mummy partner to lose it) and Ion Deluge into its partner's Volt Absorb"
+	]},
+	{version: "1.20", notes: [
+		"In the Pcalc app: the calculator updates itself (once a day, when there's a connection), with no new app to install. " +
+			"A bar offers to reload into the new one; what you have saved stays"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
