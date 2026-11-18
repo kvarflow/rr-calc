@@ -52,7 +52,8 @@ var CHANGELOG = [
 			"its switches and moves on its own partner, checked against Radical Red's own code",
 		"The AI uses the game's ability ratings; Mirror Move and Copycat are scored as the move they copy",
 		"Boss Pok\u00e9mon have the game's own EVs and natures; Hardcore and Minimal Grinding give no EVs, as the game does",
-		"Copy AI report (beside What's new): when the AI did something else than predicted, send in the fight"
+		"Copy AI report (beside What's new): when the AI did something else than predicted, send in the fight",
+		"In the Pcalc app: the calculator updates itself (once a day, when there's a connection), with no new app to install"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

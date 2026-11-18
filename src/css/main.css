@@ -4564,3 +4564,27 @@ html.small-screen .save-auto-help {
     color: var(--ss-muted);
     opacity: 1;
 }
+
+/* Pcalc: "Calculator updated" bar (pcalc_bridge.js), above everything at the top of the screen. */
+.pcalc-calc-update {
+	position: fixed;
+	top: 8px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10000;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	max-width: calc(100% - 16px);
+	box-sizing: border-box;
+	padding: 6px 8px 6px 12px;
+	border-radius: 10px;
+	background: #161E33;
+	color: #fff;
+	box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35);
+	font-size: 13px;
+}
+.pcalc-calc-update span,
+.pcalc-calc-update .bs-btn {
+	white-space: nowrap;
+}
