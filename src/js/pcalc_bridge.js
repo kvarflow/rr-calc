@@ -7,6 +7,8 @@
 var pcalcBridge = {
 	pending: null,
 	listeners: {},
+	// The last message of each type the app sent, for a listener that starts after it came.
+	last: {},
 	// In the Pcalc app, with its channel there.
 	available: function () {
 		return /\bPcalc\//.test(navigator.userAgent) && typeof window.PcalcNative !== "undefined";
@@ -22,6 +24,7 @@ var pcalcBridge = {
 	// Messages of `type` the app sends by itself.
 	on: function (type, handler) {
 		pcalcBridge.listeners[type] = handler;
+		if (pcalcBridge.last[type]) handler(pcalcBridge.last[type]);
 	}
 };
 
@@ -33,6 +36,7 @@ if (pcalcBridge.available()) {
 		} catch (e) {
 			return;
 		}
+		if (message && message.type) pcalcBridge.last[message.type] = message;
 		if (message && pcalcBridge.listeners[message.type]) {
 			pcalcBridge.listeners[message.type](message);
 			return;
