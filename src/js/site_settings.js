@@ -158,6 +158,18 @@ $(document).ready(function () {
 				window.location.reload();
 			}), " Minimal Grinding (trainers have no EVs)").appendTo(panel);
 	}
+	// The PC marking your dead carry, for .sav imports (save_import.js).
+	if (typeof DEAD_MARKINGS !== "undefined" && typeof TRAINER_ORDER !== "undefined" && TRAINER_ORDER.length) {
+		var marking = $('<select id="dead-marking"></select>');
+		DEAD_MARKINGS.forEach(function (m) {
+			marking.append($("<option></option>").val(m.key).text(m.label));
+		});
+		marking.val(readSetting(DEAD_MARKING_KEY) || "").change(function () {
+			writeSetting(DEAD_MARKING_KEY, this.value);
+		});
+		$('<label title="Mark your dead with this marking in the game\'s PC (Summary or the box\'s Mark option): importing your .sav moves them to Fainted."></label>')
+			.append("Dead marker (PC marking) ", marking).appendTo(panel);
+	}
 	panel.append(
 		$('<button type="button" id="show-changelog">What\'s new</button>').click(showChangelog),
 		" ",

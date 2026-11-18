@@ -238,6 +238,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
 		pid: pid,
+		// The PC markings (bit 0 circle, 1 square, 2 triangle, 3 heart): one can mean "dead" (DEAD_MARKING_KEY).
+		markings: bytes[offset + 0x1B],
 		// A party Pokémon's HP now (0 with a max HP: fainted); the boxes don't keep HP.
 		hp: isParty && view.getUint16(0x58, true) > 0 ? view.getUint16(0x56, true) : null
 	};
@@ -473,9 +475,31 @@ function importSaveIntoBox(save) {
 		save.party.forEach(function (mon, i) {
 			if (mon.hp === 0 && !getRunMon(partyIds[i]).fainted) setYourFaint(partyIds[i], true, "", undefined, "team");
 		});
+		// The PC marking you give your dead (Settings), in the party or a box.
+		var deadBit = getDeadMarkingBit();
+		if (deadBit) {
+			save.party.concat(save.boxes).forEach(function (mon, i) {
+				var id = i < partyIds.length ? partyIds[i] : boxIds[i - partyIds.length];
+				if ((mon.markings & deadBit) && !getRunMon(id).fainted) setYourFaint(id, true, "", undefined, i < partyIds.length ? "team" : "box");
+			});
+		}
 		moveFaintedToSection();
 	}
 	$(allPokemon("#importedSetsOptions")).css("display", "inline");
+}
+
+// The PC marking that means a Pokémon is dead (Settings): the game keeps no record of who died, so
+// a run can mark them in the PC and the import moves them to Fainted.
+var DEAD_MARKING_KEY = "deadMarking";
+var DEAD_MARKINGS = [{key: "", label: "None"}, {key: "circle", label: "\u25CF Circle", bit: 1}, {key: "square", label: "\u25A0 Square", bit: 2},
+	{key: "triangle", label: "\u25B2 Triangle", bit: 4}, {key: "heart", label: "\u2665 Heart", bit: 8}];
+
+function getDeadMarkingBit() {
+	var chosen = readSetting(DEAD_MARKING_KEY) || "";
+	var found = DEAD_MARKINGS.filter(function (m) {
+		return m.key === chosen;
+	})[0];
+	return found && found.bit || 0;
 }
 
 var SAVE_MODE_LABELS = {normal: "Normal Mode", hardcore: "Hardcore Mode"};
