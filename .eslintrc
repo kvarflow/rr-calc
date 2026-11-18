@@ -292,6 +292,8 @@
         "shortSetName": false,
         "isMinimalGrindingOn": false,
         "MINIMAL_GRINDING_KEY": false,
+        "DEAD_MARKINGS": false,
+        "DEAD_MARKING_KEY": false,
         "getBattleHistoryMoves": false,
         "getBattleHistorySetId": false,
         "battleHistory": true,
