@@ -33,6 +33,11 @@ var RAW_REGION_FILE_OFFSET = 0x1E000;
 var RAW_REGION_SECTOR_DATA = 0xFF0;
 var RAW_BOXES_REGION_OFFSET = 0xB0C;
 var RAW_BOXES = 3;
+// Boxes 23-25 sit in spare room inside the save blocks (CFRU's sPokemonBoxPtrs, at 0x09148930 in
+// Radical Red: 0x02027434 is SaveBlock1 + 0x1F08, 0x02024638 SaveBlock2 + 0xB0).
+var SAVEBLOCK1_BOXES_OFFSET = 0x1F08;
+var SAVEBLOCK2_BOX_OFFSET = 0xB0;
+var TOTAL_BOXES = 25;
 // CFRU's extra event flags (ids from 0x900) are stored in the spare bytes after
 // section 0's data, then continue in the spare bytes after section 4's.
 var EXTRA_FLAG_AREAS = [{section: 0, start: 0xF24, size: 0xCC}, {section: 4, start: 0xD98, size: 0x258}];
@@ -238,6 +243,8 @@ function decodeSaveMon(bytes, offset, isParty) {
 		origins: view.getUint16(layout.metLocation + 1, true),
 		// The personality value: the same Pokémon keeps it wherever it is moved (party, box).
 		pid: pid,
+		// The PC markings (bit 0 circle, 1 square, 2 triangle, 3 heart): one can mean "dead" (DEAD_MARKING_KEY).
+		markings: bytes[offset + 0x1B],
 		// A party Pokémon's HP now (0 with a max HP: fainted); the boxes don't keep HP.
 		hp: isParty && view.getUint16(0x58, true) > 0 ? view.getUint16(0x56, true) : null
 	};
@@ -327,16 +334,22 @@ function parseRadicalRedSave(bytes) {
 	}
 
 	// The stream starts with the current box number (u32) before box 1.
+	var boxSize = BOX_SLOTS * PC_MON_SIZE;
+	var saveBlock1Boxes = new Uint8Array(2 * boxSize);
+	for (var b1 = 0; b1 < saveBlock1Boxes.length; b1++) saveBlock1Boxes[b1] = readSaveBlock1Byte(bytes, sections, SAVEBLOCK1_BOXES_OFFSET + b1);
 	var boxAreas = [
 		{bytes: readStorageStream(bytes, sections), offset: 4, firstBox: 1, count: STREAM_BOXES},
-		{bytes: readRawBoxes(bytes), offset: 0, firstBox: STREAM_BOXES + 1, count: RAW_BOXES}
+		{bytes: readRawBoxes(bytes), offset: 0, firstBox: STREAM_BOXES + 1, count: RAW_BOXES},
+		{bytes: saveBlock1Boxes, offset: 0, firstBox: STREAM_BOXES + RAW_BOXES + 1, count: 2},
+		{bytes: bytes.subarray(sections[0] + SAVEBLOCK2_BOX_OFFSET, sections[0] + SAVEBLOCK2_BOX_OFFSET + boxSize), offset: 0, firstBox: TOTAL_BOXES, count: 1}
 	];
 	boxAreas.forEach(function (area) {
 		for (var box = 0; box < area.count; box++) {
 			for (var slot = 0; slot < BOX_SLOTS; slot++) {
 				var boxed = decodeSaveMon(area.bytes, area.offset + (box * BOX_SLOTS + slot) * PC_MON_SIZE, false);
 				if (boxed) {
-					boxed.location = "Box " + (area.firstBox + box);
+					boxed.box = area.firstBox + box;
+					boxed.location = "Box " + boxed.box;
 					result.boxes.push(boxed);
 				}
 			}
@@ -473,9 +486,41 @@ function importSaveIntoBox(save) {
 		save.party.forEach(function (mon, i) {
 			if (mon.hp === 0 && !getRunMon(partyIds[i]).fainted) setYourFaint(partyIds[i], true, "", undefined, "team");
 		});
+		// Your dead box and the PC marking you give your dead (Settings).
+		var deadBit = getDeadMarkingBit();
+		var deadBox = getDeadBox();
+		save.party.concat(save.boxes).forEach(function (mon, i) {
+			var id = i < partyIds.length ? partyIds[i] : boxIds[i - partyIds.length];
+			var dead = (deadBit && (mon.markings & deadBit)) || (deadBox && mon.box === deadBox);
+			if (dead && !getRunMon(id).fainted) setYourFaint(id, true, "", undefined, i < partyIds.length ? "team" : "box");
+		});
 		moveFaintedToSection();
 	}
 	$(allPokemon("#importedSetsOptions")).css("display", "inline");
+}
+
+// The PC marking that means a Pokémon is dead (Settings): the game keeps no record of who died, so
+// a run can mark them in the PC and the import moves them to Fainted.
+var DEAD_MARKING_KEY = "deadMarking";
+var DEAD_MARKINGS = [{key: "", label: "None"}, {key: "circle", label: "\u25CF Circle", bit: 1}, {key: "square", label: "\u25A0 Square", bit: 2},
+	{key: "triangle", label: "\u25B2 Triangle", bit: 4}, {key: "heart", label: "\u2665 Heart", bit: 8}];
+
+// The box your dead go in (Settings; Box 25 unless changed, 0 for none): everything in it is dead.
+var DEAD_BOX_KEY = "deadBox";
+var DEFAULT_DEAD_BOX = 25;
+
+function getDeadBox() {
+	var saved = readSetting(DEAD_BOX_KEY);
+	var box = saved === null || saved === undefined || saved === "" ? DEFAULT_DEAD_BOX : Number(saved);
+	return box >= 1 && box <= TOTAL_BOXES ? box : 0;
+}
+
+function getDeadMarkingBit() {
+	var chosen = readSetting(DEAD_MARKING_KEY) || "";
+	var found = DEAD_MARKINGS.filter(function (m) {
+		return m.key === chosen;
+	})[0];
+	return found && found.bit || 0;
 }
 
 var SAVE_MODE_LABELS = {normal: "Normal Mode", hardcore: "Hardcore Mode"};

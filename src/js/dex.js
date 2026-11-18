@@ -116,14 +116,15 @@ function getPreEvolution(name) {
 	return null;
 }
 
-function buildEvolutionMon(name, current) {
+// A stage of the line; tapping another stage opens it (`pick`, else its Dex page).
+function buildEvolutionMon(name, current, pick) {
 	return $('<button type="button" class="dex-evo-mon"></button>').toggleClass("dex-evo-current", name === current)
 		.attr("title", name === current ? name : "Open " + name + " in the Dex")
 		.append(createSpriteImage(name, function () {
 			$(this).remove();
 		}), $('<span class="dex-evo-name"></span>').text(name))
 		.click(function () {
-			if (name !== current && pokedex[name]) openDex(name);
+			if (name !== current && pokedex[name]) (pick || openDex)(name, this);
 		});
 }
 
@@ -138,11 +139,11 @@ function buildEvolutionArrow(how) {
  * row when the screen is narrow; where it branches (Eevee), the branches one under another, each
  * an arrow and its own line.
  */
-function buildEvolutionChain(name, current, seen) {
+function buildEvolutionChain(name, current, seen, pick) {
 	var chain = $('<div class="dex-evo-chain"></div>');
 	for (;;) {
 		seen[name] = true;
-		chain.append(buildEvolutionMon(name, current));
+		chain.append(buildEvolutionMon(name, current, pick));
 		var next = (EVOLUTIONS[name] || []).filter(function (evolution) {
 			return !seen[evolution[0]];
 		});
@@ -155,7 +156,7 @@ function buildEvolutionChain(name, current, seen) {
 			var branches = $('<div class="dex-evo-branches"></div>').appendTo(chain);
 			next.forEach(function (evolution) {
 				$('<div class="dex-evo-branch"></div>').append(buildEvolutionArrow(evolution[1]),
-					buildEvolutionChain(evolution[0], current, seen)).appendTo(branches);
+					buildEvolutionChain(evolution[0], current, seen, pick)).appendTo(branches);
 			});
 		}
 		return chain;
@@ -163,7 +164,7 @@ function buildEvolutionChain(name, current, seen) {
 }
 
 // The whole line, from its first stage, with how each one evolves (from the game).
-function buildDexEvolutions(name) {
+function buildDexEvolutions(name, pick) {
 	var section = $('<div class="dex-evolutions"></div>');
 	loadLearnsets(function () {
 		if (typeof EVOLUTIONS === "undefined") {
@@ -177,7 +178,7 @@ function buildDexEvolutions(name) {
 			section.append('<p class="dex-none">Does not evolve.</p>');
 			return;
 		}
-		section.append(buildEvolutionChain(root, name, {}));
+		section.append(buildEvolutionChain(root, name, {}, pick));
 	});
 	return section;
 }
@@ -401,7 +402,136 @@ function buildDexTrainers(name) {
 	return list;
 }
 
+/*
+ * Every Pokémon at once, as dex.radicalred.net lists them: types, abilities and base stats, found by
+ * name or ability, a type, and sorted by any column. Tapping one opens its page.
+ */
+var DEX_VIEW_KEY = "dexView";
+var DEX_LIST_SORT_KEY = "dexListSort";
+var DEX_LIST_PAGE = 120;
+var DEX_LIST_COLUMNS = [["name", "Pok\u00e9mon"], ["hp", "HP"], ["atk", "Atk"], ["def", "Def"], ["spa", "SpA"], ["spd", "SpD"], ["spe", "Spe"], ["bst", "BST"]];
+var DEX_TYPES = ["Normal", "Fire", "Water", "Electric", "Grass", "Ice", "Fighting", "Poison", "Ground", "Flying", "Psychic", "Bug",
+	"Rock", "Ghost", "Dragon", "Dark", "Steel", "Fairy"];
+
+function getDexListRows() {
+	return getDexSpeciesList().map(function (name) {
+		var species = pokedex[name];
+		var bs = species.bs;
+		var stats = {hp: bs.hp, atk: bs.at, def: bs.df, spa: gen === 1 ? bs.sl : bs.sa, spd: gen === 1 ? bs.sl : bs.sd, spe: bs.sp};
+		var abilities = getDexAbilities(name, species);
+		var list = Object.keys(abilities).map(function (slot) {
+			return abilities[slot];
+		}).filter(Boolean);
+		return {name: name, types: species.types, abilities: list, stats: stats,
+			bst: DEX_STAT_NAMES.reduce(function (sum, stat) { return sum + (stats[stat[0]] || 0); }, 0)};
+	});
+}
+
+function renderDexList(container) {
+	var sort = (readSetting(DEX_LIST_SORT_KEY) || "name:1").split(":");
+	var state = {query: "", type: "", key: sort[0], dir: Number(sort[1]) || 1, shown: DEX_LIST_PAGE};
+	var all = getDexListRows();
+	var filters = $('<div class="dex-list-filters"></div>').appendTo(container);
+	var search = $('<input type="search" class="dex-search" placeholder="Name or ability" aria-label="Find by name or ability" />').appendTo(filters);
+	var type = $('<select class="dex-list-type" aria-label="Type"><option value="">Any type</option></select>').appendTo(filters);
+	DEX_TYPES.forEach(function (t) {
+		type.append($("<option></option>").val(t).text(t));
+	});
+	var count = $('<span class="dex-list-count"></span>').appendTo(filters);
+	var wrap = $('<div class="dex-list-wrap"></div>').appendTo(container);
+	var table = $('<table class="dex-table dex-list"></table>').appendTo(wrap);
+	var headRow = $("<tr></tr>").appendTo($("<thead></thead>").appendTo(table));
+	var body = $("<tbody></tbody>").appendTo(table);
+	var more = $('<button type="button" class="dex-list-more"></button>').appendTo(container);
+	DEX_LIST_COLUMNS.forEach(function (column, i) {
+		$("<th></th>").addClass(i ? "dex-numeric" : "").attr({scope: "col", tabindex: 0, role: "button", "data-key": column[0]})
+			.text(column[1]).appendTo(headRow);
+		if (i === 0) $('<th scope="col">Types</th>').appendTo(headRow);
+	});
+	var value = function (row, key) {
+		return key === "name" ? row.name : key === "bst" ? row.bst : row.stats[key] || 0;
+	};
+	var draw = function () {
+		var query = state.query.toLowerCase();
+		var rows = all.filter(function (row) {
+			if (state.type && row.types.indexOf(state.type) === -1) return false;
+			return !query || row.name.toLowerCase().indexOf(query) !== -1 || row.abilities.some(function (a) {
+				return a.toLowerCase().indexOf(query) !== -1;
+			});
+		}).sort(function (a, b) {
+			var x = value(a, state.key), y = value(b, state.key);
+			if (x === y) return a.name < b.name ? -1 : 1;
+			return (x < y ? -1 : 1) * state.dir;
+		});
+		headRow.find("th[data-key]").removeAttr("aria-sort").filter('[data-key="' + state.key + '"]')
+			.attr("aria-sort", state.dir > 0 ? "ascending" : "descending");
+		body.empty();
+		rows.slice(0, state.shown).forEach(function (row) {
+			var tr = $('<tr class="dex-list-row" tabindex="0"></tr>').attr({"data-species": row.name, "data-dex-peek": row.name});
+			$("<td></td>").append($('<div class="dex-list-name"></div>').append(
+				$('<span class="dex-list-sprite"></span>').append(createSpriteImage(row.name, function () {
+					$(this).remove();
+				}).attr("loading", "lazy")),
+				$("<span></span>").text(row.name),
+				$('<span class="dex-list-abilities"></span>').text(row.abilities.join(" \u00b7 ")))).appendTo(tr);
+			$("<td></td>").append(buildDexTypes(row.types)).appendTo(tr);
+			DEX_STAT_NAMES.forEach(function (stat) {
+				$('<td class="dex-numeric"></td>').text(row.stats[stat[0]] || 0).appendTo(tr);
+			});
+			$('<td class="dex-numeric dex-list-bst"></td>').text(row.bst).appendTo(tr);
+			body.append(tr);
+		});
+		count.text(rows.length + " Pok\u00e9mon");
+		more.toggle(rows.length > state.shown).text("Show " + Math.min(DEX_LIST_PAGE, rows.length - state.shown) + " more");
+	};
+	search.on("input", function () {
+		state.query = $.trim(this.value);
+		state.shown = DEX_LIST_PAGE;
+		draw();
+	});
+	type.on("change", function () {
+		state.type = this.value;
+		state.shown = DEX_LIST_PAGE;
+		draw();
+	});
+	headRow.on("click keydown", "th[data-key]", function (ev) {
+		if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+		ev.preventDefault();
+		var key = $(this).attr("data-key");
+		// Stats sort highest first; names A to Z.
+		state.dir = key === state.key ? -state.dir : key === "name" ? 1 : -1;
+		state.key = key;
+		writeSetting(DEX_LIST_SORT_KEY, state.key + ":" + state.dir);
+		draw();
+	});
+	body.on("click keydown", ".dex-list-row", function (ev) {
+		if (ev.type === "keydown" && ev.key !== "Enter") return;
+		writeSetting(DEX_VIEW_KEY, "page");
+		openDex($(this).attr("data-species"));
+	});
+	more.click(function () {
+		state.shown += DEX_LIST_PAGE;
+		draw();
+	});
+	draw();
+}
+
 function renderDex(container) {
+	var view = readSetting(DEX_VIEW_KEY) === "list" ? "list" : "page";
+	var switcher = $('<div class="dex-view-tabs" role="tablist"></div>').appendTo(container);
+	[["page", "Pok\u00e9mon"], ["list", "All Pok\u00e9mon"]].forEach(function (tab) {
+		$('<button type="button" class="dex-move-tab" role="tab"></button>').text(tab[1]).attr("aria-selected", String(view === tab[0]))
+			.click(function () {
+				if (view === tab[0]) return;
+				writeSetting(DEX_VIEW_KEY, tab[0]);
+				container.empty();
+				renderDex(container);
+			}).appendTo(switcher);
+	});
+	if (view === "list") {
+		renderDexList(container);
+		return;
+	}
 	var name = getDefaultDexSpecies();
 	dexSpecies = name;
 	writeSetting(DEX_SPECIES_KEY, name);
@@ -446,6 +576,96 @@ function renderDex(container) {
 }
 
 registerSheet({key: "dex", label: "Dex", icon: "📕", render: renderDex});
+
+/*
+ * Dex peek: hold a Pokémon (or right-click it) in the Wild tab, the Dex list, the Mastersheet or the
+ * Frag sheet, anything with data-dex-peek: its types, base stats and evolution line in a small card,
+ * and a button to its Dex page. A tap does what it always did.
+ */
+var DEX_PEEK_HOLD_MS = 450;
+var dexPeekPress = null;
+
+function closeDexPeek() {
+	$(".dex-peek, .dex-peek-backdrop").remove();
+	$(document).off("keydown.dexPeek");
+}
+
+function showDexPeek(name, anchor) {
+	var species = pokedex[name];
+	if (!species) return;
+	closeDexPeek();
+	var backdrop = $('<div class="dex-peek-backdrop"></div>');
+	// The release of the hold that opened it is not a tap outside: only a new press closes it.
+	backdrop.on("pointerdown", function () {
+		backdrop.data("armed", true);
+	}).on("click", function (ev) {
+		ev.stopPropagation();
+		if (backdrop.data("armed")) closeDexPeek();
+	});
+	var card = $('<div class="dex-peek" role="dialog"></div>').attr("aria-label", name);
+	var head = $('<div class="dex-peek-head"></div>').appendTo(card);
+	$('<span class="dex-peek-sprite"></span>').append(createSpriteImage(name, function () {
+		$(this).remove();
+	})).appendTo(head);
+	$('<div class="dex-peek-title"></div>').append($("<b></b>").text(name), buildDexTypes(species.types)).appendTo(head);
+	$('<button type="button" class="dex-peek-close" aria-label="Close">\u00d7</button>').click(closeDexPeek).appendTo(head);
+	card.append(buildDexStats(species));
+	$('<div class="dex-peek-evo"></div>').append(buildDexEvolutions(name, function (other) {
+		showDexPeek(other, anchor);
+	})).appendTo(card);
+	$('<div class="dex-peek-actions"></div>').append($('<button type="button" class="dex-peek-open">Open in Dex</button>').click(function () {
+		closeDexPeek();
+		if (typeof DEX_VIEW_KEY !== "undefined") writeSetting(DEX_VIEW_KEY, "page");
+		openDex(name);
+	})).appendTo(card);
+	$("body").append(backdrop, card);
+	// Beside what was held on a wide screen; along the bottom on a narrow one (CSS).
+	if (window.innerWidth > 600 && anchor && anchor.getBoundingClientRect) {
+		var rect = anchor.getBoundingClientRect();
+		var width = card.outerWidth(), height = card.outerHeight();
+		var left = Math.max(8, Math.min(window.innerWidth - width - 8, rect.left));
+		var top = rect.bottom + 6 + height <= window.innerHeight ? rect.bottom + 6 : Math.max(8, rect.top - height - 6);
+		card.css({left: left, top: top});
+	}
+	$(document).on("keydown.dexPeek", function (ev) {
+		if (ev.key === "Escape") closeDexPeek();
+	});
+	card.find(".dex-peek-open").focus();
+}
+
+// Seen on the way down (capture), as the small layout's swipes stop presses from bubbling.
+document.addEventListener("pointerdown", function (ev) {
+	var element = ev.button === 0 && ev.target.closest ? ev.target.closest("[data-dex-peek]") : null;
+	if (!element) return;
+	if (dexPeekPress) clearTimeout(dexPeekPress.timer);
+	dexPeekPress = {element: element, x: ev.clientX, y: ev.clientY, fired: false};
+	dexPeekPress.timer = setTimeout(function () {
+		dexPeekPress.fired = true;
+		showDexPeek($(element).attr("data-dex-peek"), element);
+	}, DEX_PEEK_HOLD_MS);
+}, true);
+$(document).on("pointermove", function (ev) {
+	if (dexPeekPress && !dexPeekPress.fired && Math.abs(ev.clientX - dexPeekPress.x) + Math.abs(ev.clientY - dexPeekPress.y) > 10) {
+		clearTimeout(dexPeekPress.timer);
+	}
+});
+$(document).on("pointerup pointercancel", function () {
+	if (dexPeekPress && !dexPeekPress.fired) clearTimeout(dexPeekPress.timer);
+});
+// A hold is not also a tap (a Nuzlocke encounter, opening the Dex).
+document.addEventListener("click", function (ev) {
+	if (dexPeekPress && dexPeekPress.fired && dexPeekPress.element.contains(ev.target)) {
+		ev.preventDefault();
+		ev.stopPropagation();
+		dexPeekPress = null;
+	}
+}, true);
+$(document).on("contextmenu", "[data-dex-peek]", function (ev) {
+	ev.preventDefault();
+	if (dexPeekPress && dexPeekPress.fired && dexPeekPress.element === this) return;
+	if (dexPeekPress) clearTimeout(dexPeekPress.timer);
+	showDexPeek($(this).attr("data-dex-peek"), this);
+});
 
 // Tapping a Pokémon's name in the other sheets opens it here.
 $(document).on("click", ".sheet-view .ms-wild-mon, .sheet-view .fs-species", function () {

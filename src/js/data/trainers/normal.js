@@ -1017,7 +1017,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 4)",
      "Kingambit (*Rival Blue Set 1)",
      "Jumpluff (*Rival Blue Set 1)",
      "Darmanitan (*Rival Blue Set 4)",
@@ -1041,7 +1041,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Bulbasaur",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 4)",
      "Kingambit (*Rival Blue Set 1)",
      "Azumarill (*Rival Blue Set 4)",
      "Darmanitan (*Rival Blue Set 1)",
@@ -1062,7 +1062,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Charmander",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 4)",
      "Kingambit (*Rival Blue Set 1)",
      "Jumpluff (*Rival Blue)",
      "Azumarill (*Rival Blue Set 1)",
@@ -2545,7 +2545,7 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Staraptor (*Rival Blue Set 1)",
+     "Staraptor (*Rival Blue Set 4)",
      "Kingambit (*Rival Blue Set 2)",
      "Azumarill (*Rival Blue Set 3)",
      "Iron Moth (*Rival Blue)",
@@ -2988,7 +2988,7 @@ var TRAINER_ORDER = [
     "sets": [
      "Aerodactyl (*Elite Four Lance)",
      "Melmetal (*Elite Four Lance Set 1)",
-     "Iron Jugulis (*Elite Four Lance)",
+     "Iron Jugulis (*Elite Four Lance Set 1)",
      "Dragonite (*Elite Four Lance Set 2)",
      "Dialga-Primal (*Elite Four Lance Set 2)",
      "Salamence-Mega (*Elite Four Lance)"
@@ -3030,12 +3030,12 @@ var TRAINER_ORDER = [
     "label": "Rival Has Squirtle",
     "battleEffect": null,
     "sets": [
-     "Pheromosa (Champion Blue Set 1)",
+     "Pheromosa (Champion Blue Set 2)",
      "Metagross-Mega (Champion Blue)",
      "Koraidon (Champion Blue)",
      "Yveltal (Champion Blue Set 3)",
-     "Eternatus (Champion Blue Set 1)",
-     "Ditto (Champion Blue Set 1)"
+     "Eternatus (Champion Blue Set 2)",
+     "Ditto (Champion Blue Set 2)"
     ],
     "preMega": {
      "1": "Tough Claws"
@@ -3095,10 +3095,23 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Ekans (PkMn Trainer Red)"
+     "Pikachu-Libre (PkMn Trainer Red)",
+     "Venusaur (PkMn Trainer Red)",
+     "Blastoise (PkMn Trainer Red)",
+     "Charizard (PkMn Trainer Red)",
+     "Snorlax (PkMn Trainer Red)",
+     "Mewtwo (PkMn Trainer Red)"
     ],
     "trainerIds": [
      3
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -8741,11 +8754,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Blaziken (Crush Girl Sharon)",
-     "Passimian (Crush Girl Sharon)"
+     "Grapploct (Crush Girl Sharon)",
+     "Gallade (Crush Girl Sharon)",
+     "Darmanitan-Galar (Crush Girl Sharon)",
+     "Nidoking (Crush Girl Sharon)"
     ],
     "trainerIds": [
      518
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -8763,12 +8784,21 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Poliwag (Tuber Amira)",
-     "Poliwhirl (Tuber Amira)",
-     "Poliwag (Tuber Amira Set 2)"
+     "Palossand (Tuber Amira)",
+     "Crawdaunt (Tuber Amira)",
+     "Mantine-Sevii (Tuber Amira)",
+     "Swanna (Tuber Amira)",
+     "Whiscash (Tuber Amira)"
     ],
     "trainerIds": [
      519
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -8809,11 +8839,23 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Bellsprout (Aroma Lady Nikki)",
-     "Weepinbell (Aroma Lady Nikki)"
+     "Sableye (Aroma Lady Nikki)",
+     "Tangrowth (Aroma Lady Nikki)",
+     "Blissey (Aroma Lady Nikki)",
+     "Toxapex (Aroma Lady Nikki)",
+     "Reuniclus (Aroma Lady Nikki)",
+     "Drapion (Aroma Lady Nikki)"
     ],
     "trainerIds": [
      523
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9034,12 +9076,17 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Dewgong (SwimmerF Amara)",
-     "Walrein (SwimmerF Amara)",
-     "Alomomola (SwimmerF Amara)"
+     "Milotic (SwimmerF Amara)",
+     "Milotic-Sevii (SwimmerF Amara)",
+     "Dewgong (SwimmerF Amara)"
     ],
     "trainerIds": [
      546
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2
     ]
    }
   ]
@@ -9057,11 +9104,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Kingdra (SwimmerF Maria)",
-     "Lapras (SwimmerF Maria)"
+     "Inteleon (SwimmerF Maria)",
+     "Dragalge (SwimmerF Maria)",
+     "Starmie (SwimmerF Maria)",
+     "Basculegion-F (SwimmerF Maria)"
     ],
     "trainerIds": [
      547
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     2
     ]
    }
   ]
@@ -9079,12 +9134,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Golduck (SwimmerF Abigail)",
-     "Inteleon (SwimmerF Abigail)",
-     "Slowking-Galar (SwimmerF Abigail)"
+     "Azumarill (SwimmerF Abigail)",
+     "Octillery (SwimmerF Abigail)",
+     "Golisopod (SwimmerF Abigail)",
+     "Wishiwashi (SwimmerF Abigail)"
     ],
     "trainerIds": [
      548
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2,
+     2
     ]
    }
   ]
@@ -9102,10 +9164,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Starmie (SwimmerM Finn)"
+     "Overqwil (SwimmerM Finn)",
+     "Barraskewda (SwimmerM Finn)",
+     "Cloyster (SwimmerM Finn)",
+     "Drednaw (SwimmerM Finn)"
     ],
     "trainerIds": [
      549
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     1,
+     2
     ]
    }
   ]
@@ -9123,12 +9194,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Cloyster (SwimmerM Garrett)",
-     "Gorebyss (SwimmerM Garrett)",
-     "Luvdisc (SwimmerM Garrett)"
+     "Mantine-Sevii (SwimmerM Garrett)",
+     "Milotic (SwimmerM Garrett)",
+     "Greninja (SwimmerM Garrett)",
+     "Lapras (SwimmerM Garrett)"
     ],
     "trainerIds": [
      550
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     0,
+     2
     ]
    }
   ]
@@ -9146,14 +9224,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Seaking (Fisherman Tommy)",
-     "Sharpedo (Fisherman Tommy)",
-     "Milotic (Fisherman Tommy)",
-     "Corsola (Fisherman Tommy)",
-     "Octillery (Fisherman Tommy)"
+     "Basculegion (Fisherman Tommy)",
+     "Gyarados (Fisherman Tommy)",
+     "Slowbro (Fisherman Tommy)",
+     "Slowbro-Galar (Fisherman Tommy)"
     ],
     "trainerIds": [
      551
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     2,
+     2
     ]
    }
   ]
@@ -9171,11 +9254,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Crabominable (Crush Girl Tanya)",
-     "Grapploct (Crush Girl Tanya)"
+     "Pangoro (Crush Girl Tanya)",
+     "Bewear (Crush Girl Tanya)",
+     "Ursaring-Sevii (Crush Girl Tanya)",
+     "Tauros (Crush Girl Tanya)"
     ],
     "trainerIds": [
      552
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9193,11 +9284,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Granbull (Black Belt Shea)",
-     "Electivire (Black Belt Shea)"
+     "Decidueye-Hisui (Black Belt Shea)",
+     "Probopass (Black Belt Shea)",
+     "Conkeldurr (Black Belt Shea)",
+     "Dodrio-Sevii (Black Belt Shea)"
     ],
     "trainerIds": [
      553
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9215,11 +9314,17 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Chesnaught (Black Belt Hugh)",
-     "Mienshao (Black Belt Hugh)"
+     "Heracross (Black Belt Hugh)",
+     "Medicham (Black Belt Hugh)",
+     "Tyrantrum (Black Belt Hugh)"
     ],
     "trainerIds": [
      554
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9237,12 +9342,21 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Nidoking (Camper Bryce)",
-     "Raticate (Camper Bryce)",
-     "Sandslash (Camper Bryce)"
+     "Bisharp (Camper Bryce)",
+     "Floatzel (Camper Bryce)",
+     "Butterfree (Camper Bryce)",
+     "Magnezone (Camper Bryce)",
+     "Delphox (Camper Bryce)"
     ],
     "trainerIds": [
      555
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     2,
+     2,
+     1
     ]
    }
   ]
@@ -9260,13 +9374,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Persian (Picnicker Claire)",
-     "Perrserker (Picnicker Claire)",
-     "Persian-Alola (Picnicker Claire)",
-     "Clefable (Picnicker Claire)"
+     "Alakazam (Picnicker Claire)",
+     "Indeedee (Picnicker Claire)",
+     "Dugtrio (Picnicker Claire)",
+     "Lucario (Picnicker Claire)"
     ],
     "trainerIds": [
      556
+    ],
+    "levelBelowHighest": [
+     1,
+     0,
+     2,
+     2
     ]
    }
   ]
@@ -9284,11 +9404,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Doubles",
     "sets": [
-     "Conkeldurr (Crush Kin Mik & Kia)",
-     "Primeape (Crush Kin Mik & Kia)"
+     "Infernape (Crush Kin Mik & Kia)",
+     "Grapploct (Crush Kin Mik & Kia)",
+     "Metagross (Crush Kin Mik & Kia)",
+     "Lycanroc-Dusk (Crush Kin Mik & Kia)"
     ],
     "trainerIds": [
      557
+    ],
+    "levelBelowHighest": [
+     2,
+     0,
+     1,
+     2
     ]
    }
   ]
@@ -9306,12 +9434,21 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Bulbasaur (Aroma Lady Violet)",
-     "Ivysaur (Aroma Lady Violet)",
-     "Ivysaur (Aroma Lady Violet Set 2)"
+     "Flapple (Aroma Lady Violet)",
+     "Arcanine-Hisui (Aroma Lady Violet)",
+     "Excadrill (Aroma Lady Violet)",
+     "Chandelure (Aroma Lady Violet)",
+     "Primarina (Aroma Lady Violet)"
     ],
     "trainerIds": [
      558
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9329,13 +9466,21 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Staryu (Tuber Alexis)",
-     "Staryu (Tuber Alexis Set 2)",
-     "Krabby (Tuber Alexis)",
-     "Krabby (Tuber Alexis Set 2)"
+     "Carracosta (Tuber Alexis)",
+     "Kingler (Tuber Alexis)",
+     "Slowbro (Tuber Alexis)",
+     "Lanturn (Tuber Alexis)",
+     "Hydreigon (Tuber Alexis)"
     ],
     "trainerIds": [
      559
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9353,11 +9498,23 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": "Doubles",
     "sets": [
-     "Clefairy (Twins Joy & Meg)",
-     "Clefairy (Twins Joy & Meg Set 2)"
+     "Empoleon (Twins Joy & Meg)",
+     "Granbull (Twins Joy & Meg)",
+     "Volbeat (Twins Joy & Meg)",
+     "Illumise (Twins Joy & Meg)",
+     "Minun (Twins Joy & Meg)",
+     "Plusle (Twins Joy & Meg)"
     ],
     "trainerIds": [
      560
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9375,10 +9532,21 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Kingler (SwimmerF Tisha)"
+     "Pelipper (SwimmerF Tisha)",
+     "Golduck (SwimmerF Tisha)",
+     "Vaporeon (SwimmerF Tisha)",
+     "Jolteon (SwimmerF Tisha)",
+     "Noivern (SwimmerF Tisha)"
     ],
     "trainerIds": [
      561
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9925,11 +10093,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Marowak (Crush Girl Jocelyn)",
-     "Mimikyu (Crush Girl Jocelyn)"
+     "Dudunsparce (Crush Girl Jocelyn)",
+     "Archeops (Crush Girl Jocelyn)",
+     "Togekiss (Crush Girl Jocelyn)",
+     "Huntail (Crush Girl Jocelyn)"
     ],
     "trainerIds": [
      592
+    ],
+    "levelBelowHighest": [
+     2,
+     2,
+     2,
+     2
     ]
    }
   ]
@@ -9970,11 +10146,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Solrock (Gatekeeper Logan)",
-     "Magmortar (Gatekeeper Logan)"
+     "Yanmega (Gatekeeper Logan)",
+     "Arcanine-Hisui (Gatekeeper Logan)",
+     "Altaria (Gatekeeper Logan)",
+     "Feraligatr (Gatekeeper Logan)"
     ],
     "trainerIds": [
      595
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     2,
+     2
     ]
    }
   ]
@@ -9992,12 +10176,19 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Camerupt (PkMn Ranger Beth)",
-     "Muk-Alola (PkMn Ranger Beth)",
-     "Obstagoon (PkMn Ranger Beth)"
+     "Scizor (PkMn Ranger Beth)",
+     "Haxorus (PkMn Ranger Beth)",
+     "Golem (PkMn Ranger Beth)",
+     "Manectric (PkMn Ranger Beth)"
     ],
     "trainerIds": [
      597
+    ],
+    "levelBelowHighest": [
+     2,
+     1,
+     1,
+     2
     ]
    }
   ]
@@ -10373,8 +10564,8 @@ var TRAINER_ORDER = [
     "label": "Team 1",
     "battleEffect": null,
     "sets": [
-     "Rolycoly (Camper Liam)",
-     "Drilbur (Camper Liam)"
+     "Growlithe-Hisui (Camper Liam Set 2)",
+     "Nacli (Camper Liam Set 2)"
     ],
     "trainerIds": [
      142

@@ -12,7 +12,7 @@ await Promise.all([p.waitForNavigation(),p.evaluate(()=>$('#minimal-grinding').c
 e=await evs();ok(e.evs.reduce((a,b)=>a+b,0)===0&&e.withEvs===0&&await p.evaluate(()=>$('#minimal-grinding').prop('checked')),'on: no trainer EVs '+e.evs);
 await Promise.all([p.waitForNavigation(),p.evaluate(()=>$('#minimal-grinding').click())]);await p.waitForTimeout(2500);
 e=await evs();ok(e.withEvs>300,'off again: EVs back');
-const fal=await p.evaluate(()=>SETDEX_SV.Rufflet['Leader Falkner'].evs);ok(fal&&fal.sp===40,'Falkner Rufflet EVs '+JSON.stringify(fal));
+const fro=await p.evaluate(()=>SETDEX_SV.Frogadier['Leader Misty'].evs);ok(fro&&fro.hp===100&&fro.at===40&&fro.sa===40,'Misty Frogadier EVs as in the game '+JSON.stringify(fro));
 await p.goto(BASE+'/hardcore.html');await p.waitForTimeout(2500);
 const h=await p.evaluate(()=>({mg:$('#minimal-grinding').length,route:TRAINER_ORDER.filter(t=>t.route).reduce((n,t)=>n+t.variants[0].sets.filter(id=>{const at=id.lastIndexOf(' (');const s=SETDEX_SV[id.slice(0,at)][id.slice(at+2,-1)];return s&&s.evs}).length,0)}));
 ok(h.mg===0&&h.route===0,'Hardcore: no setting, no route trainer EVs');

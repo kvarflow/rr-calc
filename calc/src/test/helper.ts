@@ -102,14 +102,16 @@ export function tests(...args: any[]) {
     type = args[4];
   }
 
+  // The test body (its expects are inside it; .eslintrc names it for jest/expect-expect).
+  const check = fn!;
   inGens(from, to, gen => {
     const n = `${name} (gen ${gen.gen})`;
     if (type === 'skip') {
-      test.skip(n, () => fn!(gen));
+      test.skip(n, () => check(gen));
     } else if (type === 'only') {
-      test.only(n, () => fn!(gen));
+      test.only(n, () => check(gen));
     } else {
-      test(n, () => fn!(gen));
+      test(n, () => check(gen));
     }
   });
 }

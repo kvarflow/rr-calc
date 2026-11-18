@@ -8,7 +8,7 @@
 -- The script only reads the game's memory; it changes nothing in the game.
 
 local PORT = 31125
-local SCRIPT_VERSION = 2
+local SCRIPT_VERSION = 3
 
 -- FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 local ADDR = {
@@ -28,6 +28,9 @@ local ADDR = {
 	gStatuses3 = 0x02023DFC, -- u32 a battler
 	gDisableStructs = 0x02023E0C, -- 0x1C bytes a battler
 	gWishFutureKnock = 0x02023F20, -- wishCounter: a byte a battler at +0x20
+	-- Since script 3: each side's screens and hazards.
+	gSideStatuses = 0x02023DDE, -- u16 a side: bit 0 Reflect, bit 1 Light Screen
+	gSideTimers = 0x02023DE4, -- 12 bytes a side; +0x0A: Spikes (bits 0-1), Toxic Spikes (2-3), Stealth Rock (4), Sticky Web (5)
 }
 local PARTY_MON_SIZE = 100
 local BATTLE_MON_SIZE = 0x58
@@ -68,6 +71,16 @@ local function battleMon(index)
 		emu:read16(ADDR.gLockedMoves + index * 2), table.concat(disable), emu:read8(ADDR.gWishFutureKnock + 0x20 + index))
 end
 
+-- Your side (0) and the opponent's (1).
+local function sides()
+	local out = {}
+	for side = 0, 1 do
+		out[#out + 1] = string.format('{"status":%d,"hazards":%d}', emu:read16(ADDR.gSideStatuses + side * 2),
+			emu:read8(ADDR.gSideTimers + side * 12 + 0x0A))
+	end
+	return table.concat(out, ",")
+end
+
 local function stateJson()
 	local inBattle = (emu:read8(ADDR.gMain + 0x439) & 2) ~= 0
 	local battlers = inBattle and math.min(emu:read8(ADDR.gBattlersCount), 4) or 0
@@ -77,10 +90,10 @@ local function stateJson()
 		mons[#mons + 1] = battleMon(i)
 	end
 	return string.format('{"game":"radicalred","script":%d,"inBattle":%s,"battleType":%d,"trainer":%d,' ..
-		'"party":%s,"enemyParty":%s,"partyIndexes":[%s],"mons":[%s]}',
+		'"party":%s,"enemyParty":%s,"partyIndexes":[%s],"mons":[%s],"sides":[%s]}',
 		SCRIPT_VERSION, tostring(inBattle), emu:read32(ADDR.gBattleTypeFlags), emu:read16(ADDR.gTrainerBattleOpponent_A),
 		party(ADDR.gPlayerPartyCount, ADDR.gPlayerParty), party(ADDR.gEnemyPartyCount, ADDR.gEnemyParty),
-		table.concat(indexes, ","), table.concat(mons, ","))
+		table.concat(indexes, ","), table.concat(mons, ","), inBattle and sides() or "")
 end
 
 -- A tiny HTTP server: GET /state, GET /ping, and the preflight a browser sends from an https page.

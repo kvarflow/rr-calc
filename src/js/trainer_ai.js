@@ -3727,6 +3727,8 @@ function scoreSwitchIns(turn) {
 			entries.push(entry);
 			secondLastValid = lastValid;
 			lastValid = entry;
+			// A grounded Poison type takes Toxic Spikes away by coming in.
+			entry.canNegateToxicSpikes = mon.types.indexOf("Poison") !== -1 && isGrounded(mon, field);
 			if (willFaintFromHazards(mon, ai.sideState, field)) return;
 			var noteHazardRemoval = function (move) {
 				if (move.effect === E.RAPID_SPIN && hazardsUp) entry.canRemoveHazards = viable >= 2;
@@ -3875,8 +3877,10 @@ function scoreSwitchIns(turn) {
 		if (best) {
 			if (!(best.flags & SWITCH_FLAG.RESIST_ALL) &&
 				(best.flags & (SWITCH_FLAG.KO_FOE | SWITCH_FLAG.OUTSPEEDS)) !== (SWITCH_FLAG.KO_FOE | SWITCH_FLAG.OUTSPEEDS)) {
+				var toxicSpikesUp = ai.sideState.toxicSpikes > 0;
 				for (var i = 0; i < entries.length; i++) {
-					if (entries[i].canRemoveHazards && !(entries[i].flags & SWITCH_FLAG.FAINTS)) {
+					if ((entries[i].canRemoveHazards && !(entries[i].flags & SWITCH_FLAG.FAINTS)) ||
+						(toxicSpikesUp && entries[i].canNegateToxicSpikes)) {
 						second = best;
 						best = entries[i];
 						break;
@@ -4162,6 +4166,13 @@ function switchToHeal(turn) {
 	var field = battle.field;
 	if (ai.ability === "Natural Cure") {
 		if (hazardsHurt(ai, 4, field)) return null;
+		// Poisoned, with Toxic Spikes to poison it again on the way back: only when the one coming in
+		// is a grounded Poison type that takes them away.
+		if (ai.sideState.toxicSpikes > 0 && (ai.status === "psn" || ai.status === "tox") &&
+			ai.ability !== "Magic Guard" && ai.item !== "Heavy-Duty Boots" && ai.types.indexOf("Poison") === -1 && isGrounded(ai, field)) {
+			var coming = scoreSwitchIns(turn).best;
+			if (!coming || coming.mon.types.indexOf("Poison") === -1 || !isGrounded(coming.mon, field)) return null;
+		}
 		// (Radical Red has frostbite, not freeze: only sleep makes it switch at any HP.)
 		if (!(isAsleep(ai) || (ai.status && ai.hp >= Math.floor(ai.maxHP / 2)))) return null;
 	} else if (ai.ability === "Regenerator") {
@@ -4401,7 +4412,7 @@ function switchToSaveSweeper(turn, justIn) {
  * ShouldSwitch's checks for the Pokémon on the field, in order; the first that says so decides.
  * `justSwitchedIn`: it came in this turn (after a KO or a switch), when most of them wait a turn.
  * Not modelled: passing a Wish, switching to stop your locked move or while you Fly or Dig, the
- * looser rules while Choice-locked, Toxic Spikes and Sticky Web (no setting for them). Toxic's turn
+ * looser rules while Choice-locked. Toxic's turn
  * count comes from the Toxic counter beside Pokémon 2's status.
  */
 function switchChecks(turn) {
@@ -4782,8 +4793,8 @@ function readSideState(suffix) {
 	return {
 		sr: $("#sr" + suffix).prop("checked"),
 		spikes: ~~$("input[type=radio][name='spikes" + suffix + "']:checked").val(),
-		toxicSpikes: 0,
-		stickyWeb: false,
+		toxicSpikes: ~~$("input[type=radio][name='toxicSpikes" + suffix + "']:checked").val(),
+		stickyWeb: $("#stickyWeb" + suffix).prop("checked"),
 		reflect: $("#reflect" + suffix).prop("checked"),
 		lightScreen: $("#lightScreen" + suffix).prop("checked"),
 		auroraVeil: $("#auroraVeil" + suffix).prop("checked"),
