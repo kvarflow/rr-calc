@@ -493,6 +493,18 @@ function buildSettingsCard() {
 		row("Accent", buildAccentPicker()),
 		row("Text size", buildTextSizeSlider()),
 		SS_IN_PCALC ? $() : row("App", buildInstallRow()),
+		// Settings that pick from a list (Dead marker, Dead box) get a row of their own: label left, list right.
+		siteSettings.children("label").not(layout).filter(function () {
+			return $(this).children("select").length > 0;
+		}).map(function () {
+			var label = $(this);
+			var title = label.contents().filter(function () {
+				return this.nodeType === 3;
+			}).text().trim();
+			var setting = row(title, label.children("select")).attr("title", label.attr("title") || null);
+			label.remove();
+			return setting.get(0);
+		}),
 		$('<div class="ss-setting-switches"></div>').append(siteSettings.children("label").not(layout)));
 	page.attr("data-ss-part", "none"); // what is left of it (the generation) stays hidden
 	siteSettings.children("b").remove();

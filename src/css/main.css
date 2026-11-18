@@ -4776,3 +4776,223 @@ html.small-screen .save-auto-help {
 .pcalc-calc-update .bs-btn {
 	white-space: nowrap;
 }
+
+/* The More tab's Import / Export card, in groups (more_layout.js): a heading row each, with what it's
+   doing now; how it works folds away behind "?". */
+html.small-screen .more-group {
+    padding: 10px 0;
+    border-top: 1px solid var(--ss-line);
+    text-align: left;
+}
+html.small-screen .more-group:first-child {
+    padding-top: 2px;
+    border-top: 0;
+}
+html.small-screen .more-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 28px;
+    margin-bottom: 6px;
+}
+html.small-screen .more-title {
+    flex: 1;
+    margin: 0;
+    padding: 0;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--ss-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+html.small-screen .more-state:empty {
+    display: none;
+}
+html.small-screen .more-help-toggle {
+    flex: none;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--ss-line);
+    border-radius: 50%;
+    background: transparent;
+    color: var(--ss-muted);
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 22px;
+    cursor: pointer;
+}
+html.small-screen .more-help-open .more-help-toggle {
+    border-color: var(--ss-accent);
+    color: var(--ss-accent);
+}
+html.small-screen .more-group .more-help {
+    display: none;
+}
+html.small-screen .more-group.more-help-open .more-help {
+    display: block;
+}
+html.small-screen .more-hidden {
+    display: none !important;
+}
+html.small-screen .more-group .import-actions,
+html.small-screen .more-group .backup-actions,
+html.small-screen .more-group .save-auto-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    margin: 0;
+}
+/* Your save: the auto-import as one line under the buttons, its buttons small. */
+html.small-screen .more-group .save-auto {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 8px;
+    margin-top: 8px;
+}
+html.small-screen .more-group .save-auto-where {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+html.small-screen .more-group .save-auto-actions button {
+    height: 28px;
+    padding: 0 10px;
+    font-size: 12px;
+}
+html.small-screen .more-group .save-auto-status,
+html.small-screen .more-group .save-auto-help {
+    flex-basis: 100%;
+    margin: 0;
+}
+html.small-screen .more-group .save-auto-status:empty {
+    display: none;
+}
+/* Emulator sync: the switch in the heading; the status pill; the steps behind "?". */
+html.small-screen .more-group .emulator-sync-panel {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+html.small-screen .more-group #emulator-sync-status {
+    margin: 0;
+    font-size: 12px;
+}
+html.small-screen .more-group .emulator-sync-how,
+html.small-screen .more-group .emulator-sync-help {
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--ss-muted);
+    opacity: 1;
+}
+.more-switch {
+    flex: none;
+    width: 40px;
+    height: 24px;
+    margin: 0;
+    border-radius: 999px;
+    background: var(--ss-line, #dde2ea);
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.more-switch::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    box-shadow: 0 1px 2px rgba(16, 24, 40, 0.3);
+    transition: left 0.2s ease;
+}
+.more-switch:checked {
+    background: var(--ss-accent, #d63031);
+}
+.more-switch:checked::before {
+    left: 19px;
+}
+/* Backup: where and when, Back up now and Restore, then the rest as quiet links. */
+html.small-screen .more-group .backup-panel {
+    margin: 0;
+}
+html.small-screen .more-group .backup-where {
+    margin: 0 0 8px;
+}
+html.small-screen .more-group .backup-primary .backup-list {
+    flex: 1 1 140px;
+    min-width: 0;
+}
+html.small-screen .more-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 14px;
+    margin-top: 8px;
+}
+html.small-screen .more-link {
+    height: auto;
+    margin: 0;
+    padding: 2px 0;
+    border: 0;
+    background: none;
+    color: var(--ss-accent);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+html.small-screen .more-group .backup-help {
+    margin-top: 6px;
+}
+html.small-screen .more-group .backup-status:empty {
+    display: none;
+}
+/* Fight Notes: the heading says what it is. */
+html.small-screen .more-group .fight-notes {
+    margin: 0;
+}
+
+/* Settings → Calculator updates (Pcalc). */
+.calc-updates {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    min-width: 0;
+}
+.calc-updates-state {
+    min-width: 0;
+    font-size: 12px;
+    color: var(--ss-muted, #667085);
+    text-align: right;
+}
+.calc-updates-bad {
+    color: var(--ss-danger, #d63031);
+}
+html.small-screen .calc-updates-check {
+    flex: none;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--ss-line);
+    border-radius: 999px;
+    background: var(--ss-btn);
+    color: var(--ss-text);
+    font-size: 12px;
+}
+html.small-screen .more-group .backup-folder {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+html.small-screen .more-group .backup-panel {
+    padding: 0;
+    border: 0;
+}

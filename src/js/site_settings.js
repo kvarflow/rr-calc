@@ -62,7 +62,8 @@ var CHANGELOG = [
 		"Your dead from the game: every Pok\u00e9mon in Box 25 (Settings \u2192 Dead box), or with the PC marking you choose (Dead marker), " +
 			"goes to Fainted when you import your .sav",
 		"24 route trainers have the teams the game really gives them (the Sevii Swimmers and Tubers, Red, the rematches)",
-		"In the Pcalc app: the calculator updates itself (once a day, when there's a connection), with no new app to install"
+		"In the Pcalc app: the calculator updates itself (once a day, when there's a connection), with no new app to install",
+		"Small screens: More is tidier. Your save, Emulator sync, Backup and Fight Notes each have a heading, and how they work folds away behind ?. In the Pcalc app, Settings \u2192 Calculator updates shows the version in use, with Check now"
 	], fixes: [
 		".sav import reads boxes 23 to 25 (they were left out)",
 		"Boss Pok\u00e9mon match the game again: Radical Red builds its bosses from tables of its own, and 1.4's EV and nature " +

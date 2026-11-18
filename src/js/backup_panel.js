@@ -103,13 +103,13 @@ function downloadBackup() {
 }
 
 function buildBackupPanel() {
-	var panel = $('<div class="backup-panel"><b>Backup</b></div>');
+	var panel = $('<div class="backup-panel"><b class="backup-title">Backup</b></div>');
 	var status = $('<div class="backup-status" role="status"></div>');
 	var setStatus = function (text, bad) {
 		status.text(text).toggleClass("backup-status-bad", !!bad);
 	};
-	var row = $('<div class="backup-actions"></div>').appendTo(panel);
-	$('<button type="button" class="bs-btn bs-btn-default">Save backup file</button>').click(downloadBackup).appendTo(row);
+	var row = $('<div class="backup-actions backup-file-row"></div>').appendTo(panel);
+	$('<button type="button" class="bs-btn bs-btn-default backup-to-file">Save backup file</button>').click(downloadBackup).appendTo(row);
 	var fileInput = $('<input type="file" accept=".json,application/json" class="visually-hidden" />').change(function () {
 		var file = this.files && this.files[0];
 		this.value = "";
@@ -124,7 +124,7 @@ function buildBackupPanel() {
 		};
 		reader.readAsText(file);
 	}).appendTo(panel);
-	$('<button type="button" class="bs-btn bs-btn-default">Restore from file</button>').click(function () {
+	$('<button type="button" class="bs-btn bs-btn-default backup-from-file">Restore from file</button>').click(function () {
 		fileInput.click();
 	}).appendTo(row);
 
@@ -154,19 +154,19 @@ function buildPcalcBackupFolder(panel, setStatus) {
 			restore.prop("disabled", !(reply.files || []).length);
 		});
 	};
-	$('<button type="button" class="bs-btn bs-btn-default">Back up now</button>').click(function () {
+	$('<button type="button" class="bs-btn bs-btn-default backup-now">Back up now</button>').click(function () {
 		pcalcBackupRequest({type: "backup:save", reason: "manual", data: window.pcalcBackupData()}, function (reply) {
 			setStatus(reply.error ? "Couldn't back up: " + reply.error : "Backed up as " + reply.name, !!reply.error);
 			refresh();
 		});
 	}).appendTo(actions);
-	$('<button type="button" class="bs-btn bs-btn-default">Choose folder</button>').click(function () {
+	$('<button type="button" class="bs-btn bs-btn-default backup-choose-folder">Choose folder</button>').click(function () {
 		pcalcBackupRequest({type: "backup:chooseFolder"}, function (reply) {
 			if (reply.error) setStatus(reply.error, true);
 			refresh();
 		});
 	}).appendTo(actions);
-	var restoreRow = $('<div class="backup-actions"></div>').appendTo(folder);
+	var restoreRow = $('<div class="backup-actions backup-restore-row"></div>').appendTo(folder);
 	list.appendTo(restoreRow);
 	var restore = $('<button type="button" class="bs-btn bs-btn-default">Restore</button>').click(function () {
 		var name = list.val();
