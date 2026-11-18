@@ -797,12 +797,108 @@ function addMissingRouteTrainers() {
 	const added = addRouteTrainers(order, setdex);
 	const fixed = applyRomFixes(order, setdex);
 	stripHardcoreEvs(order, setdex);
-	console.log(`  ${fixed} fixes from the game`);
+	const game = applyGameTeams(order, setdex);
+	console.log(`  ${fixed} fixes from the game; ${game.changed} boss sets and ${game.routes} route teams from the game's own tables`);
 	writeSetdex(setdex);
 	{
 		fs.writeFileSync(TRAINERS_FILE, TRAINERS_HEADER + 'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	}
 	console.log(`${mode}: ${added} route trainers added, ${order.length} trainers`);
+}
+
+/*
+ * The teams the game builds for bosses and some route trainers (boss_teams.json, from rr-rom's
+ * boss_teams.js): Radical Red 4.1 takes them from its own tables, one for each mode, before the
+ * gTrainers party that route_trainers.json reads. A route trainer there gets the whole team; a boss's
+ * documented Pokémon take the game's nature, item, moves, IVs, ability and (Normal) EVs. The
+ * documents' levels stay: the tables' own are a floor the game raises for fights that scale to you.
+ */
+const HP_TYPES = ['Fighting', 'Flying', 'Poison', 'Ground', 'Rock', 'Bug', 'Ghost', 'Steel', 'Fire', 'Water', 'Grass', 'Electric', 'Psychic', 'Ice', 'Dragon', 'Dark'];
+function hiddenPowerType(ivs) {
+	const bits = ['hp', 'at', 'df', 'sp', 'sa', 'sd'].reduce((sum, stat, k) => sum + ((ivs[stat] & 1) << k), 0);
+	return HP_TYPES[Math.floor(bits * 15 / 63)];
+}
+function gameSetFields(mon) {
+	const change = {nature: mon.nature,
+		moves: mon.moves.map(move => move === 'Hidden Power' ? 'Hidden Power ' + hiddenPowerType(mon.ivs) : move)};
+	if (mon.item) change.item = mon.item;
+	const ivs = {};
+	Object.keys(mon.ivs).forEach(stat => { if (mon.ivs[stat] < 31) ivs[stat] = mon.ivs[stat]; });
+	change.ivs = Object.keys(ivs).length ? ivs : null;
+	change.evs = mode !== 'hardcore' && Object.keys(mon.evs).length ? mon.evs : null;
+	return change;
+}
+function applyGameTeams(order, setdex) {
+	const teams = JSON.parse(fs.readFileSync(path.join(__dirname, 'boss_teams.json'), 'utf8'))[mode];
+	const speciesOf = id => id.slice(0, id.lastIndexOf(' ('));
+	const setNameOf = id => id.slice(id.lastIndexOf(' (') + 2, -1);
+	const usedElsewhere = (variant, id) => order.some(t => t.variants.some(v => v !== variant && v.sets.indexOf(id) !== -1));
+	const write = (set, change) => Object.keys(change).forEach(key => {
+		if (change[key] === null) delete set[key];
+		else set[key] = change[key];
+	});
+	let changed = 0, routes = 0;
+	order.forEach(t => t.variants.forEach(variant => {
+		const ids = (variant.trainerIds || []).filter(id => teams[id]);
+		if (!ids.length) return;
+		if (t.route) {
+			// A route trainer: the game's team in place of the gTrainers one.
+			const team = teams[ids[0]].filter(mon => SPECIES[mon.species]);
+			const oldLevel = Math.max(0, ...variant.sets.map(id => (setdex[speciesOf(id)][setNameOf(id)] || {}).level || 0));
+			variant.sets.forEach(id => { if (!usedElsewhere(variant, id)) delete setdex[speciesOf(id)][setNameOf(id)]; });
+			const below = team.map(mon => mon.levelBelowHighest === undefined ? null : mon.levelBelowHighest);
+			variant.sets = team.map(mon => {
+				setdex[mon.species] = setdex[mon.species] || {};
+				let setName = t.name;
+				for (let n = 2; setdex[mon.species][setName]; n++) setName = t.name + ' Set ' + n;
+				const set = {level: mon.level <= 100 ? mon.level : oldLevel || 1, ability: mon.ability || (D_ABILITIES(mon.species))};
+				write(set, gameSetFields(mon));
+				setdex[mon.species][setName] = set;
+				return mon.species + ' (' + setName + ')';
+			});
+			if (below.some(n => n !== null)) variant.levelBelowHighest = below;
+			else delete variant.levelBelowHighest;
+			routes++;
+			return;
+		}
+		// A boss: each documented Pokémon by species (a battle forme, "Zacian-Crowned", by its base).
+		const taken = new Set();
+		[].concat(...ids.map(id => teams[id])).forEach(mon => {
+			let slot = variant.sets.findIndex((id, k) => !taken.has(k) && speciesOf(id) === mon.species);
+			const exact = slot !== -1;
+			if (!exact) slot = variant.sets.findIndex((id, k) => !taken.has(k) && speciesOf(id).indexOf(mon.species + '-') === 0);
+			if (slot === -1) return;
+			taken.add(slot);
+			const id = variant.sets[slot], species = speciesOf(id);
+			const change = gameSetFields(mon);
+			// Mega and battle formes keep the document's ability (theirs, not the base form's).
+			if (exact && mon.ability && !/-(Mega|Primal)/.test(species)) change.ability = mon.ability;
+			const set = setdex[species][setNameOf(id)];
+			// The same four moves keep the document's order.
+			if (set.moves && set.moves.slice().sort().join() === change.moves.slice().sort().join()) change.moves = set.moves;
+			const differs = Object.keys(change).some(key => JSON.stringify(change[key] === null ? undefined : change[key]) !== JSON.stringify(set[key]));
+			if (!differs) return;
+			let setName = setNameOf(id);
+			if (usedElsewhere(variant, id)) {
+				// A set other fights share gets a copy of its own, so only this fight changes.
+				const base = setName.replace(/ Set \d+$/, '');
+				const copy = JSON.parse(JSON.stringify(set));
+				write(copy, change);
+				let n = 1;
+				while (setdex[species][base + ' Set ' + n] && JSON.stringify(setdex[species][base + ' Set ' + n]) !== JSON.stringify(copy)) n++;
+				setName = base + ' Set ' + n;
+				setdex[species][setName] = copy;
+				variant.sets[slot] = species + ' (' + setName + ')';
+			} else write(set, change);
+			changed++;
+		});
+	}));
+	return {changed, routes};
+}
+// A species' first ability, for a game team that leaves it to the game's default pick.
+function D_ABILITIES(species) {
+	const data = SPECIES[species];
+	return data && data.abilities ? data.abilities[0] : '';
 }
 
 function build() {
@@ -819,13 +915,14 @@ function build() {
 	const romFixes = applyRomFixes(order, setdex);
 	stripHardcoreEvs(order, setdex);
 	const routeTrainers = addRouteTrainers(order, setdex);
-	if (APPLY || romSets || romFixes || routeTrainers) writeSetdex(setdex);
+	const game = applyGameTeams(order, setdex);
+	if (APPLY || romSets || romFixes || routeTrainers || game.changed || game.routes) writeSetdex(setdex);
 
 	fs.mkdirSync(path.dirname(TRAINERS_FILE), {recursive: true});
 	fs.writeFileSync(TRAINERS_FILE, TRAINERS_HEADER + 'var TRAINER_ORDER = ' + JSON.stringify(order, null, 1) + ';\n');
 	writeReport(setdex, report, stats, order.length, namesFixed);
 	console.log(`${mode}: ${order.length} trainers, ${stats.checked} Pokémon: ${stats.checked - stats.withDiffs - stats.notFound} match, ` +
-		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked; ${routeTrainers} route trainers added` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
+		`${stats.withDiffs} differ, ${stats.notFound} not found; ${rivalTeams} rival teams added; ${romSets} sets added for game-data teams; ${parallel} parallel fights; ${withIds} teams with trainer ids; ${romFixes} fixes from the game; ${duplicates} duplicate fights marked; ${routeTrainers} route trainers added; ${game.changed} boss sets and ${game.routes} route teams from the game's own tables` + (APPLY ? `; applied ${stats.applied} sets, fixed ${namesFixed} names` : ''));
 }
 
 if (ROUTES_ONLY) addMissingRouteTrainers();
