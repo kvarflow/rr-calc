@@ -3777,7 +3777,7 @@ var TRAINER_ORDER = [
     "battleEffect": "Can't remove hazards",
     "sets": [
      "Glimmora (*Elite Four Lance Set 2)",
-     "Melmetal (*Elite Four Lance)",
+     "Melmetal (*Elite Four Lance Set 1)",
      "Arceus-Fairy (*Elite Four Lance)",
      "Dragonite (*Elite Four Lance Set 2)",
      "Dialga-Primal (*Elite Four Lance Set 2)",
