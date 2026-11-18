@@ -239,8 +239,8 @@ function drawHealthBar(poke, max, current) {
 		this.style.setProperty("--hp-fill", fillPercent + "%");
 	});
 }
-// TODO: these HP inputs should really be input type=number with min=0, step=1, constrained by max=maxHP or 100
-// (keyup for keyboards, input for on-screen keyboards, which send no keyup)
+// The HP inputs (a number pad on phones: inputmode="decimal"), kept between 0 and the max HP or 100%
+// (keyup for keyboards, input for on-screen keyboards, which send no keyup).
 $(".current-hp").on("keyup input", function () {
 	var max = $(this).parent().children(".max-hp").text();
 	validate($(this), 0, max);
@@ -747,10 +747,8 @@ $(".set-selector").change(function () {
 		if (typeof getSelectedTiers === "function") { // doesn't exist when in 1vs1 mode
 			var format = getSelectedTiers()[0];
 			var is50lvl = startsWith(format, "VGC") || startsWith(format, "Battle Spot");
-			//var isDoubles = format === 'Doubles' || has50lvl; *TODO*
 			if (format === "LC") pokeObj.find(".level").val(5);
 			if (is50lvl) pokeObj.find(".level").val(50);
-			//if (isDoubles) field.gameType = 'Doubles'; *TODO*
 		}
 		var formeObj = $(this).siblings().find(".forme").parent();
 		itemObj.prop("disabled", false);
@@ -1086,7 +1084,7 @@ function createPokemon(pokeInfo) {
 		pokeInfo.isDynamaxed = isDynamaxed;
 		calcHP(pokeInfo);
 		var curHP = ~~panelFind(pokeInfo, ".current-hp").val();
-		// FIXME the Pokemon constructor expects non-dynamaxed HP
+		// The Pokemon constructor takes HP before Dynamax doubles it.
 		if (isDynamaxed) curHP = Math.floor(curHP / 2);
 		var types = [panelFind(pokeInfo, ".type1").val(), panelFind(pokeInfo, ".type2").val()];
 		return new calc.Pokemon(gen, name, {
@@ -1198,7 +1196,7 @@ function createField() {
 	var isAuroraVeil = [$("#auroraVeilL").prop("checked"), $("#auroraVeilR").prop("checked")];
 	var isBattery = [$("#batteryL").prop("checked"), $("#batteryR").prop("checked")];
 	var isPowerSpot = [$("#powerSpotL").prop("checked"), $("#powerSpotR").prop("checked")];
-	// TODO: support switching in as well!
+	// Switching out (Pursuit); the calc has no switching-in setting.
 	var isSwitchingOut = [$("#switchingL").prop("checked"), $("#switchingR").prop("checked")];
 
 	var createSide = function (i) {
@@ -1322,7 +1320,7 @@ $(".gen").change(function () {
 	}
 	genWasChanged = true;
 	/* eslint-enable */
-	// declaring these variables with var here makes z moves not work; TODO
+	// The page-wide tables for this generation (globals: a `var` here would hide them from the Z-Move code).
 	pokedex = calc.SPECIES[gen];
 	setdex = SETDEX[gen];
 	randdex = RANDDEX[gen];

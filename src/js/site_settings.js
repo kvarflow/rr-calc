@@ -53,6 +53,17 @@ var CHANGELOG = [
 		"The AI uses the game's ability ratings; Mirror Move and Copycat are scored as the move they copy",
 		"Boss Pok\u00e9mon have the game's own EVs and natures; Hardcore and Minimal Grinding give no EVs, as the game does",
 		"Copy AI report (beside What's new): when the AI did something else than predicted, send in the fight"
+	]},
+	{version: "1.5", notes: [
+		"Toxic Spikes and Sticky Web on each side of the field (Advanced): the trainer AI's switching reads them. " +
+			"Emulator sync fills in both sides' hazards and screens (sync script 3: fetch the script again)",
+		"Dex: hold a Pok\u00e9mon on the Wild tab (or right-click it on a computer) for its base stats and evolution line. " +
+			"All Pok\u00e9mon lists every one, to find by name or ability, filter by type and sort by any stat",
+		"Settings \u2192 Dead marker: mark your dead with a PC marking in the game, and importing your .sav moves them to Fainted",
+		"24 route trainers have the teams the game really gives them (the Sevii Swimmers and Tubers, Red, the rematches)"
+	], fixes: [
+		"Boss Pok\u00e9mon match the game again: Radical Red builds its bosses from tables of its own, and 1.4's EV and nature " +
+			"changes had read an older copy. Natures, EVs and abilities now come from the right one, in both modes"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
