@@ -19,7 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 31125
 RETROARCH = ("127.0.0.1", 55355)
-SCRIPT_VERSION = 3
+SCRIPT_VERSION = 4
 
 # FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 ADDR = {
@@ -42,6 +42,9 @@ ADDR = {
     # Since script 3: each side's screens and hazards.
     "gSideStatuses": 0x02023DDE,  # u16 a side: bit 0 Reflect, bit 1 Light Screen
     "gSideTimers": 0x02023DE4,  # 12 bytes a side; +0x0A: Spikes (bits 0-1), Toxic Spikes (2-3), Stealth Rock (4), Sticky Web (5)
+    # Since script 4: the Pledge combos' turns left, a byte a side in CFRU's battle struct (gNewBS, a
+    # pointer): Sea of Fire at +0x09, Swamp at +0x0B, Rainbow at +0x0D.
+    "gNewBS": 0x0203E038,
 }
 DISABLE_STRUCT_SIZE = 0x1C
 PARTY_MON_SIZE = 100
@@ -93,7 +96,10 @@ def state():
     if in_battle:
         side_statuses = read(ADDR["gSideStatuses"], 4)
         side_timers = read(ADDR["gSideTimers"], 24)
-        sides = [{"status": u16(side_statuses, 2 * side), "hazards": side_timers[side * 12 + 0x0A]} for side in (0, 1)]
+        new_bs = u32(read(ADDR["gNewBS"], 4))
+        timers = read(new_bs + 0x09, 6) if 0x02000000 <= new_bs < 0x02040000 else bytes(6)
+        sides = [{"status": u16(side_statuses, 2 * side), "hazards": side_timers[side * 12 + 0x0A],
+                  "pledge": [timers[side], timers[2 + side], timers[4 + side]]} for side in (0, 1)]
     if battlers:
         index_bytes = read(ADDR["gBattlerPartyIndexes"], 2 * battlers)
         battle = read(ADDR["gBattleMons"], BATTLE_MON_SIZE * battlers)

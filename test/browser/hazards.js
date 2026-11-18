@@ -38,6 +38,23 @@ const {chromium} = require('playwright');
 	});
 	ok(kept === false, 'an unchanged sync keeps your edit');
 
+	// Pledge combos: a swamp quarters that side's Speed; Sea of Fire chips; Rainbow doubles effect chances; sync (script 4).
+	const pledge = await p.evaluate(() => {
+		applyEmulatorSides([{status: 0, hazards: 0, pledge: [0, 4, 0]}, {status: 0, hazards: 0, pledge: [3, 0, 2]}]);
+		const mon = {stats: {spe: 64}};
+		const L = readSideState('L'), R = readSideState('R');
+		const fireless = {ability: '', maxHP: 160, types: ['Grass'], status: '', sideState: R};
+		const fire = Object.assign({}, fireless, {types: ['Fire']});
+		const flinch = {chance: 30, effect: E.FLINCH_HIT, name: 'Air Slash'}, burn = {chance: 10, effect: E.BURN_HIT, name: 'Flamethrower'};
+		return {swampL: L.swamp, slowed: getBattleSpeed(mon, 'p1'), other: getBattleSpeed(mon, 'p2'), seaR: R.seaOfFire, rainbowR: R.rainbow,
+			chip: secondaryDamage(fireless, {}), fireChip: secondaryDamage(fire, {}),
+			flinch: chanceOf({ability: '', sideState: R}, flinch), burn: chanceOf({ability: 'Serene Grace', sideState: R}, burn)};
+	});
+	ok(pledge.swampL && pledge.slowed === 16 && pledge.other === 64, 'a swamp quarters your Speed only ' + JSON.stringify(pledge));
+	ok(pledge.seaR && pledge.chip === 20 && pledge.fireChip === 0, 'Sea of Fire burns 1/8, not Fire types ' + JSON.stringify(pledge));
+	ok(pledge.rainbowR && pledge.flinch === 60 && pledge.burn === 40, 'Rainbow doubles chances (flinch once with Serene Grace) ' + JSON.stringify(pledge));
+	await p.evaluate(() => applyEmulatorSides([{status: 0, hazards: 0, pledge: [0, 0, 0]}, {status: 0, hazards: 0, pledge: [0, 0, 0]}]));
+
 	// A trainer fight's predictions with Toxic Spikes up on its side.
 	await p.evaluate(() => showTrainer(TRAINER_ORDER.findIndex(t => t.name === 'Misty' && !t.route)));
 	await p.waitForTimeout(1200);

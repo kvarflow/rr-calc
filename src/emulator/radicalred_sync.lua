@@ -8,7 +8,7 @@
 -- The script only reads the game's memory; it changes nothing in the game.
 
 local PORT = 31125
-local SCRIPT_VERSION = 3
+local SCRIPT_VERSION = 4
 
 -- FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 local ADDR = {
@@ -31,6 +31,9 @@ local ADDR = {
 	-- Since script 3: each side's screens and hazards.
 	gSideStatuses = 0x02023DDE, -- u16 a side: bit 0 Reflect, bit 1 Light Screen
 	gSideTimers = 0x02023DE4, -- 12 bytes a side; +0x0A: Spikes (bits 0-1), Toxic Spikes (2-3), Stealth Rock (4), Sticky Web (5)
+	-- Since script 4: the Pledge combos' turns left, a byte a side in CFRU's battle struct (gNewBS, a
+	-- pointer): Sea of Fire at +0x09, Swamp at +0x0B, Rainbow at +0x0D.
+	gNewBS = 0x0203E038,
 }
 local PARTY_MON_SIZE = 100
 local BATTLE_MON_SIZE = 0x58
@@ -74,9 +77,15 @@ end
 -- Your side (0) and the opponent's (1).
 local function sides()
 	local out = {}
+	local newBS = emu:read32(ADDR.gNewBS)
+	local hasNewBS = newBS >= 0x02000000 and newBS < 0x02040000
 	for side = 0, 1 do
-		out[#out + 1] = string.format('{"status":%d,"hazards":%d}', emu:read16(ADDR.gSideStatuses + side * 2),
-			emu:read8(ADDR.gSideTimers + side * 12 + 0x0A))
+		local pledge = "0,0,0"
+		if hasNewBS then
+			pledge = string.format("%d,%d,%d", emu:read8(newBS + 0x09 + side), emu:read8(newBS + 0x0B + side), emu:read8(newBS + 0x0D + side))
+		end
+		out[#out + 1] = string.format('{"status":%d,"hazards":%d,"pledge":[%s]}', emu:read16(ADDR.gSideStatuses + side * 2),
+			emu:read8(ADDR.gSideTimers + side * 12 + 0x0A), pledge)
 	end
 	return table.concat(out, ",")
 end

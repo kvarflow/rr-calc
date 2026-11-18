@@ -1100,9 +1100,11 @@ function createDoublesPartner(setId, hpPercent, state) {
 	return pokemon;
 }
 
-// A Pokémon's speed in battle without a panel to read it from: its item and paralysis.
-function doublesPartnerSpeed(pokemon) {
+// A Pokémon's speed in battle without a panel to read it from: its item, paralysis and a swamp on
+// its side ("p1" yours, "p2" the trainer's).
+function doublesPartnerSpeed(pokemon, side) {
 	var speed = pokemon.stats.spe;
+	if (side && $("#swamp" + (side === "p1" ? "L" : "R")).prop("checked")) speed = Math.floor(speed / 4);
 	if (pokemon.item === "Choice Scarf") speed = Math.floor(speed * 1.5);
 	if (pokemon.item === "Iron Ball") speed = Math.floor(speed / 2);
 	if (pokemon.status === "par" && pokemon.ability !== "Quick Feet") speed = Math.floor(speed / 2);
@@ -1156,13 +1158,13 @@ function readAIDoublesBattle() {
 			}
 			d.results[x][y] = out;
 			d.out[x][y] = build("f" + x, foe, out, mine, {
-				speed: x === 0 ? getBattleSpeed(foe, "p2") : doublesPartnerSpeed(foe), monsLeft: foeLeft,
+				speed: x === 0 ? getBattleSpeed(foe, "p2") : doublesPartnerSpeed(foe, "p2"), monsLeft: foeLeft,
 				firstTurn: foe.curHP() === foe.maxHP(), sideState: sideStates.foe, focusEnergy: x === 0 && focus.p2,
 				vol: x === 0 ? (typeof getBattleVolatile === "function" ? getBattleVolatile("p2") : null) : partners.foeState && partners.foeState.vol
 			});
 			d.out[x][y].slot = d.foeSlots[x];
 			d.inc[y][x] = build("y" + y, mine, inc, foe, {
-				speed: y === 0 ? getBattleSpeed(mine, "p1") : doublesPartnerSpeed(mine), monsLeft: yoursLeft,
+				speed: y === 0 ? getBattleSpeed(mine, "p1") : doublesPartnerSpeed(mine, "p1"), monsLeft: yoursLeft,
 				firstTurn: mine.curHP() === mine.maxHP(), sideState: sideStates.yours, focusEnergy: y === 0 && focus.p1,
 				vol: y === 0 ? (typeof getBattleVolatile === "function" ? getBattleVolatile("p1") : null) : partners.yoursState && partners.yoursState.vol
 			});
