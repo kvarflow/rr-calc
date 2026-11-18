@@ -162,7 +162,7 @@ function buildFoeTables(pokemon, foes) {
 	var ownSpeed = SEV_STEPS.map(function (ev) {
 		var probe = withEvs(pokemon, oneStat("sp", ev));
 		var result = calc.calculate(gen, probe, withEvs(foes[0], emptySpread()), pokemon.moves[0], field);
-		return Math.floor(result.attacker.stats.spe * battleSpeedMultiplier.p1);
+		return Math.floor(result.attacker.stats.spe * getSpeedMultiplier("p1"));
 	});
 	return foes.map(function (foe) {
 		var foeMoves = foe.moves.filter(isSevDamaging);
@@ -199,7 +199,7 @@ function buildFoeTables(pokemon, foes) {
 			return Infinity;
 		});
 		return {
-			self: plain, name: foe.name, speed: Math.floor(foeSpeed * battleSpeedMultiplier.p2),
+			self: plain, name: foe.name, speed: Math.floor(foeSpeed * getSpeedMultiplier("p2")),
 			physical: damageTable("Physical", "df"), special: damageTable("Special", "sd"), fixed: fixed,
 			strongest: [best.Physical, best.Special].filter(Boolean).sort(function (a, b) {
 				return b.damage - a.damage;
@@ -403,7 +403,7 @@ function getTailoredKey(pokemon, fight) {
 		pokemon.moves.map(function (move) {
 			return move.name;
 		}), pokemon.species.baseStats, pokemon.species.types, fight.key, $("#trickroom").prop("checked"),
-		$("input[type=radio][name='weather']:checked").val(), $("input[type=checkbox][name='terrain']:checked").val(), battleSpeedMultiplier.p1]);
+		$("input[type=radio][name='weather']:checked").val(), $("input[type=checkbox][name='terrain']:checked").val(), getSpeedMultiplier("p1")]);
 }
 
 function renderSpreadColumn(column, spread) {

@@ -114,6 +114,7 @@
         "ABILITY_DESCRIPTIONS": false,
         "ITEM_DESCRIPTIONS": false,
         "battleSpeedMultiplier": false,
+        "getSpeedMultiplier": false,
         "getBattleSpeed": false,
         "lastAutoWeather": false,
         "lastAutoTerrain": false,

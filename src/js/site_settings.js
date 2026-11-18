@@ -67,6 +67,14 @@ var CHANGELOG = [
 		".sav import reads boxes 23 to 25 (they were left out)",
 		"Boss Pok\u00e9mon match the game again: Radical Red builds its bosses from tables of its own, and 1.4's EV and nature " +
 			"changes had read an older copy. Natures, EVs and abilities now come from the right one, in both modes"
+	]},
+	{version: "1.6", notes: [
+		"Pledge combos on each side of the field (Advanced): Swamp (Grass + Water Pledge) quarters that side's Speed, Sea of Fire " +
+			"(Fire + Grass) burns 1/8 a turn, Rainbow (Water + Fire) doubles added effect chances. Who moves first, the colours and " +
+			"the trainer AI all count them",
+		"Emulator sync fills them in, with how many turns are left (sync script 4: fetch the script again)"
+	], fixes: [
+		"The route trainers whose teams come from the game's own tables had their levels below your highest wrong"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

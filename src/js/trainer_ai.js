@@ -519,6 +519,8 @@ function secondaryDamage(side, field) {
 	if (side.status === "brn") chip += Math.max(1, Math.floor(max / (side.ability === "Heatproof" ? 32 : 16)));
 	if (side.seeded) chip += Math.max(1, Math.floor(max / 8));
 	if (side.saltCured) chip += Math.max(1, Math.floor(max / (side.types.indexOf("Water") !== -1 || side.types.indexOf("Steel") !== -1 ? 4 : 8)));
+	// GetSeaOfFireDamage: a Sea of Fire on its side burns all but Fire types.
+	if (side.sideState && side.sideState.seaOfFire && side.types.indexOf("Fire") === -1) chip += Math.max(1, Math.floor(max / 8));
 	return chip;
 }
 
@@ -1181,10 +1183,14 @@ function hasDoubleDamageMove(atk) {
 	});
 }
 
-// CalcSecondaryEffectChance: none for the moves Sheer Force boosts, doubled by Serene Grace.
+// CalcSecondaryEffectChance: none for the moves Sheer Force boosts, doubled by Serene Grace and by a
+// Rainbow on its side (for a flinch, doubled once whichever it has).
 function chanceOf(atk, move) {
 	if (atk.ability === "Sheer Force" && has(SHEER_FORCE_MOVES, move.name)) return 0;
-	return move.chance * (atk.ability === "Serene Grace" ? 2 : 1);
+	var serene = atk.ability === "Serene Grace";
+	var rainbow = !!(atk.sideState && atk.sideState.rainbow);
+	if (move.effect === E.FLINCH_HIT) return move.chance * (serene || rainbow ? 2 : 1);
+	return move.chance * (serene ? 2 : 1) * (rainbow ? 2 : 1);
 }
 
 // CanStatBeLowered (Negatives): not at -6 (+6 with Contrary), and Radical Red tests only Clear Body,
@@ -2113,9 +2119,9 @@ function shouldUseWish(turn, atk, def) {
 // a Tailwind it lacks, or it has hazards the other lacks).
 function shouldCourtChange(side, foe) {
 	var mine = side.sideState, theirs = foe.sideState;
-	return ["reflect", "lightScreen", "auroraVeil", "tailwind"].some(function (k) {
+	return ["reflect", "lightScreen", "auroraVeil", "tailwind", "rainbow"].some(function (k) {
 		return theirs[k] && !mine[k];
-	}) || ["sr", "spikes", "stickyWeb"].some(function (k) {
+	}) || ["sr", "spikes", "stickyWeb", "swamp", "seaOfFire"].some(function (k) {
 		return mine[k] && !theirs[k];
 	});
 }
@@ -4795,6 +4801,10 @@ function readSideState(suffix) {
 		spikes: ~~$("input[type=radio][name='spikes" + suffix + "']:checked").val(),
 		toxicSpikes: ~~$("input[type=radio][name='toxicSpikes" + suffix + "']:checked").val(),
 		stickyWeb: $("#stickyWeb" + suffix).prop("checked"),
+		// Pledge combos: Swamp (Speed quartered, in getBattleSpeed), Sea of Fire, Rainbow.
+		swamp: $("#swamp" + suffix).prop("checked"),
+		seaOfFire: $("#seaOfFire" + suffix).prop("checked"),
+		rainbow: $("#rainbow" + suffix).prop("checked"),
 		reflect: $("#reflect" + suffix).prop("checked"),
 		lightScreen: $("#lightScreen" + suffix).prop("checked"),
 		auroraVeil: $("#auroraVeil" + suffix).prop("checked"),

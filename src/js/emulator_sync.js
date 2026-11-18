@@ -258,6 +258,12 @@ function applyEmulatorSides(sides) {
 		$("#toxicSpikes" + suffix + Math.min((hazards >> 2) & 3, 2)).prop("checked", true);
 		$("#sr" + suffix).prop("checked", !!(hazards & 0x10));
 		$("#stickyWeb" + suffix).prop("checked", !!(hazards & 0x20));
+		// Script 4 on: the Pledge combos' turns left (Sea of Fire, Swamp, Rainbow).
+		if (side.pledge) {
+			$("#seaOfFire" + suffix).prop("checked", side.pledge[0] > 0);
+			$("#swamp" + suffix).prop("checked", side.pledge[1] > 0);
+			$("#rainbow" + suffix).prop("checked", side.pledge[2] > 0);
+		}
 	});
 	return true;
 }

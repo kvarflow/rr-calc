@@ -89,6 +89,7 @@ function releaseBattleEffect() {
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (locked.is("#" + effect.id)) $("#" + effect.id).prop("checked", false).change();
 	});
+	if (locked.is("#swampL")) $("#swampL").prop("checked", false).change();
 	// Your Pokémon's own weather or terrain ability (e.g. Drizzle) applies again.
 	if (hadWeather || hadTerrain) $("#p1 .ability").change();
 }
@@ -114,11 +115,13 @@ function applyBattleEffect(text, trainerName) {
 	EFFECT_TOGGLES.forEach(function (effect) {
 		if (effect.pattern.test(text)) lockFieldInputs($("#" + effect.id).prop("checked", true).change());
 	});
-	// "Permanent swamp (player's Pokémon speed stat is quartered)" (Brendan on Route 23).
-	if (/swamp/i.test(text)) battleSpeedMultiplier.p1 = 0.25;
-	if (lockedFieldInputs.length || battleSpeedMultiplier.p1 !== 1) {
+	// "Permanent swamp (player's Pokémon speed stat is quartered)" (Brendan on Route 23): your side's
+	// Swamp, kept on.
+	var swamp = /swamp/i.test(text);
+	if (swamp) lockFieldInputs($("#swampL").prop("checked", true).change());
+	if (lockedFieldInputs.length) {
 		$("#battle-effect-lock").text("\uD83D\uDD12 Locked by " + trainerName + "'s battle effect: " + text +
-			(battleSpeedMultiplier.p1 !== 1 ? ". Pok\u00e9mon 1's Speed is shown quartered." : "")).show();
+			(swamp ? ". Pok\u00e9mon 1's Speed is shown quartered." : "")).show();
 	}
 }
 

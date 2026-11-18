@@ -331,11 +331,15 @@ var lastAutoWeather = ["", ""];
 // Field conditions a boss's battle effect fixes for the whole fight (set by
 // trainer_controls.js): abilities such as Drizzle or Electric Surge cannot change them.
 var lockedField = {weather: false, terrain: false};
-// Speed changes from a boss's battle effect ("Permanent swamp": your Pokémon's Speed is
-// quartered), used wherever the two Pokémon's speeds are compared. Set by trainer_controls.js.
+// Speed changes from a boss's battle effect, used wherever the two Pokémon's speeds are compared
+// (set by trainer_controls.js), and a swamp (Grass and Water Pledge, or a boss's "Permanent swamp")
+// on the side, which quarters it.
 var battleSpeedMultiplier = {p1: 1, p2: 1};
+function getSpeedMultiplier(side) {
+	return battleSpeedMultiplier[side] * ($("#swamp" + (side === "p1" ? "L" : "R")).prop("checked") ? 0.25 : 1);
+}
 function getBattleSpeed(pokemon, side) {
-	return Math.floor(pokemon.stats.spe * battleSpeedMultiplier[side]);
+	return Math.floor(pokemon.stats.spe * getSpeedMultiplier(side));
 }
 function autosetWeather(ability, i, item) {
 	if (lockedField.weather) return;
@@ -1376,6 +1380,9 @@ function clearField() {
 	$("#toxicSpikesR0").prop("checked", true);
 	$("#stickyWebL").prop("checked", false);
 	$("#stickyWebR").prop("checked", false);
+	["swamp", "seaOfFire", "rainbow"].forEach(function (pledge) {
+		$("#" + pledge + "L, #" + pledge + "R").prop("checked", false);
+	});
 	$("#steelsurgeL").prop("checked", false);
 	$("#steelsurgeR").prop("checked", false);
 	$("#vinelashL").prop("checked", false);
