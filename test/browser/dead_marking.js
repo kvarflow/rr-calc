@@ -14,20 +14,24 @@ const {chromium} = require('playwright');
 	const ok = (cond, msg) => { if (!cond) fails.push(msg); };
 
 	ok(await p.$eval('#dead-marking', s => [...s.options].map(o => o.value).join()) === ',circle,square,triangle,heart', 'the setting lists the four markings');
-	const mon = (species, pid, markings) => ({species, nickname: species, item: '', level: 20, nature: 'Hardy', ability: '',
+	const mon = (species, pid, markings, box) => ({species, nickname: species, item: '', level: 20, nature: 'Hardy', ability: '',
 		evs: {hp: 0, at: 0, df: 0, sp: 0, sa: 0, sd: 0}, ivs: {hp: 31, at: 31, df: 31, sp: 31, sa: 31, sd: 31},
-		moves: ['Tackle'], metLocation: 1, origins: 0, location: species === 'Pidgey' ? 'Party 1' : 'Box 1', pid, markings, hp: null});
-	const run = async marking => p.evaluate(({marking, party, boxes}) => {
+		moves: ['Tackle'], metLocation: 1, origins: 0, location: species === 'Pidgey' ? 'Party 1' : 'Box ' + (box || 1), box: box || 1, pid, markings, hp: null});
+	const run = async (marking, deadBox) => p.evaluate(({marking, deadBox, party, boxes}) => {
 		writeSetting(DEAD_MARKING_KEY, marking);
+		writeSetting(DEAD_BOX_KEY, deadBox);
 		importSaveIntoBox({party, boxes});
 		const layout = resolveBoxLayout(readCustomSets(), readBoxLayout());
 		const name = id => id.slice(0, id.indexOf(' ('));
 		return {fainted: layout.fainted.map(name), box: layout.box.map(name), team: layout.team.map(name)};
-	}, {marking, party: [Object.assign(mon('Pidgey', 11, 0), {hp: 30})], boxes: [mon('Rattata', 22, 8), mon('Spearow', 33, 1)]});
+	}, {marking, deadBox, party: [Object.assign(mon('Pidgey', 11, 0), {hp: 30})], boxes: [mon('Rattata', 22, 8), mon('Spearow', 33, 1), mon('Caterpie', 44, 0, 25)]});
 
-	const none = await run('');
+	ok(await p.$eval('#dead-box', s => s.value) === '25', 'Box 25 is the dead box unless changed');
+	const none = await run('', '0');
 	ok(none.fainted.length === 0 && none.box.indexOf('Rattata') !== -1, 'no marker: nobody fainted ' + JSON.stringify(none));
-	const heart = await run('heart');
+	const box25 = await run('', '25');
+	ok(box25.fainted.indexOf('Caterpie') !== -1 && box25.fainted.length === 1, 'Box 25: the Caterpie there is in Fainted ' + JSON.stringify(box25));
+	const heart = await run('heart', '0');
 	ok(heart.fainted.indexOf('Rattata') !== -1 && heart.fainted.indexOf('Spearow') === -1 && heart.team.indexOf('Pidgey') !== -1,
 		'heart: the heart-marked Rattata is in Fainted, the circle-marked Spearow is not ' + JSON.stringify(heart));
 

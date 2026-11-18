@@ -59,9 +59,11 @@ var CHANGELOG = [
 			"Emulator sync fills in both sides' hazards and screens (sync script 3: fetch the script again)",
 		"Dex: hold a Pok\u00e9mon on the Wild tab (or right-click it on a computer) for its base stats and evolution line. " +
 			"All Pok\u00e9mon lists every one, to find by name or ability, filter by type and sort by any stat",
-		"Settings \u2192 Dead marker: mark your dead with a PC marking in the game, and importing your .sav moves them to Fainted",
+		"Your dead from the game: every Pok\u00e9mon in Box 25 (Settings \u2192 Dead box), or with the PC marking you choose (Dead marker), " +
+			"goes to Fainted when you import your .sav",
 		"24 route trainers have the teams the game really gives them (the Sevii Swimmers and Tubers, Red, the rematches)"
 	], fixes: [
+		".sav import reads boxes 23 to 25 (they were left out)",
 		"Boss Pok\u00e9mon match the game again: Radical Red builds its bosses from tables of its own, and 1.4's EV and nature " +
 			"changes had read an older copy. Natures, EVs and abilities now come from the right one, in both modes"
 	]}
@@ -180,6 +182,13 @@ $(document).ready(function () {
 		});
 		$('<label title="Mark your dead with this marking in the game\'s PC (Summary or the box\'s Mark option): importing your .sav moves them to Fainted."></label>')
 			.append("Dead marker (PC marking) ", marking).appendTo(panel);
+		var deadBox = $('<select id="dead-box"><option value="0">None</option></select>');
+		for (var box = 1; box <= TOTAL_BOXES; box++) deadBox.append($("<option></option>").val(String(box)).text("Box " + box));
+		deadBox.val(String(getDeadBox())).change(function () {
+			writeSetting(DEAD_BOX_KEY, this.value);
+		});
+		$('<label title="Every Pok\u00e9mon in this PC box is dead: importing your .sav moves them to Fainted."></label>')
+			.append("Dead box ", deadBox).appendTo(panel);
 	}
 	panel.append(
 		$('<button type="button" id="show-changelog">What\'s new</button>').click(showChangelog),
