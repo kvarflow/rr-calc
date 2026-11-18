@@ -92,8 +92,10 @@ function tidyImportCard() {
 
 // Settings → Calculator updates (Pcalc): the calculator in use and when the app last looked, and
 // Check now. The app answers calc:status (and offers the newer one with the "Calculator updated" bar).
+// The row appears with the app's first calc:status, so an app too old to answer shows none.
 function buildCalculatorUpdatesRow() {
 	if (typeof pcalcBridge === "undefined" || !pcalcBridge.available() || $("#calc-updates").length) return;
+	var placed = false;
 	var state = $('<span class="calc-updates-state"></span>');
 	var check = $('<button type="button" class="bs-btn bs-btn-default calc-updates-check">Check now</button>');
 	var control = $('<div id="calc-updates" class="calc-updates"></div>').append(state, check);
@@ -112,6 +114,10 @@ function buildCalculatorUpdatesRow() {
 		pcalcBridge.send({type: "calc:check"});
 	});
 	pcalcBridge.on("calc:status", function (message) {
+		if (!placed) {
+			placed = true;
+			placeRow();
+		}
 		var parts = [message.date ? "Version of " + day(message.date) : "Version in the app"];
 		if (message.checking) parts.push("checking…");
 		else if (message.error) parts.push("couldn't check: " + message.error);
@@ -120,12 +126,14 @@ function buildCalculatorUpdatesRow() {
 		state.text(parts.join(" · ")).toggleClass("calc-updates-bad", !!message.error);
 		check.prop("disabled", !!message.checking).text(message.checking ? "Checking…" : "Check now");
 	});
-	var settings = $("#ss-settings");
-	if (settings.length) {
-		$('<div class="ss-setting"></div>').append($('<span class="ss-setting-label">Calculator updates</span>'), control)
-			.insertBefore(settings.children(".ss-setting-switches"));
-	} else {
-		$(".site-settings").append($("<label>Calculator updates </label>").append(control));
+	function placeRow() {
+		var settings = $("#ss-settings");
+		if (settings.length) {
+			$('<div class="ss-setting"></div>').append($('<span class="ss-setting-label">Calculator updates</span>'), control)
+				.insertBefore(settings.children(".ss-setting-switches"));
+		} else {
+			$(".site-settings").append($("<label>Calculator updates </label>").append(control));
+		}
 	}
 }
 
