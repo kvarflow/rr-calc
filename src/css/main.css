@@ -3857,6 +3857,194 @@ html.sheet-open body {
     }
 }
 
+/* The Dex's two views, and its list of every Pokémon (dex.js). */
+.dex-view-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+}
+.dex-list-filters {
+    max-width: 1000px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+.dex-list-filters .dex-search {
+    flex: 1 1 220px;
+}
+.dex-list-type {
+    padding: 6px 8px;
+    border: 1px solid var(--sh-line);
+    border-radius: 8px;
+    background: var(--sh-card);
+    color: inherit;
+}
+.dex-list-count {
+    color: var(--sh-muted);
+    font-size: 12px;
+}
+.dex-list-wrap {
+    max-width: 1000px;
+    overflow-x: auto;
+    border: 1px solid var(--sh-line);
+    border-radius: 10px;
+    background: var(--sh-card);
+}
+.dex-list {
+    width: 100%;
+    font-variant-numeric: tabular-nums;
+}
+.dex-list th[data-key] {
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+}
+.dex-list th[aria-sort="ascending"]::after {
+    content: " \25B2";
+    font-size: 0.7em;
+}
+.dex-list th[aria-sort="descending"]::after {
+    content: " \25BC";
+    font-size: 0.7em;
+}
+.dex-list-row {
+    cursor: pointer;
+}
+.dex-list-row:hover, .dex-list-row:focus-visible {
+    background: rgba(127, 127, 127, 0.1);
+    outline: none;
+}
+.dex-list-name {
+    display: grid;
+    grid-template-columns: 36px auto;
+    align-items: center;
+    column-gap: 6px;
+    min-width: 170px;
+}
+.dex-list-sprite {
+    grid-row: span 2;
+    width: 36px;
+    height: 36px;
+}
+.dex-list-sprite img {
+    width: 36px;
+    height: 36px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.dex-list-abilities {
+    color: var(--sh-muted);
+    font-size: 11px;
+}
+.dex-list-bst {
+    font-weight: bold;
+}
+.dex-list-more {
+    display: block;
+    margin: 10px auto;
+    padding: 6px 16px;
+    border: 1px solid var(--sh-line);
+    border-radius: 999px;
+    background: var(--sh-card);
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+}
+
+/* Dex peek (dex.js): hold a Pokémon for its stats and evolution line. */
+[data-dex-peek] {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
+.dex-peek-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1100;
+}
+.dex-peek {
+    --sh-card: var(--ss-dark-card, #ffffff);
+    --sh-text: var(--ss-dark-text, #1d2330);
+    --sh-muted: var(--ss-dark-muted, #667085);
+    --sh-line: var(--ss-dark-line, #dde2ea);
+    --sh-accent: var(--ss-accent, #d63031);
+    position: fixed;
+    z-index: 1101;
+    width: 340px;
+    max-width: calc(100vw - 16px);
+    max-height: calc(100vh - 16px);
+    overflow-y: auto;
+    padding: 10px 12px;
+    border: 1px solid var(--sh-line);
+    border-radius: 12px;
+    background: var(--sh-card);
+    color: var(--sh-text);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    font-size: 13px;
+    text-align: left;
+}
+.dex-peek-head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.dex-peek-sprite img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    image-rendering: pixelated;
+}
+.dex-peek-title {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 3px;
+}
+.dex-peek-title b {
+    font-size: 1.15em;
+}
+.dex-peek-close {
+    align-self: flex-start;
+    padding: 0 6px;
+    border: 0;
+    background: none;
+    color: var(--sh-muted);
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+.dex-peek-evo {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--sh-line);
+}
+.dex-peek-actions {
+    margin-top: 8px;
+    text-align: right;
+}
+.dex-peek-open {
+    padding: 5px 14px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--sh-accent);
+    color: #fff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+@media (max-width: 600px) {
+    .dex-peek {
+        left: 8px;
+        right: 8px;
+        bottom: 8px;
+        width: auto;
+        max-height: 70vh;
+    }
+}
+
 /* Emulator sync (emulator_sync.js): a quiet box of steps under the buttons. */
 .emulator-sync-panel {
     margin: 8px 0;

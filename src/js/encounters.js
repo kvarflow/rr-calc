@@ -216,7 +216,7 @@ function renderEncounters() {
 			});
 			var dupe = nuzlocke && !chosen && !!caught[getEvolutionFamily(row[0])];
 			var inBox = ownedByFamily[getEvolutionFamily(row[0])];
-			var element = $('<div class="encounter-row"></div>')
+			var element = $('<div class="encounter-row"></div>').attr({"data-dex-peek": row[0], title: "Hold for its Dex entry"})
 				.toggleClass("encounter-owned", !!inBox)
 				.toggleClass("encounter-chosen", chosen)
 				.toggleClass("encounter-blocked", !!encounter && !chosen)

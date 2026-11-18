@@ -275,7 +275,7 @@ function buildMastersheetWild(area, caught, nuzlocke) {
 				.append($('<span class="ms-wild-label"></span>').text(method.label + time.when)).appendTo(card);
 			rows.forEach(function (row) {
 				var dupe = nuzlocke && !!caught[getEvolutionFamily(row[0])];
-				$('<span class="ms-wild-mon" role="button" tabindex="0"></span>').attr("data-species", row[0]).toggleClass("ms-wild-dupe", dupe)
+				$('<span class="ms-wild-mon" role="button" tabindex="0"></span>').attr({"data-species": row[0], "data-dex-peek": row[0]}).toggleClass("ms-wild-dupe", dupe)
 					.attr("title", row[0] + " · Lv " + row[1] + (row[2] !== row[1] ? "–" + row[2] : "") +
 						" · " + row[3] + "%" + (dupe ? " · dupe" : ""))
 					.append(createSpriteImage(row[0], function () {
