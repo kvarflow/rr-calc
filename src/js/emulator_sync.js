@@ -240,8 +240,31 @@ function setEmulatorPartner(which, id, battler) {
 	if (JSON.stringify([chosen[which], chosen[which + "HP"], chosen[which + "State"]]) !== before) emulatorSync.historyChanged = true;
 }
 
+/*
+ * Each side's screens and hazards (sync script 3 on): side 0 is yours (the left of the field), 1 the
+ * trainer's. Set only when the game's change, so what you set by hand stays until the battle moves on.
+ */
+function applyEmulatorSides(sides) {
+	if (!sides || sides.length < 2) return false;
+	var key = JSON.stringify(sides);
+	if (emulatorSync.sides === key) return false;
+	emulatorSync.sides = key;
+	sides.forEach(function (side, index) {
+		var suffix = index === 0 ? "L" : "R";
+		var hazards = side.hazards || 0;
+		$("#reflect" + suffix).prop("checked", !!(side.status & 1));
+		$("#lightScreen" + suffix).prop("checked", !!(side.status & 2));
+		$("#spikes" + suffix + (hazards & 3)).prop("checked", true);
+		$("#toxicSpikes" + suffix + Math.min((hazards >> 2) & 3, 2)).prop("checked", true);
+		$("#sr" + suffix).prop("checked", !!(hazards & 0x10));
+		$("#stickyWeb" + suffix).prop("checked", !!(hazards & 0x20));
+	});
+	return true;
+}
+
 function applyEmulatorState(state) {
 	if (!state.inBattle) {
+		emulatorSync.sides = null;
 		setEmulatorStatus("Connected · not in a battle", true);
 		return;
 	}
@@ -315,6 +338,7 @@ function applyEmulatorState(state) {
 		setEmulatorPartner("foe", foeSlot === -1 ? "none" : foeSlot, foeSlot === -1 ? null : state.mons[theirsOut[1]]);
 		if (typeof isDoublesFight === "function" && !isDoublesFight()) notes.push("a double battle the calc has as a single one");
 	}
+	if (applyEmulatorSides(state.sides)) emulatorSync.historyChanged = true;
 	// The AI's predictions again, with what has happened in the battle.
 	if (emulatorSync.historyChanged) {
 		emulatorSync.historyChanged = false;

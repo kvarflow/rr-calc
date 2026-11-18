@@ -824,6 +824,36 @@
                                 <label class="btn btn-xsmall btn-right" for="spikesR0">0</label>
                             </div></td>
                         </tr>
+                        <tr class="gen-specific g4 g5 g6 g7 g8 g9">
+                            <div hidden id="selectToxicSpikesInstruction">How many layers of Toxic Spikes are on this side of the field?</div>
+                            <td><div aria-labelledby="selectToxicSpikesInstruction" class="left" role="radiogroup" title="Layers of Toxic Spikes on this side of the field (the trainer AI's switching reads them)">
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesL" value="0" id="toxicSpikesL0" checked="checked" />
+                                <label class="btn btn-xsmall btn-left" for="toxicSpikesL0">0</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesL" value="1" id="toxicSpikesL1" />
+                                <label class="btn btn-xsmall btn-mid" for="toxicSpikesL1">1</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesL" value="2" id="toxicSpikesL2" />
+                                <label class="btn btn-xwide btn-right" for="toxicSpikesL2">2 Toxic Spikes</label>
+                            </div></td>
+                            <td><div aria-labelledby="selectToxicSpikesInstruction" class="right" role="radiogroup" title="Layers of Toxic Spikes on this side of the field (the trainer AI's switching reads them)">
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesR" value="2" id="toxicSpikesR2" />
+                                <label class="btn btn-xwide btn-left" for="toxicSpikesR2">2 Toxic Spikes</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesR" value="1" id="toxicSpikesR1" />
+                                <label class="btn btn-xsmall btn-mid" for="toxicSpikesR1">1</label>
+                                <input class="visually-hidden calc-trigger" type="radio" name="toxicSpikesR" value="0" id="toxicSpikesR0" checked="checked" />
+                                <label class="btn btn-xsmall btn-right" for="toxicSpikesR0">0</label>
+                            </div></td>
+                        </tr>
+                        <tr class="gen-specific g6 g7 g8 g9">
+                            <div hidden id="selectStickyWebInstruction">Is Sticky Web on this side of the field?</div>
+                            <td><div class="left" title="Is Sticky Web on this side of the field? (the trainer AI's switching reads it)">
+                                <input aria-describedby="selectStickyWebInstruction" class="visually-hidden calc-trigger" type="checkbox" id="stickyWebL" />
+                                <label class="btn btn-xwide" for="stickyWebL">Sticky Web</label>
+                            </div></td>
+                            <td><div class="right" title="Is Sticky Web on this side of the field? (the trainer AI's switching reads it)">
+                                <input aria-describedby="selectStickyWebInstruction" class="visually-hidden calc-trigger" type="checkbox" id="stickyWebR" />
+                                <label class="btn btn-xwide" for="stickyWebR">Sticky Web</label>
+                            </div></td>
+                        </tr>
                         <tr class="gen-specific g2">
                             <td><div class="left" title="Are there Spikes on this side of the field?">
                                 <input aria-describedby="selectSpikeInstruction" class="visually-hidden calc-trigger" type="checkbox" id="gscSpikesL" />

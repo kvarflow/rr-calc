@@ -19,7 +19,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 PORT = 31125
 RETROARCH = ("127.0.0.1", 55355)
-SCRIPT_VERSION = 2
+SCRIPT_VERSION = 3
 
 # FireRed (US 1.0) addresses: Radical Red's own code still uses every one of them.
 ADDR = {
@@ -39,6 +39,9 @@ ADDR = {
     "gStatuses3": 0x02023DFC,  # u32 a battler
     "gDisableStructs": 0x02023E0C,  # 0x1C bytes a battler
     "gWishFutureKnock": 0x02023F20,  # wishCounter: a byte a battler at +0x20
+    # Since script 3: each side's screens and hazards.
+    "gSideStatuses": 0x02023DDE,  # u16 a side: bit 0 Reflect, bit 1 Light Screen
+    "gSideTimers": 0x02023DE4,  # 12 bytes a side; +0x0A: Spikes (bits 0-1), Toxic Spikes (2-3), Stealth Rock (4), Sticky Web (5)
 }
 DISABLE_STRUCT_SIZE = 0x1C
 PARTY_MON_SIZE = 100
@@ -86,7 +89,11 @@ def state():
     """The same as the mGBA script's /state."""
     in_battle = bool(read(ADDR["gMain"] + 0x439, 1)[0] & 2)
     battlers = min(read(ADDR["gBattlersCount"], 1)[0], 4) if in_battle else 0
-    indexes, mons = [], []
+    indexes, mons, sides = [], [], []
+    if in_battle:
+        side_statuses = read(ADDR["gSideStatuses"], 4)
+        side_timers = read(ADDR["gSideTimers"], 24)
+        sides = [{"status": u16(side_statuses, 2 * side), "hazards": side_timers[side * 12 + 0x0A]} for side in (0, 1)]
     if battlers:
         index_bytes = read(ADDR["gBattlerPartyIndexes"], 2 * battlers)
         battle = read(ADDR["gBattleMons"], BATTLE_MON_SIZE * battlers)
@@ -110,7 +117,7 @@ def state():
         "battleType": u32(read(ADDR["gBattleTypeFlags"], 4)), "trainer": u16(read(ADDR["gTrainerBattleOpponent_A"], 2)),
         "party": party(ADDR["gPlayerPartyCount"], ADDR["gPlayerParty"]),
         "enemyParty": party(ADDR["gEnemyPartyCount"], ADDR["gEnemyParty"]),
-        "partyIndexes": indexes, "mons": mons,
+        "partyIndexes": indexes, "mons": mons, "sides": sides,
     }
 
 

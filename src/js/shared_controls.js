@@ -1374,6 +1374,10 @@ function clearField() {
 	$("#spikesR0").prop("checked", true);
 	$("#gscSpikesL").prop("checked", false);
 	$("#gscSpikesR").prop("checked", false);
+	$("#toxicSpikesL0").prop("checked", true);
+	$("#toxicSpikesR0").prop("checked", true);
+	$("#stickyWebL").prop("checked", false);
+	$("#stickyWebR").prop("checked", false);
 	$("#steelsurgeL").prop("checked", false);
 	$("#steelsurgeR").prop("checked", false);
 	$("#vinelashL").prop("checked", false);
