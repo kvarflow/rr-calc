@@ -9085,7 +9085,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
+     3,
      2
     ]
    }
@@ -9114,8 +9114,8 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
-     1,
+     3,
+     3,
      2
     ]
    }
@@ -9144,7 +9144,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
+     3,
      2,
      2
     ]
@@ -9174,8 +9174,8 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     0,
-     1,
+     4,
+     3,
      2
     ]
    }
@@ -9204,8 +9204,8 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     0,
-     0,
+     4,
+     4,
      2
     ]
    }
@@ -9234,7 +9234,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     0,
+     4,
      2,
      2
     ]
@@ -9352,11 +9352,11 @@ var TRAINER_ORDER = [
      555
     ],
     "levelBelowHighest": [
-     1,
-     0,
+     3,
+     4,
      2,
      2,
-     1
+     3
     ]
    }
   ]
@@ -9383,8 +9383,8 @@ var TRAINER_ORDER = [
      556
     ],
     "levelBelowHighest": [
-     1,
-     0,
+     3,
+     4,
      2,
      2
     ]
@@ -9414,8 +9414,8 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     0,
-     1,
+     4,
+     3,
      2
     ]
    }
@@ -9445,7 +9445,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
+     3,
      2,
      2,
      2
@@ -9510,7 +9510,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
+     3,
      2,
      2,
      2,
@@ -10156,7 +10156,7 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
+     3,
      2,
      2
     ]
@@ -10186,8 +10186,8 @@ var TRAINER_ORDER = [
     ],
     "levelBelowHighest": [
      2,
-     1,
-     1,
+     3,
+     3,
      2
     ]
    }
