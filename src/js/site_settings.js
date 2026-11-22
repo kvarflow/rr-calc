@@ -75,7 +75,9 @@ var CHANGELOG = [
 			"the trainer AI all count them",
 		"Emulator sync fills them in, with how many turns are left (sync script 4: fetch the script again)"
 	], fixes: [
-		"The route trainers whose teams come from the game's own tables had their levels below your highest wrong"
+		"The route trainers whose teams come from the game's own tables had their levels below your highest wrong",
+		"After you set a Pok\u00e9mon's status by hand and changed its item, every Pok\u00e9mon you switched to came in with that status " +
+			"(Paralyzed, with half its Speed, so the foe's predicted moves were off). Each one now loads healthy"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.
