@@ -629,6 +629,12 @@ $(".set-selector").change(function () {
 		pokeObj.find(".boost").val(0);
 		pokeObj.find(".percent-hp").val(100);
 		pokeObj.find(".status").val("Healthy");
+		// A new Pokémon starts healthy: the status picked by hand for the last one (which autosetStatus
+		// puts back when a Flame / Toxic Orb comes off) is forgotten, or every Pokémon loaded after a
+		// paralysed one came in paralysed, with half its Speed.
+		var side = "#" + pokeObj.prop("id");
+		lastManualStatus[side] = "Healthy";
+		lastAutoStatus[side] = "Healthy";
 		$(".status").change();
 		var moveObj;
 		var abilityObj = pokeObj.find(".ability");
