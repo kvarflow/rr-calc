@@ -29,12 +29,16 @@ const {chromium} = require('playwright');
 	// The Expansion: the Starter Egg; Route 10: the Static Pokémon.
 	await open('Viridian Forest', 'Expansion');
 	const exp = await p.$eval('.encounter-recommendation', e => e.textContent + '|' + e.getAttribute('data-egg'));
-	ok(/Water Starter Egg: wait until Cerulean City/.test(exp) && /Mudkip/.test(exp) && /\|Water$/.test(exp), 'Expansion: a Water Starter Egg ' + exp);
+	ok(/Water Starter Egg: wait until Cerulean City/.test(exp) && !/Mudkip/.test(exp) && /\|Water$/.test(exp), 'Expansion: a Water Starter Egg, no starter named ' + exp);
 	await open('Route 3');
 	ok(/^Recommended: Fire Starter Egg/.test(await p.$eval('.encounter-recommendation', e => e.textContent)), 'Route 3: a Fire Starter Egg');
 	await open('Route 10');
 	const statics = await p.evaluate(() => $('.encounter-recommended').length);
 	ok(statics > 0, 'Route 10: Static Pokémon starred ' + statics);
+	ok(/Cubone or Rhyhorn/.test(await p.$eval('.encounter-recommendation', e => e.textContent)), 'Route 10: Cubone / Rhyhorn if the Static one is missed');
+	await open('Rock Tunnel', 'B1F');
+	const rt = await p.evaluate(() => $('.encounter-recommended .encounter-name').map(function () { return $(this).text().trim(); }).get());
+	ok(rt.some(n => /Cubone/.test(n)) && rt.some(n => /Rhyhorn/.test(n)), 'Rock Tunnel B1F: Cubone and Rhyhorn starred ' + JSON.stringify(rt));
 
 	// Nuzlocke: Main and Expansion are two locations; a .sav's Viridian Forest Pokémon split by area.
 	const nz = await p.evaluate(() => {

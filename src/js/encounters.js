@@ -89,7 +89,9 @@ function hasStaticAbility(species) {
 }
 
 function isRecommendedSpecies(rec, species) {
-	if (!rec || !rec.pick) return false;
+	if (!rec) return false;
+	if (rec.alt && rec.alt.indexOf(species) !== -1) return true;
+	if (!rec.pick) return false;
 	return rec.pick === "static" ? hasStaticAbility(species) : rec.pick === species;
 }
 
@@ -98,9 +100,7 @@ function describeRecommendation(rec, short) {
 	var text;
 	var egg = (rec.egg ? rec.egg + " " : "") + "Starter Egg";
 	if (rec.pick === "egg") {
-		text = short ? egg + (rec.hatched ? " (" + rec.hatched + ")" : "") :
-			egg + ": wait until Cerulean City, get a" + (/^[AEIOU]/.test(egg) ? "n " : " ") + egg + " and hatch it here" +
-			(rec.hatched ? " (the sheet's run hatched " + rec.hatched + ")" : "");
+		text = short ? egg : egg + ": wait until Cerulean City, get a" + (/^[AEIOU]/.test(egg) ? "n " : " ") + egg + " and hatch it here";
 	} else if (rec.pick === "static") {
 		text = "a Pok\u00e9mon with Static";
 	} else if (rec.pick === "roamer") {
@@ -110,7 +110,6 @@ function describeRecommendation(rec, short) {
 	}
 	if (rec.how) text += (text ? " \u00b7 " : "") + rec.how;
 	if (rec.note && rec.pick !== "roamer") text += (text ? " \u00b7 " : "") + rec.note;
-	if (rec.egg && rec.pick !== "egg" && rec.hatched) text += " (" + rec.hatched + ")";
 	else if (rec.note && rec.pick === "roamer") text = rec.note;
 	return text;
 }
