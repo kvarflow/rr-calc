@@ -101,10 +101,13 @@ function describeRecommendation(rec, short) {
 		text = short ? egg + (rec.hatched ? " (" + rec.hatched + ")" : "") :
 			egg + ": wait until Cerulean City, get a" + (/^[AEIOU]/.test(egg) ? "n " : " ") + egg + " and hatch it here" +
 			(rec.hatched ? " (the sheet's run hatched " + rec.hatched + ")" : "");
+	} else if (rec.pick === "static") {
+		text = "a Pok\u00e9mon with Static";
+	} else if (rec.pick === "roamer") {
+		text = "a roamer";
+	} else {
+		text = rec.pick || "";
 	}
-	else if (rec.pick === "static") text = "a Pok\u00e9mon with Static";
-	else if (rec.pick === "roamer") text = "a roamer";
-	else text = rec.pick || "";
 	if (rec.how) text += (text ? " \u00b7 " : "") + rec.how;
 	if (rec.note && rec.pick !== "roamer") text += (text ? " \u00b7 " : "") + rec.note;
 	if (rec.egg && rec.pick !== "egg" && rec.hatched) text += " (" + rec.hatched + ")";
