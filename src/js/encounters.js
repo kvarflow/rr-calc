@@ -96,12 +96,18 @@ function isRecommendedSpecies(rec, species) {
 // The recommendation in words (`short`: for Plan's list, which explains the Starter Egg once on top).
 function describeRecommendation(rec, short) {
 	var text;
-	if (rec.pick === "egg") text = short ? "Starter Egg (hatch it here)" : "Starter Egg: wait until Cerulean City, get the Starter Egg and hatch it here";
+	var egg = (rec.egg ? rec.egg + " " : "") + "Starter Egg";
+	if (rec.pick === "egg") {
+		text = short ? egg + (rec.hatched ? " (" + rec.hatched + ")" : "") :
+			egg + ": wait until Cerulean City, get a" + (/^[AEIOU]/.test(egg) ? "n " : " ") + egg + " and hatch it here" +
+			(rec.hatched ? " (the sheet's run hatched " + rec.hatched + ")" : "");
+	}
 	else if (rec.pick === "static") text = "a Pok\u00e9mon with Static";
 	else if (rec.pick === "roamer") text = "a roamer";
 	else text = rec.pick || "";
 	if (rec.how) text += (text ? " \u00b7 " : "") + rec.how;
 	if (rec.note && rec.pick !== "roamer") text += (text ? " \u00b7 " : "") + rec.note;
+	if (rec.egg && rec.pick !== "egg" && rec.hatched) text += " (" + rec.hatched + ")";
 	else if (rec.note && rec.pick === "roamer") text = rec.note;
 	return text;
 }
@@ -275,7 +281,7 @@ function renderEncounterPlan(list) {
 		var area = rec.name ? findRecommendationArea(rec) : -1;
 		var done = got ? (got.missed ? "missed" : got.species.join(", ")) :
 			rec.pick && owned[rec.pick] ? "\u2713 in your box" : "";
-		var row = $('<div class="encounter-plan-row"></div>').toggleClass("encounter-plan-done", !!got)
+		var row = $('<div class="encounter-plan-row"></div>').toggleClass("encounter-plan-done", !!got).attr("data-egg", rec.egg || null)
 			.append($('<span class="encounter-plan-place"></span>').text(rec.place),
 				$('<span class="encounter-plan-pick"></span>').text(describeRecommendation(rec, true)),
 				$('<span class="encounter-plan-got"></span>').text(done))
@@ -368,7 +374,7 @@ function renderEncounters() {
 		columns[method.side].append(section);
 	});
 	if (rec) {
-		list.append($('<p class="encounter-recommendation"></p>').append($("<b></b>").text("Recommended: "),
+		list.append($('<p class="encounter-recommendation"></p>').attr("data-egg", rec.egg || null).append($("<b></b>").text("Recommended: "),
 			document.createTextNode(describeRecommendation(rec))));
 	}
 	list.append(columns.land.children().length ? columns.land : "", columns.water.children().length ? columns.water : "");

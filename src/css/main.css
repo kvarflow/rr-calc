@@ -3204,6 +3204,17 @@ html.small-screen .encounters > legend {
 .encounter-recommended {
     background: rgba(230, 184, 0, 0.14);
 }
+/* A Starter Egg's type: Fire, Water or Grass. */
+.encounter-recommendation[data-egg] {
+    border-left: 4px solid var(--egg-color);
+}
+.encounter-plan-row[data-egg] .encounter-plan-pick {
+    border-left: 3px solid var(--egg-color);
+    padding-left: 6px;
+}
+[data-egg="Fire"] { --egg-color: #e62829; }
+[data-egg="Water"] { --egg-color: #2980ef; }
+[data-egg="Grass"] { --egg-color: #3fa129; }
 .encounter-recommended-tag {
     color: #c99400;
 }

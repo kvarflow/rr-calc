@@ -28,7 +28,10 @@ const {chromium} = require('playwright');
 	if (SHOTS) await p.screenshot({path: SHOTS + '/recommended_route1.png'});
 	// The Expansion: the Starter Egg; Route 10: the Static Pokémon.
 	await open('Viridian Forest', 'Expansion');
-	ok(/Starter Egg: wait until Cerulean City/.test(await p.$eval('.encounter-recommendation', e => e.textContent)), 'Expansion: Starter Egg');
+	const exp = await p.$eval('.encounter-recommendation', e => e.textContent + '|' + e.getAttribute('data-egg'));
+	ok(/Water Starter Egg: wait until Cerulean City/.test(exp) && /Mudkip/.test(exp) && /\|Water$/.test(exp), 'Expansion: a Water Starter Egg ' + exp);
+	await open('Route 3');
+	ok(/^Recommended: Fire Starter Egg/.test(await p.$eval('.encounter-recommendation', e => e.textContent)), 'Route 3: a Fire Starter Egg');
 	await open('Route 10');
 	const statics = await p.evaluate(() => $('.encounter-recommended').length);
 	ok(statics > 0, 'Route 10: Static Pokémon starred ' + statics);
