@@ -42,6 +42,21 @@ var GAMES = [
 			learnsets: true, trainerSprites: true, trainerOrderFixes: true, genders: true}
 	},
 	{
+		id: "fireredomega",
+		name: "Fire Red Omega",
+		// Drayano's FireRed difficulty hack: FireRed's own engine (Gen 3 mechanics), read with
+		// rr-rom's games/fireredomega extractor. Ready (and features.trainers) once its data files,
+		// data/games, sets and trainers fireredomega.js, are generated from the game.
+		gen: 3,
+		engine: "FireRed (binary hack)",
+		data: "fireredomega",
+		status: "planned",
+		modes: [
+			{id: "fireredomega", label: "Fire Red Omega", page: "fireredomega", sets: "fireredomega", trainers: "fireredomega"}
+		],
+		features: {}
+	},
+	{
 		id: "runbun",
 		name: "Run & Bun",
 		// pokeemerald-expansion: the generation its battle settings follow comes from the ROM.

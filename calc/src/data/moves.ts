@@ -5123,7 +5123,9 @@ export class Moves implements I.Moves {
   }
 }
 
-class Move implements I.Move {
+// Not "Move": on the calc's pages every file shares one global scope, where index.ts's Move
+// replaces it, and setGameMoves (another game's moves) builds its map after that.
+class MoveEntry implements I.Move {
   readonly kind: 'Move';
   readonly id: I.ID;
   readonly name: I.MoveName;
@@ -5195,7 +5197,7 @@ class Move implements I.Move {
     if (data.isKick) this.flags.kick = 1;
     if (data.isBone) this.flags.bone = 1;
 
-    assignWithout(this, data, Move.FLAGS);
+    assignWithout(this, data, MoveEntry.FLAGS);
 
     this.basePower = data.bp;
     if (data.zp) this.zMove = {basePower: data.zp};
@@ -5206,14 +5208,14 @@ class Move implements I.Move {
   }
 }
 
-const MOVES_BY_ID: Array<{[id: string]: Move}> = [];
+const MOVES_BY_ID: Array<{[id: string]: MoveEntry}> = [];
 
 function buildMovesMap(gen: number) {
   const moves = MOVES[gen] as {[name: string]: MoveData};
-  const map: {[id: string]: Move} = {};
+  const map: {[id: string]: MoveEntry} = {};
   for (const move in moves) {
     const data = moves[move];
-    const m = new Move(move, data, gen);
+    const m = new MoveEntry(move, data, gen);
     map[m.id] = m;
   }
   MOVES_BY_ID[gen] = map;
