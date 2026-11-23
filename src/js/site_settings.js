@@ -76,6 +76,12 @@ var CHANGELOG = [
 		"Emulator sync fills them in, with how many turns are left (sync script 4: fetch the script again)"
 	], fixes: [
 		"The route trainers whose teams come from the game's own tables had their levels below your highest wrong"
+	]},
+	{version: "1.7", notes: [
+		"Wild tab: each location's recommended encounter from the run's encounter tracker, starred in the list. " +
+			"\"Starter Egg\" means wait until Cerulean City, get the Starter Egg and hatch it there",
+		"Plan (beside Day / Night): every recommended encounter in the order you reach them, with what you got there. Tap one to open it",
+		"Nuzlocke: Viridian Forest's Expansion is a location of its own, from your .sav too (the Expansion's own Pok\u00e9mon, or one hatched there)"
 	]}
 ];
 // Inside the Pcalc app (kvarflow/Pcalc) the app's own name heads the page, whichever game is open.

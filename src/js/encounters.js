@@ -38,6 +38,74 @@ function encounterLabel(location) {
 	return location.name + (location.area ? " · " + location.area : "");
 }
 
+// The Nuzlocke location an area counts for: its place, except Viridian Forest's Expansion, a
+// location of its own.
+var SEPARATE_ENCOUNTER_AREAS = {"Viridian Forest|Expansion": "Viridian Forest Expansion"};
+function nuzlockeKeyOf(location) {
+	return SEPARATE_ENCOUNTER_AREAS[location.name + "|" + location.area] || location.name;
+}
+
+// Every Nuzlocke location: the wild ones, and the places the recommendations add (gifts, eggs).
+function getNuzlockeLocations() {
+	var keys = {};
+	ENCOUNTERS.forEach(function (location) {
+		keys[nuzlockeKeyOf(location)] = true;
+	});
+	if (typeof RECOMMENDED_ENCOUNTERS !== "undefined") {
+		RECOMMENDED_ENCOUNTERS.forEach(function (rec) {
+			keys[rec.key] = true;
+		});
+	}
+	return keys;
+}
+
+// Whether a species is in an area's wild tables (by day or by night, any method).
+function isInEncounterArea(location, species) {
+	return ["day", "night"].some(function (time) {
+		var table = location[time];
+		return !!table && Object.keys(table).some(function (method) {
+			return table[method].some(function (row) {
+				return row[0] === species;
+			});
+		});
+	});
+}
+
+// The recommendation for an area: its own, else (an area without one, Mt. Moon B1F) its place's.
+function getRecommendation(location) {
+	if (typeof RECOMMENDED_ENCOUNTERS === "undefined") return null;
+	var key = nuzlockeKeyOf(location);
+	return RECOMMENDED_ENCOUNTERS.filter(function (rec) {
+		return rec.key === key && rec.area === location.area;
+	})[0] || RECOMMENDED_ENCOUNTERS.filter(function (rec) {
+		return rec.key === key;
+	})[0] || null;
+}
+
+function hasStaticAbility(species) {
+	var data = typeof RADICAL_RED_SAVE_DATA !== "undefined" ? RADICAL_RED_SAVE_DATA : null;
+	var id = data ? data.species.indexOf(species) : -1;
+	return id !== -1 && (data.abilities[id] || []).indexOf("Static") !== -1;
+}
+
+function isRecommendedSpecies(rec, species) {
+	if (!rec || !rec.pick) return false;
+	return rec.pick === "static" ? hasStaticAbility(species) : rec.pick === species;
+}
+
+// The recommendation in words (`short`: for Plan's list, which explains the Starter Egg once on top).
+function describeRecommendation(rec, short) {
+	var text;
+	if (rec.pick === "egg") text = short ? "Starter Egg (hatch it here)" : "Starter Egg: wait until Cerulean City, get the Starter Egg and hatch it here";
+	else if (rec.pick === "static") text = "a Pok\u00e9mon with Static";
+	else if (rec.pick === "roamer") text = "a roamer";
+	else text = rec.pick || "";
+	if (rec.how) text += (text ? " \u00b7 " : "") + rec.how;
+	if (rec.note && rec.pick !== "roamer") text += (text ? " \u00b7 " : "") + rec.note;
+	else if (rec.note && rec.pick === "roamer") text = rec.note;
+	return text;
+}
+
 function encounterKey(text) {
 	return String(text || "").toLowerCase().replace(/[^a-z0-9]/g, "");
 }
@@ -131,13 +199,18 @@ function setNuzlockeEncounter(name, encounter) {
 // They replace an earlier import's for the same location; a location the save no longer has a
 // Pokémon from (it was released) stays used, and locations you marked yourself stay as you marked them.
 function recordSaveEncounters(save) {
-	var wild = {};
-	ENCOUNTERS.forEach(function (location) {
-		wild[location.name] = true;
+	var wild = getNuzlockeLocations();
+	// The save has one place for all of Viridian Forest: one of the Expansion's own Pokémon (or one
+	// hatched there) counts for the Expansion.
+	var forest = ENCOUNTERS.filter(function (location) {
+		return location.name === "Viridian Forest";
 	});
 	var found = {};
 	save.party.concat(save.boxes).forEach(function (mon) {
 		var name = MAP_SECTIONS.names[mon.metLocation - MAP_SECTIONS.first];
+		if (name === "Viridian Forest" && forest.length > 1 && !isInEncounterArea(forest[0], mon.species)) {
+			name = nuzlockeKeyOf(forest[1]);
+		}
 		if (!name || !wild[name]) return;
 		(found[name] = found[name] || []).push(mon.species);
 	});
@@ -150,33 +223,73 @@ function recordSaveEncounters(save) {
 
 function renderNuzlockeStatus(location, encounter, encounters) {
 	var status = $("#encounters .encounter-nuzlocke-status").empty();
-	var names = {};
-	ENCOUNTERS.forEach(function (l) {
-		names[l.name] = true;
-	});
+	var names = getNuzlockeLocations();
+	var key = nuzlockeKeyOf(location);
 	var used = Object.keys(encounters).filter(function (name) {
 		return names[name];
 	}).length;
 	var count = $('<span class="encounter-nuzlocke-count"></span>').text(used + " of " + Object.keys(names).length + " locations used");
 	if (!encounter) {
-		var hint = "No encounter at " + location.name + " yet: tap the first Pokémon you meet" +
+		var hint = "No encounter at " + key + " yet: tap the first Pokémon you meet" +
 			($("#encounters .encounter-dupe").length ? " that is not a dupe. " : ". ");
 		status.append(document.createTextNode(hint),
 			$('<button type="button" class="encounter-nuzlocke-missed">Missed it</button>').click(function () {
-				setNuzlockeEncounter(location.name, {species: [], missed: true});
+				setNuzlockeEncounter(key, {species: [], missed: true});
 			}));
 	} else {
 		status.append(
-			$("<b></b>").text(location.name + ": "),
+			$("<b></b>").text(key + ": "),
 			document.createTextNode(encounter.missed ? "encounter missed" : encounter.species.join(", ")),
 			encounter.fromSave ? '<span class="encounter-nuzlocke-source"> (from your .sav)</span>' : "",
 			encounter.species.length > 1 ? '<span class="encounter-nuzlocke-warning"> More than one Pokémon was caught here.</span>' : "",
 			" ",
 			$('<button type="button" class="encounter-nuzlocke-clear">Clear</button>').click(function () {
-				setNuzlockeEncounter(location.name, null);
+				setNuzlockeEncounter(key, null);
 			}));
 	}
 	status.append(" ", count);
+}
+
+// The ENCOUNTERS area a recommendation is for (its area, else the place's first), or -1.
+function findRecommendationArea(rec) {
+	var first = -1;
+	for (var i = 0; i < ENCOUNTERS.length; i++) {
+		if (ENCOUNTERS[i].name !== rec.name) continue;
+		if (rec.area ? ENCOUNTERS[i].area === rec.area : true) return i;
+		if (first === -1) first = i;
+	}
+	return first;
+}
+
+/*
+ * Plan: every recommended encounter in the order you reach them, with what you have there (Nuzlocke)
+ * or the box's check. Tapping one opens its location.
+ */
+function renderEncounterPlan(list) {
+	var encounters = readNuzlockeEncounters();
+	var owned = getOwnedSpecies();
+	list.append($('<p class="encounter-plan-note"></p>').text(STARTER_EGG_NOTE));
+	var table = $('<div class="encounter-plan"></div>').appendTo(list);
+	RECOMMENDED_ENCOUNTERS.forEach(function (rec) {
+		var got = encounters[rec.key];
+		var area = rec.name ? findRecommendationArea(rec) : -1;
+		var done = got ? (got.missed ? "missed" : got.species.join(", ")) :
+			rec.pick && owned[rec.pick] ? "\u2713 in your box" : "";
+		var row = $('<div class="encounter-plan-row"></div>').toggleClass("encounter-plan-done", !!got)
+			.append($('<span class="encounter-plan-place"></span>').text(rec.place),
+				$('<span class="encounter-plan-pick"></span>').text(describeRecommendation(rec, true)),
+				$('<span class="encounter-plan-got"></span>').text(done))
+			.appendTo(table);
+		if (rec.pick && rec.pick !== "egg" && rec.pick !== "static" && rec.pick !== "roamer" && pokedex[rec.pick]) row.attr("data-dex-peek", rec.pick);
+		if (area !== -1) {
+			row.attr({role: "button", tabindex: 0, title: "Open " + rec.place}).on("click keydown", function (ev) {
+				if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
+				ev.preventDefault();
+				$("#encounter-plan").attr("aria-pressed", "false");
+				showEncounterLocation(area);
+			});
+		}
+	});
 }
 
 function renderEncounters() {
@@ -184,13 +297,21 @@ function renderEncounters() {
 	var location = ENCOUNTERS[~~$("#encounter-location").val()];
 	var list = panel.find(".encounter-list").empty();
 	if (!location) return;
+	var planOpen = $("#encounter-plan").attr("aria-pressed") === "true";
+	panel.toggleClass("encounter-plan-open", planOpen);
+	if (planOpen && typeof RECOMMENDED_ENCOUNTERS !== "undefined") {
+		renderEncounterPlan(list);
+		return;
+	}
 	var night = $("#encounter-night").attr("aria-pressed") === "true";
 	var table = (night && location.night) || location.day;
 	panel.find(".encounter-time-note").text(location.night ? "" : "Same by day and night.");
 	var owned = getOwnedSpecies();
 	var nuzlocke = isNuzlockeOn();
 	var encounters = nuzlocke ? readNuzlockeEncounters() : {};
-	var encounter = encounters[location.name];
+	var locationKey = nuzlockeKeyOf(location);
+	var encounter = encounters[locationKey];
+	var rec = getRecommendation(location);
 	var caught = getCaughtFamilies(owned, encounters);
 	// What of each family is in your box, so a Furret ticks Route 2's Sentret.
 	var ownedByFamily = {};
@@ -201,7 +322,7 @@ function renderEncounters() {
 	panel.toggleClass("encounter-nuzlocke-on", nuzlocke);
 	// Used locations are ticked in the list.
 	$("#encounter-location option").text(function (i) {
-		return encounterLabel(ENCOUNTERS[i]) + (encounters[ENCOUNTERS[i].name] ? " ✓" : "");
+		return encounterLabel(ENCOUNTERS[i]) + (encounters[nuzlockeKeyOf(ENCOUNTERS[i])] ? " ✓" : "");
 	});
 	var columns = {land: $('<div class="encounter-column"></div>'), water: $('<div class="encounter-column"></div>')};
 	ENCOUNTER_METHODS.forEach(function (method) {
@@ -221,6 +342,7 @@ function renderEncounters() {
 				.toggleClass("encounter-chosen", chosen)
 				.toggleClass("encounter-blocked", !!encounter && !chosen)
 				.toggleClass("encounter-dupe", dupe)
+				.toggleClass("encounter-recommended", isRecommendedSpecies(rec, row[0]))
 				.append(
 					$('<span class="encounter-sprite"></span>').append(createSpriteImage(row[0], function () {
 						$(this).remove();
@@ -229,7 +351,8 @@ function renderEncounters() {
 						// A cosmetic forme the calc does not have ("Summer" Deerling).
 						.append(row[4] ? $('<span class="encounter-forme"></span>').text(" (" + row[4] + ")") : "")
 						.append(inBox ? [" ", $('<span class="encounter-check">✓</span>').attr("title", "In your box: " + inBox.join(", "))] : "")
-						.append(dupe ? ' <span class="encounter-dupe-tag" title="You have caught one of this family">Dupe</span>' : ""),
+						.append(dupe ? ' <span class="encounter-dupe-tag" title="You have caught one of this family">Dupe</span>' : "")
+						.append(isRecommendedSpecies(rec, row[0]) ? ' <span class="encounter-recommended-tag" title="Recommended here">\u2605</span>' : ""),
 					$('<span class="encounter-levels"></span>').text(levels),
 					$('<span class="encounter-rate"></span>').text(row[3] + "%"))
 				.appendTo(section);
@@ -238,12 +361,16 @@ function renderEncounters() {
 				element.attr({role: "button", tabindex: 0, title: "Your encounter here"}).on("click keydown", function (ev) {
 					if (ev.type === "keydown" && ev.key !== "Enter" && ev.key !== " ") return;
 					ev.preventDefault();
-					setNuzlockeEncounter(location.name, {species: [row[0]]});
+					setNuzlockeEncounter(locationKey, {species: [row[0]]});
 				});
 			}
 		});
 		columns[method.side].append(section);
 	});
+	if (rec) {
+		list.append($('<p class="encounter-recommendation"></p>').append($("<b></b>").text("Recommended: "),
+			document.createTextNode(describeRecommendation(rec))));
+	}
 	list.append(columns.land.children().length ? columns.land : "", columns.water.children().length ? columns.water : "");
 	if (!list.children().length) list.append('<p class="encounter-empty">No wild Pokémon here.</p>');
 	// After the rows, so it can tell whether any are dupes.
@@ -300,6 +427,12 @@ $(document).ready(function () {
 			$('<button type="button" class="encounter-step" aria-label="Next location">▶</button>').click(function () {
 				showEncounterLocation(~~select.val() + 1);
 			}),
+			typeof RECOMMENDED_ENCOUNTERS === "undefined" ? "" :
+				$('<button type="button" id="encounter-plan" class="encounter-time" aria-pressed="false" title="Recommended encounters for every location">Plan</button>')
+					.click(function () {
+						$(this).attr("aria-pressed", $(this).attr("aria-pressed") === "true" ? "false" : "true");
+						renderEncounters();
+					}),
 			$('<button type="button" id="encounter-night" class="encounter-time"></button>')
 				.attr("aria-pressed", isNightNow())
 				.text(isNightNow() ? "☾ Night" : "☀ Day")

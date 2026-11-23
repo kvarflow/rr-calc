@@ -57,6 +57,8 @@
         "getPageMode": false,
         "lockedField": false,
         "ENCOUNTERS": false,
+        "RECOMMENDED_ENCOUNTERS": false,
+        "STARTER_EGG_NOTE": false,
         "MAP_SECTIONS": false,
         "TRAINER_AI_FLAGS": false,
         "TRAINER_AI_MOVES": false,

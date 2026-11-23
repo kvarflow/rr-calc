@@ -3191,6 +3191,67 @@ html.small-screen .encounters > legend {
     max-width: 34px;
     max-height: 28px;
 }
+/* Recommended encounters (data/recommended_encounters.js): the location's pick, and Plan. */
+.encounter-recommendation {
+    grid-column: 1 / -1;
+    margin: 0;
+    padding: 6px 10px;
+    border-radius: 8px;
+    background: var(--ss-accent-soft, #e3ecfd);
+    color: var(--ss-accent-text, #2f5fc4);
+    font-size: 13px;
+}
+.encounter-recommended {
+    background: rgba(230, 184, 0, 0.14);
+}
+.encounter-recommended-tag {
+    color: #c99400;
+}
+.encounter-plan-note {
+    grid-column: 1 / -1;
+    margin: 0;
+    color: var(--ss-muted, #667085);
+    font-size: 12px;
+}
+.encounter-plan {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+}
+.encounter-plan-row {
+    display: grid;
+    grid-template-columns: minmax(110px, 0.9fr) minmax(0, 2fr) minmax(0, 1fr);
+    align-items: center;
+    column-gap: 8px;
+    min-height: 32px;
+    padding: 2px 0;
+    border-bottom: 1px solid var(--ss-line, #dde2ea);
+    font-size: 13px;
+}
+.encounter-plan-row[role="button"] {
+    cursor: pointer;
+}
+.encounter-plan-place {
+    font-weight: 600;
+}
+.encounter-plan-got {
+    color: #2e9e44;
+    text-align: right;
+}
+.encounter-plan-done .encounter-plan-pick {
+    color: var(--ss-muted, #667085);
+}
+@media (max-width: 500px) {
+    .encounter-plan-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .encounter-plan-pick {
+        grid-column: 1 / -1;
+        grid-row: 2;
+        font-size: 12px;
+        color: var(--ss-muted, #667085);
+    }
+}
 .encounter-name {
     overflow: hidden;
     white-space: nowrap;
